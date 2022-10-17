@@ -9,7 +9,7 @@ public class SecurityConfiguration {
 
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> web.ignoring().antMatchers("/h2-console/**", "/swagger-ui.html");
+        return (web) -> web.ignoring().antMatchers("/**");
     }
 
 }

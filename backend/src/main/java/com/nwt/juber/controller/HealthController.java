@@ -1,10 +1,11 @@
 package com.nwt.juber.controller;
 
 import com.nwt.juber.api.ResponseOk;
+import com.nwt.juber.dto.request.GreetRequest;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE)
@@ -14,4 +15,10 @@ public class HealthController {
     public ResponseOk health() {
         return new ResponseOk("It works.");
     }
+
+    @PostMapping(value = "/greet", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseOk greet(@Valid @RequestBody GreetRequest body) {
+        return new ResponseOk(String.format("Hello, %s!", body.getName()));
+    }
+
 }

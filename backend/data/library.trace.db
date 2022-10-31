@@ -364,3 +364,9 @@ INSERT INTO 'USERS' VALUES ( 'marko.markovic@gmail.com', 'blabla') [42001-214]
 2022-10-19 20:00:27 jdbc[3]: exception
 org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "USERS" not found (this database is empty); SQL statement:
 INSERT INTO USERS VALUES ( 'marko.markovic@gmail.com', 'sifra') [42104-214]
+2022-10-31 21:15:52 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "INSERT INTO DRIVER([*]'MAIL', 'PASSWORD', 'NAME', 'SURNAME', 'PHONE_NUMBER', 'CITY', 'ACTIVE', 'PHOTO_PATH', 'PAYMENT_INFO_ID') VALUES ( 'zdravko.zdravkovic@gmail.com', 'sifra', 'Zdravko', 'Zdravkovic', '+38164548952', 'Novi Sad', TRUE, 'zdravko1.png', 0)"; expected "identifier"; SQL statement:
+INSERT INTO DRIVER('MAIL', 'PASSWORD', 'NAME', 'SURNAME', 'PHONE_NUMBER', 'CITY', 'ACTIVE', 'PHOTO_PATH', 'PAYMENT_INFO_ID') VALUES ( 'zdravko.zdravkovic@gmail.com', 'sifra', 'Zdravko', 'Zdravkovic', '+38164548952', 'Novi Sad', TRUE, 'zdravko1.png', 0) [42001-214]
+2022-10-31 21:31:37 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "USERS" not found; SQL statement:
+INSERT INTO USERS VALUES ( 'marko.markovic@gmail.com', 'sifra') [42102-214]

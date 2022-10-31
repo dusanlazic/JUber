@@ -3,10 +3,8 @@ package com.nwt.juber.model;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import java.time.LocalDateTime;
+import javax.persistence.*;
+import java.util.UUID;
 
 @Entity
 @Data
@@ -14,13 +12,19 @@ import java.time.LocalDateTime;
 public class Vehicle {
 
     @Id
-    private Long id;
+    private UUID id;
 
-    @ManyToOne
-    private Location location;
+    private Double longitude;
+
+    private Double latitude;
 
     private Boolean babyFriendly;
 
     private Boolean petFriendly;
+
+    private Integer capacity;
+
+    @OneToOne
+    private Driver driver;
 
 }

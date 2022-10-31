@@ -4,11 +4,9 @@ package com.nwt.juber.model;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Data
@@ -16,8 +14,8 @@ import java.util.List;
 public class Route {
 
     @Id
-    private Long id;
+    private UUID id;
 
-    @OneToMany
+    @ManyToMany
     private List<Location> locations;
 }

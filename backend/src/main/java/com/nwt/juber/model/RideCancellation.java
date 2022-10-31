@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
+import java.util.UUID;
 
 @Entity
 @Data
@@ -13,7 +14,7 @@ import javax.persistence.OneToOne;
 public class RideCancellation {
 
     @Id
-    private Long id;
+    private UUID id;
 
     private String reason;
 

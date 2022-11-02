@@ -34,6 +34,17 @@ spring:
     pathmatch:
       # https://stackoverflow.com/questions/70043841/swagger-2-issue-spring-boot
       matching-strategy: ant-path-matcher
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            clientId: ${OAUTH_GOOGLE_CLIENT_ID}
+            clientSecret: ${OAUTH_GOOGLE_CLIENT_SECRET}
+            redirectUri: "{baseUrl}/oauth2/callback/{registrationId}"
+            scope:
+              - email
+              - profile
 logging:
   pattern:
     console: '%d{yyyy-MM-dd HH:mm:ss} - %msg%n'

@@ -45,6 +45,15 @@ spring:
             scope:
               - email
               - profile
+app:
+  auth:
+    tokenSecret: ${TOKEN_SECRET}
+    tokenExpirationMsec: 864000000
+  cors:
+    allowedOrigins: http://localhost:3000, http://127.0.0.1:3000
+  oauth2:
+    authorizedRedirectUris:
+      - http://localhost:3000/oauth2/redirect
 logging:
   pattern:
     console: '%d{yyyy-MM-dd HH:mm:ss} - %msg%n'

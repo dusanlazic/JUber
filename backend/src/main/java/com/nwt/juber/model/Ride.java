@@ -14,6 +14,7 @@ import java.util.UUID;
 public class Ride {
 
     @Id
+    @Column(columnDefinition = "uuid")
     private UUID id;
 
     @ManyToOne

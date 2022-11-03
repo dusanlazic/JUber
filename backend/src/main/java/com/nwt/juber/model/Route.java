@@ -14,8 +14,10 @@ import java.util.UUID;
 public class Route {
 
     @Id
+    @Column(columnDefinition = "uuid")
     private UUID id;
 
     @ManyToMany
     private List<Location> locations;
+
 }

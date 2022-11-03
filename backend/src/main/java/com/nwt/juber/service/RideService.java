@@ -8,7 +8,7 @@ import com.nwt.juber.repository.RideRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Service
@@ -23,6 +23,7 @@ public class RideService {
             throw new StartRideException("Ride not accepted!");
         }
         ride.setRideStatus(RideStatus.IN_PROGRESS);
+        ride.setStartTime(LocalDateTime.now());
         rideRepository.save(ride);
     }
 
@@ -32,6 +33,7 @@ public class RideService {
             throw new StartRideException("Ride not in progress!");
         }
         ride.setRideStatus(RideStatus.FINISHED);
+        ride.setEndTime(LocalDateTime.now());
         rideRepository.save(ride);
     }
 

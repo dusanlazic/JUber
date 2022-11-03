@@ -4,6 +4,7 @@ import com.nwt.juber.exception.OAuth2AuthenticationProcessingException;
 import com.nwt.juber.model.AuthProvider;
 import com.nwt.juber.model.User;
 import com.nwt.juber.repository.UserRepository;
+import com.nwt.juber.security.UserPrincipal;
 import com.nwt.juber.security.oauth.user.OAuth2UserInfo;
 import com.nwt.juber.security.oauth.user.OAuth2UserInfoFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,7 +52,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             user = registerUser(oAuth2UserRequest, oAuth2UserInfo);
         }
 
-        return null; // TODO: Implement UserDetails to store user
+        return UserPrincipal.fromUser(user, oAuth2User.getAttributes());
     }
 
     private User registerUser(OAuth2UserRequest oAuth2UserRequest, OAuth2UserInfo oAuth2UserInfo) {

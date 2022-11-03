@@ -29,6 +29,7 @@
             ],
             "styles": [
               "./node_modules/leaflet/dist/leaflet.css",
+              "node_modules/bulma/css/bulma.min.css",
               "src/styles.sass"
             ],
             "scripts": []
@@ -97,6 +98,7 @@
               "src/assets"
             ],
             "styles": [
+              "node_modules/bulma/css/bulma.min.css",
               "src/styles.sass"
             ],
             "scripts": []

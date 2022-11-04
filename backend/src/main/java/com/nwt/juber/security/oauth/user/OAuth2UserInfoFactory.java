@@ -10,7 +10,7 @@ public class OAuth2UserInfoFactory {
     public static OAuth2UserInfo getOAuth2UserInfo(String registrationId, Map<String, Object> attributes) {
         return switch (AuthProvider.valueOf(registrationId)) {
             case google -> new GoogleOAuth2UserInfo(attributes);
-            case facebook -> throw new NotImplementedException("Facebook login is not implemented yet.");
+            case facebook -> new FacebookOAuth2UserInfo(attributes);
             default -> throw new IllegalArgumentException("Unknown provider type.");
         };
     }

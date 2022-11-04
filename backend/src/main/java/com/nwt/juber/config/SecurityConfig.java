@@ -75,6 +75,9 @@ public class SecurityConfig {
                     .and()
                 .csrf()
                     .disable()
+                .headers()
+                    .frameOptions().disable()
+                    .and()
                 .formLogin()
                     .disable()
                 .httpBasic()
@@ -83,7 +86,7 @@ public class SecurityConfig {
                     .authenticationEntryPoint(new RestAuthenticationEntryPoint())
                     .and()
                 .authorizeRequests()
-                    .antMatchers("/auth/**", "/oauth/**")
+                    .antMatchers("/auth/**", "/oauth/**", "/h2-console/**")
                         .permitAll()
                     .anyRequest()
                         .authenticated()
@@ -118,7 +121,8 @@ public class SecurityConfig {
                 "/swagger-resources/**",
                 "/swagger-ui.html",
                 "/v2/api-docs",
-                "/webjars/**"
+                "/webjars/**",
+                "/health"
         );
     }
 

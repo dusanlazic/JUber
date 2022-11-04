@@ -5,6 +5,7 @@ import com.nwt.juber.exception.BadRequestException;
 import com.nwt.juber.security.TokenProvider;
 import com.nwt.juber.util.CookieUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
@@ -30,7 +31,8 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     private AppProperties appProperties;
 
     @Autowired
-    private HttpCookieOAuth2AuthorizationRequestRepository cookieRepository;
+    @Qualifier("httpCookieOAuth2AuthorizationRequestRepository")
+    private HttpCookieOAuth2AuthorizationRequestRepository httpCookieRepository;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication auth) throws IOException, ServletException {
@@ -63,7 +65,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
     protected void clearAuthenticationAttributes(HttpServletRequest request, HttpServletResponse response) {
         super.clearAuthenticationAttributes(request);
-        cookieRepository.removeAuthorizationRequestCookies(request, response);
+        httpCookieRepository.removeAuthorizationRequestCookies(request, response);
     }
 
     private Boolean isAuthorizedRedirectUri(String uri) {

@@ -53,7 +53,7 @@ public class SecurityConfig {
     private OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler;
 
     @Autowired
-    private HttpCookieOAuth2AuthorizationRequestRepository cookieRepository;
+    private HttpCookieOAuth2AuthorizationRequestRepository httpCookieRepository;
 
     @Bean
     public TokenAuthenticationFilter tokenAuthenticationFilter() {
@@ -61,7 +61,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    public HttpCookieOAuth2AuthorizationRequestRepository cookieRepository() {
+    public HttpCookieOAuth2AuthorizationRequestRepository cookieAuthorizationRequestRepository() {
         return new HttpCookieOAuth2AuthorizationRequestRepository();
     }
 
@@ -91,7 +91,7 @@ public class SecurityConfig {
                 .oauth2Login()
                     .authorizationEndpoint()
                         .baseUri("/oauth2/authorize")
-                        .authorizationRequestRepository(cookieRepository())
+                        .authorizationRequestRepository(cookieAuthorizationRequestRepository())
                         .and()
                     .redirectionEndpoint()
                         .baseUri("/oauth2/callback/*")

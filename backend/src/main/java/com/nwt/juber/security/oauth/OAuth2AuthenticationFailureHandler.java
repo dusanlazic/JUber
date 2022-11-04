@@ -2,6 +2,7 @@ package com.nwt.juber.security.oauth;
 
 import com.nwt.juber.util.CookieUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.stereotype.Component;
@@ -19,7 +20,8 @@ import static com.nwt.juber.security.oauth.HttpCookieOAuth2AuthorizationRequestR
 public class OAuth2AuthenticationFailureHandler extends SimpleUrlAuthenticationFailureHandler {
 
     @Autowired
-    private HttpCookieOAuth2AuthorizationRequestRepository cookieRepository;
+    @Qualifier("httpCookieOAuth2AuthorizationRequestRepository")
+    private HttpCookieOAuth2AuthorizationRequestRepository httpCookieRepository;
 
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
@@ -33,7 +35,7 @@ public class OAuth2AuthenticationFailureHandler extends SimpleUrlAuthenticationF
                 .build()
                 .toUriString();
 
-        cookieRepository.removeAuthorizationRequestCookies(request, response);
+        httpCookieRepository.removeAuthorizationRequestCookies(request, response);
 
         getRedirectStrategy().sendRedirect(request, response, targetUrl);
     }

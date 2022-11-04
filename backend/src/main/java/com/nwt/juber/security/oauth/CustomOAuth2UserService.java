@@ -1,6 +1,7 @@
 package com.nwt.juber.security.oauth;
 
 import com.nwt.juber.exception.OAuth2AuthenticationProcessingException;
+import com.nwt.juber.exception.UserNotFoundException;
 import com.nwt.juber.model.AuthProvider;
 import com.nwt.juber.model.User;
 import com.nwt.juber.repository.UserRepository;
@@ -9,6 +10,7 @@ import com.nwt.juber.security.oauth.user.OAuth2UserInfo;
 import com.nwt.juber.security.oauth.user.OAuth2UserInfoFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
@@ -36,6 +38,11 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         } catch (Exception e) {
             throw new InternalAuthenticationServiceException(e.getMessage(), e.getCause());
         }
+    }
+
+    public User resolveUser(Authentication authentication) {
+        UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+        return userRepository.findById(userPrincipal.getId()).orElseThrow(UserNotFoundException::new);
     }
 
     private OAuth2User processOAuth2User(OAuth2UserRequest oAuth2UserRequest, OAuth2User oAuth2User) {

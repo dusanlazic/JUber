@@ -15,6 +15,7 @@ import java.util.UUID;
 public class User {
 
     @Id
+    @Column(columnDefinition = "uuid")
     private UUID id;
 
     @Column(nullable = false)

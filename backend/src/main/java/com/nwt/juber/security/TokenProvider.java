@@ -23,8 +23,8 @@ public class TokenProvider {
         this.appProperties = appProperties;
     }
 
-    public String createToken(Authentication auth) {
-        UserPrincipal userPrincipal = (UserPrincipal) auth.getPrincipal();
+    public String createToken(Authentication authentication) {
+        UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
 
         Instant now = Instant.now();
         Instant expiresAt = now.plusMillis(appProperties.getAuth().getTokenExpirationMsec());
@@ -41,7 +41,7 @@ public class TokenProvider {
         JwtParser parser = Jwts.parserBuilder().setSigningKey(getKey()).build();
         Claims claims = parser.parseClaimsJws(token).getBody();
 
-        return UUID.fromString(claims.getId());
+        return UUID.fromString(claims.getSubject());
     }
 
     public Boolean validateToken(String token) {

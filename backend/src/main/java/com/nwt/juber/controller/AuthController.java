@@ -1,10 +1,12 @@
 package com.nwt.juber.controller;
 
 import com.nwt.juber.dto.request.LoginRequest;
+import com.nwt.juber.dto.response.OAuth2UserInfoResponse;
 import com.nwt.juber.dto.response.TokenResponse;
 import com.nwt.juber.model.User;
 import com.nwt.juber.repository.UserRepository;
 import com.nwt.juber.security.TokenProvider;
+import com.nwt.juber.security.oauth.CustomOAuth2UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -12,10 +14,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -33,6 +32,9 @@ public class AuthController {
     private PasswordEncoder passwordEncoder;
 
     @Autowired
+    private CustomOAuth2UserService customOAuth2UserService;
+
+    @Autowired
     private TokenProvider tokenProvider;
 
     @PostMapping("/login")
@@ -46,6 +48,12 @@ public class AuthController {
         User user = (User) authentication.getPrincipal();
 
         return new TokenResponse(tokenProvider.createToken(authentication));
+    }
+
+    @GetMapping("/me")
+    public OAuth2UserInfoResponse me(Authentication authentication) {
+        User user = customOAuth2UserService.resolveUser(authentication);
+        return new OAuth2UserInfoResponse(user.getId(), user.getName(), user.getEmail(), user.getImageUrl());
     }
 
 }

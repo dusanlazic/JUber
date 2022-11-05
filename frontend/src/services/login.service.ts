@@ -11,44 +11,29 @@ import { LocalStorageService } from "./localStorage.service";
 
 export class LoginService {
 
-    constructor(
-        private httpClient: HttpClient, 
-        private localStorageService: LocalStorageService
-    ) {}
-    
+    constructor(private httpClient: HttpClient) {}
+
     createHeaders(): HttpHeaders {
-        const headers = new HttpHeaders({
+        return new HttpHeaders({
             'Content-type': 'application/json'
         });
-        const storedToken = this.localStorageService.get(environment.ACCESS_TOKEN);
-
-        if(storedToken){
-            headers.append('Authorization', 'Bearer ' + storedToken);
-        }
-        return headers;
-
     }
 
-    getCurrentUser() : Observable<any>{
-        const url = environment.API_BASE_URL + "/auth/me";
-        const headers = this.createHeaders();
-
-        return this.httpClient.get(url, {headers}) as Observable<any>;
-    }
-   
-    login(loginRequest: LoginRequest) : Observable<LoginResponse> {
+    login(loginRequest: LoginRequest) : Observable<any> {
         const url = environment.API_BASE_URL + "/auth/login";
         const body = JSON.stringify(loginRequest);
-
-        return this.httpClient.post(url, body) as Observable<LoginResponse>;
+        const headers = this.createHeaders();
+        
+        return this.httpClient.post(url, body, {headers}) as Observable<any>;
     }
 
 
-    signup(signupRequest: any) : Observable<LoginResponse> {
+    signup(signupRequest: any) : Observable<any> {
         const url = environment.API_BASE_URL + "/auth/signup";
         const body = JSON.stringify(signupRequest);
+        const headers = this.createHeaders();
 
-        return this.httpClient.post(url, body) as Observable<LoginResponse>;
+        return this.httpClient.post(url, body, {headers}) as Observable<any>;
     }
 
 }

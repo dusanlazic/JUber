@@ -24,8 +24,5 @@ public class Person extends User {
 
     @OneToOne
     private PaymentInfo paymentInfo;
-
-    private String photoPath;
-
-    private boolean active;
+    
 }

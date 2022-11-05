@@ -28,18 +28,12 @@ export class LoginComponent implements OnInit {
 
   login() {
     console.log(this.loginForm.value);
-
     this.loginService.login(this.loginForm.value)
-        .subscribe(response => {
-            if(response){
-              localStorage.setItem(environment.ACCESS_TOKEN, response.accessToken);
-              console.log("You're successfully logged in!");
-              // redirect
-            }
-            else{
-              console.log('Oops! Something went wrong. Please try again!');
-            }
-        });
+      .subscribe({
+        next: (v) => {console.log(v); console.log("You're successfully logged in!")},
+        error: (e) => {console.error(e); console.log('Oops! Something went wrong. Please try again!')},
+        complete: () => console.info('complete') 
+    });
   }
 
   

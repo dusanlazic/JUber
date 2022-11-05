@@ -52,7 +52,7 @@ public class AuthController {
 
     @GetMapping("/me")
     public OAuth2UserInfoResponse me(Authentication authentication) {
-        User user = customOAuth2UserService.resolveUser(authentication);
+        User user = (User) authentication.getPrincipal();
         return new OAuth2UserInfoResponse(user.getId(), user.getName(), user.getEmail(), user.getImageUrl());
     }
 

@@ -2,6 +2,7 @@ package com.nwt.juber.security;
 
 import com.nwt.juber.config.AppProperties;
 import com.nwt.juber.exception.InvalidAccessTokenException;
+import com.nwt.juber.model.User;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
@@ -24,13 +25,13 @@ public class TokenProvider {
     }
 
     public String createToken(Authentication authentication) {
-        UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+        User user = (User) authentication.getPrincipal();
 
         Instant now = Instant.now();
         Instant expiresAt = now.plusMillis(appProperties.getAuth().getTokenExpirationMsec());
 
         return Jwts.builder()
-                .setSubject(userPrincipal.getId().toString())
+                .setSubject(user.getId().toString())
                 .setIssuedAt(Date.from(now))
                 .setExpiration(Date.from(expiresAt))
                 .signWith(getKey())

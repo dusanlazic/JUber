@@ -39,6 +39,9 @@ public class User implements OAuth2User, UserDetails {
 
     private String providerId;
 
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
     @Transient
     private Map<String, Object> attributes;
 
@@ -74,6 +77,6 @@ public class User implements OAuth2User, UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"));
+        return Collections.singletonList(this.role.toAuthority());
     }
 }

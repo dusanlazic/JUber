@@ -2,6 +2,7 @@ package com.nwt.juber.security.oauth;
 
 import com.nwt.juber.exception.OAuth2AuthenticationProcessingException;
 import com.nwt.juber.model.AuthProvider;
+import com.nwt.juber.model.Role;
 import com.nwt.juber.model.User;
 import com.nwt.juber.repository.UserRepository;
 import com.nwt.juber.security.oauth.user.OAuth2UserInfo;
@@ -67,6 +68,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         user.setName(oAuth2UserInfo.getName());
         user.setEmail(oAuth2UserInfo.getEmail());
         user.setImageUrl(oAuth2UserInfo.getImageUrl());
+        user.setEmailVerified(true);
+        user.setRole(Role.ROLE_PASSENGER_NEW);
         return userRepository.save(user);
     }
 

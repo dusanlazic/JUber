@@ -12,7 +12,7 @@ export class ProfileComponent implements OnInit {
 
   ngOnInit(): void {
     this.userService.getCurrentUser().subscribe({
-      next: (response) => {console.log("logged user " + response);},
+      next: (response) => {console.log(response);},
       error: (e) => {console.error(e); console.log('Oops! Something went wrong. Please try again!')},
       complete: () => console.info('complete') 
     })

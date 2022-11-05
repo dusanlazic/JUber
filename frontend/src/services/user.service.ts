@@ -22,9 +22,9 @@ export class UserService {
             'Content-type': 'application/json'
         });
         const storedToken = this.localStorageService.get(environment.ACCESS_TOKEN);
-    
+
         if(storedToken){
-            headers.append('Authorization', 'Bearer ' + storedToken);
+            return headers.append('Authorization', `Bearer ${storedToken}`);
         }
         return headers;
     
@@ -33,7 +33,7 @@ export class UserService {
     getCurrentUser() : Observable<any>{
         const url = environment.API_BASE_URL + "/auth/me";
         const headers = this.createHeaders();
-    
+
         return this.httpClient.get(url, {headers}) as Observable<any>;
     }
 

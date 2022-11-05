@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
+import { environment } from 'src/environments/environment';
+import { LoginService } from 'src/services/login.service';
 
 
 @Component({
@@ -11,8 +13,10 @@ export class LoginComponent implements OnInit {
 
   loginForm!: FormGroup;
 
-  constructor(private builder: FormBuilder) { 
-  }
+  constructor(
+    private builder: FormBuilder, 
+    private loginService: LoginService
+  ){ }
 
   ngOnInit(): void {
     this.loginForm = this.builder.group({
@@ -24,6 +28,18 @@ export class LoginComponent implements OnInit {
 
   login() {
     console.log(this.loginForm.value);
+
+    this.loginService.login(this.loginForm.value)
+        .subscribe(response => {
+            if(response){
+              localStorage.setItem(environment.ACCESS_TOKEN, response.accessToken);
+              console.log("You're successfully logged in!");
+              // redirect
+            }
+            else{
+              console.log('Oops! Something went wrong. Please try again!');
+            }
+        });
   }
 
   

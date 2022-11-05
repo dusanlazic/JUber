@@ -29,7 +29,6 @@ body
   height: 100% !important
   float: left !important
   border-top-right-radius: 30% !important
-  padding-top: 5%
 
 .login-box
   background: white !important
@@ -37,10 +36,12 @@ body
 
 .info-box
   float: right !important
+  padding-top: 5%
+
 
 .title
   text-align: right !important
-  padding-right: 3% !important
+  padding-right: 4% !important
   font-size: xx-large !important
   color: white !important
   font-weight: 600 !important
@@ -51,7 +52,7 @@ body
 
 .subtitle
   text-align: right !important
-  padding-right: 3% !important
+  padding-right: 4% !important
   color: white !important
 
 .form-container
@@ -75,3 +76,28 @@ body
   width: 50%
   height: 268px
   border-top-left-radius: 100%
+
+
+
+
+
+
+.separator
+  display: flex
+  align-items: center
+  text-align: center
+  margin-top: -4%
+  margin-bottom: 5%
+
+  &::before, &::after
+    content: ''
+    flex: 1
+    border-bottom: 1px solid #eee
+
+  &:not(:empty)
+    &::before
+      margin-right: .25em
+
+    &::after
+      margin-left: .25em
+

@@ -3,7 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { LoginComponent } from './login/login.component';
+import { LoginComponent } from './login-page/login/login.component';
 import { MapComponent } from './shared/map/map.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
@@ -13,12 +13,18 @@ import {MatDialogModule} from '@angular/material/dialog';
 import {MatInputModule} from '@angular/material/input';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 
+import { HttpClientModule } from '@angular/common/http';
+import { LoginSocialComponent } from './login-page/login-social/login-social.component';
+import { LoginPageComponent } from './login-page/login-page.component';
+
 
 @NgModule({
   declarations: [
     AppComponent,
+    MapComponent,
+    LoginPageComponent,
+    LoginSocialComponent,
     LoginComponent,
-    MapComponent
   ],
   imports: [
     BrowserModule,
@@ -30,6 +36,11 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
     MatInputModule,
     FormsModule,
     ReactiveFormsModule,
+    HttpClientModule,
+  ],
+  exports: [
+    LoginSocialComponent,
+    LoginComponent,
   ],
   providers: [],
   bootstrap: [AppComponent]

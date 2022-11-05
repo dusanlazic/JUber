@@ -1,0 +1,56 @@
+
+<!-- regular login form-->
+  <form class="form-container" (ngSubmit)="login()" [formGroup]="loginForm" novalidate autocomplete="false">
+
+    <div class="field">
+      <div class="control has-icons-left">
+        <input matInput type="email" class="input is-rounded" formControlName ="email" placeholder="example@gmail.com" required>
+        <span class="icon is-left">
+          <i class="fas fa-envelope"></i>
+        </span>
+      </div>
+      <p *ngIf="loginForm.get('email')?.hasError('email') && loginForm.get('email')?.touched" class="help is-danger">
+        Please enter a valid email address
+      </p>
+      <p *ngIf="loginForm.get('email')?.hasError('required') && loginForm.get('email')?.touched" class="help is-danger">
+        Please enter a email address!
+      </p>
+    </div>
+
+    <div class="field">
+      <div class="control has-icons-left">
+        <input matInput type="password" class="input is-rounded" formControlName="password"  placeholder="Password" required>
+        <span class="icon is-left">
+          <i class="fas fa-key"></i>
+        </span>
+      </div>
+      <p *ngIf="loginForm.get('password')?.hasError('required') && loginForm.get('password')?.touched" class="help is-danger">
+        Please enter your password
+      </p>
+    </div>
+    
+    <div class="level">
+        <div class="level-left">
+            <label class="checkbox has-text-weight-medium">
+            <input type="checkbox">
+            Remember me
+            </label>
+        </div>
+        <div class="level-right has-text-weight-medium">
+            <a href=""> Forgot your password? </a>
+        </div>
+    </div>
+
+    <div class="level">
+        <div class="level-item">
+            <button class="button is-fullwidth is-link is-rounded has-text-weight-bold" type="submit" [disabled]="!loginForm.valid">Login</button>
+        </div>
+    </div>
+
+    <div class="level">
+        <div class="level-item">
+            You don't have an account? 
+            <a href=""> Register here. </a>
+        </div>
+      </div>
+  </form>

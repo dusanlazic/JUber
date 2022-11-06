@@ -1,6 +1,7 @@
 package com.nwt.juber.service;
 
 import com.nwt.juber.dto.request.LocalRegistrationRequest;
+import com.nwt.juber.dto.request.OAuthRegistrationRequest;
 import com.nwt.juber.exception.EmailAlreadyInUseException;
 import com.nwt.juber.exception.UserNotFoundException;
 import com.nwt.juber.model.AuthProvider;
@@ -11,6 +12,7 @@ import com.nwt.juber.repository.PersonRepository;
 import com.nwt.juber.repository.UserRepository;
 import com.nwt.juber.security.TokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -53,6 +55,19 @@ public class AccountService {
         // TODO: Send mail
         System.out.println("[i] Make a POST request to this link to verify email:" );
         System.out.println("[i] http://localhost:8080/auth/register/verify/" + tokenProvider.createEmailVerificationToken(passenger));
+    }
+
+    public void registerWithOAuth(OAuthRegistrationRequest registrationRequest, Authentication authentication) {
+        checkPhoneNumberAvailability(registrationRequest.getPhoneNumber());
+
+        Passenger passenger = (Passenger) authentication.getPrincipal();
+        passenger.setRole(Role.ROLE_PASSENGER);
+        passenger.setName(registrationRequest.getFirstName(), registrationRequest.getLastName());
+        passenger.setFirstName(registrationRequest.getFirstName());
+        passenger.setLastName(registrationRequest.getLastName());
+        passenger.setCity(registrationRequest.getCity());
+        passenger.setPhoneNumber(registrationRequest.getPhoneNumber());
+        userRepository.save(passenger);
     }
 
     public void verifyEmail(String token) {

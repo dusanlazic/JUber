@@ -2,6 +2,7 @@ package com.nwt.juber.security.oauth;
 
 import com.nwt.juber.exception.OAuth2AuthenticationProcessingException;
 import com.nwt.juber.model.AuthProvider;
+import com.nwt.juber.model.Passenger;
 import com.nwt.juber.model.Role;
 import com.nwt.juber.model.User;
 import com.nwt.juber.repository.UserRepository;
@@ -60,17 +61,21 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     }
 
     private User registerUser(OAuth2UserRequest oAuth2UserRequest, OAuth2UserInfo oAuth2UserInfo) {
-        User user = new User();
+        /*
+        Passengers are the only type of users allowed to register by themselves. For that reason, we can assume
+        that the new user's role will be passenger.
+         */
+        Passenger passenger = new Passenger();
 
-        user.setId(UUID.randomUUID());
-        user.setProvider(getAuthProvider(oAuth2UserRequest));
-        user.setProviderId(oAuth2UserInfo.getId());
-        user.setName(oAuth2UserInfo.getName());
-        user.setEmail(oAuth2UserInfo.getEmail());
-        user.setImageUrl(oAuth2UserInfo.getImageUrl());
-        user.setEmailVerified(true);
-        user.setRole(Role.ROLE_PASSENGER_NEW);
-        return userRepository.save(user);
+        passenger.setId(UUID.randomUUID());
+        passenger.setProvider(getAuthProvider(oAuth2UserRequest));
+        passenger.setProviderId(oAuth2UserInfo.getId());
+        passenger.setName(oAuth2UserInfo.getName());
+        passenger.setEmail(oAuth2UserInfo.getEmail());
+        passenger.setImageUrl(oAuth2UserInfo.getImageUrl());
+        passenger.setEmailVerified(true);
+        passenger.setRole(Role.ROLE_PASSENGER_NEW);
+        return userRepository.save(passenger);
     }
 
     private User updateUser(User user, OAuth2UserInfo oAuth2UserInfo) {

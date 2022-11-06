@@ -12,4 +12,5 @@ public class OAuth2UserInfoResponse {
     private String name;
     private String email;
     private String imageUrl;
+    private String role;
 }

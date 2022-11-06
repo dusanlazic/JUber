@@ -12,6 +12,7 @@ import java.util.UUID;
 public class Vehicle {
 
     @Id
+    @Column(columnDefinition = "uuid")
     private UUID id;
 
     private Double longitude;

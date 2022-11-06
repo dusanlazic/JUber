@@ -18,7 +18,7 @@ spring:
     driverClassName: org.h2.Driver
     password: admin
     username: admin
-    url: jdbc:h2:./data/library;DB_CLOSE_ON_EXIT=TRUE
+    url: jdbc:h2:./data/juber-db;DB_CLOSE_ON_EXIT=TRUE
   h2:
     # Enabling H2 Console
     console:
@@ -60,7 +60,9 @@ spring:
 app:
   auth:
     tokenSecret: ${TOKEN_SECRET}
-    tokenExpirationMsec: 864000000
+    tokenExpirationSeconds: 864000
+    verificationTokenExpirationMinutes: 15
+    recoveryTokenExpirationMinutes: 30
   cors:
     allowedOrigins: http://localhost:3000, http://127.0.0.1:3000
   oauth2:

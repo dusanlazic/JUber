@@ -3,10 +3,7 @@ package com.nwt.juber.model;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.UUID;
@@ -15,7 +12,9 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 public class ProfileChangeRequest {
+
     @Id
+    @Column(columnDefinition = "uuid")
     private UUID id;
 
     @ManyToOne

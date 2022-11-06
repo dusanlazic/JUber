@@ -54,7 +54,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
             throw new BadRequestException();
 
         String targetUrl = redirectUri.orElse(getDefaultTargetUrl());
-        String token = tokenProvider.createToken(auth);
+        String token = tokenProvider.createAccessToken(auth);
 
         return UriComponentsBuilder
                 .fromUriString(targetUrl)

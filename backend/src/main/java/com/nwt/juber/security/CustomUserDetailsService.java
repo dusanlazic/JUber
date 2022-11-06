@@ -18,12 +18,10 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) {
-        User user = userRepository.findByEmail(email).orElseThrow(UserNotFoundException::new);
-        return UserPrincipal.fromUser(user);
+        return userRepository.findByEmail(email).orElseThrow(UserNotFoundException::new);
     }
 
     public UserDetails loadUserById(UUID id) {
-        User user = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
-        return UserPrincipal.fromUser(user);
+        return userRepository.findById(id).orElseThrow(UserNotFoundException::new);
     }
 }

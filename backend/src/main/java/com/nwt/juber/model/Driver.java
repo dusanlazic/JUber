@@ -18,5 +18,7 @@ public class Driver extends Person {
 
     @OneToOne
     private Vehicle vehicle;
+    
+    private Boolean active;
 
 }

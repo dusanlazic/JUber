@@ -1,16 +1,15 @@
 package com.nwt.juber.security.oauth;
 
 import com.nwt.juber.exception.OAuth2AuthenticationProcessingException;
-import com.nwt.juber.exception.UserNotFoundException;
 import com.nwt.juber.model.AuthProvider;
+import com.nwt.juber.model.Passenger;
+import com.nwt.juber.model.Role;
 import com.nwt.juber.model.User;
 import com.nwt.juber.repository.UserRepository;
-import com.nwt.juber.security.UserPrincipal;
 import com.nwt.juber.security.oauth.user.OAuth2UserInfo;
 import com.nwt.juber.security.oauth.user.OAuth2UserInfoFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
@@ -40,11 +39,6 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         }
     }
 
-    public User resolveUser(Authentication authentication) {
-        UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
-        return userRepository.findById(userPrincipal.getId()).orElseThrow(UserNotFoundException::new);
-    }
-
     private OAuth2User processOAuth2User(OAuth2UserRequest oAuth2UserRequest, OAuth2User oAuth2User) {
         OAuth2UserInfo oAuth2UserInfo = OAuth2UserInfoFactory.getOAuth2UserInfo(oAuth2UserRequest.getClientRegistration().getRegistrationId(), oAuth2User.getAttributes());
         if (!StringUtils.hasLength(oAuth2UserInfo.getEmail()))
@@ -61,20 +55,27 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         } else {
             user = registerUser(oAuth2UserRequest, oAuth2UserInfo);
         }
+        user.setAttributes(oAuth2User.getAttributes());
 
-        return UserPrincipal.fromUser(user, oAuth2User.getAttributes());
+        return user;
     }
 
     private User registerUser(OAuth2UserRequest oAuth2UserRequest, OAuth2UserInfo oAuth2UserInfo) {
-        User user = new User();
+        /*
+        Passengers are the only type of users allowed to register by themselves. For that reason, we can assume
+        that the new user's role will be passenger.
+         */
+        Passenger passenger = new Passenger();
 
-        user.setId(UUID.randomUUID());
-        user.setProvider(getAuthProvider(oAuth2UserRequest));
-        user.setProviderId(oAuth2UserInfo.getId());
-        user.setName(oAuth2UserInfo.getName());
-        user.setEmail(oAuth2UserInfo.getEmail());
-        user.setImageUrl(oAuth2UserInfo.getImageUrl());
-        return userRepository.save(user);
+        passenger.setId(UUID.randomUUID());
+        passenger.setProvider(getAuthProvider(oAuth2UserRequest));
+        passenger.setProviderId(oAuth2UserInfo.getId());
+        passenger.setName(oAuth2UserInfo.getName());
+        passenger.setEmail(oAuth2UserInfo.getEmail());
+        passenger.setImageUrl(oAuth2UserInfo.getImageUrl());
+        passenger.setEmailVerified(true);
+        passenger.setRole(Role.ROLE_PASSENGER_NEW);
+        return userRepository.save(passenger);
     }
 
     private User updateUser(User user, OAuth2UserInfo oAuth2UserInfo) {

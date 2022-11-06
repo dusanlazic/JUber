@@ -2,11 +2,11 @@ package com.nwt.juber.security;
 
 import com.nwt.juber.config.AppProperties;
 import com.nwt.juber.exception.InvalidAccessTokenException;
-import com.nwt.juber.exception.InvalidVerificationTokenException;
 import com.nwt.juber.model.User;
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtParser;
+import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
-import io.jsonwebtoken.security.SignatureException;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
@@ -65,30 +65,12 @@ public class TokenProvider {
         return parser.parseClaimsJws(token).getBody();
     }
 
-    public Boolean validateAccessToken(String token) {
-        try {
-            Claims claims = readClaims(token);
-            if (claims.get("type") == null || !claims.get("type").equals(TokenType.ACCESS.name()))
-                throw new InvalidAccessTokenException("Invalid token type.");
+    public Boolean validateToken(String token, TokenType tokenType) {
+        Claims claims = readClaims(token);
+        if (claims.get("type") == null || !claims.get("type").equals(tokenType.name()))
+            throw new InvalidAccessTokenException("Invalid token type.");
 
-            return true;
-        } catch (SignatureException | MalformedJwtException | ExpiredJwtException | UnsupportedJwtException | IllegalArgumentException e) {
-            throw new InvalidAccessTokenException(e.getMessage(), e);
-        }
-    }
-
-    public Boolean validateEmailVerificationToken(String token) {
-        try {
-            Claims claims = readClaims(token);
-            if (claims.get("type") == null || !claims.get("type").equals(TokenType.VERIFICATION.name()))
-                throw new InvalidVerificationTokenException("Invalid token type.");
-
-            return true;
-        } catch (SignatureException | MalformedJwtException | UnsupportedJwtException | IllegalArgumentException e) {
-            throw new InvalidAccessTokenException(e.getMessage(), e);
-        } catch (ExpiredJwtException e) {
-            throw new InvalidVerificationTokenException("Verification link has expired.");
-        }
+        return true;
     }
 
     private Key getKey() {

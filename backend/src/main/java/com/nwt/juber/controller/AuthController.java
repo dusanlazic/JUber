@@ -41,13 +41,19 @@ public class AuthController {
         SecurityContextHolder.getContext().setAuthentication(authentication);
         User user = (User) authentication.getPrincipal();
 
-        return new TokenResponse(tokenProvider.createToken(authentication));
+        return new TokenResponse(tokenProvider.createAccessToken(authentication));
     }
 
     @PostMapping("/register")
     public ResponseOk register(@Valid @RequestBody LocalRegistrationRequest registrationRequest) {
         accountService.registerUserLocal(registrationRequest);
         return new ResponseOk("User registered successfully.");
+    }
+
+    @PostMapping("/register/verify/{token}")
+    public ResponseOk verifyEmail(@PathVariable String token) {
+        accountService.verifyEmail(token);
+        return new ResponseOk("Email verified successfully.");
     }
 
     @GetMapping("/me")

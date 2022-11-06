@@ -59,8 +59,7 @@ public class User implements OAuth2User, UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        // TODO: Implement email verification
-        return true;
+        return emailVerified;
     }
 
     @Override

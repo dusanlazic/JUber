@@ -60,7 +60,8 @@ spring:
 app:
   auth:
     tokenSecret: ${TOKEN_SECRET}
-    tokenExpirationMsec: 864000000
+    tokenExpirationSeconds: 864000
+    verificationTokenExpirationMinutes: 15
   cors:
     allowedOrigins: http://localhost:3000, http://127.0.0.1:3000
   oauth2:

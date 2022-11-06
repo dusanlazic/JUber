@@ -62,6 +62,7 @@ app:
     tokenSecret: ${TOKEN_SECRET}
     tokenExpirationSeconds: 864000
     verificationTokenExpirationMinutes: 15
+    recoveryTokenExpirationMinutes: 30
   cors:
     allowedOrigins: http://localhost:3000, http://127.0.0.1:3000
   oauth2:

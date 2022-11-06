@@ -3,6 +3,7 @@ package com.nwt.juber.api;
 import com.nwt.juber.exception.EmailAlreadyInUseException;
 import com.nwt.juber.exception.PhoneNumberAlreadyInUseException;
 import com.nwt.juber.exception.UserNotFoundException;
+import io.jsonwebtoken.JwtException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -47,5 +48,11 @@ public class ControllerAdvisor {
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseError handleUserNotFoundException(UserNotFoundException e) {
         return new ResponseError(HttpStatus.NOT_FOUND, "User not found.");
+    }
+
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ExceptionHandler(JwtException.class)
+    public ResponseError handleJwtExceptions(JwtException e) {
+        return new ResponseError(HttpStatus.UNAUTHORIZED, e.getMessage());
     }
 }

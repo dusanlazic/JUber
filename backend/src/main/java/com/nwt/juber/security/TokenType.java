@@ -1,5 +1,5 @@
 package com.nwt.juber.security;
 
 public enum TokenType {
-    ACCESS, VERIFICATION
+    ACCESS, VERIFICATION, RECOVERY
 }

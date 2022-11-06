@@ -18,6 +18,7 @@ public class AppProperties {
         private String tokenSecret;
         private Integer tokenExpirationSeconds;
         private Integer verificationTokenExpirationMinutes;
+        private Integer recoveryTokenExpirationMinutes;
     }
 
     public static final class OAuth2 {

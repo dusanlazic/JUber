@@ -5,6 +5,7 @@ import com.nwt.juber.dto.request.OAuthRegistrationRequest;
 import com.nwt.juber.dto.request.PasswordResetLinkRequest;
 import com.nwt.juber.dto.request.PasswordResetRequest;
 import com.nwt.juber.exception.EmailAlreadyInUseException;
+import com.nwt.juber.exception.InvalidRecoveryTokenException;
 import com.nwt.juber.exception.PhoneNumberAlreadyInUseException;
 import com.nwt.juber.exception.UserNotFoundException;
 import com.nwt.juber.model.AuthProvider;
@@ -109,7 +110,10 @@ public class AccountService {
         UUID userId = tokenProvider.getUserIdFromToken(token);
 
         User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+        if (user.getModified() != null && tokenProvider.readClaims(token).getIssuedAt().before(user.getModified()))
+            throw new InvalidRecoveryTokenException("Password reset link is invalidated.");
         user.setPassword(passwordEncoder.encode(passwordResetRequest.getPassword()));
+
         userRepository.save(user);
     }
 

@@ -18,6 +18,8 @@ import { LoginSocialComponent } from './login-page/login-social/login-social.com
 import { LoginPageComponent } from './login-page/login-page.component';
 import { Oauth2RedirectHandlerComponent } from './login-page/oauth2-redirect-handler/oauth2-redirect-handler.component';
 import { ProfileComponent } from './profile/profile.component';
+import { ToastrModule } from 'ngx-toastr';
+
 
 @NgModule({
   declarations: [
@@ -40,6 +42,8 @@ import { ProfileComponent } from './profile/profile.component';
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
+    ToastrModule.forRoot(),
+
   ],
   exports: [
     LoginSocialComponent,

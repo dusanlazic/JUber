@@ -2,14 +2,13 @@ import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Injectable } from '@angular/core';
 import { Observable } from "rxjs";
 import { environment } from "src/environments/environment";
-import { LoginRequest, LoginResponse } from "src/models/auth";
-import { LocalStorageService } from "./localStorage.service";
+import { LoginRequest } from "src/models/auth";
 
 @Injectable({
     providedIn: 'root'
 })
 
-export class LoginService {
+export class AuthService {
 
     constructor(private httpClient: HttpClient) {}
 

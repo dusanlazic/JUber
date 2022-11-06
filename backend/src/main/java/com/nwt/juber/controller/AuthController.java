@@ -3,6 +3,7 @@ package com.nwt.juber.controller;
 import com.nwt.juber.api.ResponseOk;
 import com.nwt.juber.dto.request.LocalRegistrationRequest;
 import com.nwt.juber.dto.request.LoginRequest;
+import com.nwt.juber.dto.request.OAuthRegistrationRequest;
 import com.nwt.juber.dto.response.OAuth2UserInfoResponse;
 import com.nwt.juber.dto.response.TokenResponse;
 import com.nwt.juber.model.User;
@@ -10,6 +11,7 @@ import com.nwt.juber.security.TokenProvider;
 import com.nwt.juber.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -50,6 +52,13 @@ public class AuthController {
         return new ResponseOk("User registered successfully.");
     }
 
+    @PatchMapping("/register/oauth")
+    @PreAuthorize("hasAnyRole('PASSENGER_NEW')")
+    public ResponseOk registerWithOAuth(@Valid @RequestBody OAuthRegistrationRequest registrationRequest, Authentication authentication) {
+        accountService.registerWithOAuth(registrationRequest, authentication);
+        return new ResponseOk("User registered successfully.");
+    }
+
     @PostMapping("/register/verify/{token}")
     public ResponseOk verifyEmail(@PathVariable String token) {
         accountService.verifyEmail(token);
@@ -57,9 +66,10 @@ public class AuthController {
     }
 
     @GetMapping("/me")
+    @PreAuthorize("hasAnyRole('PASSENGER_NEW', 'PASSENGER', 'DRIVER', 'ADMIN')")
     public OAuth2UserInfoResponse me(Authentication authentication) {
         User user = (User) authentication.getPrincipal();
-        return new OAuth2UserInfoResponse(user.getId(), user.getName(), user.getEmail(), user.getImageUrl());
+        return new OAuth2UserInfoResponse(user.getId(), user.getName(), user.getEmail(), user.getImageUrl(), user.getAuthorities().stream().findFirst().get().toString());
     }
 
 }

@@ -1,5 +1,7 @@
 package com.nwt.juber.api;
 
+import com.nwt.juber.exception.EmailAlreadyInUseException;
+import com.nwt.juber.exception.PhoneNumberAlreadyInUseException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -28,4 +30,15 @@ public class ControllerAdvisor {
         return new ResponseError(HttpStatus.BAD_REQUEST, "Field validation failed.", errors);
     }
 
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ExceptionHandler(EmailAlreadyInUseException.class)
+    public ResponseError handleEmailAlreadyInUseException(EmailAlreadyInUseException e) {
+        return new ResponseError(HttpStatus.CONFLICT, e.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ExceptionHandler(PhoneNumberAlreadyInUseException.class)
+    public ResponseError handlePhoneNumberAlreadyInUseException(PhoneNumberAlreadyInUseException e) {
+        return new ResponseError(HttpStatus.CONFLICT, e.getMessage());
+    }
 }

@@ -2,8 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import { Router } from '@angular/router';
 import { environment } from 'src/environments/environment';
-import { LocalStorageService } from 'src/services/localStorage.service';
-import { LoginService } from 'src/services/login.service';
+import { LocalStorageService } from 'src/services/util/localStorage.service';
+import { AuthService } from 'src/services/auth.service';
+import { Toastr } from 'src/services/util/toastr.service';
 
 
 @Component({
@@ -17,9 +18,10 @@ export class LoginComponent implements OnInit {
 
   constructor(
     private builder: FormBuilder, 
-    private loginService: LoginService,
+    private loginService: AuthService,
     private router: Router,
-    private localStorageService: LocalStorageService
+    private localStorageService: LocalStorageService,
+    private toastr: Toastr
   ){ }
 
   ngOnInit(): void {
@@ -31,17 +33,15 @@ export class LoginComponent implements OnInit {
 
 
   login() {
-    console.log(this.loginForm.value);
     this.loginService.login(this.loginForm.value)
       .subscribe({
         next: (response) => {
-          console.log(response); 
-          console.log("You're successfully logged in!"); 
           this.localStorageService.set(environment.ACCESS_TOKEN, response.accessToken);
           this.router.navigate(['/profile']);
         },
-        error: (e) => {console.error(e); console.log('Oops! Something went wrong. Please try again!')},
-        complete: () => console.info('complete') 
+        error: (e) => {
+          this.toastr.error('Oops! Something went wrong. Please try again!');
+        }
     });
   }
 

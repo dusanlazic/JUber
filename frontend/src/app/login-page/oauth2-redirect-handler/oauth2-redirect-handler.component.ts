@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { environment } from 'src/environments/environment';
-import { LocalStorageService } from 'src/services/localStorage.service';
+import { LocalStorageService } from 'src/services/util/localStorage.service';
+import { Toastr } from 'src/services/util/toastr.service';
 
 @Component({
   selector: 'app-oauth2-redirect-handler',
@@ -12,7 +13,8 @@ export class Oauth2RedirectHandlerComponent implements OnInit {
 
   constructor(
     public router: Router,
-    private localStorageService: LocalStorageService 
+    private localStorageService: LocalStorageService ,
+    private toastr: Toastr
   ) {
 
     const token = this.getUrlParameter('token');
@@ -23,7 +25,8 @@ export class Oauth2RedirectHandlerComponent implements OnInit {
         console.log("Got token"); 
         this.router.navigate(['/profile']);
     } else {
-        console.log('Oops! Something went wrong. Please try again!')
+        console.log(error);
+        this.toastr.error('Oops! Something went wrong. Please try again!');
         this.router.navigate(['/']);
     }
 

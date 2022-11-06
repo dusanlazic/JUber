@@ -1,19 +1,19 @@
 package com.nwt.juber.controller;
 
+import com.nwt.juber.api.ResponseOk;
+import com.nwt.juber.dto.request.LocalRegistrationRequest;
 import com.nwt.juber.dto.request.LoginRequest;
 import com.nwt.juber.dto.response.OAuth2UserInfoResponse;
 import com.nwt.juber.dto.response.TokenResponse;
 import com.nwt.juber.model.User;
-import com.nwt.juber.repository.UserRepository;
 import com.nwt.juber.security.TokenProvider;
-import com.nwt.juber.security.oauth.CustomOAuth2UserService;
+import com.nwt.juber.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -26,16 +26,10 @@ public class AuthController {
     private AuthenticationManager authenticationManager;
 
     @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    @Autowired
-    private CustomOAuth2UserService customOAuth2UserService;
-
-    @Autowired
     private TokenProvider tokenProvider;
+
+    @Autowired
+    private AccountService accountService;
 
     @PostMapping("/login")
     public TokenResponse login(@Valid @RequestBody LoginRequest loginRequest) {
@@ -48,6 +42,12 @@ public class AuthController {
         User user = (User) authentication.getPrincipal();
 
         return new TokenResponse(tokenProvider.createToken(authentication));
+    }
+
+    @PostMapping("/register")
+    public ResponseOk register(@Valid @RequestBody LocalRegistrationRequest registrationRequest) {
+        accountService.registerUserLocal(registrationRequest);
+        return new ResponseOk("User registered successfully.");
     }
 
     @GetMapping("/me")

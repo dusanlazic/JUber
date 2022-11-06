@@ -3,12 +3,14 @@ package com.nwt.juber.model;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import javax.persistence.*;
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Map;
+import java.util.UUID;
 
 @Entity
 @Data
@@ -57,7 +59,8 @@ public class User implements OAuth2User, UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return emailVerified;
+        // TODO: Implement email verification
+        return true;
     }
 
     @Override
@@ -78,5 +81,13 @@ public class User implements OAuth2User, UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.singletonList(this.role.toAuthority());
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setName(String firstName, String lastName) {
+        this.name = firstName.concat(" ").concat(lastName);
     }
 }

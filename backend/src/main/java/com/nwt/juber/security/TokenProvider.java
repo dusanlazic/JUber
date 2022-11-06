@@ -2,8 +2,12 @@ package com.nwt.juber.security;
 
 import com.nwt.juber.config.AppProperties;
 import com.nwt.juber.exception.InvalidAccessTokenException;
+import com.nwt.juber.exception.InvalidRecoveryTokenException;
+import com.nwt.juber.exception.InvalidTokenTypeException;
+import com.nwt.juber.exception.InvalidVerificationTokenException;
 import com.nwt.juber.model.User;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -53,6 +57,19 @@ public class TokenProvider {
                 .compact();
     }
 
+    public String createRecoveryToken(User user) {
+        Instant now = Instant.now();
+        Instant expiresAt = now.plusSeconds(appProperties.getAuth().getRecoveryTokenExpirationMinutes() * 60);
+
+        return Jwts.builder()
+                .setSubject(user.getId().toString())
+                .setIssuedAt(Date.from(now))
+                .claim("type", TokenType.RECOVERY)
+                .setExpiration(Date.from(expiresAt))
+                .signWith(getKey())
+                .compact();
+    }
+
     public UUID getUserIdFromToken(String token) {
         JwtParser parser = Jwts.parserBuilder().setSigningKey(getKey()).build();
         Claims claims = parser.parseClaimsJws(token).getBody();
@@ -65,12 +82,18 @@ public class TokenProvider {
         return parser.parseClaimsJws(token).getBody();
     }
 
-    public Boolean validateToken(String token, TokenType tokenType) {
-        Claims claims = readClaims(token);
-        if (claims.get("type") == null || !claims.get("type").equals(tokenType.name()))
-            throw new InvalidAccessTokenException("Invalid token type.");
-
-        return true;
+    public void validateToken(String token, TokenType tokenType) {
+        try {
+            Claims claims = readClaims(token);
+            if (claims.get("type") == null || !claims.get("type").equals(tokenType.name()))
+                throw new InvalidTokenTypeException("Invalid token type.");
+        } catch (ExpiredJwtException e) {
+            switch (tokenType) {
+                case ACCESS -> throw new InvalidAccessTokenException("Access token has expired.");
+                case VERIFICATION -> throw new InvalidVerificationTokenException("Verification link has expired.");
+                case RECOVERY -> throw new InvalidRecoveryTokenException("Password reset link has expired.");
+            }
+        }
     }
 
     private Key getKey() {

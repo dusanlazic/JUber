@@ -3,9 +3,8 @@ package com.nwt.juber.security;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nwt.juber.api.ResponseError;
 import com.nwt.juber.exception.InvalidAccessTokenException;
-import io.jsonwebtoken.ExpiredJwtException;
+import com.nwt.juber.exception.InvalidTokenTypeException;
 import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.SignatureException;
 import io.jsonwebtoken.UnsupportedJwtException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -50,10 +49,10 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
             filterChain.doFilter(request, response);
-        } catch (SignatureException | MalformedJwtException | ExpiredJwtException | UnsupportedJwtException | IllegalArgumentException e) {
-            sendResponse(response, HttpServletResponse.SC_UNAUTHORIZED, e.getMessage());
-        } catch (InvalidAccessTokenException e) {
+        } catch (InvalidTokenTypeException e) {
             sendResponse(response, HttpServletResponse.SC_UNAUTHORIZED, "Invalid token type.");
+        } catch (InvalidAccessTokenException | MalformedJwtException | UnsupportedJwtException | IllegalArgumentException e) {
+            sendResponse(response, HttpServletResponse.SC_UNAUTHORIZED, e.getMessage());
         } catch (Exception e) {
             sendResponse(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "An error has occurred.");
         }

@@ -1,9 +1,7 @@
 package com.nwt.juber.controller;
 
 import com.nwt.juber.api.ResponseOk;
-import com.nwt.juber.dto.request.LocalRegistrationRequest;
-import com.nwt.juber.dto.request.LoginRequest;
-import com.nwt.juber.dto.request.OAuthRegistrationRequest;
+import com.nwt.juber.dto.request.*;
 import com.nwt.juber.dto.response.OAuth2UserInfoResponse;
 import com.nwt.juber.dto.response.TokenResponse;
 import com.nwt.juber.model.User;
@@ -63,6 +61,18 @@ public class AuthController {
     public ResponseOk verifyEmail(@PathVariable String token) {
         accountService.verifyEmail(token);
         return new ResponseOk("Email verified successfully.");
+    }
+
+    @PostMapping("/recovery")
+    public ResponseOk requestPasswordReset(@Valid @RequestBody PasswordResetLinkRequest resetLinkRequest) {
+        accountService.requestPasswordReset(resetLinkRequest);
+        return new ResponseOk("Password reset requested.");
+    }
+
+    @PatchMapping("/recovery")
+    public ResponseOk resetPassword(@Valid @RequestBody PasswordResetRequest passwordResetRequest) {
+        accountService.resetPassword(passwordResetRequest);
+        return new ResponseOk("Password successfully changed.");
     }
 
     @GetMapping("/me")

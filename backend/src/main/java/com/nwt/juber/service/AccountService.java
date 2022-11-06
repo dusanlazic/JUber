@@ -2,8 +2,9 @@ package com.nwt.juber.service;
 
 import com.nwt.juber.dto.request.LocalRegistrationRequest;
 import com.nwt.juber.dto.request.OAuthRegistrationRequest;
+import com.nwt.juber.dto.request.PasswordResetLinkRequest;
+import com.nwt.juber.dto.request.PasswordResetRequest;
 import com.nwt.juber.exception.EmailAlreadyInUseException;
-import com.nwt.juber.exception.InvalidVerificationTokenException;
 import com.nwt.juber.exception.PhoneNumberAlreadyInUseException;
 import com.nwt.juber.exception.UserNotFoundException;
 import com.nwt.juber.model.AuthProvider;
@@ -14,14 +15,12 @@ import com.nwt.juber.repository.PersonRepository;
 import com.nwt.juber.repository.UserRepository;
 import com.nwt.juber.security.TokenProvider;
 import com.nwt.juber.security.TokenType;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.JwtException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -76,25 +75,42 @@ public class AccountService {
     }
 
     public void verifyEmail(String token) {
-        if (!StringUtils.hasLength(token))
-            throw new InvalidVerificationTokenException("Token not provided.");
+        tokenProvider.validateToken(token, TokenType.VERIFICATION);
+        UUID userId = tokenProvider.getUserIdFromToken(token);
 
-        try {
-            tokenProvider.validateToken(token, TokenType.VERIFICATION);
-            UUID userId = tokenProvider.getUserIdFromToken(token);
+        User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+        user.setEmailVerified(true);
+        userRepository.save(user);
+    }
 
-            User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
-            user.setEmailVerified(true);
-            userRepository.save(user);
-        } catch (ExpiredJwtException e) {
-            throw new InvalidVerificationTokenException("Verification link has expired.");
-        } catch (JwtException e) {
-            throw new InvalidVerificationTokenException(e.getMessage());
-        } catch (UserNotFoundException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new InvalidVerificationTokenException("An error has occurred.");
+    public void requestPasswordReset(PasswordResetLinkRequest resetLinkRequest) {
+        Optional<User> possibleUser = userRepository.findByEmail(resetLinkRequest.getEmail());
+
+        if (possibleUser.isEmpty()) {
+            System.out.println("[!] User does not exist.");
+            return;
         }
+
+        User user = possibleUser.get();
+        if (!user.getProvider().equals(AuthProvider.local)) {
+            System.out.println("[!] User has no password.");
+        } else if (!user.getEmailVerified()) {
+            System.out.println("[!] User's email is not verified.");
+        } else {
+            // TODO: Send mail
+            System.out.println("[+] Password reset token (30 min):");
+            System.out.println(tokenProvider.createRecoveryToken(user));
+        }
+    }
+
+    public void resetPassword(PasswordResetRequest passwordResetRequest) {
+        String token = passwordResetRequest.getToken();
+        tokenProvider.validateToken(token, TokenType.RECOVERY);
+        UUID userId = tokenProvider.getUserIdFromToken(token);
+
+        User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+        user.setPassword(passwordEncoder.encode(passwordResetRequest.getPassword()));
+        userRepository.save(user);
     }
 
     private void checkEmailAvailability(String email) {

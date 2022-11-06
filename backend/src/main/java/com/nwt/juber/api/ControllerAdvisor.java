@@ -2,6 +2,7 @@ package com.nwt.juber.api;
 
 import com.nwt.juber.exception.EmailAlreadyInUseException;
 import com.nwt.juber.exception.PhoneNumberAlreadyInUseException;
+import com.nwt.juber.exception.UserNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -33,12 +34,18 @@ public class ControllerAdvisor {
     @ResponseStatus(HttpStatus.CONFLICT)
     @ExceptionHandler(EmailAlreadyInUseException.class)
     public ResponseError handleEmailAlreadyInUseException(EmailAlreadyInUseException e) {
-        return new ResponseError(HttpStatus.CONFLICT, e.getMessage());
+        return new ResponseError(HttpStatus.CONFLICT, "Email address is used by another user.");
     }
 
     @ResponseStatus(HttpStatus.CONFLICT)
     @ExceptionHandler(PhoneNumberAlreadyInUseException.class)
     public ResponseError handlePhoneNumberAlreadyInUseException(PhoneNumberAlreadyInUseException e) {
-        return new ResponseError(HttpStatus.CONFLICT, e.getMessage());
+        return new ResponseError(HttpStatus.CONFLICT, "Phone number is used by another user.");
+    }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseError handleUserNotFoundException(UserNotFoundException e) {
+        return new ResponseError(HttpStatus.NOT_FOUND, "User not found.");
     }
 }

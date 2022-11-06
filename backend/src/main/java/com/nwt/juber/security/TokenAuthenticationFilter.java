@@ -1,5 +1,6 @@
 package com.nwt.juber.security;
 
+import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -27,7 +28,7 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String token = readTokenFromRequest(request);
 
-        if (StringUtils.hasLength(token) && tokenProvider.validateToken(token)) {
+        if (StringUtils.hasLength(token) && tokenProvider.validateAccessToken(token)) {
             UUID userId = tokenProvider.getUserIdFromToken(token);
 
             UserDetails userDetails = customUserDetailsService.loadUserById(userId);

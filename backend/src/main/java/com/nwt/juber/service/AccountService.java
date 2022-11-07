@@ -1,17 +1,11 @@
 package com.nwt.juber.service;
 
-import com.nwt.juber.dto.request.LocalRegistrationRequest;
-import com.nwt.juber.dto.request.OAuthRegistrationRequest;
-import com.nwt.juber.dto.request.PasswordResetLinkRequest;
-import com.nwt.juber.dto.request.PasswordResetRequest;
+import com.nwt.juber.dto.request.*;
 import com.nwt.juber.exception.EmailAlreadyInUseException;
 import com.nwt.juber.exception.InvalidRecoveryTokenException;
 import com.nwt.juber.exception.PhoneNumberAlreadyInUseException;
 import com.nwt.juber.exception.UserNotFoundException;
-import com.nwt.juber.model.AuthProvider;
-import com.nwt.juber.model.Passenger;
-import com.nwt.juber.model.Role;
-import com.nwt.juber.model.User;
+import com.nwt.juber.model.*;
 import com.nwt.juber.repository.PersonRepository;
 import com.nwt.juber.repository.UserRepository;
 import com.nwt.juber.security.TokenProvider;
@@ -63,6 +57,9 @@ public class AccountService {
     }
 
     public void registerWithOAuth(OAuthRegistrationRequest registrationRequest, Authentication authentication) {
+        /*
+        Complete registration for the passengers that sign in with OAuth for the first time.
+         */
         checkPhoneNumberAvailability(registrationRequest.getPhoneNumber());
 
         Passenger passenger = (Passenger) authentication.getPrincipal();
@@ -73,6 +70,34 @@ public class AccountService {
         passenger.setCity(registrationRequest.getCity());
         passenger.setPhoneNumber(registrationRequest.getPhoneNumber());
         userRepository.save(passenger);
+    }
+
+    public void registerDriver(DriverRegistrationRequest registrationRequest) {
+        checkEmailAvailability(registrationRequest.getEmail());
+        checkPhoneNumberAvailability(registrationRequest.getPhoneNumber());
+
+        Vehicle vehicle = new Vehicle();
+        vehicle.setId(UUID.randomUUID());
+        vehicle.setBabyFriendly(registrationRequest.getBabyFriendly());
+        vehicle.setPetFriendly(registrationRequest.getPetFriendly());
+        vehicle.setCapacity(registrationRequest.getCapacity());
+
+        Driver driver = new Driver();
+        driver.setId(UUID.randomUUID());
+        driver.setRole(Role.ROLE_DRIVER);
+        driver.setProvider(AuthProvider.local);
+        driver.setEmail(registrationRequest.getEmail());
+        driver.setEmailVerified(true);
+        driver.setPassword(passwordEncoder.encode(registrationRequest.getPassword()));
+        driver.setName(registrationRequest.getFirstName(), registrationRequest.getLastName());
+        driver.setFirstName(registrationRequest.getFirstName());
+        driver.setLastName(registrationRequest.getLastName());
+        driver.setCity(registrationRequest.getCity());
+        driver.setPhoneNumber(registrationRequest.getPhoneNumber());
+        driver.setActive(false);
+        driver.setVehicle(vehicle);
+
+        userRepository.save(driver);
     }
 
     public void verifyEmail(String token) {

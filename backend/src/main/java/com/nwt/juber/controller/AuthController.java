@@ -51,7 +51,7 @@ public class AuthController {
     }
 
     @PatchMapping("/register/oauth")
-    @PreAuthorize("hasAnyRole('PASSENGER_NEW')")
+    @PreAuthorize("hasRole('PASSENGER_NEW')")
     public ResponseOk registerWithOAuth(@Valid @RequestBody OAuthRegistrationRequest registrationRequest, Authentication authentication) {
         accountService.registerWithOAuth(registrationRequest, authentication);
         return new ResponseOk("User registered successfully.");

@@ -43,7 +43,6 @@ import { ToastrModule } from 'ngx-toastr';
     ReactiveFormsModule,
     HttpClientModule,
     ToastrModule.forRoot(),
-
   ],
   exports: [
     LoginSocialComponent,

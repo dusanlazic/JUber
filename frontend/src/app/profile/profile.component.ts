@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { Observable, Subscription } from 'rxjs';
+import { AuthService } from 'src/services/auth/auth.service';
 import { UserService } from 'src/services/user.service';
 
 @Component({
@@ -8,14 +11,23 @@ import { UserService } from 'src/services/user.service';
 })
 export class ProfileComponent implements OnInit {
 
-  constructor(private userService: UserService) { }
+  loggedUser: any;
+
+  constructor(
+    private authService: AuthService,
+    private router: Router
+  ) { }
 
   ngOnInit(): void {
-    this.userService.getCurrentUser().subscribe({
-      next: (response) => {console.log(response);},
-      error: (e) => {console.error(e); console.log('Oops! Something went wrong. Please try again!')},
-      complete: () => console.info('complete') 
-    })
+      this.authService.getCurrentUser().subscribe({
+        next: (user) => {
+          this.loggedUser = user;
+        }
+      });
   }
 
+  logout(): void {
+      this.authService.logout();
+      this.router.navigate(['/']);
+  }
 }

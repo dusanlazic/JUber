@@ -6,7 +6,7 @@ import { ToastrService } from 'ngx-toastr';
 })
 
 export class Toastr {
-    config = {timeOut: 3000}
+    private config = {timeOut: 4000}
 
     constructor(private toastr: ToastrService) {}
 

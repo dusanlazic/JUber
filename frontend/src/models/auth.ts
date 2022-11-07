@@ -4,6 +4,6 @@ export type LoginRequest = {
     password: string;
 }
 
-export type LoginResponse = {
-    accessToken: any;
+export type TokenResponse = {
+    accessToken: string;
 }

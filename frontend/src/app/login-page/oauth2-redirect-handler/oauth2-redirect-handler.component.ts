@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { environment } from 'src/environments/environment';
-import { LocalStorageService } from 'src/services/util/localStorage.service';
+import { AuthService } from 'src/services/auth/auth.service';
+import { LocalStorageService } from 'src/services/util/local-storage.service';
 import { Toastr } from 'src/services/util/toastr.service';
 
 @Component({
@@ -13,7 +14,7 @@ export class Oauth2RedirectHandlerComponent implements OnInit {
 
   constructor(
     public router: Router,
-    private localStorageService: LocalStorageService ,
+    private authService: AuthService,
     private toastr: Toastr
   ) {
 
@@ -21,9 +22,7 @@ export class Oauth2RedirectHandlerComponent implements OnInit {
     const error = this.getUrlParameter('error');
 
     if(token) {
-        this.localStorageService.set(environment.ACCESS_TOKEN, token);
-        console.log("Got token"); 
-        this.router.navigate(['/profile']);
+        this.authService.handleSuccessfulLogin(token);
     } else {
         console.log(error);
         this.toastr.error('Oops! Something went wrong. Please try again!');
@@ -35,11 +34,9 @@ export class Oauth2RedirectHandlerComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  getUrlParameter(name: string) {
+  getUrlParameter(name: string) : string{
     name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
     var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
-    console.log("URL that should preferably contain token or error ");
-    console.log(this.router.url);
     const [_, search] = this.router.url.split('?');
     var results = regex.exec("?".concat(search));
     return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));

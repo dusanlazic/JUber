@@ -1,5 +1,8 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { Roles } from 'src/models/user';
+import { AuthGuardService as AuthGuard } from 'src/services/auth/auth-guard.service';
+import { RoleGuardService as RoleGuard} from 'src/services/auth/role-guard.service';
 import { LoginPageComponent } from './login-page/login-page.component';
 import { Oauth2RedirectHandlerComponent } from './login-page/oauth2-redirect-handler/oauth2-redirect-handler.component';
 import { ProfileComponent } from './profile/profile.component';
@@ -9,7 +12,9 @@ const routes: Routes = [
   { path: '', component: LoginPageComponent },
   { path: 'map', component: MapComponent },
   { path: 'oauth2/redirect', component: Oauth2RedirectHandlerComponent},
-  { path: 'profile', component: ProfileComponent },
+  { path: 'profile', component: ProfileComponent, canActivate: [AuthGuard, RoleGuard], 
+          data: { expectedRoles: [Roles.DRIVER, Roles.PASSENGER_NEW, Roles.PASSENGER ]}  },
+  { path: '**', redirectTo: '' }
 ];
 
 @NgModule({

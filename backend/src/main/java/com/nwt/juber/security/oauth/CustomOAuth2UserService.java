@@ -49,9 +49,12 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         User user;
         if (possibleUser.isPresent()) {
             user = possibleUser.get();
-            if (!user.getProvider().equals(getAuthProvider(oAuth2UserRequest)))
+            AuthProvider provider = user.getProvider();
+
+            if (provider.equals(AuthProvider.local))
+                user = assignProvider(user, oAuth2UserRequest, oAuth2UserInfo);
+            else if (!provider.equals(getAuthProvider(oAuth2UserRequest)))
                 throw new OAuth2AuthenticationProcessingException("User is signed up with " + user.getProvider() + " account.");
-            user = updateUser(user, oAuth2UserInfo);
         } else {
             user = registerUser(oAuth2UserRequest, oAuth2UserInfo);
         }
@@ -78,8 +81,12 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         return userRepository.save(passenger);
     }
 
-    private User updateUser(User user, OAuth2UserInfo oAuth2UserInfo) {
-        user.setName(oAuth2UserInfo.getName());
+    private User assignProvider(User user, OAuth2UserRequest oAuth2UserRequest, OAuth2UserInfo oAuth2UserInfo) {
+        /*
+        Allow local registered users to link their Google/Facebook accounts.
+         */
+        user.setProvider(getAuthProvider(oAuth2UserRequest));
+        user.setProviderId(oAuth2UserInfo.getId());
         user.setImageUrl(oAuth2UserInfo.getImageUrl());
         return userRepository.save(user);
     }

@@ -7,3 +7,7 @@ export type LoginRequest = {
 export type TokenResponse = {
     accessToken: string;
 }
+
+export type PasswordResetLinkRequest = {
+    email: string;
+}

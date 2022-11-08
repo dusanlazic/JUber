@@ -1,40 +1,20 @@
-import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Injectable } from '@angular/core';
-import { Observable } from "rxjs";
-import { environment } from "src/environments/environment";
-import { LocalStorageService } from "./localStorage.service";
+import { Observable, Subscription } from 'rxjs';
+import { environment } from 'src/environments/environment';
+import { PasswordResetLinkRequest } from 'src/models/auth';
+import { HttpRequestService } from './util/http-request.service';
 
 @Injectable({
     providedIn: 'root'
 })
-
-
 export class UserService {
 
-    constructor(
-        private httpClient: HttpClient, 
-        private localStorageService: LocalStorageService
-    ) {}
+    constructor(private httpRequestService: HttpRequestService) {}
 
-   
-    createHeaders(): HttpHeaders {
-        const headers = new HttpHeaders({
-            'Content-type': 'application/json'
-        });
-        const storedToken = this.localStorageService.get(environment.ACCESS_TOKEN);
-    
-        if(storedToken){
-            headers.append('Authorization', 'Bearer ' + storedToken);
-        }
-        return headers;
-    
-    }
-    
-    getCurrentUser() : Observable<any>{
-        const url = environment.API_BASE_URL + "/auth/me";
-        const headers = this.createHeaders();
-    
-        return this.httpClient.get(url, {headers}) as Observable<any>;
-    }
+    requestPasswordReset(resetRequest: PasswordResetLinkRequest): Observable<any> {
+        const url = environment.API_BASE_URL + "/auth/recovery";
+        const body = JSON.stringify(resetRequest);
 
+        return this.httpRequestService.post(url, body) as Observable<any>;
+    }
 }

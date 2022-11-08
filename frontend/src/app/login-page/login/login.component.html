@@ -37,7 +37,9 @@
             </label>
         </div>
         <div class="level-right has-text-weight-medium">
-            <a href=""> Forgot your password? </a>
+          <button (click)="requestPasswordReset()" class="hiden-button" type="button">
+              <a> Forgot your password? </a>
+          </button>
         </div>
     </div>
 
@@ -54,3 +56,5 @@
         </div>
       </div>
   </form>
+
+  <app-password-reset-modal #resetPasswordModal></app-password-reset-modal>

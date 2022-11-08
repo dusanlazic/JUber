@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
-import { Router } from '@angular/router';
-import { environment } from 'src/environments/environment';
-import { LocalStorageService } from 'src/services/localStorage.service';
-import { LoginService } from 'src/services/login.service';
+import { TokenResponse } from 'src/models/auth';
+import { AuthService } from 'src/services/auth/auth.service';
+import { Toastr } from 'src/services/util/toastr.service';
+import { PasswordResetModalComponent } from '../password-reset-modal/password-reset-modal.component';
 
 
 @Component({
@@ -13,13 +14,15 @@ import { LoginService } from 'src/services/login.service';
 })
 export class LoginComponent implements OnInit {
 
+  @ViewChild('resetPasswordModal')
+  resetPasswordModal!: PasswordResetModalComponent;
+
   loginForm!: FormGroup;
 
   constructor(
     private builder: FormBuilder, 
-    private loginService: LoginService,
-    private router: Router,
-    private localStorageService: LocalStorageService
+    private authService: AuthService,
+    private toastr: Toastr
   ){ }
 
   ngOnInit(): void {
@@ -30,19 +33,29 @@ export class LoginComponent implements OnInit {
   }
 
 
-  login() {
-    console.log(this.loginForm.value);
-    this.loginService.login(this.loginForm.value)
+  login() : void{
+    this.authService.login(this.loginForm.value)
       .subscribe({
-        next: (response) => {
-          console.log(response); 
-          console.log("You're successfully logged in!"); 
-          this.localStorageService.set(environment.ACCESS_TOKEN, response.accessToken);
-          this.router.navigate(['/profile']);
+        next: (response: TokenResponse) => {
+          this.authService.handleSuccessfulLogin(response.accessToken);
         },
-        error: (e) => {console.error(e); console.log('Oops! Something went wrong. Please try again!')},
-        complete: () => console.info('complete') 
+        error: (e: HttpErrorResponse) => {
+          // Invalid credentials
+          if(e.status === 401){
+            this.toastr.error('Make sure you have activated account.', 'Incorect username or password.');
+          }
+          // User not found 
+          else if (e.status === 404){
+            this.toastr.error('Make sure you have activated account.', 'Incorect username or password.');
+          }
+          console.log(e.error.message)         
+        }
     });
+  }
+
+
+  requestPasswordReset() : any {
+      this.resetPasswordModal.openModal();
   }
 
   

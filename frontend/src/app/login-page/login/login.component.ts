@@ -1,9 +1,10 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import { TokenResponse } from 'src/models/auth';
 import { AuthService } from 'src/services/auth/auth.service';
 import { Toastr } from 'src/services/util/toastr.service';
+import { PasswordResetModalComponent } from '../password-reset-modal/password-reset-modal.component';
 
 
 @Component({
@@ -12,6 +13,9 @@ import { Toastr } from 'src/services/util/toastr.service';
   styleUrls: ['./login.component.sass']
 })
 export class LoginComponent implements OnInit {
+
+  @ViewChild('resetPasswordModal')
+  resetPasswordModal!: PasswordResetModalComponent;
 
   loginForm!: FormGroup;
 
@@ -47,6 +51,11 @@ export class LoginComponent implements OnInit {
           console.log(e.error.message)         
         }
     });
+  }
+
+
+  requestPasswordReset() : any {
+      this.resetPasswordModal.openModal();
   }
 
   

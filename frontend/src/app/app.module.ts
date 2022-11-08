@@ -19,6 +19,7 @@ import { LoginPageComponent } from './login-page/login-page.component';
 import { Oauth2RedirectHandlerComponent } from './login-page/oauth2-redirect-handler/oauth2-redirect-handler.component';
 import { ProfileComponent } from './profile/profile.component';
 import { ToastrModule } from 'ngx-toastr';
+import { PasswordResetModalComponent } from './login-page/password-reset-modal/password-reset-modal.component';
 
 
 @NgModule({
@@ -30,6 +31,7 @@ import { ToastrModule } from 'ngx-toastr';
     LoginComponent,
     Oauth2RedirectHandlerComponent,
     ProfileComponent,
+    PasswordResetModalComponent,
   ],
   imports: [
     BrowserModule,

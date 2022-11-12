@@ -1,0 +1,93 @@
+@charset "utf-8"
+
+@import url('https://fonts.googleapis.com/css2?family=Titillium+Web:wght@400;600;700&display=swap')
+
+$family-secondary: "Titillium Web", serif
+$link: #48c78e
+
+@import "../node_modules/bulma/bulma.sass"
+@import "../node_modules/bulma-switch/dist/css/bulma-switch.min.css"
+@import "../node_modules/bulma-divider/dist/css/bulma-divider.min.css"
+
+
+.column.is-map
+    min-height: 100vh !important
+
+.column.has-background-image
+    min-height: 100vh !important
+    background-size: cover
+    background-position-x: center
+
+.column.has-background-image.is-image-1
+    background-image: url("../assets/pavel-inozemtsev-FsJMg-2b34Y-unsplash.jpg")
+
+.column.has-background-image.is-image-2
+    background-image: url("../assets/nikola-duza-2iYZYuKrSic-unsplash.jpg")
+
+.column.has-background-image.is-image-3
+    background-image: url("../assets/jo-2MaFtscmoZc-unsplash.jpg")
+
+.column.has-background-image.is-image-4
+    background-image: url("../assets/stefan-kostic-KJAD5ce9Al4-unsplash.jpg")
+
+.column.has-background-image.is-image-5
+    background-image: url("../assets/nikola-duza-mZraJpxpmWc-unsplash.jpg")
+
+
+.column.is-sidebar
+    display:flex
+    flex-direction:column
+    justify-content:space-between
+    box-shadow: 1px 1px 25px #0000002f
+    z-index: 1
+
+.has-custom-border
+    border-bottom: 1px $white-ter solid
+
+.circle-initial
+    border-radius: 50%
+    width: 48px
+    height: 48px
+    text-align: center
+    line-height: 48px
+    margin-left: 7px
+
+.is-custom-at-bottom
+    margin-top: auto
+    margin-bottom: 10px
+
+.navigation
+    position: absolute
+    top: 0px
+    left: 0px
+    width: 100%
+    display: flex
+    flex-direction: row-reverse
+    padding-top: 10px
+    padding-right: 15px
+    align-items: center
+
+.is-custom-login-box
+    min-width: 350px
+    .button
+        .iconify
+            position: absolute
+            left: 0.8em
+        padding-left: calc(1em + 1.25em) !important
+
+.custom-social-buttons
+    .button
+        .iconify
+            position: absolute
+            left: 0.8em
+
+.is-custom-section
+    padding-left: 24%
+    padding-right: 24%
+
+.is-custom-register-section
+    padding-left: 10%
+    padding-right: 10%
+
+.is-custom-large
+    font-size: 100px;

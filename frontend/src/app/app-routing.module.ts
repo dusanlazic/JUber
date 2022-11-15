@@ -6,14 +6,18 @@ import { RoleGuardService as RoleGuard} from 'src/services/auth/role-guard.servi
 import { LoginPageComponent } from './login-page/login-page.component';
 import { Oauth2RedirectHandlerComponent } from './login-page/oauth2-redirect-handler/oauth2-redirect-handler.component';
 import { ProfileComponent } from './profile/profile.component';
+import { RegisterLocalComponent } from './registration/register-local/register-local.component';
+import { RegisterOauthComponent } from './registration/register-oauth/register-oauth.component';
 import { MapComponent } from './shared/map/map.component';
 
 const routes: Routes = [
-  { path: '', component: LoginPageComponent },
+  { path: 'login', component: LoginPageComponent },
   { path: 'map', component: MapComponent },
   { path: 'oauth2/redirect', component: Oauth2RedirectHandlerComponent},
   { path: 'profile', component: ProfileComponent, canActivate: [AuthGuard, RoleGuard], 
           data: { expectedRoles: [Roles.DRIVER, Roles.PASSENGER_NEW, Roles.PASSENGER ]}  },
+  { path: 'registration', component: RegisterLocalComponent},
+  { path: 'registration/social', component: RegisterOauthComponent},
   { path: '**', redirectTo: '' }
 ];
 

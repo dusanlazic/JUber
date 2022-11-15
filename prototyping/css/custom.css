@@ -7910,12 +7910,26 @@ a.has-text-danger-dark:hover, a.has-text-danger-dark:focus {
   border-bottom: 1px whitesmoke solid; }
 
 .circle-initial {
+  position: relative;
   border-radius: 50%;
   width: 48px;
   height: 48px;
   text-align: center;
   line-height: 48px;
   margin-left: 7px; }
+  .circle-initial .icon {
+    color: black;
+    opacity: 0;
+    position: absolute;
+    right: 25%;
+    top: 25%; }
+  .circle-initial:hover {
+    background-color: white !important;
+    border: 1px solid #dbdbdb !important;
+    color: transparent !important;
+    cursor: pointer; }
+    .circle-initial:hover .icon {
+      opacity: 1 !important; }
 
 .is-custom-at-bottom {
   margin-top: auto;
@@ -7931,6 +7945,11 @@ a.has-text-danger-dark:hover, a.has-text-danger-dark:focus {
   padding-top: 10px;
   padding-right: 15px;
   align-items: center; }
+
+.custom-add-pals-dialog {
+  position: absolute;
+  left: calc(25% + 0.5em);
+  top: 50vh; }
 
 .is-custom-login-box {
   min-width: 350px; }

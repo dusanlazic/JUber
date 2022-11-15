@@ -1,6 +1,6 @@
 import { Component, Output, Input, EventEmitter } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { LocalRegistrationInputs, RegistrationStep2 } from 'src/models/auth';
+import { LocalRegistrationInputs, PersonalInfo } from 'src/models/auth';
 import { Toastr } from 'src/services/util/toastr.service';
 
 @Component({
@@ -50,7 +50,7 @@ export class RegisterStep2Component {
   get phoneNumber() { return this.registrationForm.get('phoneNumber'); }
 
   @Input()
-  set step2Inputs(inputs: RegistrationStep2) {
+  set step2Inputs(inputs: PersonalInfo) {
     if(inputs){
       this.registrationForm.patchValue(inputs);
     }     

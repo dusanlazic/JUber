@@ -4,7 +4,8 @@ import { Router } from '@angular/router';
 import { JwtHelperService } from "@auth0/angular-jwt";
 import { BehaviorSubject, Observable, ReplaySubject, Subject } from "rxjs";
 import { environment } from "src/environments/environment";
-import { LocalRegistrationRequest, LoginRequest, TokenResponse } from "src/models/auth";
+import { LocalRegistrationRequest, LoginRequest, PersonalInfo, TokenResponse } from "src/models/auth";
+import { ApiResponse } from 'src/models/responses';
 import { LoggedUser } from 'src/models/user';
 import { HttpRequestService } from "../util/http-request.service";
 import { LocalStorageService } from "../util/local-storage.service";
@@ -34,11 +35,18 @@ export class AuthService {
     }
 
 
-    signup(signupRequest: LocalRegistrationRequest) : Observable<any> {
+    signup(signupRequest: LocalRegistrationRequest) : Observable<ApiResponse> {
         const url = environment.API_BASE_URL + "/auth/register";
         const body = JSON.stringify(signupRequest);
 
-        return this.httpRequestService.post(url, body) as Observable<any>;
+        return this.httpRequestService.post(url, body) as Observable<ApiResponse>;
+    }
+
+    oauthSignup(signupRequest: PersonalInfo) : Observable<ApiResponse> {
+        const url = environment.API_BASE_URL + "/auth/register/oauth";
+        const body = JSON.stringify(signupRequest);
+
+        return this.httpRequestService.patch(url, body) as Observable<ApiResponse>;
     }
 
     isAuthenticated(): boolean {

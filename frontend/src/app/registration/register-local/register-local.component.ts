@@ -1,8 +1,8 @@
 import { HttpErrorResponse, HttpStatusCode } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { environment } from 'src/environments/environment';
-import { LocalRegistrationInputs, LocalRegistrationRequest, RegistrationStep1, RegistrationStep2 } from 'src/models/auth';
-import { ResponseError } from 'src/models/error';
+import { LocalRegistrationInputs, LocalRegistrationRequest, AccountInfo, PersonalInfo } from 'src/models/auth';
+import { ApiResponse } from 'src/models/responses';
 import { AuthService } from 'src/services/auth/auth.service';
 import { Toastr } from 'src/services/util/toastr.service';
 
@@ -20,8 +20,8 @@ enum RegistrationStep {
 export class RegisterLocalComponent  {
 
   activeStep = RegistrationStep.FIRST_STEP;
-  step1Inputs!: RegistrationStep1;
-  step2Inputs!: RegistrationStep2;
+  step1Inputs!: AccountInfo;
+  step2Inputs!: PersonalInfo;
 
   GOOGLE_AUTH_URL= environment.GOOGLE_AUTH_URL_REGISTER;
   FACEBOOK_AUTH_URL= environment.FACEBOOK_AUTH_URL_REGISTER;
@@ -63,7 +63,7 @@ export class RegisterLocalComponent  {
      })
   }
 
-  handleRegistrationError(error: ResponseError){
+  handleRegistrationError(error: ApiResponse){
     if(error.status === HttpStatusCode.Conflict){
       this.toastr.error(error.message);
     }

@@ -1,6 +1,6 @@
 import { Component, Output, Input, EventEmitter  } from '@angular/core';
 import {  FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { LocalRegistrationInputs, RegistrationStep1 } from 'src/models/auth';
+import { LocalRegistrationInputs, AccountInfo } from 'src/models/auth';
 import { CustomValidators } from 'src/services/util/custom-validators';
 import { Toastr } from 'src/services/util/toastr.service';
 
@@ -49,7 +49,7 @@ export class RegisterStep1Component {
   get passwordConfirmation() { return this.registrationForm.get('passwordConfirmation'); }
 
   @Input()
-  set step1Inputs(inputs: RegistrationStep1) {
+  set step1Inputs(inputs: AccountInfo) {
     if(inputs){
       this.registrationForm.patchValue(inputs);
     }    

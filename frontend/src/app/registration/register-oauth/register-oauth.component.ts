@@ -1,5 +1,8 @@
+import { HttpErrorResponse, HttpStatusCode } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
+import { ApiResponse } from 'src/models/responses';
 import { LoggedUser } from 'src/models/user';
 import { AuthService } from 'src/services/auth/auth.service';
 import { ParserUtil } from 'src/services/util/parser-util.service';
@@ -18,7 +21,8 @@ export class RegisterOauthComponent implements OnInit {
   constructor(
     private builder: FormBuilder,
     private toastr: Toastr,
-    private authService: AuthService
+    private authService: AuthService,
+    private router: Router
   ){ 
     this.createForm();
   }
@@ -35,23 +39,54 @@ export class RegisterOauthComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.patchLoggedUser();
-  }
-
-  patchLoggedUser() : void {
     this.authService.getCurrentUser().subscribe({
       next: (user: LoggedUser) => {
-        
-        const nameParts: string[] = ParserUtil.separateName(user.name);
-        this.loggedUserFirstName = ParserUtil.capitalizeWord(nameParts[0]);
-
-        this.registrationForm.patchValue({
-          firstName: nameParts[0],
-          lastName: nameParts[1],
-          email: user.email
-        });
+        this.patchLoggedUser(user);
+      },
+      error: (e: HttpErrorResponse) => {
+        console.log(e)
       }
     })
+  }
+
+  private patchLoggedUser(user: LoggedUser) : void {
+    const nameParts: string[] = ParserUtil.separateName(user.name);
+    this.loggedUserFirstName = ParserUtil.capitalizeWord(nameParts[0]);
+
+    this.registrationForm.patchValue({
+      firstName: nameParts[0],
+      lastName: nameParts[1],
+      email: user.email
+    })
+  }
+
+  logout() : void {
+    this.authService.logout()
+    this.router.navigate(['/login']);
+  }
+
+  register() : void {
+    this.authService.oauthSignup(this.registrationForm.value).subscribe({
+      next: () => {
+        this.router.navigate(['/index/authenticated']);
+      },
+      error: (e: HttpErrorResponse) => {
+        this.handleErrorRegistration(e);
+      }
+    })
+  }
+
+  private handleErrorRegistration(error: ApiResponse) : void {
+    if(error?.status === HttpStatusCode.Conflict){
+      this.toastr.error(error.message);
+    }
+    else if(error?.status === HttpStatusCode.Forbidden){
+      this.toastr.error("You might already have an account", "Registration failed!");
+    }
+    else{
+      console.log(error)
+      this.toastr.error("Please try again!", "Registration failed!");
+    }    
   }
 
   get firstName() { return this.registrationForm.get('firstName'); }

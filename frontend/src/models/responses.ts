@@ -1,7 +1,7 @@
 import { HttpStatusCode } from "@angular/common/http"
 
-export type ResponseError = {
+export interface ApiResponse {
     status: HttpStatusCode,
     message: string,
-    errors: any
+    errors?: any
 }

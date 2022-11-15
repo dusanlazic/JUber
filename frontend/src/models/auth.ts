@@ -13,13 +13,13 @@ export type PasswordResetLinkRequest = {
 }
 
 
-export type RegistrationStep1 = {
+export type AccountInfo = {
     email: string,
     password: string,
     passwordConfirmation: string
 }
 
-export type RegistrationStep2 = {
+export type PersonalInfo = {
     firstName: string,
     lastName: string,
     city: string,
@@ -27,8 +27,8 @@ export type RegistrationStep2 = {
 }
 
 export type LocalRegistrationInputs = {
-    step1Inputs?: RegistrationStep1,
-    step2Inputs?: RegistrationStep2
+    step1Inputs?: AccountInfo,
+    step2Inputs?: PersonalInfo
 }
 
 export type LocalRegistrationRequest = {

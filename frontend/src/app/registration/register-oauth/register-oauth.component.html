@@ -84,12 +84,12 @@
                   </div>
                 </div>
               </div>
+              <button (click)="register()" [disabled]="registrationForm.invalid" class="button is-success is-medium is-fullwidth mt-5">
+                Start using JUber
+              </button>
             </form>
-            <a href="/index/authenticated" class="button is-success is-medium is-fullwidth mt-5">
-              Start using JUber
-            </a>
             <p class="mt-5 has-text-centered has-text-grey">
-              Not <b>John</b>? <a href="/login" class="has-text-weight-bold">Go back</a>
+              Not <b>{{loggedUserFirstName}}</b>? <a (click)="logout()" [routerLink]="" class="has-text-weight-bold">Go back</a>
             </p>
           </section>
         </div>

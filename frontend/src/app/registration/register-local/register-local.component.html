@@ -7,14 +7,18 @@
           <p class="title is-size-1 is-family-secondary">Sign up</p>
           <p class="subtitle is-family-secondary">Create an account to start using JUber</p>            
 
-          <app-register-step1 *ngIf="activeStep===1" (nextStepEvent)="changeStep(2, $event)" ></app-register-step1>
-          <app-register-step2 *ngIf="activeStep===2" (nextStepEvent)="changeStep(3, $event)" (previousStepEvent)="changeStep(1, $event)"></app-register-step2>
+          <app-register-step1 *ngIf="activeStep===1" 
+            (nextStepEvent)="changeStep(2, $event)" [step1Inputs]="step1Inputs">
+          </app-register-step1>
+
+          <app-register-step2 *ngIf="activeStep===2" 
+            (nextStepEvent)="changeStep(3, $event)" (previousStepEvent)="changeStep(1, $event)" [step2Inputs]="step2Inputs">
+          </app-register-step2>
           
           <div class="is-divider mt-5" data-content="OR"></div>
           <div class="custom-social-buttons">
             <div class="columns">
               <div class="column p-1">
-                  <!--[routerLink]="" (click)="oauthRegistration()"-->
                 <a href="/registration/social" class="button is-fullwidth">
                   <span class="iconify is-size-5" data-icon="logos:google-icon"></span>
                   <div></div>
@@ -22,7 +26,6 @@
                 </a>
               </div>
               <div class="column p-1">
-                  <!--[routerLink]="" (click)="oauthRegistration()"-->
                 <a href="/registration/social"  class="button is-fullwidth">
                   <span class="iconify is-size-5" data-icon="logos:facebook"></span>
                   Sign up with Facebook

@@ -2,7 +2,7 @@
     <div class="field is-horizontal">
         <div class="field-body">
             <div class="field">
-                <label class="label">First name</label>
+                <label class="label">First name *</label>
                 <p class="control">
                     <input class="input"  formControlName ="firstName" required>
                 </p>
@@ -10,13 +10,13 @@
                     <div *ngIf="firstName?.errors?.['required']">
                         Please enter your first name
                     </div>
-                    <div *ngIf="firstName?.errors?.['pattern']">
+                    <div *ngIf="firstName?.errors?.['pattern'] || firstName?.errors?.['maxLength']">
                         Please enter valid name
                     </div>
                 </div>
             </div>
             <div class="field">
-                <label class="label">Last name</label>
+                <label class="label">Last name *</label>
                 <p class="control">
                     <input class="input" formControlName ="lastName" required>
                 </p>
@@ -24,7 +24,7 @@
                     <div *ngIf="lastName?.errors?.['required']">
                         Please enter your last name
                     </div>
-                    <div *ngIf="lastName?.errors?.['pattern']">
+                    <div *ngIf="lastName?.errors?.['pattern'] || lastName?.errors?.['maxLength']">
                         Please enter valid name
                     </div>
                 </div>
@@ -33,23 +33,39 @@
     </div>
 
     <div class="field">
-        <label class="label">City</label>
+        <label class="label">City *</label>
         <p class="control">
             <input class="input" formControlName ="city" required>
         </p>
+        <div *ngIf="city?.invalid && (city?.dirty || city?.touched)" class="help is-danger">
+            <div *ngIf="city?.errors?.['required']">
+                Please enter city
+            </div>
+            <div *ngIf="city?.errors?.['pattern']">
+                Please enter valid city
+            </div>
+        </div>
     </div>
 
     <div class="field">
-        <label class="label">Phone number</label>
+        <label class="label">Phone number *</label>
         <p class="control">
             <input class="input" placeholder="e.g. +381651337" formControlName ="phoneNumber" required>
         </p>
+        <div *ngIf="phoneNumber?.invalid && (phoneNumber?.dirty || phoneNumber?.touched)" class="help is-danger">
+            <div *ngIf="phoneNumber?.errors?.['required']">
+                Please enter your phone number
+            </div>
+            <div *ngIf="phoneNumber?.errors?.['pattern']">
+                Please enter valid phone number (e.g. +381651337)
+            </div>
+        </div>
     </div>
-    <!--/registration/step3"-->
-    <button (click)="nextStep()" class="button is-success is-medium is-fullwidth mt-5">
+    
+    <button (click)="nextStep()" [disabled]="registrationForm.invalid" class="button is-success is-medium is-fullwidth mt-5">
         Sign up
     </button>
-    <!--/registration/step2"-->
+    
     <p class="has-text-centered m-0 is-size-3">
         <a [routerLink]="" (click)="previousStep()"class="has-text-grey-lighter">•</a>
         <span class="has-text-success">•</span>

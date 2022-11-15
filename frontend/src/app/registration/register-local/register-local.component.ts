@@ -1,5 +1,6 @@
 import { HttpErrorResponse, HttpStatusCode } from '@angular/common/http';
 import { Component } from '@angular/core';
+import { environment } from 'src/environments/environment';
 import { LocalRegistrationInputs, LocalRegistrationRequest, RegistrationStep1, RegistrationStep2 } from 'src/models/auth';
 import { ResponseError } from 'src/models/error';
 import { AuthService } from 'src/services/auth/auth.service';
@@ -21,6 +22,9 @@ export class RegisterLocalComponent  {
   activeStep = RegistrationStep.FIRST_STEP;
   step1Inputs!: RegistrationStep1;
   step2Inputs!: RegistrationStep2;
+
+  GOOGLE_AUTH_URL= environment.GOOGLE_AUTH_URL_REGISTER;
+  FACEBOOK_AUTH_URL= environment.FACEBOOK_AUTH_URL_REGISTER;
 
   constructor(
     private authService: AuthService,

@@ -9,8 +9,8 @@ import { environment } from '../../../environments/environment';
 })
 export class LoginSocialComponent implements OnInit {
 
-  GOOGLE_AUTH_URL= environment.GOOGLE_AUTH_URL;
-  FACEBOOK_AUTH_URL= environment.FACEBOOK_AUTH_URL;
+  GOOGLE_AUTH_URL= environment.GOOGLE_AUTH_URL_LOGIN;
+  FACEBOOK_AUTH_URL= environment.FACEBOOK_AUTH_URL_LOGIN;
 
   constructor() { }
 

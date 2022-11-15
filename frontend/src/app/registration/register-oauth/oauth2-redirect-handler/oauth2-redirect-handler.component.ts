@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { environment } from 'src/environments/environment';
 import { AuthService } from 'src/services/auth/auth.service';
-import { LocalStorageService } from 'src/services/util/local-storage.service';
 import { Toastr } from 'src/services/util/toastr.service';
 
 @Component({
@@ -10,28 +8,25 @@ import { Toastr } from 'src/services/util/toastr.service';
   templateUrl: './oauth2-redirect-handler.component.html',
   styleUrls: ['./oauth2-redirect-handler.component.sass']
 })
-export class Oauth2RedirectHandlerComponent implements OnInit {
+export class Oauth2RegisterRedirectHandlerComponent implements OnInit {
 
   constructor(
     public router: Router,
     private authService: AuthService,
-    private toastr: Toastr
-  ) {
+    private toastr: Toastr,
+  ) {}
 
+  ngOnInit(): void {
     const token = this.getUrlParameter('token');
     const error = this.getUrlParameter('error');
 
     if(token) {
-        this.authService.handleSuccessfulAuth(token, '/index/authenticated');
+        this.authService.handleSuccessfulAuth(token, '/registration/social');
     } else {
         console.log(error);
         this.toastr.error('Oops! Something went wrong. Please try again!');
         this.router.navigate(['/']);
     }
-
-   }
-
-  ngOnInit(): void {
   }
 
   getUrlParameter(name: string) : string{
@@ -41,6 +36,4 @@ export class Oauth2RedirectHandlerComponent implements OnInit {
     var results = regex.exec("?".concat(search));
     return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
   };
-
-
 }

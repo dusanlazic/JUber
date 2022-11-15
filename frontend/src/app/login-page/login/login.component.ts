@@ -37,7 +37,7 @@ export class LoginComponent implements OnInit {
     this.authService.login(this.loginForm.value)
       .subscribe({
         next: (response: TokenResponse) => {
-          this.authService.handleSuccessfulLogin(response.accessToken);
+          this.authService.handleSuccessfulAuth(response.accessToken, '/index/authenticated');
         },
         error: (e: HttpErrorResponse) => {
           // Invalid credentials

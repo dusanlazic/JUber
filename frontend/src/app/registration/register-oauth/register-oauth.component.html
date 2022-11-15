@@ -3,46 +3,88 @@
       <div class="column is-half">
         <div class="container">
           <section class="section is-custom-section">
-            <p class="title is-size-1 is-family-secondary">Welcome, <b>John</b></p>
+            <p class="title is-size-1 is-family-secondary">Welcome, <b>{{loggedUserFirstName}}</b></p>
             <p class="subtitle is-family-secondary">Please fill some details about yourself</p>
-            <div class="field is-horizontal">
-              <div class="field-body">
-                <div class="field">
-                  <label class="label">First name</label>
-                  <p class="control">
-                    <input class="input" value="John">
-                  </p>
-                </div>
-                <div class="field">
-                  <label class="label">Last name</label>
-                  <p class="control">
-                    <input class="input" value="Smith">
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div class="field">
-              <label class="label">Email</label>
-              <p class="control">
-                <input class="input" type="email" value="john@gmail.com" readonly disabled>
-              </p>
-            </div>
-            <div class="field is-horizontal">
-              <div class="field-body">
-                <div class="field">
-                  <label class="label">City</label>
-                  <p class="control">
-                    <input class="input">
-                  </p>
-                </div>
-                <div class="field">
-                  <label class="label">Phone number</label>
-                  <p class="control">
-                    <input class="input" placeholder="e.g. +381651337">
-                  </p>
+            <form class="form-container" [formGroup]="registrationForm" novalidate autocomplete="false">
+              <div class="field is-horizontal">
+                <div class="field-body">
+                  <div class="field">
+                    <label class="label">First name *</label>
+                    <p class="control">
+                      <input class="input"  formControlName ="firstName" required value="Jhon">
+                    </p>
+                    <div *ngIf="firstName?.invalid && (firstName?.dirty || firstName?.touched)" class="help is-danger">
+                        <div *ngIf="firstName?.errors?.['required']">
+                            Please enter your first name
+                        </div>
+                        <div *ngIf="firstName?.errors?.['pattern'] || firstName?.errors?.['maxLength']">
+                            Please enter valid name
+                        </div>
+                    </div>
+                  </div>
+                  <div class="field">
+                    <label class="label">Last name</label>
+                    <p class="control">
+                      <input class="input" formControlName ="lastName" required value="Doe">
+                    </p>
+                    <div *ngIf="lastName?.invalid && (lastName?.dirty || lastName?.touched)" class="help is-danger">
+                        <div *ngIf="lastName?.errors?.['required']">
+                            Please enter your last name
+                        </div>
+                        <div *ngIf="lastName?.errors?.['pattern'] || lastName?.errors?.['maxLength']">
+                            Please enter valid name
+                        </div>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
+              <div class="field">
+                <label class="label">Email *</label>
+                <p class="control">
+                  <input class="input" type="email" value="john@gmail.com" readonly  formControlName ="email" required placeholder="e.g. john@gmail.com">
+                </p>
+                <div *ngIf="email?.invalid && (email?.dirty || email?.touched)" class="help is-danger">
+                    <div *ngIf="email?.errors?.['required']">
+                        Please enter a email address!
+                    </div>
+                    <div *ngIf="email?.errors?.['email']">
+                        Please enter a valid email address
+                    </div>
+                </div>
+              </div>
+              <div class="field is-horizontal">
+                <div class="field-body">
+                  <div class="field">
+                    <label class="label">City *</label>
+                    <p class="control">
+                      <input class="input" formControlName ="city" required>
+                    </p>
+                    <div *ngIf="city?.invalid && (city?.dirty || city?.touched)" class="help is-danger">
+                        <div *ngIf="city?.errors?.['required']">
+                            Please enter city
+                        </div>
+                        <div *ngIf="city?.errors?.['pattern']">
+                            Please enter valid city
+                        </div>
+                    </div>
+                  </div>
+                  <div class="field">
+                    <label class="label">Phone number *</label>
+                    <p class="control">
+                      <input class="input" placeholder="e.g. +381651337" formControlName ="phoneNumber" required>
+                    </p>
+                    <div *ngIf="phoneNumber?.invalid && (phoneNumber?.dirty || phoneNumber?.touched)" class="help is-danger">
+                        <div *ngIf="phoneNumber?.errors?.['required']">
+                            Please enter your phone number
+                        </div>
+                        <div *ngIf="phoneNumber?.errors?.['pattern']">
+                            Please enter valid phone number (e.g. +381651337)
+                        </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </form>
             <a href="/index/authenticated" class="button is-success is-medium is-fullwidth mt-5">
               Start using JUber
             </a>

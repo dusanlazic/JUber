@@ -49,14 +49,14 @@ export class AuthService {
         return false;
     }
 
-    handleSuccessfulLogin(token: string) : void {
+    handleSuccessfulAuth(token: string, redirectPath: string) : void {
         this.localStorage.setToken(token);
 
         this.getCurrentUser().subscribe({
             next: (user: LoggedUser) => {
                 this.localStorage.set('role', user.role);
                 this.loggedUser = user;
-                this.router.navigate(['/profile']);
+                this.router.navigate([redirectPath]);
             },
             error: (e: HttpErrorResponse) => {
                 console.log(e);

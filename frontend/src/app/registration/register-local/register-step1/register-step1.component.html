@@ -1,4 +1,4 @@
-<form class="form-container" [formGroup]="registrationForm" novalidate autocomplete="false">
+<form class="form-container" [formGroup]="registrationForm" autocomplete="false">
     <div class="field">
         <label class="label">Email * </label>
         <p class="control">
@@ -44,7 +44,7 @@
             </div>
         </div>
     </div>
-    <button (click)="nextStep()" [disabled]="registrationForm.invalid" class="button is-success is-medium is-fullwidth mt-5" type="button">
+    <button (click)="nextStep()" [disabled]="registrationForm.invalid" class="button is-success is-medium is-fullwidth mt-5" type="submit">
         Continue<span class="iconify is-size-5 ml-2" data-icon="fluent:arrow-right-12-filled"></span>
     </button>
     <p class="has-text-centered m-0 is-size-3">

@@ -1,50 +1,58 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, Output, Input, EventEmitter } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-
-type RegistrationStep2 = {
-  firstName: string,
-  lastName: string,
-  city: string,
-  phoneNumber: string,
-}
+import { LocalRegistrationInputs, RegistrationStep2 } from 'src/models/auth';
+import { Toastr } from 'src/services/util/toastr.service';
 
 @Component({
   selector: 'app-register-step2',
   templateUrl: './register-step2.component.html',
   styleUrls: ['./register-step2.component.sass']
 })
-export class RegisterStep2Component implements OnInit {
-  @Output() nextStepEvent = new EventEmitter<RegistrationStep2>();
-  @Output() previousStepEvent = new EventEmitter<void>();
+export class RegisterStep2Component {
+  @Output() nextStepEvent = new EventEmitter<LocalRegistrationInputs>();
+  @Output() previousStepEvent = new EventEmitter<LocalRegistrationInputs>();
   
   registrationForm!: FormGroup;
+  
+  constructor(
+    private builder: FormBuilder,
+    private toastr: Toastr
+  ) 
+  { 
+    this.createForm();
+  }
 
-  constructor(private builder: FormBuilder) { }
-
-  ngOnInit(): void {
+  private createForm(): void {
     this.registrationForm = this.builder.group({
-      firstName: new FormControl('', [Validators.required, Validators.pattern('[a-zA-Z ]*')]),
-      lastName: new FormControl('', [Validators.required, Validators.pattern('[a-zA-Z ]*')]),
+      firstName: new FormControl('', [Validators.required, Validators.pattern('[a-zA-Z ]*'), Validators.maxLength(40)]),
+      lastName: new FormControl('', [Validators.required, Validators.pattern('[a-zA-Z ]*'), Validators.maxLength(40)]),
       city: new FormControl('', [Validators.required, Validators.pattern('[a-zA-Z ]*')]),
-      phoneNumber: new FormControl('', [Validators.required, Validators.pattern('\\+[0-9]*')]) // custonm
+      phoneNumber: new FormControl('', [Validators.required, Validators.pattern('^\\+[1-9][0-9]{3,14}$')]) // custom
     });
   }
 
   previousStep() : void {
-    this.previousStepEvent.emit(this.registrationForm?.value);
+    this.previousStepEvent.emit({step2Inputs:  this.registrationForm.value});
   }
 
   nextStep() : void {
-    /*if(this.registrationForm.valid){
-      this.nextStepEvent.emit(this.registrationForm.value);
+    if(this.registrationForm.valid){
+      this.nextStepEvent.emit({step2Inputs:  this.registrationForm.value});
     }  
-    this.toastr.error("Please check your inputs again")  */
-    this.nextStepEvent.emit(this.registrationForm?.value);
+    else{
+      this.toastr.error("Please check your inputs again")
+    }
   }
 
-  
   get firstName() { return this.registrationForm.get('firstName'); }
   get lastName() { return this.registrationForm.get('lastName'); }
   get city() { return this.registrationForm.get('city'); }
   get phoneNumber() { return this.registrationForm.get('phoneNumber'); }
+
+  @Input()
+  set step2Inputs(inputs: RegistrationStep2) {
+    if(inputs){
+      this.registrationForm.patchValue(inputs);
+    }     
+  }
 }

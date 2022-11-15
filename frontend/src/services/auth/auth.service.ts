@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { JwtHelperService } from "@auth0/angular-jwt";
 import { BehaviorSubject, Observable, ReplaySubject, Subject } from "rxjs";
 import { environment } from "src/environments/environment";
-import { LoginRequest, TokenResponse } from "src/models/auth";
+import { LocalRegistrationRequest, LoginRequest, TokenResponse } from "src/models/auth";
 import { LoggedUser } from 'src/models/user';
 import { HttpRequestService } from "../util/http-request.service";
 import { LocalStorageService } from "../util/local-storage.service";
@@ -34,8 +34,8 @@ export class AuthService {
     }
 
 
-    signup(signupRequest: any) : Observable<any> {
-        const url = environment.API_BASE_URL + "/auth/signup";
+    signup(signupRequest: LocalRegistrationRequest) : Observable<any> {
+        const url = environment.API_BASE_URL + "/auth/register";
         const body = JSON.stringify(signupRequest);
 
         return this.httpRequestService.post(url, body) as Observable<any>;

@@ -10,8 +10,11 @@ $link: #48c78e
 @import "../node_modules/bulma-divider/dist/css/bulma-divider.min.css"
 
 
+.is-unscrollable
+    overflow: hidden
+
 .column.is-map
-    min-height: 100vh !important
+    height: 100vh !important
 
 .column.has-background-image
     min-height: 100vh !important
@@ -37,6 +40,9 @@ $link: #48c78e
 .column.is-sidebar
     display:flex
     flex-direction:column
+    max-width: 480px !important
+    max-height: 100vh
+    overflow-y: scroll
     justify-content:space-between
     box-shadow: 1px 1px 25px #0000002f
     z-index: 1
@@ -83,7 +89,7 @@ $link: #48c78e
 
 .custom-add-pals-dialog
     position: absolute;
-    left: calc(25% + 0.5em);
+    left: 480px;
     top: 50vh;
 
 .is-custom-login-box

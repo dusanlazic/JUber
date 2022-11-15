@@ -7879,8 +7879,11 @@ a.has-text-danger-dark:hover, a.has-text-danger-dark:focus {
   background-color: #fafafa;
   padding: 3rem 1.5rem 6rem; }
 
+.is-unscrollable {
+  overflow: hidden; }
+
 .column.is-map {
-  min-height: 100vh !important; }
+  height: 100vh !important; }
 
 .column.has-background-image {
   min-height: 100vh !important;
@@ -7903,6 +7906,9 @@ a.has-text-danger-dark:hover, a.has-text-danger-dark:focus {
   background-image: url("../assets/nikola-duza-mZraJpxpmWc-unsplash.jpg"); }
 
 .column.is-sidebar {
+  max-width: 480px !important;
+  max-height: 100vh;
+  overflow-y: scroll;
   box-shadow: 1px 1px 25px #0000002f;
   z-index: 1; }
 
@@ -7948,7 +7954,7 @@ a.has-text-danger-dark:hover, a.has-text-danger-dark:focus {
 
 .custom-add-pals-dialog {
   position: absolute;
-  left: calc(25% + 0.5em);
+  left: 480px;
   top: 50vh; }
 
 .is-custom-login-box {

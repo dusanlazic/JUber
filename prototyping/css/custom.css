@@ -7979,3 +7979,37 @@ a.has-text-danger-dark:hover, a.has-text-danger-dark:focus {
 
 .is-custom-large {
   font-size: 100px; }
+
+.button.is-custom-radio {
+  background-color: whitesmoke;
+  border: none;
+  white-space: unset;
+  min-height: 100px;
+  width: 100px;
+  flex: 0 0 auto;
+  margin-right: 5px;
+  margin-bottom: 13px;
+  position: relative; }
+  .button.is-custom-radio input[type="radio"] {
+    z-index: 100;
+    opacity: 0; }
+    .button.is-custom-radio input[type="radio"]:checked + label {
+      background-color: #48c78e;
+      border-radius: 4px; }
+  .button.is-custom-radio:hover {
+    background-color: #dbdbdb; }
+  .button.is-custom-radio label, .button.is-custom-radio input {
+    padding-top: 15px;
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0; }
+    .button.is-custom-radio label:hover, .button.is-custom-radio input:hover {
+      cursor: pointer; }
+
+.is-custom-car-type-picker {
+  display: flex;
+  flex-wrap: nowrap;
+  overflow-x: auto; }

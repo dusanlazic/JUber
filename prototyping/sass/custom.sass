@@ -116,3 +116,37 @@ $link: #48c78e
 
 .is-custom-large
     font-size: 100px;
+
+.button.is-custom-radio
+    input[type="radio"]
+        z-index: 100
+        opacity: 0
+        &:checked + label
+            background-color: $success
+            border-radius: 4px
+    background-color: $white-ter
+    &:hover
+        background-color: $grey-lighter
+    border: none
+    white-space: unset
+    min-height: 100px
+    width: 100px
+    flex: 0 0 auto
+    margin-right: 5px
+    margin-bottom: 13px
+    position: relative
+    label, input
+        padding-top: 15px
+        display: block
+        position: absolute
+        top: 0
+        left: 0
+        right: 0
+        bottom: 0
+        &:hover
+            cursor: pointer
+
+.is-custom-car-type-picker
+    display: flex
+    flex-wrap: nowrap
+    overflow-x: auto

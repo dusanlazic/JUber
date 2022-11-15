@@ -33,6 +33,7 @@
               "./node_modules/@angular/material/prebuilt-themes/deeppurple-amber.css",
               "./node_modules/leaflet/dist/leaflet.css",
               "node_modules/bulma/css/bulma.min.css",
+              "./node_modules/leaflet-routing-machine/dist/leaflet-routing-machine.css",
               "src/styles.sass"
             ],
             "scripts": []

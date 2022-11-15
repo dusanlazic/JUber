@@ -20,6 +20,13 @@ import { Oauth2RedirectHandlerComponent } from './login-page/oauth2-redirect-han
 import { ProfileComponent } from './profile/profile.component';
 import { ToastrModule } from 'ngx-toastr';
 import { PasswordResetModalComponent } from './login-page/password-reset-modal/password-reset-modal.component';
+import { HomeComponent } from './shared/homepage/home/home.component';
+import { PassengerSidebarComponent } from './passenger/passenger-sidebar/passenger-sidebar.component';
+import { PassengerMapComponent } from './passenger/passenger-map/passenger-map.component';
+import { PlacesComponent } from './passenger/passenger-sidebar/places/places.component';
+import { PalsComponent } from './passenger/passenger-sidebar/pals/pals.component';
+import { PlaceComponent } from './passenger/passenger-sidebar/places/place/place.component';
+import { EmptyPlaceComponent } from './passenger/passenger-sidebar/places/empty-place/empty-place.component';
 
 
 @NgModule({
@@ -32,6 +39,13 @@ import { PasswordResetModalComponent } from './login-page/password-reset-modal/p
     Oauth2RedirectHandlerComponent,
     ProfileComponent,
     PasswordResetModalComponent,
+    HomeComponent,
+    PassengerSidebarComponent,
+    PassengerMapComponent,
+    PlacesComponent,
+    PalsComponent,
+    PlaceComponent,
+    EmptyPlaceComponent,
   ],
   imports: [
     BrowserModule,

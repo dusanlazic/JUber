@@ -8013,3 +8013,11 @@ a.has-text-danger-dark:hover, a.has-text-danger-dark:focus {
   display: flex;
   flex-wrap: nowrap;
   overflow-x: auto; }
+
+input[type="number"] {
+  -moz-appearance: textfield; }
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0; }

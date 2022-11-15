@@ -90,7 +90,8 @@
             <div class="column">
               <div class="is-flex">
                 <figure class="image is-48x48">
-                  <img class="is-rounded" src="https://lh3.googleusercontent.com/a/ALm5wu3tpc3XnB9w8EMqNHAODc0uL23tqydVlUCLYqEF6Q=s96-c">
+                  <img class="is-rounded"
+                    src="https://lh3.googleusercontent.com/a/ALm5wu3tpc3XnB9w8EMqNHAODc0uL23tqydVlUCLYqEF6Q=s96-c">
                 </figure>
                 <div class="circle-initial" style="background-color: #791eae; color: white">
                   AC
@@ -131,7 +132,6 @@
             <input id="petFriendly" type="checkbox" name="petFriendly" class="switch is-success is-rounded">
             <label for="petFriendly">Pet friendly</label>
           </div>
-          
           <div class="control is-custom-car-type-picker mt-5">
             <div class="button is-custom-radio">
               <input type="radio" id="car-any" name="car-type" />
@@ -176,9 +176,36 @@
               </label>
             </div>
           </div>
+          <div class="mt-5">
+            <p class="has-text-grey mb-3">Need a ride for <b>later</b>? You can schedule it (up to 5h)</p>
+            <div class="columns is-vcentered">
+              <div class="column">
+                <div class="field is-horizontal">
+                  <div class="field-body">
+                    <div class="field">
+                      <p class="control">
+                        <input class="input" type="number" id="schedule-hours" placeholder="Hours" max="23" min="0">
+                      </p>
+                    </div>
+                    <div class="field">
+                      <p class="control">
+                        <input class="input" type="number" id="schedule-minutes" placeholder="Minutes" max="59" min="0">
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="column is-2">
+                <button class="button" onclick="clearScheduleFields()">
+                  <span class="icon">
+                    <span class="iconify is-size-4" data-icon="fluent:backspace-24-regular"></span>
+                  </span>
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
-
-        <div class="is-custom-at-bottom has-text-right">
+        <div class="is-custom-at-bottom has-text-right mt-6">
           <p class="has-text-grey">
             <span class="iconify-inline" data-icon="ic:baseline-attach-money"></span> Total cost
           </p>
@@ -189,7 +216,6 @@
             Continue to payment<span class="iconify is-size-4 ml-2" data-icon="fluent:arrow-right-12-filled"></span>
           </button>
         </div>
-        
         <div class="custom-add-pals-dialog">
           <div class="box">
             <div class="field">
@@ -235,16 +261,23 @@
 
   <div class="navigation">
     <figure class="image is-48x48">
-      <img class="is-rounded" src="https://lh3.googleusercontent.com/a/ALm5wu3tpc3XnB9w8EMqNHAODc0uL23tqydVlUCLYqEF6Q=s96-c">
+      <img class="is-rounded"
+        src="https://lh3.googleusercontent.com/a/ALm5wu3tpc3XnB9w8EMqNHAODc0uL23tqydVlUCLYqEF6Q=s96-c">
     </figure>
     <button class="button is-rounded mr-2">
       Profile<span class="iconify ml-2" data-icon="ic:baseline-person"></span>
-    <button class="button is-rounded mr-1">
-      Support<span class="iconify ml-2" data-icon="ic:baseline-contact-support"></span>
-    <button class="button is-rounded mr-1">
-      Logout<span class="iconify ml-2" data-icon="material-symbols:logout"></span>
-    </button>
+      <button class="button is-rounded mr-1">
+        Support<span class="iconify ml-2" data-icon="ic:baseline-contact-support"></span>
+        <button class="button is-rounded mr-1">
+          Logout<span class="iconify ml-2" data-icon="material-symbols:logout"></span>
+        </button>
   </div>
 </body>
+<script>
+  function clearScheduleFields() {
+    document.getElementById("schedule-minutes").value = "";
+    document.getElementById("schedule-hours").value = "";
+  }
+</script>
 
 </html>

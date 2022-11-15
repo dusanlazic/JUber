@@ -20,7 +20,11 @@ import { Oauth2RedirectHandlerComponent } from './login-page/oauth2-redirect-han
 import { ProfileComponent } from './profile/profile.component';
 import { ToastrModule } from 'ngx-toastr';
 import { PasswordResetModalComponent } from './login-page/password-reset-modal/password-reset-modal.component';
-
+import { RegisterOauthComponent } from './registration/register-oauth/register-oauth.component';
+import { RegisterLocalComponent } from './registration/register-local/register-local.component';
+import { RegisterStep1Component } from './registration/register-local/register-step1/register-step1.component';
+import { RegisterStep2Component } from './registration/register-local/register-step2/register-step2.component';
+import { RegisterSuccessComponent } from './registration/register-local/register-success/register-success.component';
 
 @NgModule({
   declarations: [
@@ -32,6 +36,11 @@ import { PasswordResetModalComponent } from './login-page/password-reset-modal/p
     Oauth2RedirectHandlerComponent,
     ProfileComponent,
     PasswordResetModalComponent,
+    RegisterOauthComponent,
+    RegisterLocalComponent,
+    RegisterStep1Component,
+    RegisterStep2Component,
+    RegisterSuccessComponent,
   ],
   imports: [
     BrowserModule,
@@ -49,6 +58,9 @@ import { PasswordResetModalComponent } from './login-page/password-reset-modal/p
   exports: [
     LoginSocialComponent,
     LoginComponent,
+    RegisterStep1Component,
+    RegisterStep2Component,
+    RegisterSuccessComponent,
   ],
   providers: [],
   bootstrap: [AppComponent]

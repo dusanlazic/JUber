@@ -1,0 +1,46 @@
+<section class="hero is-fullheight">
+  <div class="columns is-vcentered mt-0">
+    <div class="column is-half">
+      <div class="container">
+
+        <section class="section is-custom-section" *ngIf="activeStep!==3">
+          <p class="title is-size-1 is-family-secondary">Sign up</p>
+          <p class="subtitle is-family-secondary">Create an account to start using JUber</p>            
+
+          <app-register-step1 *ngIf="activeStep===1" (nextStepEvent)="changeStep(2, $event)" ></app-register-step1>
+          <app-register-step2 *ngIf="activeStep===2" (nextStepEvent)="changeStep(3, $event)" (previousStepEvent)="changeStep(1, $event)"></app-register-step2>
+          
+          <div class="is-divider mt-5" data-content="OR"></div>
+          <div class="custom-social-buttons">
+            <div class="columns">
+              <div class="column p-1">
+                  <!--[routerLink]="" (click)="oauthRegistration()"-->
+                <a href="/registration/social" class="button is-fullwidth">
+                  <span class="iconify is-size-5" data-icon="logos:google-icon"></span>
+                  <div></div>
+                  Sign up with Google
+                </a>
+              </div>
+              <div class="column p-1">
+                  <!--[routerLink]="" (click)="oauthRegistration()"-->
+                <a href="/registration/social"  class="button is-fullwidth">
+                  <span class="iconify is-size-5" data-icon="logos:facebook"></span>
+                  Sign up with Facebook
+                </a>
+              </div>
+            </div>
+          </div>
+          <p class="mt-5 has-text-centered has-text-grey">
+            Already a member? <a href="/login" class="has-text-weight-bold">Log in</a>
+          </p>
+        </section>
+
+        <app-register-success *ngIf="activeStep===3"></app-register-success>
+      </div>
+    </div>
+
+    <div class="column m-0 p-0 has-background-image is-image-2">
+
+    </div>
+  </div>
+</section>

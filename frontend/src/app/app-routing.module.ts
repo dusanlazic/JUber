@@ -5,6 +5,11 @@ import { AuthGuardService as AuthGuard } from 'src/services/auth/auth-guard.serv
 import { RoleGuardService as RoleGuard} from 'src/services/auth/role-guard.service';
 import { LoginPageComponent } from './login-page/login-page.component';
 import { Oauth2RedirectHandlerComponent } from './login-page/oauth2-redirect-handler/oauth2-redirect-handler.component';
+import { PasswordRecoveryPageComponent } from './password-recovery-page/password-recovery-page.component';
+import { PasswordResetFormComponent } from './password-recovery-page/password-reset-form/password-reset-form.component';
+import { PasswordResetRequestSuccessComponent } from './password-recovery-page/password-reset-request-success/password-reset-request-success.component';
+import { PasswordResetRequestComponent } from './password-recovery-page/password-reset-request/password-reset-request.component';
+import { PasswordResetSuccessComponent } from './password-recovery-page/password-reset-success/password-reset-success.component';
 import { ProfileComponent } from './profile/profile.component';
 import { RegisterLocalComponent } from './registration/register-local/register-local.component';
 import { Oauth2RegisterRedirectHandlerComponent } from './registration/register-oauth/oauth2-redirect-handler/oauth2-redirect-handler.component';
@@ -20,6 +25,14 @@ const routes: Routes = [
           data: { expectedRoles: [Roles.DRIVER, Roles.PASSENGER_NEW, Roles.PASSENGER ]}  },
   { path: 'registration', component: RegisterLocalComponent},
   { path: 'registration/social', component: RegisterOauthComponent},
+
+  { path: 'password-recovery', component: PasswordRecoveryPageComponent, children: [
+    { path: '', component: PasswordResetRequestComponent },
+    { path: 'request-success', component: PasswordResetRequestSuccessComponent },
+    { path: 'reset', component: PasswordResetFormComponent },
+    { path: 'reset-success', component: PasswordResetSuccessComponent }]
+  },
+
   { path: '**', redirectTo: '' }
 ];
 

@@ -12,6 +12,12 @@ export type PasswordResetLinkRequest = {
     email: string;
 }
 
+export type PasswordReset = {
+    password: string,
+    passwordConfirmation: string,
+    token: string
+}
+
 
 export type AccountInfo = {
     email: string,

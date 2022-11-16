@@ -6,7 +6,6 @@ import { TokenResponse } from 'src/models/auth';
 import { ApiResponse } from 'src/models/responses';
 import { AuthService } from 'src/services/auth/auth.service';
 import { Toastr } from 'src/services/util/toastr.service';
-import { PasswordResetModalComponent } from './password-reset-modal/password-reset-modal.component';
 
 @Component({
   selector: 'app-login-page',
@@ -19,9 +18,6 @@ export class LoginPageComponent implements OnInit {
   FACEBOOK_AUTH_URL= environment.FACEBOOK_AUTH_URL_LOGIN;
 
   loginForm!: FormGroup
-
-  @ViewChild('resetPasswordModal')
-  resetPasswordModal!: PasswordResetModalComponent;
 
   constructor(
     private builder: FormBuilder,
@@ -64,11 +60,6 @@ export class LoginPageComponent implements OnInit {
     }
     console.log(e.message)         
   }
-
-  requestPasswordReset() : void {
-      this.resetPasswordModal.openModal();
-  }
-
 
   get email() { return this.loginForm.get('email'); }
   get password() { return this.loginForm.get('password'); }

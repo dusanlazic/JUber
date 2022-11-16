@@ -3,6 +3,9 @@ package com.nwt.juber.api;
 import com.nwt.juber.exception.EmailAlreadyInUseException;
 import com.nwt.juber.exception.PhoneNumberAlreadyInUseException;
 import com.nwt.juber.exception.UserNotFoundException;
+import com.nwt.juber.exception.InvalidPasswordRequestException;
+import com.nwt.juber.exception.InvalidRecoveryTokenException;
+
 import io.jsonwebtoken.JwtException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -53,6 +56,18 @@ public class ControllerAdvisor {
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ExceptionHandler(JwtException.class)
     public ResponseError handleJwtExceptions(JwtException e) {
+        return new ResponseError(HttpStatus.UNAUTHORIZED, e.getMessage());
+    }
+    
+    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
+    @ExceptionHandler(InvalidPasswordRequestException.class)
+    public ResponseError handleInvalidPasswordRequestException(InvalidPasswordRequestException e) {
+        return new ResponseError(HttpStatus.UNPROCESSABLE_ENTITY, e.getMessage());
+    }
+    
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ExceptionHandler(InvalidRecoveryTokenException.class)
+    public ResponseError handleInvalidRecoveryTokenException(InvalidRecoveryTokenException e) {
         return new ResponseError(HttpStatus.UNAUTHORIZED, e.getMessage());
     }
 }

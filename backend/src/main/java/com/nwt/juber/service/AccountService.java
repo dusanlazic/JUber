@@ -2,6 +2,7 @@ package com.nwt.juber.service;
 
 import com.nwt.juber.dto.request.*;
 import com.nwt.juber.exception.EmailAlreadyInUseException;
+import com.nwt.juber.exception.InvalidPasswordRequestException;
 import com.nwt.juber.exception.InvalidRecoveryTokenException;
 import com.nwt.juber.exception.PhoneNumberAlreadyInUseException;
 import com.nwt.juber.exception.UserNotFoundException;
@@ -113,15 +114,14 @@ public class AccountService {
         Optional<User> possibleUser = userRepository.findByEmail(resetLinkRequest.getEmail());
 
         if (possibleUser.isEmpty()) {
-            System.out.println("[!] User does not exist.");
-            return;
+        	throw new UserNotFoundException("User does not exist.");
         }
 
         User user = possibleUser.get();
         if (!user.getProvider().equals(AuthProvider.local)) {
-            System.out.println("[!] User has no password.");
+        	throw new InvalidPasswordRequestException("User has no password.");
         } else if (!user.getEmailVerified()) {
-            System.out.println("[!] User's email is not verified.");
+        	throw new InvalidPasswordRequestException("User's email is not verified.");
         } else {
             // TODO: Send mail
             System.out.println("[+] Password reset token (30 min):");

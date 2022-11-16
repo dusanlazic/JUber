@@ -18,7 +18,7 @@
           </div>
 
           <div class="is-divider mt-6 mb-6" data-content="OR"></div>
-          <form class="form-container" [formGroup]="loginForm" autocomplete="false">
+          <form class="form-container" [formGroup]="loginForm" autocomplete="false" novalidate>
             <div class="field">
               <p class="control has-icons-left">
                 <input class="input" type="email" placeholder="Email" formControlName ="email" required>
@@ -26,14 +26,14 @@
                   <span class="iconify is-size-5" data-icon="ic:outline-email"></span>
                 </span>
               </p>
-              <div *ngIf="email?.invalid && (email?.dirty || email?.touched)" class="help is-danger">
+              <!-- <div *ngIf="email?.invalid && (email?.dirty || email?.touched)" class="help is-danger">
                 <div *ngIf="email?.errors?.['required']">
                     Please enter a email address!
                 </div>
                 <div *ngIf="email?.errors?.['email']">
                     Please enter a valid email address
                 </div>
-              </div>
+              </div> -->
             </div>
 
             <div class="field">
@@ -43,14 +43,14 @@
                   <span class="iconify is-size-5" data-icon="ic:outline-lock"></span>
                 </span>
               </p>
-              <div *ngIf="password?.invalid && (password?.dirty || password?.touched)" class="help is-danger">
+              <!-- <div *ngIf="password?.invalid && (password?.dirty || password?.touched)" class="help is-danger">
                   <div *ngIf="password?.errors?.['required']">
                       Please enter your password
                   </div>
-              </div>
+              </div> -->
             </div>
 
-            <a (click)="requestPasswordReset()" class="has-text-grey">Forgot your password?</a>
+            <a href="/password-recovery" class="has-text-grey" type="button">Forgot your password?</a>
             <button (click)="login()" [disabled]="loginForm.invalid" class="button is-success is-medium is-fullwidth mt-5" type="submit">
               Log in
             </button>
@@ -68,5 +68,3 @@
     </div>
   </div>
 </section>
-
-<app-password-reset-modal #resetPasswordModal></app-password-reset-modal>

@@ -23,7 +23,7 @@ export class Oauth2RedirectHandlerComponent implements OnInit {
     const error = ParserUtil.getUrlParameter('error', this.router.url);
 
     if(token) {
-        this.authService.handleSuccessfulAuth(token, '/index/authenticated');
+        this.authService.handleSuccessfulAuth(token, '/home');  // authenticated
     } else {
         console.log(error);
         this.toastr.error('Oops! Something went wrong. Please try again!');

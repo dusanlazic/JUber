@@ -3,8 +3,9 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ApiResponse } from 'src/models/responses';
-import { LoggedUser } from 'src/models/user';
+import { LoggedUser, Roles } from 'src/models/user';
 import { AuthService } from 'src/services/auth/auth.service';
+import { LocalStorageService } from 'src/services/util/local-storage.service';
 import { ParserUtil } from 'src/services/util/parser-util.service';
 import { Toastr } from 'src/services/util/toastr.service';
 
@@ -22,7 +23,8 @@ export class RegisterOauthComponent implements OnInit {
     private builder: FormBuilder,
     private toastr: Toastr,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private localStorage: LocalStorageService
   ){ 
     this.createForm();
   }
@@ -68,7 +70,8 @@ export class RegisterOauthComponent implements OnInit {
   register() : void {
     this.authService.oauthSignup(this.registrationForm.value).subscribe({
       next: () => {
-        this.router.navigate(['/index/authenticated']);
+        this.localStorage.set('role', Roles.PASSENGER);
+        this.router.navigate(['/home']);    // authenticated
       },
       error: (e: HttpErrorResponse) => {
         this.handleErrorRegistration(e);

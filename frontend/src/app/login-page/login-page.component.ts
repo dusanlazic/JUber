@@ -41,7 +41,7 @@ export class LoginPageComponent implements OnInit {
   login() : void{
     this.authService.login(this.loginForm.value).subscribe({
         next: (response: TokenResponse) => {
-          this.authService.handleSuccessfulAuth(response.accessToken, '/index/authenticated');
+          this.authService.handleSuccessfulAuth(response.accessToken, '/home'); // authenticated
         },
         error: (e: HttpErrorResponse) => {
           this.handleLoginError(e.error)
@@ -58,7 +58,10 @@ export class LoginPageComponent implements OnInit {
     else if (e.status === HttpStatusCode.NotFound){
       this.toastr.error('Make sure you have an activated account. ', e.message);
     }
-    console.log(e.message)         
+    else{
+      this.toastr.error('Oops something went wrong ', e.message);
+      console.log(e.message)
+    }
   }
 
   get email() { return this.loginForm.get('email'); }

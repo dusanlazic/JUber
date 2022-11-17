@@ -1,0 +1,28 @@
+<section class="hero is-fullheight">
+    <div class="columns is-vcentered mt-0">
+      <div class="column is-half">
+        <div class="container">
+
+          <section class="section is-custom-section" *ngIf="success === true">
+            <p class="title is-size-2 is-family-secondary">Email has been verified 🎉</p>
+            <p class="subtitle is-family-secondary">Your account is ready. Welcome to JUber!</p>
+            <a href="/login" class="button">
+              Log in<span class="iconify is-size-6 ml-2" data-icon="fluent:arrow-right-12-regular"></span>
+            </a>
+          </section>
+
+          <section class="section is-custom-section" *ngIf="success === false">
+            <p class="title is-size-2 is-family-secondary">Oops email verification failed 😳</p>
+            <p class="subtitle is-family-secondary">Make sure you have registered successfully</p>
+            <a href="/login" class="button">
+              Log in<span class="iconify is-size-6 ml-2" data-icon="fluent:arrow-right-12-regular"></span>
+            </a>
+          </section>
+
+        </div>
+      </div>
+      <div class="column m-0 p-0 has-background-image is-image-4">
+
+      </div>
+    </div>
+</section>

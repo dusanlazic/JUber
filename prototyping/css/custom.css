@@ -3,6 +3,8 @@
 /* Bulma Utilities */
 @import url(../node_modules/bulma-switch/dist/css/bulma-switch.min.css);
 @import url(../node_modules/bulma-divider/dist/css/bulma-divider.min.css);
+@import url(../node_modules/bulma-checkradio/dist/css/bulma-checkradio.min.css);
+@import url(../node_modules/@creativebulma/bulma-badge/dist/bulma-badge.min.css);
 .button, .input, .textarea, .select select, .file-cta,
 .file-name, .pagination-previous,
 .pagination-next,
@@ -7956,6 +7958,19 @@ a.has-text-danger-dark:hover, a.has-text-danger-dark:focus {
   position: absolute;
   left: 480px;
   top: 50vh; }
+
+.custom-edit-destination-dialog {
+  position: absolute;
+  left: 480px;
+  top: 10vh; }
+  .custom-edit-destination-dialog * > .field {
+    height: 50px; }
+
+.is-custom-destination-details {
+  color: #7a7a7a;
+  margin-left: 33px;
+  position: absolute;
+  top: 20px; }
 
 .is-custom-login-box {
   min-width: 350px; }

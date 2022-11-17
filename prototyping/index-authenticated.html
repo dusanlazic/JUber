@@ -83,6 +83,32 @@
             </div>
           </div>
           <button class="button is-outlined is-fullwidth">Add another</button>
+          <div class="notification mt-4">
+            <div class="columns">
+              <div class="column is-1 pl-2 pt-5">
+                <span class="iconify is-size-4" data-icon="fluent:warning-16-regular"></span>
+              </div>
+              <div class="column">
+                <p>Some routes may be a bit slower. Do you want us to pick you the <b>fastest</b> route?</p>
+                <button class="button mt-3">
+                  <span class="icon mr-1">
+                    <span class="iconify is-size-3" data-icon="fluent:top-speed-24-filled"></span>
+                  </span>
+                  Optimize routes
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="notification is-success is-light mt-4 is-hidden">
+            <div class="columns is-vcentered">
+              <div class="column is-1 pl-2">
+                <span class="iconify is-size-4" data-icon="fluent:checkmark-12-filled"></span>
+              </div>
+              <div class="column">
+                <p>Routes are optimized!
+              </div>
+            </div>
+          </div>
         </div>
         <div class="mt-5 pt-2">
           <p class="title is-size-3 has-text-grey is-family-secondary">Add your pals</p>
@@ -248,7 +274,78 @@
                 <button class="button is-success">
                   Add
                   <span class="icon ml-1">
-                    <span class="iconify is-size-5" data-icon="fluent:add-12-filled"></span>
+                    <span class="iconify is-size-5" data-icon="fluent:checkmark-12-filled"></span>
+                  </span>
+                </button>
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="custom-edit-destination-dialog">
+          <div class="box">
+            <div class="field mb-4">
+              <p class="control has-icons-left">
+                <input class="input" placeholder="Address">
+                <span class="icon is-left">
+                  <span class="iconify is-size-5" data-icon="fluent:location-12-filled"></span>
+                </span>
+              </p>
+            </div>
+            <div class="field">
+              <input class="is-checkradio is-success" id="destination-1" type="radio" name="destination-picker" checked="checked">
+              <label for="destination-1">
+                via Kej Žrtava Racije
+                <span class="badge is-success">Fastest</span>
+                <p class="is-custom-destination-details">
+                  <span>2 min</span>
+                  <span class="ml-1 mr-1">•</span>
+                  <span>3 km</span>
+                </p>
+              </label>
+            </div>
+            <div class="field">
+              <input class="is-checkradio is-success" id="destination-2" type="radio" name="destination-picker" checked="checked">
+              <label for="destination-2">
+                <span>via Dunavska</span>
+                <span class="badge is-success is-hidden">Fastest</span>
+                <p class="is-custom-destination-details">
+                  <span>3 min</span>
+                  <span class="ml-1 mr-1">•</span>
+                  <span>4 km</span>
+                </p>
+              </label>
+            </div>
+            <div class="field">
+              <input class="is-checkradio is-success" id="destination-3" type="radio" name="destination-picker" checked="checked">
+              <label for="destination-3">
+                via Bulevar Mihajla Pupina
+                <span class="badge is-success is-hidden">Fastest</span>
+                <p class="is-custom-destination-details">
+                  <span>3 min</span>
+                  <span class="ml-1 mr-1">•</span>
+                  <span>4.5 km</span>
+                </p>
+              </label>
+            </div>
+            <div class="field mt-4 is-grouped is-grouped-right is">
+              <p class="control">
+                <button class="button is-light">
+                  Cancel
+                </button>
+              </p>
+              <p class="control">
+                <button class="button is-light">
+                  Delete
+                  <span class="icon ml-1">
+                    <span class="iconify is-size-5" data-icon="fluent:delete-12-regular"></span>
+                  </span>
+                </button>
+              </p>
+              <p class="control">
+                <button class="button is-success">
+                  Save
+                  <span class="icon ml-1">
+                    <span class="iconify is-size-5" data-icon="fluent:checkmark-12-filled"></span>
                   </span>
                 </button>
               </p>
@@ -270,11 +367,13 @@
     </figure>
     <button class="button is-rounded mr-2">
       Profile<span class="iconify ml-2" data-icon="ic:baseline-person"></span>
-      <button class="button is-rounded mr-1">
-        Support<span class="iconify ml-2" data-icon="ic:baseline-contact-support"></span>
-        <button class="button is-rounded mr-1">
-          Logout<span class="iconify ml-2" data-icon="material-symbols:logout"></span>
-        </button>
+    </button>
+    <button class="button is-rounded mr-1">
+      Support<span class="iconify ml-2" data-icon="ic:baseline-contact-support"></span>
+    </button>
+    <button class="button is-rounded mr-1">
+      Logout<span class="iconify ml-2" data-icon="material-symbols:logout"></span>
+    </button>
   </div>
 </body>
 <script>

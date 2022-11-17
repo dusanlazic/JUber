@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { environment } from 'src/environments/environment';
 import { AuthService } from 'src/services/auth/auth.service';
 import { LocalStorageService } from 'src/services/util/local-storage.service';
+import { ParserUtil } from 'src/services/util/parser-util.service';
 import { Toastr } from 'src/services/util/toastr.service';
 
 @Component({
@@ -18,11 +19,11 @@ export class Oauth2RedirectHandlerComponent implements OnInit {
     private toastr: Toastr
   ) {
 
-    const token = this.getUrlParameter('token');
-    const error = this.getUrlParameter('error');
+    const token = ParserUtil.getUrlParameter('token', this.router.url);
+    const error = ParserUtil.getUrlParameter('error', this.router.url);
 
     if(token) {
-        this.authService.handleSuccessfulLogin(token);
+        this.authService.handleSuccessfulAuth(token, '/home');  // authenticated
     } else {
         console.log(error);
         this.toastr.error('Oops! Something went wrong. Please try again!');
@@ -34,13 +35,7 @@ export class Oauth2RedirectHandlerComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  getUrlParameter(name: string) : string{
-    name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
-    var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
-    const [_, search] = this.router.url.split('?');
-    var results = regex.exec("?".concat(search));
-    return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
-  };
+  
 
 
 }

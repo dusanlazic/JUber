@@ -1,0 +1,55 @@
+<form class="form-container" [formGroup]="registrationForm" autocomplete="false">
+    <div class="field">
+        <label class="label">Email * </label>
+        <p class="control">
+            <input class="input" type="email" placeholder="e.g. john@gmail.com" formControlName ="email" required id="email">
+        </p>
+
+        <div *ngIf="email?.invalid && (email?.dirty || email?.touched)" class="help is-danger">
+            <div *ngIf="email?.errors?.['required']">
+                Please enter a email address!
+            </div>
+            <div *ngIf="email?.errors?.['email']">
+                Please enter a valid email address
+            </div>
+        </div>
+    </div>
+
+    <div class="field">
+        <label class="label">Password * </label>
+        <p class="control">
+            <input class="input" type="password" formControlName ="password">
+        </p>
+        <div *ngIf="password?.invalid && (password?.dirty || password?.touched)" class="help is-danger">
+            <div *ngIf="password?.errors?.['required']">
+                Please enter your password
+            </div>
+            <div *ngIf="password?.errors?.['minlength']">
+                Password must be longer than 8 characters.
+            </div>
+        </div>
+        
+    </div>
+    <div class="field">
+        <label class="label">Confirm password * </label>
+        <p class="control">
+            <input class="input" type="password" formControlName ="passwordConfirmation">
+        </p>
+        <div *ngIf="passwordConfirmation?.dirty || passwordConfirmation?.touched"class="help is-danger">
+            <div *ngIf="passwordConfirmation?.errors?.['required']">
+                Please confirm your password
+            </div>
+            <div *ngIf="registrationForm.errors?.['mismatch'] && !passwordConfirmation?.errors?.['required']">
+                Passwords do not match
+            </div>
+        </div>
+    </div>
+    <button (click)="nextStep()" [disabled]="registrationForm.invalid" class="button is-success is-medium is-fullwidth mt-5" type="submit">
+        Continue<span class="iconify is-size-5 ml-2" data-icon="fluent:arrow-right-12-filled"></span>
+    </button>
+    <p class="has-text-centered m-0 is-size-3">
+        <span class="has-text-success">•</span>
+        <a [routerLink]="" (click)="nextStep()" class="has-text-grey-lighter">•</a>
+    </p>
+
+</form>

@@ -6,6 +6,7 @@ import { PasswordReset } from 'src/models/auth';
 import { ApiResponse } from 'src/models/responses';
 import { UserService } from 'src/services/user.service';
 import { CustomValidators } from 'src/services/util/custom-validators';
+import { ParserUtil } from 'src/services/util/parser-util.service';
 import { Toastr } from 'src/services/util/toastr.service';
 
 @Component({
@@ -17,6 +18,7 @@ export class PasswordResetFormComponent implements OnInit {
 
   resetPasswordForm!: FormGroup;
   private resetToken!: string;
+  isRedirectSuccess: boolean | undefined;
 
   constructor(
     private builder: FormBuilder,
@@ -43,9 +45,16 @@ export class PasswordResetFormComponent implements OnInit {
   }
 
   private getResetPasswordTokenFromUrl() : void {
-    this.resetToken = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI2ZDM0ZjJjNS0zMmYxLTQ3ZDktOWE4ZS1kNGRkNjEzYjljYzEiLCJpYXQiOjE2Njg2MzYxOTQsInR5cGUiOiJSRUNPVkVSWSIsImV4cCI6MTY2ODYzNzk5NH0.6h65NCgSgboCnqyUwz24VJcB9Of4IhmDeTIjXFRKnKago5KMSkkUDOz_kgir1_WpD2-LLH_3rAr7TTLdx7MRGg"
+    const token = ParserUtil.getUrlParameter('token', this.router.url);
+    if(token === null){
+      this.isRedirectSuccess = false;
+    }
+    else{
+      this.isRedirectSuccess = true;
+      this.resetToken = token;
+    }
+    
   }
-  
 
 
   resetPassword() : void {

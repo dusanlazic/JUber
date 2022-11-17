@@ -27,6 +27,7 @@ import { PasswordResetFormComponent } from './password-recovery-page/password-re
 import { PasswordRecoveryPageComponent } from './password-recovery-page/password-recovery-page.component';
 import { PasswordResetRequestSuccessComponent } from './password-recovery-page/password-reset-request-success/password-reset-request-success.component';
 import { PasswordResetSuccessComponent } from './password-recovery-page/password-reset-success/password-reset-success.component';
+import { EmailVerificationComponent } from './registration/email-verification/email-verification.component';
 
 @NgModule({
   declarations: [
@@ -43,12 +44,14 @@ import { PasswordResetSuccessComponent } from './password-recovery-page/password
     RegisterStep1Component,
     RegisterStep2Component,
     RegisterSuccessComponent,
+    EmailVerificationComponent,
 
     PasswordRecoveryPageComponent,
     PasswordResetRequestComponent,
     PasswordResetRequestSuccessComponent,
     PasswordResetFormComponent,
     PasswordResetSuccessComponent,
+
   ],
   imports: [
     BrowserModule,

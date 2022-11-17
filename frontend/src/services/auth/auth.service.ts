@@ -87,4 +87,11 @@ export class AuthService {
     logout() : void {
         this.localStorage.clearAll();
     }
+
+
+    verifyEmail(token: string) : Observable<any> {
+        const url = environment.API_BASE_URL + `/auth/register/verify/${token}`;
+        
+        return this.httpRequestService.post(url, null) as Observable<any>;
+    }
 }

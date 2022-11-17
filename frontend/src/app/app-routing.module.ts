@@ -11,6 +11,7 @@ import { PasswordResetRequestSuccessComponent } from './password-recovery-page/p
 import { PasswordResetRequestComponent } from './password-recovery-page/password-reset-request/password-reset-request.component';
 import { PasswordResetSuccessComponent } from './password-recovery-page/password-reset-success/password-reset-success.component';
 import { ProfileComponent } from './profile/profile.component';
+import { EmailVerificationComponent } from './registration/email-verification/email-verification.component';
 import { RegisterLocalComponent } from './registration/register-local/register-local.component';
 import { Oauth2RegisterRedirectHandlerComponent } from './registration/register-oauth/oauth2-redirect-handler/oauth2-redirect-handler.component';
 import { RegisterOauthComponent } from './registration/register-oauth/register-oauth.component';
@@ -25,11 +26,12 @@ const routes: Routes = [
           data: { expectedRoles: [Roles.DRIVER, Roles.PASSENGER_NEW, Roles.PASSENGER ]}  },
   { path: 'registration', component: RegisterLocalComponent},
   { path: 'registration/social', component: RegisterOauthComponent},
+  { path: 'registration/verification', component: EmailVerificationComponent}, // registration/verification?token=...
 
   { path: 'password-recovery', component: PasswordRecoveryPageComponent, children: [
     { path: '', component: PasswordResetRequestComponent },
     { path: 'request-success', component: PasswordResetRequestSuccessComponent },
-    { path: 'reset', component: PasswordResetFormComponent },
+    { path: 'reset', component: PasswordResetFormComponent }, // password-recovery/reset?token=...
     { path: 'reset-success', component: PasswordResetSuccessComponent }]
   },
 

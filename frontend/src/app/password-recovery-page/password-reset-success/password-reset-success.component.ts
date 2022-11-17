@@ -11,7 +11,7 @@ export class PasswordResetSuccessComponent implements OnInit {
   constructor(private toastr: Toastr) { }
 
   ngOnInit(): void {
-    this.toastr.success("Successfuly sent request for password reset.", "🎉")
+    this.toastr.success("Successfuly changed your password.", "🎉")
   }
 
 }

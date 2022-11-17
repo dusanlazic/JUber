@@ -5,6 +5,7 @@ import com.nwt.juber.exception.PhoneNumberAlreadyInUseException;
 import com.nwt.juber.exception.UserNotFoundException;
 import com.nwt.juber.exception.InvalidPasswordRequestException;
 import com.nwt.juber.exception.InvalidRecoveryTokenException;
+import com.nwt.juber.exception.InvalidVerificationTokenException;
 
 import io.jsonwebtoken.JwtException;
 import org.springframework.http.HttpStatus;
@@ -68,6 +69,12 @@ public class ControllerAdvisor {
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ExceptionHandler(InvalidRecoveryTokenException.class)
     public ResponseError handleInvalidRecoveryTokenException(InvalidRecoveryTokenException e) {
+        return new ResponseError(HttpStatus.UNAUTHORIZED, e.getMessage());
+    }
+    
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ExceptionHandler(InvalidVerificationTokenException.class)
+    public ResponseError handleInvalidVerificationTokenException(InvalidVerificationTokenException e) {
         return new ResponseError(HttpStatus.UNAUTHORIZED, e.getMessage());
     }
 }

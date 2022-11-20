@@ -29,6 +29,15 @@ import { PasswordResetRequestSuccessComponent } from './password-recovery-page/p
 import { PasswordResetSuccessComponent } from './password-recovery-page/password-reset-success/password-reset-success.component';
 import { EmailVerificationComponent } from './registration/email-verification/email-verification.component';
 
+import { HomeComponent } from './shared/homepage/home/home.component';
+import { PassengerSidebarComponent } from './passenger/passenger-sidebar/passenger-sidebar.component';
+import { PassengerMapComponent } from './passenger/passenger-map/passenger-map.component';
+import { PlacesComponent } from './passenger/passenger-sidebar/places/places.component';
+import { PalsComponent } from './passenger/passenger-sidebar/pals/pals.component';
+import { PlaceComponent } from './passenger/passenger-sidebar/places/place/place.component';
+import { EmptyPlaceComponent } from './passenger/passenger-sidebar/places/empty-place/empty-place.component';
+
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -38,7 +47,7 @@ import { EmailVerificationComponent } from './registration/email-verification/em
     Oauth2RedirectHandlerComponent,
     
     ProfileComponent,
-    
+
     RegisterOauthComponent,
     RegisterLocalComponent,
     RegisterStep1Component,
@@ -52,6 +61,13 @@ import { EmailVerificationComponent } from './registration/email-verification/em
     PasswordResetFormComponent,
     PasswordResetSuccessComponent,
 
+    HomeComponent,
+    PassengerSidebarComponent,
+    PassengerMapComponent,
+    PlacesComponent,
+    PalsComponent,
+    PlaceComponent,
+    EmptyPlaceComponent,
   ],
   imports: [
     BrowserModule,

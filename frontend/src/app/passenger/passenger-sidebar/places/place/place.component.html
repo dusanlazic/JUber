@@ -1,0 +1,24 @@
+<div class="columns is-vcentered">
+    <div class="column is-1 mr-3">
+      <span class="iconify is-size-3 has-text-grey" data-icon="ic:round-location-on"></span>
+    </div>
+    <div class="column has-custom-border">
+      <p *ngIf="index===0" class="has-text-grey">
+        Starting point <span class="iconify-inline" data-icon="ic:baseline-rocket-launch"></span>
+      </p>
+      <p *ngIf="index!==0 && place.option === 0" class="has-text-grey">
+        default route
+      </p>
+      <p *ngIf="index!==0 && place.option !== 0" class="has-text-grey">
+        via {{place.option}}
+      </p>
+      <p class="is-size-5 has-text-weight-bold has-text-black">{{place.name}}</p>
+    </div>
+    <div class="column is-2">
+      <button class="button">
+        <span class="icon">
+          <span class="iconify is-size-4" data-icon="ic:baseline-edit"></span>
+        </span>
+      </button>
+    </div>
+</div>

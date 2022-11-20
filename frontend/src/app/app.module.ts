@@ -27,6 +27,9 @@ import { PlacesComponent } from './passenger/passenger-sidebar/places/places.com
 import { PalsComponent } from './passenger/passenger-sidebar/pals/pals.component';
 import { PlaceComponent } from './passenger/passenger-sidebar/places/place/place.component';
 import { EmptyPlaceComponent } from './passenger/passenger-sidebar/places/empty-place/empty-place.component';
+import { EditPlaceComponent } from './passenger/passenger-sidebar/places/edit-place/edit-place.component';
+import { StoreModule } from '@ngrx/store';
+import { RideReducer } from './store/ride.reducer';
 
 
 @NgModule({
@@ -46,6 +49,7 @@ import { EmptyPlaceComponent } from './passenger/passenger-sidebar/places/empty-
     PalsComponent,
     PlaceComponent,
     EmptyPlaceComponent,
+    EditPlaceComponent,
   ],
   imports: [
     BrowserModule,
@@ -59,6 +63,7 @@ import { EmptyPlaceComponent } from './passenger/passenger-sidebar/places/empty-
     ReactiveFormsModule,
     HttpClientModule,
     ToastrModule.forRoot(),
+    StoreModule.forRoot({state: RideReducer}),
   ],
   exports: [
     LoginSocialComponent,

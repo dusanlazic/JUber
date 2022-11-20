@@ -6,16 +6,13 @@
       <p *ngIf="index===0" class="has-text-grey">
         Starting point <span class="iconify-inline" data-icon="ic:baseline-rocket-launch"></span>
       </p>
-      <p *ngIf="index!==0 && place.option === 0" class="has-text-grey">
-        default route
-      </p>
-      <p *ngIf="index!==0 && place.option !== 0" class="has-text-grey">
+      <p *ngIf="index!==0 && place" class="has-text-grey">
         via {{place.option}}
       </p>
-      <p class="is-size-5 has-text-weight-bold has-text-black">{{place.name}}</p>
+      <p class="is-size-5 has-text-weight-bold has-text-black">{{place?.name}}</p>
     </div>
     <div class="column is-2">
-      <button class="button">
+        <button class="button" (click)="editPlace()">
         <span class="icon">
           <span class="iconify is-size-4" data-icon="ic:baseline-edit"></span>
         </span>

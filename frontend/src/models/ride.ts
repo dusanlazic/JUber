@@ -1,32 +1,32 @@
 import { Point } from "./map"
+import { IRoute, IPlace, IPoint, IRide } from "src/app/store/ride"
 
-export class Place {
-    name: string
-    option: string
-    point: Point | undefined
-    editing: boolean
+
+export class Route implements IRoute {
+    constructor(public name: string = "",
+        public distance: number = -1,
+        public time: number = -1,
+        public selected: boolean = false,
+        public coordinates: IPoint[] = []) {
+
+    }
     
-    constructor(name: string, option: string, point: Point | undefined = undefined) {
-        this.name = name
-        this.option = option
-        this.point = point
-        this.editing = false
+}
+
+export class Place implements IPlace {
+    constructor(public name: string = "",
+                public option: string = "",
+                public point: Point | undefined = undefined,
+                public editing: boolean = false,
+                public routes: Array<Route> = []) {
     }
 }
 
 
-export class Ride {
-    passengers: Array<string>
-    places: Array<Place>
-    price: number
-    routes: Array<Array<Point>>
-    routeNames: Array<string>
+export class Ride implements IRide {
+    constructor(public passengers: Array<string> = [],
+        public places: Array<Place> = [],
+        public price: number = -1) {
 
-    constructor() {
-        this.passengers = new Array<string>()
-        this.places = new Array<Place>()
-        this.price = 0
-        this.routes = []
-        this.routeNames = []
-    }
+        }
 }

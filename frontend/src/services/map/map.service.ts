@@ -40,6 +40,22 @@ export class MapService {
     this._redraw.next(yes);
   }
 
+  //
+  private _editing = new BehaviorSubject<number>(-1);
+
+  editing$(): Observable<any> {
+    return this._editing.asObservable();
+  }
+
+  setEditing(yes: number): void {
+    this._editing.next(yes);
+  }
+
+  //
+
+  
+
+
 
 
 

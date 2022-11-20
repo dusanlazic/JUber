@@ -3,11 +3,12 @@
 
     <section class="hero is-fullheight">
     <div class="columns mt-0">
-        <div class="column is-3 is-sidebar pl-6 pr-5">
+        <div class="column is-3 is-sidebar pl-6 pr-5" style="z-index: 100000000;">
             <passenger-sidebar [ride]="ride" *ngIf="loggedUser && loggedUser.role == 'ROLE_PASSENGER'"></passenger-sidebar>
         </div>
+        
         <div class="column m-0 p-0 is-map">
-            <passenger-map [ride]="ride" *ngIf="loggedUser && loggedUser.role == 'ROLE_PASSENGER'" width="100%" height="100%"></passenger-map>
+            <passenger-map *ngIf="loggedUser && loggedUser.role == 'ROLE_PASSENGER'" width="100%" height="100%"></passenger-map>
         </div>
 
     </div>

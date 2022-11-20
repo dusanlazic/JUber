@@ -1,0 +1,50 @@
+<div class="custom-edit-destination-dialog">
+	<div class="box">
+	  <div class="field mb-4">
+		<p class="control has-icons-left">
+		  <input [(ngModel)]="name" class="input" placeholder="Address">
+		  <span class="icon is-left">
+			<span class="iconify is-size-5" data-icon="fluent:location-12-filled"></span>
+		  </span>
+		</p>
+	  </div>
+	  <div *ngIf="origName === name">
+		<div class="field" *ngFor="let route of routes; index as i">
+			<input class="is-checkradio is-success" id="destination-{{i}}" type="radio" name="destination-picker" [checked]="route.selected ? 'checked' : 'null'" (click)="routeSelected(route)">
+			<label for="destination-{{i}}">
+			  via {{route.name}}
+			  <span class="badge is-success" *ngIf="i === 0">Fastest</span>
+			  <p class="is-custom-destination-details">
+				<span>2 min</span>
+				<span class="ml-1 mr-1">•</span>
+				<span>3 km</span>
+			  </p>
+			</label>
+		</div>
+	  </div>
+	  
+	  <div class="field mt-4 is-grouped is-grouped-right is">
+		<p class="control">
+		  <button class="button is-light">
+			Cancel
+		  </button>
+		</p>
+		<p class="control">
+		  <button class="button is-light">
+			Delete
+			<span class="icon ml-1">
+			  <span class="iconify is-size-5" data-icon="fluent:delete-12-regular"></span>
+			</span>
+		  </button>
+		</p>
+		<p class="control">
+		  <button class="button is-success">
+			Save
+			<span class="icon ml-1">
+			  <span class="iconify is-size-5" data-icon="fluent:checkmark-12-filled"></span>
+			</span>
+		  </button>
+		</p>
+	  </div>
+	</div>
+  </div>

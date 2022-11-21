@@ -10,7 +10,7 @@
 	  </div>
 	  <div *ngIf="origName === name">
 		<div class="field" *ngFor="let route of routes; index as i">
-			<input class="is-checkradio is-success" id="destination-{{i}}" type="radio" name="destination-picker" [checked]="route.selected ? 'checked' : 'null'" (click)="routeSelected(route)">
+			<input class="is-checkradio is-success" id="destination-{{i}}" type="radio" name="destination-picker" [checked]="route.selected ? true : false" (click)="routeSelected(route)">
 			<label for="destination-{{i}}">
 			  via {{route.name}}
 			  <span class="badge is-success" *ngIf="i === 0">Fastest</span>
@@ -24,6 +24,13 @@
 	  </div>
 	  
 	  <div class="field mt-4 is-grouped is-grouped-right is">
+		<p class="control">
+			<button class="button is-right" (click)="preview()">
+				<span class="icon">
+					<span class="iconify is-size-4" data-icon="ic:round-remove-red-eye"></span>
+				</span>
+			</button>
+		</p>
 		<p class="control">
 		  <button class="button is-light">
 			Cancel

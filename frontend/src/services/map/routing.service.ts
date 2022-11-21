@@ -19,16 +19,7 @@ export class RoutingService {
 
   constructor(private httpClient: HttpClient) {
 
-   }
-
-
-  // getRoutes(locations: Point[]): Observable<Route[]> {
-  //   let locs = locations.reduce((a, b) => a + `${b.longitude},${b.latitude};`, '')
-  //   let url: string = `${this.ROUTING_URL}/${locs}` 
-  //   return this.httpClient.get(url).pipe(
-  //     map( (data: any) => data.map((datum: any) => new Route(datum.name, datum.totalDistance, datum.totalTime, false, datum.coordinates)) )
-  //   );
-  // }
+  }
 
   async getRoutes(locations: Point[]): Promise<Route[]> {
     let routes = [];
@@ -36,7 +27,7 @@ export class RoutingService {
       coordinates: locations.map(point => [point.longitude, point.latitude]),
       steps: true,
       alternatives: true,
-      overview: 'full',
+      overview: 'simplified',
       geometries: 'polyline',
       annotations: true
     })).routes;

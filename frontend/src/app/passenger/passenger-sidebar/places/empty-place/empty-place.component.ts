@@ -35,16 +35,7 @@ export class EmptyPlaceComponent implements OnInit {
 
 	async fillPlace() {
 		if(!this.changedName) return;
-		this.place.name = this.name;
-		let geoLoc = (await firstValueFrom(this.nominatimService.addressLookup(this.name)))[0]
-		this.place.point = new Point(geoLoc.lat, geoLoc.lon);
-		let lastPlace = (await firstValueFrom(this.store.select('state'))).ride.places.at(-1);
-		let routes: Route[] = [];
-		if (lastPlace !== undefined) {
-			routes = (await this.routingService.getRoutes([lastPlace.point!, this.place.point]))
-			this.place.option = routes[0].name
-		}
-		this.place.routes = routes;
+		this.place = await this.map.createPlaceByName(this.name);
 		this.changedName = false;
 	}
 

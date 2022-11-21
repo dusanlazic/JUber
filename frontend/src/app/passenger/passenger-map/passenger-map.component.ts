@@ -66,7 +66,6 @@ export class PassengerMapComponent implements AfterViewInit {
 			  private store: Store<{state: AppState}>) {
    }
 
-
 	ngAfterViewInit(): void {
 		this.initMap();
 		let ride = this.store.select('state');

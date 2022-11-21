@@ -1,5 +1,5 @@
 import { Action, createReducer, on } from "@ngrx/store";
-import { Place, Ride } from "src/models/ride";
+import { Place, Ride, Route } from "src/models/ride";
 import * as RideAction from "./ride.actions";
 import * as _ from 'lodash';
 
@@ -41,18 +41,28 @@ const reducer = createReducer(
 		}
 	 }),
 
-	 on(RideAction.PreviewRouteSelectedAction, (state, action) => {
-		console.log('PREVIEW SELECTED ACTION');
-		console.log(state, action);
-		
+	 on(RideAction.PreviewRouteSelectedAction, (state, action) => {		
 		if(state === undefined || state.previewPlace === null) return state;
-		let routes = _.cloneDeep(state.previewPlace.routes)
+		let routes: Route[] = _.cloneDeep(state.previewPlace.routes)
+
 		routes.forEach(route => { route.selected = route.name === action.route.name; })
-		console.log(routes);
+		let places: Place[] = _.cloneDeep(state.ride.places)
+		let editing = places.filter(place => place.editing).at(0)
+		if (editing) {
+			editing.option = action.route.name;
+			editing.routes = routes;
+			places = places.filter(place => !place.editing)
+			places.push(editing)
+		}
+
 		return {
-		 ...state,
+		 ride: {
+			...state.ride,
+			places: places
+		 },
 		 previewPlace: {
 			...state.previewPlace,
+			option: action.route.name,
 			routes: routes
 		 }
 		}
@@ -60,19 +70,19 @@ const reducer = createReducer(
 
 	 on(RideAction.AddPreviewToPlacesAction, (state, action) => {
 		if(!state.previewPlace) return state;
+		let place = _.cloneDeep(state.previewPlace);
+		place.editing = false;
 		return {
 		 ride: {
 			...state.ride,
-			places: [...state.ride.places, state.previewPlace]
+			places: [...state.ride.places, place]
 		 },
 		 previewPlace: null
 		}
 	 }),
 
 	 on(RideAction.MoveToPreviewAction, (state, action) => {
-		console.log("MOVE TO PREVIEW ACTION");
-		console.log(state, action);
-		let places = _.cloneDeep(state.ride.places)
+		let places: Place[] = _.cloneDeep(state.ride.places)
 		places.forEach(x => {
 			if(x.name === action.place.name) {
 				x.editing = true;
@@ -88,8 +98,49 @@ const reducer = createReducer(
 		}
 	 }),
 
+	 on(RideAction.UpdateEditedPlace, (state, action) => {
+		let places: Place[] = _.cloneDeep(state.ride.places)
+		let edited = places.filter(place => place.editing).at(0)
+		if (edited === undefined) return state;
+		let placeInd = places.findIndex(x => x.name === edited!.name)
+		let newPlace = _.cloneDeep(action.place)
+
+		let nextPlace = places.at(placeInd + 1);
+		if(nextPlace !== undefined) {
+
+		}
+
+		places[placeInd] = newPlace
+		return {
+		 ride: {
+			...state.ride,
+			places: places
+		 },
+		 previewPlace: places[placeInd]
+		}
+	 }),
+
+	 on(RideAction.UpdateRoutes, (state, action) => {
+		let places: Place[] = _.cloneDeep(state.ride.places)
+		let place = places.filter(x => x.name === action.place.name).at(0)
+		if (place === undefined) return state;
+		console.log('ALeeee ale ale aleeeeee');
+		
+		place.routes = _.cloneDeep(action.routes);
+		console.log(place);
+		
+		return {
+			ride: {
+				...state.ride,
+				places: places
+			},
+			previewPlace: state.previewPlace
+		}
+	 }),
+
  );
  
  export function RideReducer(state: AppState | undefined, action: Action) {
    return reducer(state, action);
  }
+

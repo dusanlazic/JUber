@@ -39,6 +39,9 @@ import { EmptyPlaceComponent } from './passenger/passenger-sidebar/places/empty-
 import { AddPalsDialogComponent } from './passenger/passenger-sidebar/pals/add-pals-dialog/add-pals-dialog.component';
 import { AdditionalComponent } from './passenger/passenger-sidebar/additional/additional.component';
 import { ScheduleComponent } from './passenger/passenger-sidebar/schedule/schedule.component';
+import { EditPlaceComponent } from './passenger/passenger-sidebar/places/edit-place/edit-place.component';
+import { StoreModule } from '@ngrx/store';
+import { RideReducer } from './store/ride.reducer';
 
 
 @NgModule({
@@ -74,6 +77,8 @@ import { ScheduleComponent } from './passenger/passenger-sidebar/schedule/schedu
     AddPalsDialogComponent,
     AdditionalComponent,
     ScheduleComponent,
+
+    EditPlaceComponent,
   ],
   imports: [
     BrowserModule,
@@ -87,6 +92,7 @@ import { ScheduleComponent } from './passenger/passenger-sidebar/schedule/schedu
     ReactiveFormsModule,
     HttpClientModule,
     ToastrModule.forRoot(),
+    StoreModule.forRoot({state: RideReducer}),
   ],
   exports: [
     RegisterStep1Component,

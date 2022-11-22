@@ -1,5 +1,5 @@
-<app-places [ride]="ride"></app-places>
-<app-pals [ride]="ride"></app-pals>
+<app-places></app-places>
+<app-pals></app-pals>
 <app-additional></app-additional>
 <app-schedule></app-schedule>
 
@@ -13,4 +13,8 @@
   <button class="button is-success is-medium is-rounded is-fullwidth">
     Continue to payment<span class="iconify is-size-3" data-icon="ic:baseline-chevron-right"></span>
   </button>
+</div>
+
+<div *ngIf="isEditing">
+  <app-edit-place></app-edit-place>
 </div>

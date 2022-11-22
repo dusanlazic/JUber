@@ -12,11 +12,13 @@ export const ADD_PREVIEW_TO_PLACES_ACTION: string = "ADD_PREVIEW_TO_PLACES_ACTIO
 export const MOVE_TO_PREVIEW: string = "MOVE_TO_PREVIEW"
 export const UPDATE_EDITED_PLACE: string = "UPDATE_EDITED_PLACE"
 export const UPDATE_ROUTES: string = "UPDATE_ROUTES"
+export const STOP_EDITING: string = "STOP_EDITING"
+export const DELETE_PLACE: string = "DELETE_PLACE"
 
 
 export const AddPlaceAction = createAction(
 	ADD_PLACE,
-	props<{payload: Place}>()
+	props<{place: Place}>()
 )
 
 export const SetPreviewAction = createAction(
@@ -26,6 +28,10 @@ export const SetPreviewAction = createAction(
 
 export const RemovePreviewAction = createAction(
 	REMOVE_PREVIEW,
+)
+
+export const StopEditingAction = createAction(
+	STOP_EDITING,
 )
 
 export const PreviewRouteSelectedAction = createAction(
@@ -53,6 +59,9 @@ export const UpdateRoutes = createAction(
 	props<{place: Place, routes: Route[]}>()
 )
 
-
+export const DeletePlaceAction = createAction(
+	DELETE_PLACE,
+	props<{place: Place}>()
+)
 
 

@@ -22,7 +22,7 @@ const reducer = createReducer(
 		...state,
 		ride: {
 			...state.ride,
-			places: [...state.ride.places, {...action.payload}]
+			places: [...state.ride.places, {...action.place}]
 		}
 	   }
 	}),
@@ -124,10 +124,10 @@ const reducer = createReducer(
 		let places: Place[] = _.cloneDeep(state.ride.places)
 		let place = places.filter(x => x.name === action.place.name).at(0)
 		if (place === undefined) return state;
-		console.log('ALeeee ale ale aleeeeee');
 		
 		place.routes = _.cloneDeep(action.routes);
-		console.log(place);
+		let selectedRoute = place.routes.filter(route => route.selected).at(0)
+		place.option = selectedRoute ? selectedRoute.name : '';
 		
 		return {
 			ride: {
@@ -135,6 +135,39 @@ const reducer = createReducer(
 				places: places
 			},
 			previewPlace: state.previewPlace
+		}
+	 }),
+
+	 on(RideAction.StopEditingAction, (state, action) => {
+		let places: Place[] = _.cloneDeep(state.ride.places)
+		let editing = places.filter(place => place.editing).at(0)
+		if(editing !== undefined) {
+			editing.editing = false;
+		}
+
+		return {
+			...state,
+			ride: {
+				...state.ride,
+				places: places
+		 }
+		}
+	 }),
+
+
+	 on(RideAction.DeletePlaceAction, (state, action) => {
+		let places: Place[] = _.cloneDeep(state.ride.places)
+		let toRemove = places.filter(place => action.place.name === place.name).at(0)
+		if(toRemove === undefined) {
+			return state;
+		}
+		places = places.filter(place => toRemove!.name !== place.name)
+		return {
+			...state,
+			ride: {
+				...state.ride,
+				places: places
+		 }
 		}
 	 }),
 

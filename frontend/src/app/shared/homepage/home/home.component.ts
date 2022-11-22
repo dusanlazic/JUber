@@ -6,6 +6,8 @@ import { UserService } from 'src/services/user.service';
 import { PassengerMapComponent } from 'src/app/passenger/passenger-map/passenger-map.component';
 import { PassengerSidebarComponent } from 'src/app/passenger/passenger-sidebar/passenger-sidebar.component';
 import { Place, Ride } from 'src/models/ride';
+import { Store } from '@ngrx/store';
+import { AppState } from 'src/app/store/ride.reducer';
 
 @Component({
   selector: 'app-home',
@@ -15,14 +17,17 @@ import { Place, Ride } from 'src/models/ride';
 export class HomeComponent implements AfterViewInit {
 
   loggedUser: any;
-  ride: Ride;
+  ride: Ride | undefined;
   
 
   constructor(
     private authService: AuthService,
     private router: Router,
+    private store: Store<{state: AppState}>
   ) { 
-    this.ride = new Ride()
+    this.store.select('state').subscribe(state => {
+      this.ride = state.ride
+    })
     // this.ride.places = [ new Place("Dr Ivana Ribara 13, Novi Sad", "via Blaba")]
     // this.ride.places.push(new Place("Narodnog fronta 57, Novi Sad", "via Narodnog Fronta"))
   }

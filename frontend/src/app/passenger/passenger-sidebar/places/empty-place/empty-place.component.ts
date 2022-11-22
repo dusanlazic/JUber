@@ -3,7 +3,7 @@ import { createAction, Store } from '@ngrx/store';
 import { last } from 'lodash';
 import { lastValueFrom } from 'rxjs';
 import { firstValueFrom } from 'rxjs/internal/firstValueFrom';
-import { AddPlaceAction, AddPreviewToPlacesAction, RemovePreviewAction, SetPreviewAction } from 'src/app/store/ride.actions';
+import { AddPlaceAction, AddPreviewToPlacesAction, RemovePreviewAction, SetPreviewAction, StopEditingAction } from 'src/app/store/ride.actions';
 import { AppState } from 'src/app/store/ride.reducer';
 import { Point } from 'src/models/map';
 import { Place, Route } from 'src/models/ride';
@@ -21,6 +21,7 @@ export class EmptyPlaceComponent implements OnInit {
   	name: string = '';
 	place: Place = new Place();
 	changedName: boolean = false
+	state: AppState | undefined
   
   	@Output('updateEvent')
  	change: EventEmitter<any> = new EventEmitter<any>();
@@ -31,6 +32,9 @@ export class EmptyPlaceComponent implements OnInit {
 				private store: Store<{state: AppState}>) { }
 
   	ngOnInit(): void {
+		this.store.select('state').subscribe(state => {
+			this.state = state;
+		})
   	}
 
 	async fillPlace() {
@@ -42,8 +46,13 @@ export class EmptyPlaceComponent implements OnInit {
 	confirm() {
 		this.fillPlace().then(res => {
 			// set in store
-			this.store.dispatch(AddPreviewToPlacesAction())
-			this.store.dispatch(RemovePreviewAction())
+			if(this.state?.previewPlace) {
+				this.store.dispatch(AddPreviewToPlacesAction())
+				this.store.dispatch(RemovePreviewAction())
+			} else {
+				this.store.dispatch(AddPlaceAction({place: this.place}))
+			}
+			this.store.dispatch(StopEditingAction())
 			
 		}).catch(err => {
 			console.log(err);
@@ -52,7 +61,7 @@ export class EmptyPlaceComponent implements OnInit {
   	}
 
 	cancel() {
-			// delete from store
+		// delete from store
 		this.store.dispatch(RemovePreviewAction())
 		this.change.emit({confirmed: false, name: this.name})
 	}

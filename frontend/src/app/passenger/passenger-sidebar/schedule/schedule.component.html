@@ -1,0 +1,28 @@
+<div class="mt-5">
+    <p class="has-text-grey mb-3">Need a ride for <b>later</b>? You can schedule it (up to 5h)</p>
+    <div class="columns is-vcentered">
+      <div class="column">
+        <div class="field is-horizontal">
+          <div class="field-body">
+            <div class="field">
+              <p class="control">
+                <input class="input" type="number" id="schedule-hours" placeholder="Hours" max="23" min="0">
+              </p>
+            </div>
+            <div class="field">
+              <p class="control">
+                <input class="input" type="number" id="schedule-minutes" placeholder="Minutes" max="59" min="0">
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="column is-2">
+        <button class="button" onclick="clearScheduleFields()">
+          <span class="icon">
+            <span class="iconify is-size-4" data-icon="fluent:backspace-24-regular"></span>
+          </span>
+        </button>
+      </div>
+    </div>
+</div>

@@ -24,6 +24,9 @@ public class Vehicle {
     private Boolean petFriendly;
 
     private Integer capacity;
+    
+    @Enumerated(EnumType.STRING)
+    private VehicleType vehicleType;
 
     @OneToOne(mappedBy = "vehicle", fetch = FetchType.LAZY)
     private Driver driver;

@@ -1,9 +1,24 @@
-export type LoggedUser = {
+export interface LoggedUser {
     id: string;
     name: string;
     email: string;
     imageUrl: string;
     role: string;
+}
+
+export interface Pal {
+    firstName: string;
+    lastName: string;
+    email: string;
+    imageUrl?: string;
+}
+
+export interface PalInput {
+    email: string;
+    name: string;
+    firstName: string;
+    lastName: string;
+    imageUrl?: string;
 }
 
 

@@ -36,6 +36,9 @@ import { PlacesComponent } from './passenger/passenger-sidebar/places/places.com
 import { PalsComponent } from './passenger/passenger-sidebar/pals/pals.component';
 import { PlaceComponent } from './passenger/passenger-sidebar/places/place/place.component';
 import { EmptyPlaceComponent } from './passenger/passenger-sidebar/places/empty-place/empty-place.component';
+import { AddPalsDialogComponent } from './passenger/passenger-sidebar/pals/add-pals-dialog/add-pals-dialog.component';
+import { AdditionalComponent } from './passenger/passenger-sidebar/additional/additional.component';
+import { ScheduleComponent } from './passenger/passenger-sidebar/schedule/schedule.component';
 
 
 @NgModule({
@@ -68,6 +71,9 @@ import { EmptyPlaceComponent } from './passenger/passenger-sidebar/places/empty-
     PalsComponent,
     PlaceComponent,
     EmptyPlaceComponent,
+    AddPalsDialogComponent,
+    AdditionalComponent,
+    ScheduleComponent,
   ],
   imports: [
     BrowserModule,

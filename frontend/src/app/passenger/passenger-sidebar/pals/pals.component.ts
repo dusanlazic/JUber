@@ -19,13 +19,10 @@ interface ColoredPal extends Pal {
 })
 export class PalsComponent implements OnInit {
 
-  @Input() ride: Ride;
-
   addedPals: ColoredPal[];
   isAddPalOpen: boolean = false;
 
   constructor() { 
-    this.ride = new Ride();
     this.addedPals = new Array<ColoredPal>()
   }
 
@@ -42,14 +39,14 @@ export class PalsComponent implements OnInit {
       }
       
       this.addedPals.push(addedPal);
-      this.ride.passengers.push(event.newPal as Pal);
+      // this.ride.passengers.push(event.newPal as Pal);
     }
     this.toggleModal();
   }
 
   removePal(index: number) : void {
     this.addedPals.splice(index, 1)
-    this.ride.passengers.splice(index, 1)
+    // this.ride.passengers.splice(index, 1)
   }
 
   toggleModal() : void{

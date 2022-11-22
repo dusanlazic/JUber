@@ -1,4 +1,6 @@
-export class Point {
+import { IPoint } from "src/app/store/ride";
+
+export class Point implements IPoint{
     latitude: number;
     longitude: number;
 
@@ -6,10 +8,4 @@ export class Point {
         this.latitude = latitude;
         this.longitude = longitude;
     }
-}
-
-export class Route {
-    points: [number, number][] = [];
-    distance: number | undefined;
-    time: number | undefined;
 }

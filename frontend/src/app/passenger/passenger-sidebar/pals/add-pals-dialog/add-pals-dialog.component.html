@@ -1,35 +1,73 @@
 <div class="custom-add-pals-dialog">
     <div class="box">
-      <div class="field">
-        <p class="control has-icons-left">
-          <input class="input" type="email" placeholder="Email">
-          <span class="icon is-left">
-            <span class="iconify is-size-5" data-icon="ic:outline-email"></span>
-          </span>
-        </p>
-      </div>
-      <div class="field">
-        <p class="control has-icons-left">
-          <input class="input" placeholder="Name">
-          <span class="icon is-left">
-            <span class="iconify is-size-5" data-icon="ic:person"></span>
-          </span>
-        </p>
-      </div>
-      <div class="field mt-4 is-grouped is-grouped-right is">
-        <p class="control">
-          <button class="button is-light" (click)="cancel()">
-            Cancel
-          </button>
-        </p>
-        <p class="control">
-          <button class="button is-success" (click)="add()">
-            Add
-            <span class="icon ml-1">
-              <span class="iconify is-size-5" data-icon="fluent:add-12-filled"></span>
+      <form class="form-container" [formGroup]="palForm" autocomplete="false" validate> 
+        <div class="field">
+          <p class="control has-icons-left">
+            <input class="input" type="email" placeholder="Email*" formControlName="email">
+            <span class="icon is-left">
+              <span class="iconify is-size-5" data-icon="ic:outline-email"></span>
             </span>
-          </button>
-        </p>
-      </div>
+          </p>
+          <div *ngIf="email?.invalid && (email?.dirty || email?.touched)" class="help is-danger">
+            <div *ngIf="email?.errors?.['required']">
+                Please enter a email address!
+            </div>
+            <div *ngIf="email?.errors?.['email']">
+                Please enter a valid email address
+            </div>
+        </div>
+        </div>
+        <div class="field is-horizontal">
+          <div class="field-body">
+            <div class="field">
+              <p class="control has-icons-left">
+                <input class="input" placeholder="First name*" formControlName="firstName">
+                <span class="icon is-left">
+                  <span class="iconify is-size-5" data-icon="ic:person"></span>
+                </span>
+              </p>
+              <div *ngIf="firstName?.invalid && (firstName?.dirty || firstName?.touched)" class="help is-danger">
+                <div *ngIf="firstName?.errors?.['required']">
+                    Please enter pal's first name
+                </div>
+                <div *ngIf="firstName?.errors?.['pattern'] || firstName?.errors?.['maxLength']">
+                    Please enter valid name
+                </div>
+              </div>
+            </div>
+            <div class="field">
+              <p class="control has-icons-left">
+                <input class="input" placeholder="Last name*" formControlName="lastName">
+                <span class="icon is-left">
+                  <span class="iconify is-size-5" data-icon="ic:person"></span>
+                </span>
+              </p>
+              <div *ngIf="lastName?.invalid && (lastName?.dirty || lastName?.touched)" class="help is-danger">
+                <div *ngIf="lastName?.errors?.['required']">
+                    Please enter pal's last name
+                </div>
+                <div *ngIf="lastName?.errors?.['pattern'] || lastName?.errors?.['maxLength']">
+                    Please enter valid name
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="field mt-4 is-grouped is-grouped-right is">
+          <p class="control">
+            <button class="button is-light" (click)="cancel()" type="button">
+              Cancel
+            </button>
+          </p>
+          <p class="control">
+            <button class="button is-success" (click)="add()" type="submit" [disabled]="palForm.invalid">
+              Add
+              <span class="icon ml-1">
+                <span class="iconify is-size-5" data-icon="fluent:add-12-filled"></span>
+              </span>
+            </button>
+          </p>
+        </div>
+      </form>
     </div>
   </div>

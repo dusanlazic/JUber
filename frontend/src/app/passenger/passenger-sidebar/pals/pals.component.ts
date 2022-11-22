@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Ride } from 'src/models/ride';
-import { Pal, PalInput } from 'src/models/user';
+import { AddPalEvent, Pal,  } from 'src/models/user';
 
 colors: {
   purple: "#791eae";
@@ -8,9 +8,8 @@ colors: {
   blue: "#1298db";
 }
 
-interface AddPalEvent{
-  confirmed: boolean,
-  newPal: PalInput
+interface ColoredPal extends Pal {
+  color: string
 }
 
 @Component({
@@ -22,12 +21,12 @@ export class PalsComponent implements OnInit {
 
   @Input() ride: Ride;
 
-  addedPals: Pal[];
+  addedPals: ColoredPal[];
   isAddPalOpen: boolean = false;
 
   constructor() { 
     this.ride = new Ride();
-    this.addedPals = new Array<Pal>()
+    this.addedPals = new Array<ColoredPal>()
   }
 
   ngOnInit(): void {
@@ -36,24 +35,31 @@ export class PalsComponent implements OnInit {
 
   addPal(event: AddPalEvent) : void {
     if(event.confirmed){
-      //this.checkIsUser(newPal);
-      this.addedPals.push(event.newPal); 
+
+      const addedPal : ColoredPal = {
+        ...event.newPal as Pal,
+        color: this.getRandomColor()
+      }
+      
+      this.addedPals.push(addedPal);
+      this.ride.passengers.push(event.newPal as Pal);
     }
-    this.closeAddPal();
+    this.toggleModal();
   }
 
   removePal(index: number) : void {
     this.addedPals.splice(index, 1)
+    this.ride.passengers.splice(index, 1)
+  }
+
+  toggleModal() : void{
+    this.isAddPalOpen = !this.isAddPalOpen
   }
 
 
-
+  private getRandomColor() {
+    var color = Math.floor(0x1000000 * Math.random()).toString(16);
+    return '#' + ('000000' + color).slice(-6);
+  }
   
-  openAddPals() : void{
-    this.isAddPalOpen = true
-  }
-  closeAddPal() : void {
-    this.isAddPalOpen = false
-  }
-
 }

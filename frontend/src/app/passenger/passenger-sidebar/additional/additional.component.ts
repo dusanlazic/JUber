@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { AdditionalRequests, VehicleType, VehicleTypeInput } from 'src/models/vehicle';
+import { AdditionalRequests } from 'src/models/ride';
+import { VehicleType, VehicleTypeInput } from 'src/models/vehicle';
 
-type LogLevelStrings = (keyof typeof VehicleTypeInput) ;
 
 @Component({
   selector: 'app-additional',

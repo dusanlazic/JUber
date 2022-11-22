@@ -37,5 +37,10 @@ export class HomeComponent implements AfterViewInit {
       });
   }
 
+  logout(): void {
+    this.authService.logout();
+    this.router.navigate(['/login']);
+  }
+
 
 }

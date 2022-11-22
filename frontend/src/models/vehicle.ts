@@ -9,11 +9,3 @@ export enum VehicleTypeInput {
 	PICKUP='pickup'
 }
 
-
-
-export interface AdditionalRequests {
-    babyFriendly: boolean,
-    petFriendly: boolean,
-    vehicleType: VehicleType
-}
-

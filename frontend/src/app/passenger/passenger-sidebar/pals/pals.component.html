@@ -10,13 +10,13 @@
           <div *ngFor="let pal of addedPals; let i= index;">
             <div *ngIf="pal.imageUrl">
               <figure class="image is-48x48" (click)="removePal(i)">
-                <img class="is-rounded" src="pal.imageUrl">
+                <img class="is-rounded" src="{{pal.imageUrl}}">
               </figure>
             </div>
 
             <div *ngIf="!pal.imageUrl">
-              <div class="circle-initial" style="background-color: #791eae; color: white"  (click)="removePal(i)">
-                {{ pal.firstName[0] }} {{  pal.lastName[0]}}
+              <div class="circle-initial" [ngStyle]="{'background-color': pal.color}"  style="color: white"  (click)="removePal(i)">
+                {{ pal.firstName?.charAt(0) }} {{  pal.lastName?.charAt(0)}}
                 <span class="icon">
                   <span class="iconify is-size-1" data-icon="fluent:delete-12-regular"></span>
                 </span>
@@ -28,7 +28,7 @@
 
       </div>
       <div class="column is-2">
-        <button class="button" (click)="openAddPals()">
+        <button class="button" (click)="toggleModal()">
           <span class="icon">
             <span class="iconify is-size-3" data-icon="fluent:add-12-filled"></span>
           </span>

@@ -1,4 +1,6 @@
 import { Point } from "./map"
+import { Pal } from "./user"
+import { VehicleType } from "./vehicle"
 
 export class Place {
     name: string
@@ -16,17 +18,44 @@ export class Place {
 
 
 export class Ride {
-    passengers: Array<string>
+    passengers: Array<Pal>
     places: Array<Place>
     price: number
     routes: Array<Array<Point>>
     routeNames: Array<string>
 
     constructor() {
-        this.passengers = new Array<string>()
+        this.passengers = new Array<Pal>()
         this.places = new Array<Place>()
         this.price = 0
         this.routes = []
         this.routeNames = []
     }
+}
+
+
+export class AdditionalRequests {
+    babyFriendly: boolean
+    petFriendly: boolean
+    vehicleType: VehicleType
+
+    constructor() {
+        this.babyFriendly = false
+        this.petFriendly = false
+        this.vehicleType = null
+    }
+}
+
+
+export class RideRequest {
+    ride: Ride
+    requests: AdditionalRequests
+    scheduleTime: string 
+
+    constructor() {
+        this.ride = new Ride()
+        this.requests = new AdditionalRequests()
+        this.scheduleTime = ''
+    }
+    
 }

@@ -6,21 +6,18 @@ export interface LoggedUser {
     role: string;
 }
 
+
+export interface AddPalEvent{
+    confirmed: boolean,
+    newPal?: Pal
+}
+
 export interface Pal {
-    firstName: string;
-    lastName: string;
+    firstName?: string;
+    lastName? : string;
     email: string;
     imageUrl?: string;
 }
-
-export interface PalInput {
-    email: string;
-    name: string;
-    firstName: string;
-    lastName: string;
-    imageUrl?: string;
-}
-
 
 export enum Roles {
     PASSENGER="ROLE_PASSENGER",

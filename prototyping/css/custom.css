@@ -8036,3 +8036,19 @@ input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0; }
+
+.is-custom-swap {
+  position: absolute;
+  top: 20px;
+  opacity: 0 !important; }
+  .is-custom-swap.is-down {
+    right: 0px; }
+  .is-custom-swap.is-up {
+    right: 52px; }
+
+.has-custom-swap-button {
+  position: relative; }
+  .has-custom-swap-button:hover .is-custom-swap {
+    opacity: 1 !important; }
+    .has-custom-swap-button:hover .is-custom-swap:disabled {
+      opacity: 0.4 !important; }

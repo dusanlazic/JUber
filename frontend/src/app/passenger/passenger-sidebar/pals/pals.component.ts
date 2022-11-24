@@ -1,16 +1,7 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { Ride } from 'src/models/ride';
-import { AddPalEvent, Pal,  } from 'src/models/user';
-
-colors: {
-  purple: "#791eae";
-  red: "#c33232";
-  blue: "#1298db";
-}
-
-interface ColoredPal extends Pal {
-  color: string
-}
+import { Component, OnInit } from '@angular/core';
+import { AddPalEvent, IPal, IRideRequest } from 'src/app/store/rideRequest/rideRequest';
+import { Store } from '@ngrx/store';
+import { AddPalAction, DeletePalAction } from 'src/app/store/rideRequest/rideRequest.actions';
 
 @Component({
   selector: 'app-pals',
@@ -19,34 +10,37 @@ interface ColoredPal extends Pal {
 })
 export class PalsComponent implements OnInit {
 
-  addedPals: ColoredPal[];
   isAddPalOpen: boolean = false;
+  passengers!: IPal[];
+  colors: string[]
 
-  constructor() { 
-    this.addedPals = new Array<ColoredPal>()
+  constructor(private store: Store<{rideRequest: IRideRequest}>) { 
+    this.colors = new Array<string>()
   }
 
   ngOnInit(): void {
   }
 
+  ngAfterViewInit(): void {
+    this.store.select('rideRequest').subscribe(state => {
+			if(state === undefined) return;
+      this.passengers = state.passengers
+		})
+  }
 
   addPal(event: AddPalEvent) : void {
     if(event.confirmed){
-
-      const addedPal : ColoredPal = {
-        ...event.newPal as Pal,
-        color: this.getRandomColor()
-      }
-      
-      this.addedPals.push(addedPal);
-      // this.ride.passengers.push(event.newPal as Pal);
+      const newPal: IPal = event.newPal as IPal;
+      this.colors.push(this.getRandomColor())
+      this.store.dispatch(AddPalAction({addedPal: newPal}))
     }
     this.toggleModal();
   }
 
   removePal(index: number) : void {
-    this.addedPals.splice(index, 1)
-    // this.ride.passengers.splice(index, 1)
+    const removePal = this.passengers.at(index) as IPal;
+    this.store.dispatch(DeletePalAction({removePal: removePal}))
+    this.colors.splice(index, 1)
   }
 
   toggleModal() : void{

@@ -1,10 +1,24 @@
 package com.nwt.juber.model;
 
-public enum VehicleType {
+import java.util.UUID;
 
-	HATCHBACK,
-	ESTATE,
-	LIMOUSINE,
-	SPORTS,
-	PICKUP
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Entity
+@Data
+@NoArgsConstructor
+public class VehicleType {
+
+	@Id
+    @Column(columnDefinition = "uuid")
+	private UUID id;
+	
+	private String name;
+	
+	private Double price;
 }

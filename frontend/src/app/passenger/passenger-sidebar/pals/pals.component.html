@@ -7,15 +7,15 @@
             <img class="is-rounded" src="https://lh3.googleusercontent.com/a/ALm5wu3tpc3XnB9w8EMqNHAODc0uL23tqydVlUCLYqEF6Q=s96-c">
           </figure>
 
-          <div *ngFor="let pal of addedPals; let i= index;">
-            <div *ngIf="pal.imageUrl">
+          <div *ngFor="let pal of passengers; let i= index;">
+            <div *ngIf="pal.imageUrl !== undefined">
               <figure class="image is-48x48" (click)="removePal(i)">
                 <img class="is-rounded" src="{{pal.imageUrl}}">
               </figure>
             </div>
 
             <div *ngIf="!pal.imageUrl">
-              <div class="circle-initial" [ngStyle]="{'background-color': pal.color}"  style="color: white"  (click)="removePal(i)">
+              <div class="circle-initial" [ngStyle]="{'background-color': colors.at(i)}"  style="color: white"  (click)="removePal(i)">
                 {{ pal.firstName?.charAt(0) }} {{  pal.lastName?.charAt(0)}}
                 <span class="icon">
                   <span class="iconify is-size-1" data-icon="fluent:delete-12-regular"></span>

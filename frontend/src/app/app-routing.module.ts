@@ -10,7 +10,6 @@ import { PasswordResetFormComponent } from './password-recovery-page/password-re
 import { PasswordResetRequestSuccessComponent } from './password-recovery-page/password-reset-request-success/password-reset-request-success.component';
 import { PasswordResetRequestComponent } from './password-recovery-page/password-reset-request/password-reset-request.component';
 import { PasswordResetSuccessComponent } from './password-recovery-page/password-reset-success/password-reset-success.component';
-import { ProfileComponent } from './profile/profile.component';
 import { EmailVerificationComponent } from './registration/email-verification/email-verification.component';
 import { RegisterLocalComponent } from './registration/register-local/register-local.component';
 import { Oauth2RegisterRedirectHandlerComponent } from './registration/register-oauth/oauth2-redirect-handler/oauth2-redirect-handler.component';
@@ -23,8 +22,7 @@ const routes: Routes = [
   { path: 'map', component: MapComponent },
   { path: 'oauth2/redirect-login', component: Oauth2RedirectHandlerComponent},
   { path: 'oauth2/redirect-register', component: Oauth2RegisterRedirectHandlerComponent},
-  { path: 'home', component: HomeComponent },
-  { path: 'profile', component: ProfileComponent, canActivate: [AuthGuard, RoleGuard], 
+  { path: 'home', component: HomeComponent, canActivate: [AuthGuard, RoleGuard], 
           data: { expectedRoles: [Roles.DRIVER, Roles.PASSENGER_NEW, Roles.PASSENGER ]}  },
   { path: 'registration', component: RegisterLocalComponent},
   { path: 'registration/social', component: RegisterOauthComponent},

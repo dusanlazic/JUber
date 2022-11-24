@@ -22,14 +22,15 @@
         <input type="radio" id="car-any" name="car-type" [checked]="true" (change)="onVehicleChange(null)"/>
         <label for="car-any">
             <span class="iconify is-size-2" data-icon="mdi:car-side"></span>
-            <p>ANY</p>
+            <p>Any</p>
         </label>
     </div>
-    <div class="button is-custom-radio" *ngFor="let type of vehicleTypes | keyvalue">
-        <input type="radio" id="car-{{type.value}}" name="car-type" (change)="onVehicleChange(type.key)"/>
-        <label for="car-{{type.value}}">
-            <span class="iconify is-size-2" [attr.data-icon]="'mdi:car-' + type.value"></span>
-            <p>{{ type.key }}</p>
+    <div class="button is-custom-radio" *ngFor="let type of vehicleTypes">
+        <input type="radio" id="car-{{type.name.toLowerCase()}}" name="car-type" (change)="onVehicleChange(type)"/>
+        <label for="car-{{type.name.toLowerCase()}}">
+            <span class="iconify is-size-2" [attr.data-icon]="'mdi:car-' + type.name.toLowerCase()"></span>
+            <div>{{ type.name | titlecase }}</div>
+            <span style="font-size: 12px;">    *{{ type.price }} RSD</span>
         </label>
     </div> 
 </div>

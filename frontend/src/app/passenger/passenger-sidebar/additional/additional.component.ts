@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { AdditionalRequests } from 'src/models/ride';
-import { VehicleType, VehicleTypeInput } from 'src/models/vehicle';
+import { Store } from '@ngrx/store';
+import { IRideRequest, IVehicleType } from 'src/app/store/rideRequest/rideRequest';
+import { UpdateBabyFriendly, UpdatePetFriendly, UpdateVehicleType } from 'src/app/store/rideRequest/rideRequest.actions';
+import { VehicleTypeService } from 'src/services/vehicle/vehicle-type.service';
 
 
 @Component({
@@ -10,37 +12,32 @@ import { VehicleType, VehicleTypeInput } from 'src/models/vehicle';
 })
 export class AdditionalComponent implements OnInit {
 
-  vehicleTypes:any = VehicleTypeInput;
-  
-  private selectedVehicle: VehicleType = null;
-  private babyFriendly: boolean = false;
-  private petFriendly: boolean = false;
+  vehicleTypes: Array<IVehicleType>
 
-  constructor() { }
+  constructor(
+    private store: Store<{rideRequest: IRideRequest}>,
+    private vehicleTypeService: VehicleTypeService
+  ) { 
+    this.vehicleTypes = new Array<IVehicleType>()
+  }
 
   ngOnInit(): void {
+    this.vehicleTypeService.findAll().subscribe({
+      next: (allTypes: IVehicleType[]) => {
+        this.vehicleTypes = allTypes;
+      }
+    })
   }
 
   toggleBabyFriendly(): void {
-    this.babyFriendly = !this.babyFriendly;
+    this.store.dispatch(UpdateBabyFriendly())
   }
 
   togglePetFriendly() : void{
-    this.petFriendly = !this.petFriendly;
+    this.store.dispatch(UpdatePetFriendly())
   }
 
-  onVehicleChange(value: VehicleTypeInput | unknown) : void{
-    this.selectedVehicle = value as VehicleType;
+  onVehicleChange(value: IVehicleType | unknown) : void{
+    this.store.dispatch(UpdateVehicleType({vehicleType: value as IVehicleType}))  
   }
-
-  getAdditionalRequests() : AdditionalRequests{
-    const additionalRequests : AdditionalRequests = {
-      babyFriendly: this.babyFriendly,
-      petFriendly: this.petFriendly,
-      vehicleType: this.selectedVehicle,
-    }
-    return additionalRequests;
-  }  
-
-  
 }

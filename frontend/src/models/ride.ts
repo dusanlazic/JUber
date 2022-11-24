@@ -1,6 +1,4 @@
 import { Point } from "./map"
-import { Pal } from "./user"
-import { VehicleType } from "./vehicle"
 import { IRoute, IPlace, IPoint, IRide } from "src/app/store/ride"
 
 
@@ -29,31 +27,4 @@ export class Ride implements IRide {
         public places: Array<Place> = [],
         public price: number = -1) {
     }
-}
-
-
-export class AdditionalRequests {
-    babyFriendly: boolean
-    petFriendly: boolean
-    vehicleType: VehicleType
-
-    constructor() {
-        this.babyFriendly = false
-        this.petFriendly = false
-        this.vehicleType = null
-    }
-}
-
-
-export class RideRequest {
-    ride: Ride
-    requests: AdditionalRequests
-    scheduleTime: string 
-
-    constructor() {
-        this.ride = new Ride()
-        this.requests = new AdditionalRequests()
-        this.scheduleTime = ''
-    }
-    
 }

@@ -25,7 +25,7 @@ public class Vehicle {
 
     private Integer capacity;
     
-    @Enumerated(EnumType.STRING)
+    @OneToOne(fetch = FetchType.LAZY)
     private VehicleType vehicleType;
 
     @OneToOne(mappedBy = "vehicle", fetch = FetchType.LAZY)

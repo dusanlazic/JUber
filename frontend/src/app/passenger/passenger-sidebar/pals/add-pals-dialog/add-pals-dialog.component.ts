@@ -1,6 +1,6 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { AddPalEvent, Pal } from 'src/models/user';
+import { AddPalEvent } from 'src/app/store/rideRequest/rideRequest';
 import { ValidationConstants } from 'src/services/util/custom-validators';
 
 @Component({

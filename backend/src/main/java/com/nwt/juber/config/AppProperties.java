@@ -11,6 +11,7 @@ import java.util.List;
 public class AppProperties {
     private final Auth auth = new Auth();
     private final OAuth2 oauth2 = new OAuth2();
+    private final Etherscan etherscan = new Etherscan();
 
     @Getter
     @Setter
@@ -34,11 +35,23 @@ public class AppProperties {
         }
     }
 
+    @Getter
+    @Setter
+    public static class Etherscan {
+        private String key;
+        private String url;
+        private Integer pendingTimeoutSeconds;
+    }
+
     public Auth getAuth() {
         return auth;
     }
 
     public OAuth2 getOauth2() {
         return oauth2;
+    }
+
+    public Etherscan getEtherscan() {
+        return etherscan;
     }
 }

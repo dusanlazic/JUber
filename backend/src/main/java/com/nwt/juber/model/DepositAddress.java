@@ -6,7 +6,6 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
-import java.math.BigDecimal;
 import java.util.Date;
 import java.util.UUID;
 
@@ -33,4 +32,8 @@ public class DepositAddress {
 
     @UpdateTimestamp
     private Date modified;
+
+    public void updateModified() {
+        this.modified = null;
+    }
 }

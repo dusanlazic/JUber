@@ -68,6 +68,10 @@ app:
   oauth2:
     authorizedRedirectUris:
       - http://localhost:3000/oauth2/redirect
+  etherscan:
+    key: ${ETHERSCAN_API_KEY}
+    url: 'https://api-sepolia.etherscan.io/api'
+    pendingTimeoutSeconds: 15 # Increase to 120
 logging:
   pattern:
     console: '%d{yyyy-MM-dd HH:mm:ss} - %msg%n'

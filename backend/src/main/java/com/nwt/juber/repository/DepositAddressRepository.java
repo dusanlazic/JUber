@@ -32,4 +32,6 @@ public interface DepositAddressRepository extends JpaRepository<DepositAddress, 
         return findByStatusAndModifiedAfter(DepositAddressStatus.PENDING, date);
     }
 
+    Optional<DepositAddress> getByEthAddress(String ethAddress);
+
 }

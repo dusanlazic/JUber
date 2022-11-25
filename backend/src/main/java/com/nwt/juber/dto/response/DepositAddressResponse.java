@@ -3,11 +3,8 @@ package com.nwt.juber.dto.response;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
-import java.math.BigDecimal;
-
 @Data
 @AllArgsConstructor
-public class DepositDetailsResponse {
+public class DepositAddressResponse {
     private String ethAddress;
-    private BigDecimal weiToRsdRate;
 }

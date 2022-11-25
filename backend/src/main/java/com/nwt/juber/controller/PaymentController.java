@@ -1,7 +1,7 @@
 package com.nwt.juber.controller;
 
 import com.nwt.juber.dto.response.BalanceResponse;
-import com.nwt.juber.dto.response.DepositDetailsResponse;
+import com.nwt.juber.dto.response.DepositAddressResponse;
 import com.nwt.juber.model.Passenger;
 import com.nwt.juber.service.PaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,8 +28,8 @@ public class PaymentController {
     }
 
     @PostMapping("/deposit")
-    public DepositDetailsResponse requestDepositDetails(Authentication authentication) {
+    public DepositAddressResponse requestDepositAddress(Authentication authentication) {
         Passenger passenger = (Passenger) authentication.getPrincipal();
-        return paymentService.requestDepositDetails(passenger);
+        return paymentService.requestDepositAddress(passenger);
      }
 }

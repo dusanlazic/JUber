@@ -1,7 +1,7 @@
 package com.nwt.juber.service;
 
 import com.nwt.juber.dto.response.BalanceResponse;
-import com.nwt.juber.dto.response.DepositDetailsResponse;
+import com.nwt.juber.dto.response.DepositAddressResponse;
 import com.nwt.juber.exception.NotImplementedException;
 import com.nwt.juber.model.DepositAddress;
 import com.nwt.juber.model.Passenger;
@@ -21,7 +21,7 @@ public class PaymentService {
         return new BalanceResponse(passenger.getBalance());
     }
 
-    public DepositDetailsResponse requestDepositDetails(Passenger passenger) {
+    public DepositAddressResponse requestDepositAddress(Passenger passenger) {
         DepositAddress depositAddress = depositAddressRepository.findFirstByPassengerAndPaidWeiIsNull(passenger)
                                 .orElse(depositAddressRepository.findFirstByPassengerIsNull().orElse(null));
 
@@ -32,7 +32,7 @@ public class PaymentService {
 
         depositAddress.setPassenger(passenger);
         depositAddressRepository.save(depositAddress);
-        return new DepositDetailsResponse(depositAddress.getEthAddress(), calculateConversionRate());
+        return new DepositAddressResponse(depositAddress.getEthAddress());
     }
 
     private void generateNewDepositAddresses() {

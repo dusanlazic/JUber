@@ -6,6 +6,8 @@ import com.nwt.juber.model.Passenger;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -22,6 +24,12 @@ public interface DepositAddressRepository extends JpaRepository<DepositAddress, 
 
     default Optional<DepositAddress> findFirstUnassigned() {
         return findFirstByStatus(DepositAddressStatus.UNASSIGNED);
+    }
+
+    List<DepositAddress> findByStatusAndModifiedAfter(DepositAddressStatus status, Date date);
+
+    default List<DepositAddress> findPendingAndModifiedAfter(Date date) {
+        return findByStatusAndModifiedAfter(DepositAddressStatus.PENDING, date);
     }
 
 }

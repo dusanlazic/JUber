@@ -11,7 +11,7 @@ import java.util.List;
 public class AppProperties {
     private final Auth auth = new Auth();
     private final OAuth2 oauth2 = new OAuth2();
-    private final Etherscan etherscan = new Etherscan();
+    private final Payment payment = new Payment();
 
     @Getter
     @Setter
@@ -37,9 +37,11 @@ public class AppProperties {
 
     @Getter
     @Setter
-    public static class Etherscan {
-        private String key;
-        private String url;
+    public static class Payment {
+        private String etherscanKey;
+        private String etherscanUrl;
+        private String cryptocompareKey;
+        private String cryptocompareUrl;
         private Integer pendingTimeoutSeconds;
     }
 
@@ -51,7 +53,7 @@ public class AppProperties {
         return oauth2;
     }
 
-    public Etherscan getEtherscan() {
-        return etherscan;
+    public Payment getPayment() {
+        return payment;
     }
 }

@@ -3,6 +3,7 @@ package com.nwt.juber.service;
 import com.nwt.juber.config.AppProperties;
 import com.nwt.juber.dto.response.BalanceResponse;
 import com.nwt.juber.dto.response.DepositAddressResponse;
+import com.nwt.juber.dto.response.cryptocompare.PriceResponse;
 import com.nwt.juber.dto.response.etherscan.AccountBalancePair;
 import com.nwt.juber.dto.response.etherscan.BalancesResponse;
 import com.nwt.juber.exception.NotImplementedException;
@@ -55,7 +56,7 @@ public class PaymentService {
 
     @Scheduled(cron = "*/5 * * * * *")
     private void processDeposits() {
-        Instant limit = Instant.now().minusSeconds(appProperties.getEtherscan().getPendingTimeoutSeconds());
+        Instant limit = Instant.now().minusSeconds(appProperties.getPayment().getPendingTimeoutSeconds());
         List<DepositAddress> recentPendingAddresses = depositAddressRepository.findPendingAndModifiedAfter(Date.from(limit));
 
         if (recentPendingAddresses.size() > 0) {
@@ -80,7 +81,7 @@ public class PaymentService {
     }
 
     private List<AccountBalancePair> fetchBalancesFromEtherscan(List<DepositAddress> pendingAddresses) {
-        WebClient webClient = WebClient.create(appProperties.getEtherscan().getUrl());
+        WebClient webClient = WebClient.create(appProperties.getPayment().getEtherscanUrl());
         String addresses = pendingAddresses.stream().map(DepositAddress::getEthAddress).collect(Collectors.joining(","));
         BalancesResponse response = webClient.get()
                 .uri(uriBuilder -> uriBuilder
@@ -88,7 +89,7 @@ public class PaymentService {
                         .queryParam("action", "balancemulti")
                         .queryParam("address", addresses)
                         .queryParam("tag", "latest")
-                        .queryParam("apikey", appProperties.getEtherscan().getKey())
+                        .queryParam("apikey", appProperties.getPayment().getEtherscanKey())
                         .build())
                 .retrieve()
                 .bodyToMono(BalancesResponse.class)
@@ -99,20 +100,32 @@ public class PaymentService {
         return response.getResult();
     }
 
+    private BigDecimal fetchEthPriceFromCryptocompare() {
+        WebClient webClient = WebClient.create(appProperties.getPayment().getCryptocompareUrl());
+        PriceResponse response = webClient.get()
+                .uri(uriBuilder -> uriBuilder
+                        .queryParam("fsym", "ETH")
+                        .queryParam("tsyms", "RSD")
+                        .queryParam("api_key", appProperties.getPayment().getCryptocompareKey())
+                        .build())
+                .retrieve()
+                .bodyToMono(PriceResponse.class)
+                .block();
+        if (response == null)
+            return null;
+
+        return BigDecimal.valueOf(response.getValue());
+    }
+
     private DepositAddress generateNewDepositAddresses() {
         throw new NotImplementedException();
         // return depositAddressRepository.findFirstUnassigned().get();
     }
 
-    private BigDecimal calculateConversionRate() {
-        throw new NotImplementedException();
-    }
-
     private BigDecimal convertFromWei(BigInteger value) {
-        // TODO: Lookup current rate on API
         return new BigDecimal(value)
                 .movePointLeft(18)
-                .multiply(BigDecimal.valueOf(133357))
+                .multiply(fetchEthPriceFromCryptocompare())
                 .setScale(2, RoundingMode.HALF_UP);
     }
 }

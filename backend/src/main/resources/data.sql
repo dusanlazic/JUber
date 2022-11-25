@@ -1,8 +1,3 @@
-INSERT INTO PAYMENT_INFO (ID, ACCOUNT_NUMBER) VALUES
-('f3b9a365-36c8-4990-8f1a-7f2e9dc0f400', '324324-2343242-23432'),
-('558eb804-bee1-44f2-92ef-a47606c7683d', '755534-2133445-00942'),
-('984d405d-4ead-43d7-8171-ae69d4a7c08f', '143256-9438483-20092');
-
 INSERT INTO LOCATION (ID, NAME, LONGITUDE, LATITUDE) VALUES
 ('b74b7c57-4542-471f-8539-4559e9489997', 'FTN', 45.246, 19.8512),
 ('ed726dda-44c8-4953-9e21-8ce41ed4d370', 'Knjizara', 45.253672, 19.841270),
@@ -14,24 +9,19 @@ INSERT INTO VEHICLE (ID, LONGITUDE, LATITUDE, BABY_FRIENDLY, PET_FRIENDLY, CAPAC
 ('6f513eca-b592-4e88-9cb4-ad9c14301ab2', 45.246, 19.8512, TRUE, TRUE, 7);
 
 -- PASSWORD = 'cascaded'
-INSERT INTO DRIVER (ID, EMAIL, EMAIL_VERIFIED, IMAGE_URL, NAME, PASSWORD, PROVIDER, PROVIDER_ID, ROLE, CITY, FIRST_NAME, LAST_NAME, PHONE_NUMBER, PAYMENT_INFO_ID, ACTIVE, VEHICLE_ID) VALUES
-('909dccc3-4f61-4237-b3a2-6e674edd8d52', 'zdravko.zdravkovic@gmail.com', TRUE, 'zdravko1.png', 'Zdravko Zdravkovic', '$2a$10$Qg.gpYTtZiVMJ6Fs9QbQA.BtCx4106oSj92X.A/Gv7iAEKQXAg.gy', 'local', NULL, 'ROLE_DRIVER', 'Novi Sad', 'Zdravko', 'Zdravkovic', '+38164548952', NULL, FALSE, '3d2becd5-aa6f-4410-9058-bed41a017457'),
-('2173891a-8bdc-4b4d-b6fb-4d790fc4630f', 'marko.markovic@gmail.com', TRUE, 'marko1.png', 'Marko Markovic', '$2a$10$Qg.gpYTtZiVMJ6Fs9QbQA.BtCx4106oSj92X.A/Gv7iAEKQXAg.gy', 'local', NULL, 'ROLE_DRIVER', 'Novi Sad', 'Marko', 'Markovic', '+38164432452', NULL, FALSE, 'e63dbc27-1a36-4f73-b024-07e19ea91838'),
-('6bc99aaf-cc8b-4d80-a7d2-7457c39b278a', 'nikola.nikolic@gmail.com', TRUE, 'nikola.png', 'Nikola Nikolic', '$2a$10$Qg.gpYTtZiVMJ6Fs9QbQA.BtCx4106oSj92X.A/Gv7iAEKQXAg.gy', 'local', NULL, 'ROLE_DRIVER', 'Novi Sad', 'Nikola', 'Nikolic', '+38164047952', NULL, FALSE, '6f513eca-b592-4e88-9cb4-ad9c14301ab2');
+INSERT INTO DRIVER (ID, EMAIL, EMAIL_VERIFIED, IMAGE_URL, NAME, PASSWORD, PROVIDER, PROVIDER_ID, ROLE, CITY, FIRST_NAME, LAST_NAME, PHONE_NUMBER, ACTIVE, VEHICLE_ID) VALUES
+('909dccc3-4f61-4237-b3a2-6e674edd8d52', 'zdravko.zdravkovic@gmail.com', TRUE, 'zdravko1.png', 'Zdravko Zdravkovic', '$2a$10$Qg.gpYTtZiVMJ6Fs9QbQA.BtCx4106oSj92X.A/Gv7iAEKQXAg.gy', 'local', NULL, 'ROLE_DRIVER', 'Novi Sad', 'Zdravko', 'Zdravkovic', '+38164548952', FALSE, '3d2becd5-aa6f-4410-9058-bed41a017457'),
+('2173891a-8bdc-4b4d-b6fb-4d790fc4630f', 'marko.markovic@gmail.com', TRUE, 'marko1.png', 'Marko Markovic', '$2a$10$Qg.gpYTtZiVMJ6Fs9QbQA.BtCx4106oSj92X.A/Gv7iAEKQXAg.gy', 'local', NULL, 'ROLE_DRIVER', 'Novi Sad', 'Marko', 'Markovic', '+38164432452', FALSE, 'e63dbc27-1a36-4f73-b024-07e19ea91838'),
+('6bc99aaf-cc8b-4d80-a7d2-7457c39b278a', 'nikola.nikolic@gmail.com', TRUE, 'nikola.png', 'Nikola Nikolic', '$2a$10$Qg.gpYTtZiVMJ6Fs9QbQA.BtCx4106oSj92X.A/Gv7iAEKQXAg.gy', 'local', NULL, 'ROLE_DRIVER', 'Novi Sad', 'Nikola', 'Nikolic', '+38164047952', FALSE, '6f513eca-b592-4e88-9cb4-ad9c14301ab2');
 
 INSERT INTO ADMIN(ID, EMAIL, EMAIL_VERIFIED, IMAGE_URL, NAME, PASSWORD, PROVIDER, PROVIDER_ID, ROLE) VALUES
 ('e3661c31-d1a4-47ab-94b6-1c6500dccf24', 'admin@juber.com', TRUE, NULL, 'JUber Admin', '$2a$10$Qg.gpYTtZiVMJ6Fs9QbQA.BtCx4106oSj92X.A/Gv7iAEKQXAg.gy', 'local', NULL, 'ROLE_ADMIN');
 
-INSERT INTO PAYMENT_INFO (ID, ACCOUNT_NUMBER) VALUES
-('8d5abce3-bf23-40ed-a41b-54ebadd91820', '32435-3242525-23432'),
-('a28a4953-003b-4557-a40d-2af5eab2ab2c', '12391-2123445-00942'),
-('814af-48f60193-90e-b005-c23bf46e2c04', '43243-9438483-20092');
-
 -- PASSWORD = 'cascaded'
-INSERT INTO PASSENGER (ID, EMAIL, EMAIL_VERIFIED, IMAGE_URL, NAME, PASSWORD, PROVIDER, PROVIDER_ID, ROLE, CITY, FIRST_NAME, LAST_NAME, PHONE_NUMBER, PAYMENT_INFO_ID) VALUES
-('92348c29-e3cb-4c8f-ad5c-f31bf14db84d', 'mile.miletic@gmail.com', TRUE, 'mile1.png', 'Mile Miletic', '$2a$10$Qg.gpYTtZiVMJ6Fs9QbQA.BtCx4106oSj92X.A/Gv7iAEKQXAg.gy', 'local', NULL, 'ROLE_PASSENGER','Novi Sad', 'Mile', 'Miletic', '+38164047952', '8d5abce3-bf23-40ed-a41b-54ebadd91820'),
-('6d34f2c5-32f1-47d9-9a8e-d4dd613b9cc1', 'andrej.andrejevic@gmail.com', TRUE, 'andrej1.png', 'Andrej Andrejevic', '$2a$10$Qg.gpYTtZiVMJ6Fs9QbQA.BtCx4106oSj92X.A/Gv7iAEKQXAg.gy', 'local', NULL, 'ROLE_PASSENGER','Novi Sad', 'Andrej', 'Andrejevic', '+38164047952', 'a28a4953-003b-4557-a40d-2af5eab2ab2c'),
-('6aebc916-dd04-4674-a4f2-99edec0a1811', 'petar.petrovic@gmail.com', TRUE, 'petar1.png', 'Petar Petrovic', '$2a$10$Qg.gpYTtZiVMJ6Fs9QbQA.BtCx4106oSj92X.A/Gv7iAEKQXAg.gy', 'local', NULL, 'ROLE_PASSENGER','Novi Sad', 'Petar', 'Petrovic', '+38164047952', '814af-48f60193-90e-b005-c23bf46e2c04');
+INSERT INTO PASSENGER (ID, EMAIL, EMAIL_VERIFIED, IMAGE_URL, NAME, PASSWORD, PROVIDER, PROVIDER_ID, ROLE, CITY, FIRST_NAME, LAST_NAME, PHONE_NUMBER, BALANCE) VALUES
+('92348c29-e3cb-4c8f-ad5c-f31bf14db84d', 'mile.miletic@gmail.com', TRUE, 'mile1.png', 'Mile Miletic', '$2a$10$Qg.gpYTtZiVMJ6Fs9QbQA.BtCx4106oSj92X.A/Gv7iAEKQXAg.gy', 'local', NULL, 'ROLE_PASSENGER','Novi Sad', 'Mile', 'Miletic', '+38164047952', '0'),
+('6d34f2c5-32f1-47d9-9a8e-d4dd613b9cc1', 'andrej.andrejevic@gmail.com', TRUE, 'andrej1.png', 'Andrej Andrejevic', '$2a$10$Qg.gpYTtZiVMJ6Fs9QbQA.BtCx4106oSj92X.A/Gv7iAEKQXAg.gy', 'local', NULL, 'ROLE_PASSENGER','Novi Sad', 'Andrej', 'Andrejevic', '+38164047952', '0'),
+('6aebc916-dd04-4674-a4f2-99edec0a1811', 'petar.petrovic@gmail.com', TRUE, 'petar1.png', 'Petar Petrovic', '$2a$10$Qg.gpYTtZiVMJ6Fs9QbQA.BtCx4106oSj92X.A/Gv7iAEKQXAg.gy', 'local', NULL, 'ROLE_PASSENGER','Novi Sad', 'Petar', 'Petrovic', '+38164047952', '0');
 
 INSERT INTO ROUTE (ID) VALUES
 ('041cd3b0-4ffa-418b-9de1-4379b2ce550d'),
@@ -48,3 +38,36 @@ INSERT INTO RIDE (ID, ROUTE_ID, FARE, DRIVER_ID, START_TIME, END_TIME, RIDE_STAT
 
 INSERT INTO RIDE_PASSENGERS (RIDE_ID, PASSENGERS_ID) VALUES
 ('8107614c-04d9-480d-8a59-e1999d9e7bfc', '6aebc916-dd04-4674-a4f2-99edec0a1811');
+
+-- Private keys will be somewhere secure I guess ...
+INSERT INTO DEPOSIT_ADDRESS (ID, ETH_ADDRESS) VALUES
+('1d8ce8f0-3643-4430-8350-7448e0d6e9af', '0x98261a58c393e9767ad799e07c1a3437211a2a8c'),
+('28f775fd-256a-459c-a8bd-6ef3e05a3687', '0xb1fad0518334170f4178e46c50979c065d88a882'),
+('e816c404-191b-4889-bc55-c40e27826e1f', '0x94969ea226df158e8ec673eabbe15b3655b12d1d'),
+('81886eee-9f53-4ef9-b0b4-fda58f1d8ca7', '0x413aec42008a3110f6613cd4abced9882e41f9ee'),
+('5900ac84-41a4-4667-855f-c80de257242e', '0xe59748827868b7cc7076f3af38fe2f27b7cf7ce4'),
+('f4588214-5838-4c4c-bc92-d36960670953', '0x4aa11124f07f42266b9b3ea945fa8f44b21dc35e'),
+('105649d6-70dc-479c-a125-4cdd71b8a1f4', '0x95f0df91859abef29e758de97749da3935566d67'),
+('106fd88e-8fe6-4931-87c9-c7f648eb0175', '0x177d8cb3aadeb0b133b3d69d6d6d7d3242601386'),
+('990404f1-c12a-495a-b47a-fac317dd395b', '0x01d3aa54b06728c5002e22d1558cd6d0a2c04c92'),
+('6e72b4d7-0914-4395-8fea-d1f6de313083', '0xb5b6a355832f7baf1ce01a6de2a3aa9470dcc5f5'),
+('3006bd1b-8472-4d67-9928-312148ed278d', '0x2ae1dc0db7ae862b5023c64f59a13e867372d3fc'),
+('4b164853-b20d-4709-9851-6295f5cb8da3', '0xaf6fed500a568fac581b6ec5caa2db50ac23b60f'),
+('48ae084b-b55e-4415-a664-dbc5dadfd4ad', '0x6aaac187773e06582dd8677dc4617247110b12fa'),
+('9e6ee1e7-1e92-49d1-8de9-ee4204f594e2', '0xc5dff47f5fda26cd4263ee13a3a0d54b845b5262'),
+('f71ca5a5-cfbf-4516-ac1b-f6043c272d09', '0xf2cd824e5a22f801fa08e850c9ffb6ebafdc509c'),
+('fabb7bff-7c01-49c5-883d-1bbb6d2479bd', '0x0e526f2577fe9088284d608d0f7dbe1891c4ea98'),
+('dd44137c-def5-436e-a20a-578ec2fe17fe', '0x10d125ea56d0a710b981f529eee14e9b3f664c7e'),
+('1d098877-6431-41e3-9a4d-5c42180160b7', '0xe8d99a5fdc9f7b0ea5d229644ef83197508d5ae0'),
+('b1a35224-a4c6-428a-9f1b-8f8cbab1835c', '0xc94c1d721790b7d41345222aa81194f1f1beeb88'),
+('25c00e49-2542-440a-bc1a-5c2f1cc77f8d', '0x93870efeffc2cf58fb2a85af1a230c003da5240a'),
+('c00a9ec8-7c06-4ea3-8941-7179bc48a097', '0x859ae8039d3caf8dbe5bb084f8b02092cafdb329'),
+('7e9b3f86-eef2-459b-80f8-08862541745b', '0xc877875d4d260e68c78a64c52a92591255967aad'),
+('5870c985-6106-4050-9049-53cc3bcc1545', '0x41b4c1be2275ae61dfe1cb464ec202628c676bbb'),
+('0ba372dc-84fe-4405-bb27-d6cbdcc43414', '0x0436f1a9dc4ee5aa3214b3a6bb3d580ad27700c2'),
+('aad28af7-17fa-4433-b959-176ddc03462d', '0xfabdc82f2e9e258e4156f948f32c1d11ec75a95f'),
+('537be476-7c2a-4d04-af16-d26a484d1051', '0xe5a09c55696e805d7b823bd92df355d030e2af75'),
+('82f189f3-a7eb-4f90-90c3-dddf3c969873', '0xbbf4e42ac08ebc3ac2d4b87b0480a056add97a2a'),
+('02a4e7af-e267-4848-aebf-3c1547e0af1b', '0x26606a7e1d498935b7aa88bdb408b4a9bab82e2f'),
+('82fa98cf-71c4-4163-b325-c576756e44c3', '0x72d99a165eba3da1bc72df4d8494816c573d414a'),
+('6a577804-b9d0-405c-8ff6-508d420fc606', '0xc57adb3f77163f51175a8080d857adacb57303c6');

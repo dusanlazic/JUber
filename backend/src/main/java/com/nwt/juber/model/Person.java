@@ -21,8 +21,5 @@ public class Person extends User {
     private String city;
 
     private String phoneNumber;
-
-    @OneToOne
-    private PaymentInfo paymentInfo;
     
 }

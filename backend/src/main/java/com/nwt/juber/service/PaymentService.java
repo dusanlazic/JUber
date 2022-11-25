@@ -21,6 +21,7 @@ import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.sql.Date;
 import java.time.Instant;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -55,41 +56,47 @@ public class PaymentService {
     @Scheduled(cron = "*/5 * * * * *")
     private void processDeposits() {
         Instant limit = Instant.now().minusSeconds(appProperties.getEtherscan().getPendingTimeoutSeconds());
-        List<DepositAddress> pendingAddresses = depositAddressRepository.findPendingAndModifiedAfter(Date.from(limit));
-        WebClient webClient = WebClient.create(appProperties.getEtherscan().getUrl());
+        List<DepositAddress> recentPendingAddresses = depositAddressRepository.findPendingAndModifiedAfter(Date.from(limit));
 
-        if (pendingAddresses.size() > 0) {
-            String addresses = pendingAddresses.stream().map(DepositAddress::getEthAddress).collect(Collectors.joining(","));
-            BalancesResponse response = webClient.get()
-                    .uri(uriBuilder -> uriBuilder
-                            .queryParam("module", "account")
-                            .queryParam("action", "balancemulti")
-                            .queryParam("address", addresses)
-                            .queryParam("tag", "latest")
-                            .queryParam("apikey", appProperties.getEtherscan().getKey())
-                            .build())
-                    .retrieve()
-                    .bodyToMono(BalancesResponse.class)
-                    .block();
-            if (response != null) {
-                List<AccountBalancePair> balances = response.getResult();
-                balances.forEach(addr -> {
-                    DepositAddress depositAddress = depositAddressRepository.getByEthAddress(addr.getAccount()).get();
-                    Passenger passenger = depositAddress.getPassenger();
+        if (recentPendingAddresses.size() > 0) {
+            List<AccountBalancePair> balances = fetchBalancesFromEtherscan(recentPendingAddresses);
 
-                    if (!addr.getBalance().equals("0")) {
-                        BigInteger weiBalance = new BigInteger(addr.getBalance());
-                        BigDecimal currentBalance = passenger.getBalance();
-                        BigDecimal updatedBalance = currentBalance.add(convertFromWei(weiBalance));
+            balances.forEach(addr -> {
+                DepositAddress depositAddress = depositAddressRepository.getByEthAddress(addr.getAccount()).get();
+                Passenger passenger = depositAddress.getPassenger();
 
-                        depositAddress.setStatus(DepositAddressStatus.PAID);
-                        passenger.setBalance(updatedBalance);
-                        depositAddressRepository.save(depositAddress);
-                        userRepository.save(passenger);
-                    }
-                });
-            }
+                if (!addr.getBalance().equals("0")) {
+                    BigInteger weiBalance = new BigInteger(addr.getBalance());
+                    BigDecimal currentBalance = passenger.getBalance();
+                    BigDecimal updatedBalance = currentBalance.add(convertFromWei(weiBalance));
+
+                    depositAddress.setStatus(DepositAddressStatus.PAID);
+                    passenger.setBalance(updatedBalance);
+                    depositAddressRepository.save(depositAddress);
+                    userRepository.save(passenger);
+                }
+            });
         }
+    }
+
+    private List<AccountBalancePair> fetchBalancesFromEtherscan(List<DepositAddress> pendingAddresses) {
+        WebClient webClient = WebClient.create(appProperties.getEtherscan().getUrl());
+        String addresses = pendingAddresses.stream().map(DepositAddress::getEthAddress).collect(Collectors.joining(","));
+        BalancesResponse response = webClient.get()
+                .uri(uriBuilder -> uriBuilder
+                        .queryParam("module", "account")
+                        .queryParam("action", "balancemulti")
+                        .queryParam("address", addresses)
+                        .queryParam("tag", "latest")
+                        .queryParam("apikey", appProperties.getEtherscan().getKey())
+                        .build())
+                .retrieve()
+                .bodyToMono(BalancesResponse.class)
+                .block();
+        if (response == null)
+            return new LinkedList<>();
+
+        return response.getResult();
     }
 
     private DepositAddress generateNewDepositAddresses() {

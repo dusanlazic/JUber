@@ -2,9 +2,12 @@ package com.nwt.juber.model;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.UUID;
 
 @Entity
@@ -22,5 +25,12 @@ public class DepositAddress {
     @ManyToOne
     private Passenger passenger;
 
-    private BigDecimal paidWei;
+    @Enumerated(EnumType.STRING)
+    private DepositAddressStatus status = DepositAddressStatus.UNASSIGNED;
+
+    @CreationTimestamp
+    private Date created;
+
+    @UpdateTimestamp
+    private Date modified;
 }

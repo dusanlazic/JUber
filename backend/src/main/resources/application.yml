@@ -68,9 +68,11 @@ app:
   oauth2:
     authorizedRedirectUris:
       - http://localhost:3000/oauth2/redirect
-  etherscan:
-    key: ${ETHERSCAN_API_KEY}
-    url: 'https://api-sepolia.etherscan.io/api'
+  payment:
+    etherscanKey: ${ETHERSCAN_API_KEY}
+    etherscanUrl: 'https://api-sepolia.etherscan.io/api'
+    cryptocompareKey: ${CRYPTOCOMPARE_API_KEY}
+    cryptocompareUrl: 'https://min-api.cryptocompare.com/data/price'
     pendingTimeoutSeconds: 15 # Increase to 120
 logging:
   pattern:

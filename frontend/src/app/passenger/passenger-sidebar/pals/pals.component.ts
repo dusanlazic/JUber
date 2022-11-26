@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AddPalEvent, IPal, IRideRequest } from 'src/app/store/rideRequest/rideRequest';
 import { Store } from '@ngrx/store';
 import { AddPalAction, DeletePalAction } from 'src/app/store/rideRequest/rideRequest.actions';
+import { Toastr } from 'src/services/util/toastr.service';
 
 @Component({
   selector: 'app-pals',
@@ -14,7 +15,10 @@ export class PalsComponent implements OnInit {
   passengers!: IPal[];
   colors: string[]
 
-  constructor(private store: Store<{rideRequest: IRideRequest}>) { 
+  constructor(
+    private store: Store<{rideRequest: IRideRequest}>, 
+    private toastr: Toastr
+  ) { 
     this.colors = new Array<string>()
   }
 
@@ -24,15 +28,23 @@ export class PalsComponent implements OnInit {
   ngAfterViewInit(): void {
     this.store.select('rideRequest').subscribe(state => {
 			if(state === undefined) return;
-      this.passengers = state.passengers
+      this.passengers = state.passengersInfo
 		})
   }
 
   addPal(event: AddPalEvent) : void {
     if(event.confirmed){
       const newPal: IPal = event.newPal as IPal;
-      this.colors.push(this.getRandomColor())
-      this.store.dispatch(AddPalAction({addedPal: newPal}))
+
+      if(this.isAddValid(newPal)){
+        this.colors.push(this.getRandomColor())
+        this.store.dispatch(AddPalAction({addedPal: newPal}))
+      }
+      else{
+        this.toastr.error("This pal is already added")
+        return
+      }
+      
     }
     this.toggleModal();
   }
@@ -53,4 +65,8 @@ export class PalsComponent implements OnInit {
     return '#' + ('000000' + color).slice(-6);
   }
   
+  private isAddValid(newPal: IPal) : boolean {
+    const result = this.passengers.filter(pal => pal.email === newPal.email);
+    return result.length == 0
+  }
 }

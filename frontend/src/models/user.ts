@@ -12,3 +12,9 @@ export enum Roles {
     PASSENGER_NEW="ROLE_PASSENGER_NEW"
 }
 
+export interface UserBasicInfo {
+    firstName: string;
+    lastName: string;
+    email: string;
+    imageUrl: string;
+}

@@ -1,5 +1,5 @@
 import { IAdditionalRequest, IRideRequest, IPal, VehicleType } from "src/app/store/rideRequest/rideRequest"
-import { Ride } from "./ride"
+import { Ride, Route } from "./ride"
 
 
 export class AdditionalRequests implements IAdditionalRequest {
@@ -14,9 +14,10 @@ export class AdditionalRequests implements IAdditionalRequest {
 
 export class RideRequest implements IRideRequest {
     constructor(
-        public ride: Ride = new Ride(),
+        public route: Route = new Route(),
         public additionalRequests: AdditionalRequests = new AdditionalRequests(),
         public scheduleTime: string = '',
-        public passengers: IPal[] = new Array<IPal>()) {
+        public passengersInfo: IPal[] = new Array<IPal>(),
+        public passengerEmails: string[]= new Array<string>()) {
     }
 }

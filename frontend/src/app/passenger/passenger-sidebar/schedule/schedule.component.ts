@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, ViewChild } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { IRideRequest } from 'src/app/store/rideRequest/rideRequest';
 import { UpdateScheduleTime } from 'src/app/store/rideRequest/rideRequest.actions';
@@ -27,8 +27,8 @@ export class ScheduleComponent implements OnInit {
 
   private createForm() : void{
     this.scheduleForm = this.builder.group({
-      hours: new FormControl(),
-      minutes: new FormControl(),
+      hours: new FormControl('', Validators.pattern("^([0-1]?[0-9]|2[0-3])$")),
+      minutes: new FormControl('', Validators.pattern("^[0-5][0-9]$")),
     }, {
       validators: [CustomValidators.Schedule5HoursValidator('hours', 'minutes')]
     });

@@ -1,4 +1,4 @@
-import { Ride } from "src/models/ride"
+import { Ride, Route } from "src/models/ride"
 import { AdditionalRequests } from "src/models/rideRequest"
 
 export type VehicleType = IVehicleType | null
@@ -14,14 +14,6 @@ export interface IAdditionalRequest {
     vehicleType: VehicleType
 }
 
-export interface IRideRequest {
-    ride: Ride
-    additionalRequests: AdditionalRequests
-    scheduleTime: string 
-    passengers: IPal[]
-}
-
-
 export interface AddPalEvent{
     confirmed: boolean,
     newPal?: IPal
@@ -34,4 +26,11 @@ export interface IPal {
     imageUrl?: string;
 }
 
-  
+
+export interface IRideRequest {
+    route: Route
+    additionalRequests: AdditionalRequests
+    scheduleTime: string 
+    passengersInfo: IPal[]
+    passengerEmails: string[]
+}

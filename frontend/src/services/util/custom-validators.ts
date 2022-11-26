@@ -27,7 +27,6 @@ export class CustomValidators {
         if(hoursCtrl && minutesCtrl && hoursCtrl.value && minutesCtrl.value) {
           isValid = this.Schedule5HoursValidate(hoursCtrl.value, minutesCtrl.value)
         }
-        console.log(isValid)
         return !isValid
           ? { invalidSchedule: true }
           : null;

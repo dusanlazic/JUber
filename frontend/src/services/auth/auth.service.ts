@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { JwtHelperService } from "@auth0/angular-jwt";
 import { BehaviorSubject, Observable, ReplaySubject, Subject } from "rxjs";
 import { environment } from "src/environments/environment";
-import { LocalRegistrationRequest, LoginRequest, PersonalInfo, TokenResponse } from "src/models/auth";
+import { LocalRegistrationRequest, LoginRequest, PasswordReset, PasswordResetLinkRequest, PersonalInfo, TokenResponse } from "src/models/auth";
 import { ApiResponse } from 'src/models/responses';
 import { LoggedUser } from 'src/models/user';
 import { HttpRequestService } from "../util/http-request.service";
@@ -93,5 +93,19 @@ export class AuthService {
         const url = environment.API_BASE_URL + `/auth/register/verify/${token}`;
         
         return this.httpRequestService.post(url, null) as Observable<any>;
+    }
+
+    requestPasswordReset(resetRequest: PasswordResetLinkRequest): Observable<any> {
+        const url = environment.API_BASE_URL + "/auth/recovery";
+        const body = JSON.stringify(resetRequest);
+
+        return this.httpRequestService.post(url, body) as Observable<any>;
+    }
+
+    resetPassword(passwordReset: PasswordReset): Observable<any> {
+        const url = environment.API_BASE_URL + "/auth/recovery";
+        const body = JSON.stringify(passwordReset);
+
+        return this.httpRequestService.patch(url, body) as Observable<any>;
     }
 }

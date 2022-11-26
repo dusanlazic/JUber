@@ -3,6 +3,7 @@ import * as RideRequestAction from "./rideRequest.actions";
 import * as _ from 'lodash';
 import { RideRequest } from "src/models/rideRequest";
 import { IRideRequest, IPal } from "./rideRequest";
+import { indexOf } from "lodash";
 
 
 const initialState: RideRequest = new RideRequest()
@@ -11,7 +12,7 @@ const reducer = createReducer(
 	initialState,
 
 	on(RideRequestAction.DeletePalAction, (state, action) => {
-		let pals: IPal[] = _.cloneDeep(state.passengers)
+		let pals: IPal[] = _.cloneDeep(state.passengersInfo)
 		let toRemove = pals.filter((pal: IPal) => action.removePal.email === pal.email).at(0)
 		if(toRemove === undefined) {
 			return state;
@@ -19,7 +20,8 @@ const reducer = createReducer(
 		pals = pals.filter((pal: IPal) => toRemove!.email !== pal.email)
 		const newState: IRideRequest = {
 			...state,
-			passengers: pals
+			passengersInfo: pals,
+			
 		}
 		return newState
 	 }),
@@ -27,7 +29,7 @@ const reducer = createReducer(
 	on(RideRequestAction.AddPalAction, (state, action) => {
 	   return {
 		...state,
-		passengers: [...state.passengers, {...action.addedPal}]
+		passengersInfo: [...state.passengersInfo, {...action.addedPal}],
 		}
 	}),
 

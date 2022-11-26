@@ -64,7 +64,10 @@ export class PassengerSidebarComponent implements OnInit {
 		console.log(this.rideRequest)
 		console.log(this.ride)
 
-		this.rideService.sendRideRequest(this.rideRequest).subscribe({
+		let rideRequest = {...this.rideRequest}
+		rideRequest.passengerEmails = rideRequest.passengersInfo.map((pal)=> pal.email)
+
+		this.rideService.sendRideRequest(rideRequest).subscribe({
 			next: () => {
 				console.log("request sent")
 			},

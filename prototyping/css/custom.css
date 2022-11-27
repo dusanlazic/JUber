@@ -8052,3 +8052,44 @@ input::-webkit-inner-spin-button {
     opacity: 1 !important; }
     .has-custom-swap-button:hover .is-custom-swap:disabled {
       opacity: 0.4 !important; }
+
+.box.is-custom-settings-box {
+  height: 600px;
+  width: 1344px;
+  margin-top: 100px;
+  padding-left: 0px;
+  padding-top: 0px; }
+  .box.is-custom-settings-box .columns {
+    margin: 0px; }
+    .box.is-custom-settings-box .columns .column.is-navigation-sidebar {
+      display: flex;
+      flex-direction: column;
+      height: 600px;
+      border-top-left-radius: 6px;
+      border-bottom-left-radius: 6px;
+      border-right: 1px solid #dbdbdb;
+      padding-left: 0px;
+      padding-top: 0px; }
+      .box.is-custom-settings-box .columns .column.is-navigation-sidebar .navigation-item {
+        margin-left: 0px;
+        padding-left: 10px;
+        height: 60px;
+        line-height: 60px;
+        font-weight: bold;
+        border-left: 3px solid transparent; }
+        .box.is-custom-settings-box .columns .column.is-navigation-sidebar .navigation-item:hover {
+          border-left: 3px solid #dbdbdb;
+          cursor: pointer; }
+        .box.is-custom-settings-box .columns .column.is-navigation-sidebar .navigation-item.is-selected {
+          border-left: 3px solid #48c78e; }
+        .box.is-custom-settings-box .columns .column.is-navigation-sidebar .navigation-item.is-first {
+          border-top-left-radius: 6px; }
+        .box.is-custom-settings-box .columns .column.is-navigation-sidebar .navigation-item .iconify-inline {
+          margin-right: 8px; }
+      .box.is-custom-settings-box .columns .column.is-navigation-sidebar .is-user-info {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        margin-left: 0px;
+        padding-left: 10px;
+        margin-top: auto; }

@@ -8093,3 +8093,18 @@ input::-webkit-inner-spin-button {
         margin-left: 0px;
         padding-left: 10px;
         margin-top: auto; }
+    .box.is-custom-settings-box .columns .column.is-content {
+      padding-left: 25px;
+      padding-top: 25px; }
+
+.is-custom-size-big {
+  font-size: 50pt; }
+
+.is-custom-copy-button {
+  cursor: pointer; }
+  .is-custom-copy-button:hover {
+    color: #48c78e; }
+
+.image.is-180x180 {
+  height: 180px;
+  width: 180px; }

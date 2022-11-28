@@ -64,31 +64,36 @@
             <p class="title is-family-secondary">Balance</p>
             <div class="notification is-light">
               <p>Available</p>
-              <p class="title is-custom-size-big is-family-secondary">420,00 RSD</p>
+              <p class="title is-size-1 is-family-secondary"><b>420,00</b> RSD</p>
             </div>
-            <div class="columns">
-              <div class="column is-5 p-0 m-0">
+            <div class="columns is-vcentered mt-6">
+              <div class="column is-7 p-0 m-0">
                 <p class="subtitle is-size-4 mb-1">Top-up your balance</p>
                 <p>
-                  Send ETH <span class="iconify-inline" data-icon="logos:ethereum"></span> to the following address to deposit
+                  Send ETH <span class="iconify-inline" data-icon="logos:ethereum"></span> to the following address to deposit.
                 </p>
-                <figure class="image is-180x180 mt-3 ml-6">
+                <label class="label mt-5">Wallet address</label>
+                <div class="field has-addons">
+                  <div class="control is-expanded">
+                    <input class="input is-rounded has-background-light" type="text" value="0x01d3aa54b06728c5002e22d1558cd6d0a2c04c92" readonly>
+                  </div>
+                  <div class="control">
+                    <a class="button is-rounded">
+                      <span class="iconify is-size-4" data-icon="fluent:copy-16-regular"></span>
+                    </a>
+                  </div>
+                </div>
+                <div class="notification is-warning is-light mt-5">
+                  <p>
+                    <span class="iconify-inline is-size-5" data-icon="fluent:warning-16-regular"></span>
+                    Deposited funds are automatically converted to RSD.
+                  </p>
+                </div>
+              </div>
+              <div class="column p-0 m-0 has-text-centered">
+                <figure class="image is-256x256 is-inline-block">
                   <img src="assets/ethqr.png">
                 </figure>
-                <button class="button is-rounded is-light mt-3">
-                  0x01d3...04c92
-                </button>
-                <button class="button is-rounded mt-3">
-                  Copy
-                  <span class="iconify is-size-4 ml-2" data-icon="fluent:copy-16-regular"></span>
-                </button>
-              </div>
-              <div class="column p-0 m-0">
-                <div class="notification is-warning is-light">
-                  <p>Funds are automatically converted from ETH to RSD according to the current exchange rate reported by CryptoCompare.</p>
-                  <br>
-                  <p class="is-size-5">1 ETH = 135 084.77 RSD</p>
-                </div>
               </div>
             </div>
           </div>

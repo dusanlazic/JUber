@@ -31,5 +31,5 @@ public class PaymentController {
     public DepositAddressResponse requestDepositAddress(Authentication authentication) {
         Passenger passenger = (Passenger) authentication.getPrincipal();
         return paymentService.requestDepositAddress(passenger);
-     }
+    }
 }

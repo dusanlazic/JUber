@@ -6,7 +6,6 @@ import com.nwt.juber.dto.response.DepositAddressResponse;
 import com.nwt.juber.dto.response.cryptocompare.PriceResponse;
 import com.nwt.juber.dto.response.etherscan.AccountBalancePair;
 import com.nwt.juber.dto.response.etherscan.BalancesResponse;
-import com.nwt.juber.exception.NotImplementedException;
 import com.nwt.juber.model.DepositAddress;
 import com.nwt.juber.model.DepositAddressStatus;
 import com.nwt.juber.model.Passenger;
@@ -16,12 +15,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.web3j.crypto.Credentials;
+import org.web3j.crypto.ECKeyPair;
+import org.web3j.crypto.Keys;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.SecureRandom;
 import java.sql.Date;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -118,8 +125,23 @@ public class PaymentService {
     }
 
     private DepositAddress generateNewDepositAddresses() {
-        throw new NotImplementedException();
-        // return depositAddressRepository.findFirstUnassigned().get();
+        SecureRandom randomness = new SecureRandom();
+        List<DepositAddress> addresses = new ArrayList<>();
+
+        try {
+            for (int i = 0; i < 100; i++) {
+                ECKeyPair keyPair = Keys.createEcKeyPair(randomness);
+                String privateKey = keyPair.getPrivateKey().toString(16);
+                Credentials credentials = Credentials.create(privateKey);
+                System.out.println(credentials.getAddress() + " " + privateKey);
+                addresses.add(new DepositAddress(credentials.getAddress()));
+            }
+        } catch (InvalidAlgorithmParameterException | NoSuchAlgorithmException | NoSuchProviderException ignored) {
+
+        }
+
+        depositAddressRepository.saveAll(addresses);
+        return depositAddressRepository.findFirstUnassigned().get();
     }
 
     private BigDecimal convertFromWei(BigInteger value) {

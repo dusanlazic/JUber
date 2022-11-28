@@ -36,4 +36,10 @@ public class DepositAddress {
     public void updateModified() {
         this.modified = null;
     }
+
+    public DepositAddress(String ethAddress) {
+        this.id = UUID.randomUUID();
+        this.ethAddress = ethAddress;
+        this.status = DepositAddressStatus.UNASSIGNED;
+    }
 }

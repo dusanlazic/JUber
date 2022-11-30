@@ -28,11 +28,7 @@ export class PlaceComponent implements OnInit {
 
 	ngOnInit(): void {
 		this.store.select('state').subscribe(state => {
-			this.state = state;
-			console.log('ICON COLORS MAN');
-			
-			console.log(this.index, this.mapService.colors.at(this.index));
-			
+			this.state = state;			
 			this.color = this.mapService.colors.at(this.index) || 'gray';
 		});
 	}

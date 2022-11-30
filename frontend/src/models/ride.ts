@@ -15,6 +15,7 @@ export class Route implements IRoute {
 
 export class Place implements IPlace {
     constructor(public name: string = "",
+                public id: number = -1,
                 public option: string = "",
                 public point: Point | undefined = undefined,
                 public editing: boolean = false,

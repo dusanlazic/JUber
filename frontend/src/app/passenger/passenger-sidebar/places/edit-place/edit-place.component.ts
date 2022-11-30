@@ -60,7 +60,9 @@ export class EditPlaceComponent implements OnInit {
 
 	}
 
-	save() {
+	async save() {
+		if(this.origName !== this.name) 
+			await this.preview()
 		this.store.dispatch(RemovePreviewAction())
 		this.store.dispatch(StopEditingAction())
 		this.mapService.setEditing(this.ind);

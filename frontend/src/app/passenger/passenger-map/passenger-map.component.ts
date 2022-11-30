@@ -28,6 +28,33 @@ export class PassengerMapComponent implements AfterViewInit {
 	controls: L.Control[] = []
 	lines: L.Polyline[] = []
 
+	
+
+	// getIcon(options): void {
+	// 	var baseIcon = L.Icon.extend({
+    //         options: {
+    //             iconSize: [35, 45],
+    //             iconAnchor:   [17, 42],
+    //             popupAnchor: [1, -32],
+    //             shadowAnchor: [10, 12],
+    //             shadowSize: [36, 16],
+    //             className: 'awesome-marker',
+    //             prefix: 'fa',
+    //             spinClass: 'fa-spin',
+    //             extraClasses: '',
+    //             icon: 'snowflake-o',
+    //             markerColor: 'blue',
+    //             iconColor: 'white'
+	// 		}
+    // },
+
+	// leafIcon = helper.getIcon(
+	// 	{icon: 'leaf',
+	// 	markerColor: 'red'}
+	// );
+
+	myIcon = L.divIcon({className: 'my-div-icon'});
+
 
   	mapOptions = {
 		show: false,
@@ -91,23 +118,23 @@ export class PassengerMapComponent implements AfterViewInit {
 				this.drawPolyline(route.coordinates, 'blue', 2, true, route, place)
 			}
 		}
-		this.drawMarker(place.point!)
+		this.drawMarker(place.point!, this.mapService.colors[0])
 	}
 
 	drawRide(ride: Ride) {
 
 		if (ride.places.length > 1) {
 			let i = 1
-			this.drawMarker(ride.places[0].point!)
+			this.drawMarker(ride.places[0].point!, this.mapService.colors[0])
 			for (; i < ride.places.length; i++) {
 				let curr = ride.places[i];
 				if(curr.editing) continue;
 				let selectedRoute = curr.routes.filter(x => x.selected).at(0)
-				this.drawPolyline(selectedRoute!.coordinates);
-				this.drawMarker(curr.point!)
+				this.drawPolyline(selectedRoute!.coordinates, this.mapService.colors[i]);
+				this.drawMarker(curr.point!, this.mapService.colors[i])
 			}
 		} else if(ride.places.length == 1) {
-			this.drawMarker(ride.places[0].point!)
+			this.drawMarker(ride.places[0].point!, this.mapService.colors[0])
 		}
 	}
 
@@ -120,8 +147,27 @@ export class PassengerMapComponent implements AfterViewInit {
 	}
 
 
-	drawMarker(point: Point) {
-		L.marker([point.latitude, point.longitude]).addTo(this.map);
+	drawMarker(point: Point, color: string) {
+		const markerHtmlStyles = `
+			background-color: ${color};
+			width: 2rem;
+			height: 2rem;
+			display: block;
+			left: -1.5rem;
+			top: -1.5rem;
+			position: relative;
+			border-radius: 2rem 2rem 0;
+			transform: rotate(45deg);
+			border: 1px solid #FFFFFF
+		`
+
+		const icon = L.divIcon({
+			className: "my-custom-pin",
+			iconAnchor: [0, 24],
+			popupAnchor: [0, -36],
+			html: `<span style="${markerHtmlStyles}" />`
+		})
+		L.marker([point.latitude, point.longitude], {icon: icon}).addTo(this.map);
 	}
 
 	drawPolyline(points: Array<Point>, color = 'red', weight = 4, selectable=false, route?: Route, place?: Place) {

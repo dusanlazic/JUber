@@ -24,9 +24,10 @@ export class PassengerSidebarComponent implements OnInit {
 
 	ngOnInit(): void {
 		this.mapService.editing$().subscribe(placeInd => {
-			console.log("MAP SERVICE SET EDITING");
 			
 			if(placeInd === -1) return;
+			if(placeInd === -2) this.isEditing = false;
+
 			if(this.isEditing && this.editingInd === placeInd) {
 				this.isEditing = false;
 			}

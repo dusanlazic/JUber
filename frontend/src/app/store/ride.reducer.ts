@@ -51,8 +51,6 @@ const reducer = createReducer(
 		if (editing) {
 			editing.option = action.route.name;
 			editing.routes = routes;
-			places = places.filter(place => !place.editing)
-			places.push(editing)
 		}
 
 		return {

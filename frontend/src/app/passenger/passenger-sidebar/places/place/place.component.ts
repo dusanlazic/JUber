@@ -1,10 +1,13 @@
 import { state } from '@angular/animations';
 import { Component, Input, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { MoveToPreviewAction, StopEditingAction } from 'src/app/store/ride.actions';
+import { after } from 'lodash';
+import { MoveToPreviewAction, StopEditingAction, SwapPlaceDownAction, SwapPlaceUpAction } from 'src/app/store/ride.actions';
 import { AppState } from 'src/app/store/ride.reducer';
-import { Place } from 'src/models/ride';
+import { Place, Route } from 'src/models/ride';
 import { MapService } from 'src/services/map/map.service';
+import { NominatimService } from 'src/services/map/nominatim.service';
+import { RoutingService } from 'src/services/map/routing.service';
 
 @Component({
 	selector: 'app-place',
@@ -14,14 +17,24 @@ import { MapService } from 'src/services/map/map.service';
 export class PlaceComponent implements OnInit {
 
 	@Input() place: Place | undefined;
-	@Input() index: number;
+	@Input() index: number = -1;
+	state: AppState | undefined;
 
-	constructor(private mapService: MapService, private store: Store<{state: AppState}>) {
-		this.index = -1;
+	color: string = 'gray';
+
+	constructor(private mapService: MapService, private store: Store<{state: AppState}>, private routingService: RoutingService) {
+		
 	 }
 
 	ngOnInit(): void {
-
+		this.store.select('state').subscribe(state => {
+			this.state = state;
+			console.log('ICON COLORS MAN');
+			
+			console.log(this.index, this.mapService.colors.at(this.index));
+			
+			this.color = this.mapService.colors.at(this.index) || 'gray';
+		});
 	}
 
 	editPlace() {
@@ -30,5 +43,45 @@ export class PlaceComponent implements OnInit {
 		this.store.dispatch(MoveToPreviewAction({place: this.place}))
 		this.mapService.setEditing(this.index);
 	}
+
+	async swapUp() {
+        if(!this.place || !this.state  || this.index === 0) return;
+		let beforeRoutes: Route[], afterRoutes : Route[];
+
+		if (this.index === 1) {
+			beforeRoutes = [];
+		} else {
+			beforeRoutes = await this.routingService.getRoutes([this.state?.ride.places[this.index - 2].point!, this.state?.ride.places[this.index].point!]);
+		}
+
+		if (this.index === this.state?.ride.places.length - 1) {
+			afterRoutes = [];
+		} else {
+			afterRoutes = await this.routingService.getRoutes([this.state?.ride.places[this.index - 1].point!, this.state?.ride.places[this.index + 1].point!]);
+		}
+		
+		this.store.dispatch(SwapPlaceUpAction({id: this.place.id, beforeRoutes: beforeRoutes, afterRoutes: afterRoutes}))
+		
+	}
+
+	async swapDown() {
+		if(!this.place || !this.state || this.index === this.state?.ride.places.length - 1) return;
+
+		let beforeRoutes: Route[], afterRoutes : Route[];
+
+		if (this.index === 0) {
+			beforeRoutes = [];
+		} else {
+			beforeRoutes = await this.routingService.getRoutes([this.state?.ride.places[this.index - 1].point!, this.state?.ride.places[this.index + 1].point!]);
+		}
+
+		if (this.index === this.state?.ride.places.length - 2) {
+			afterRoutes = [];
+		} else {
+			afterRoutes = await this.routingService.getRoutes([this.state?.ride.places[this.index].point!, this.state?.ride.places[this.index + 2].point!]);
+		}
+
+		this.store.dispatch(SwapPlaceDownAction({id: this.place.id, beforeRoutes: beforeRoutes, afterRoutes: afterRoutes}))
+    }
 
 }

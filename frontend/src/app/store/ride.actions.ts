@@ -14,7 +14,19 @@ export const UPDATE_EDITED_PLACE: string = "UPDATE_EDITED_PLACE"
 export const UPDATE_ROUTES: string = "UPDATE_ROUTES"
 export const STOP_EDITING: string = "STOP_EDITING"
 export const DELETE_PLACE: string = "DELETE_PLACE"
+export const SWAP_PLACE_UP: string = "SWAP_PLACE_UP"
+export const SWAP_PLACE_DOWN: string = "SWAP_PLACE_DOWN"
 
+
+export const SwapPlaceUpAction = createAction(
+	SWAP_PLACE_UP,
+	props<{id: number, beforeRoutes: Route[], afterRoutes: Route[]}>()
+)
+
+export const SwapPlaceDownAction = createAction(
+	SWAP_PLACE_DOWN,
+	props<{id: number, beforeRoutes: Route[], afterRoutes: Route[]}>()
+)
 
 export const AddPlaceAction = createAction(
 	ADD_PLACE,

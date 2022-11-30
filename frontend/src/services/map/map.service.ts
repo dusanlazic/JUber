@@ -13,10 +13,30 @@ import { RoutingService } from './routing.service';
 })
 export class MapService {
 
+	state: AppState | undefined;
+
 	constructor(private routingService: RoutingService,
 		private nominatimService: NominatimService,
-		private store: Store<{state: AppState}>) { }
+		private store: Store<{state: AppState}>) { 
+			this.store.select('state').subscribe(state => {
+				this.state = state;
+			})
+	}
 
+	colors = [
+		"#F94144",
+		"#43AA8B",
+		"#F8961E",
+		"#577590",
+		"#F9C74F",
+		"#90BE6D",
+		"#F3722C",
+		"#4D908E",
+		"#F9844A",
+		"#277DA1",
+	]
+
+	//
 	private _mapPreview = new BehaviorSubject<string>('');
 
 	mapPreview$(): Observable<any> {
@@ -44,6 +64,7 @@ export class MapService {
 		let place = new Place();
 		place.name = name;
 		place.editing = true;
+		place.id = ind == -1 ? this.state!.ride.places.length : ind;
 		let geoLoc = (await firstValueFrom(this.nominatimService.addressLookup(name)))[0];
 		place.point = new Point(geoLoc.lat, geoLoc.lon);
 		let lastPlace;
@@ -64,9 +85,5 @@ export class MapService {
 		return place;
 	}
 	
-
-
-
-
 
 }

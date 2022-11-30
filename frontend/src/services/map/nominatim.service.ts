@@ -14,7 +14,7 @@ export class NominatimService {
   }
 
   addressLookup(req?: any): Observable<any> {
-    let url = `https://${this.BASE_NOMINATIM_URL}/search?format=json&q=${req}`;
+    let url = `https://${this.BASE_NOMINATIM_URL}/search?format=json&q=${req}, Novi Sad`;
     return this.http.get(url)
   }
 }

@@ -41,7 +41,7 @@ export class LoginPageComponent implements OnInit {
   login() : void{
     this.authService.login(this.loginForm.value).subscribe({
         next: (response: TokenResponse) => {
-          this.authService.handleSuccessfulAuth(response.accessToken, '/home'); // authenticated
+          this.authService.handleSuccessfulAuth(response.expiresAt, '/home'); // authenticated
         },
         error: (e: HttpErrorResponse) => {
           this.handleLoginError(e.error)

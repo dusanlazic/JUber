@@ -2,6 +2,7 @@ package com.nwt.juber.security.oauth;
 
 import com.nwt.juber.config.AppProperties;
 import com.nwt.juber.exception.BadRequestException;
+import com.nwt.juber.security.TokenAuthenticationFilter;
 import com.nwt.juber.security.TokenProvider;
 import com.nwt.juber.util.CookieUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,18 +36,27 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     private HttpCookieOAuth2AuthorizationRequestRepository httpCookieRepository;
 
     @Override
-    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication auth) throws IOException, ServletException {
-        String targetUrl = determineTargetUrl(request, response, auth);
+    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication auth) throws IOException {
+        String accessToken = tokenProvider.createAccessToken(auth);
+        Long expiresAt = tokenProvider.readClaims(accessToken).getExpiration().getTime();
+        String targetUrl = determineTargetUrl(request, response, expiresAt);
 
         if (response.isCommitted())
             return;
+
+        Integer tokenExpirationSeconds = appProperties.getAuth().getTokenExpirationSeconds();
+        CookieUtils.addCookie(
+                response,
+                TokenAuthenticationFilter.ACCESS_TOKEN_COOKIE_NAME,
+                accessToken,
+                tokenExpirationSeconds
+        );
 
         clearAuthenticationAttributes(request, response);
         getRedirectStrategy().sendRedirect(request, response, targetUrl);
     }
 
-    @Override
-    protected String determineTargetUrl(HttpServletRequest request, HttpServletResponse response, Authentication auth) {
+    protected String determineTargetUrl(HttpServletRequest request, HttpServletResponse response, Long expiresAt) {
         Optional<String> redirectUri = CookieUtils.getCookie(request, REDIRECT_URI_PARAM_COOKIE_NAME)
                 .map(Cookie::getValue);
 
@@ -54,11 +64,10 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
             throw new BadRequestException();
 
         String targetUrl = redirectUri.orElse(getDefaultTargetUrl());
-        String token = tokenProvider.createAccessToken(auth);
 
         return UriComponentsBuilder
                 .fromUriString(targetUrl)
-                .queryParam("token", token)
+                .queryParam("expiresAt", expiresAt)
                 .build()
                 .toUriString();
     }

@@ -6,6 +6,7 @@ export type LoginRequest = {
 
 export type TokenResponse = {
     accessToken: string;
+    expiresAt: number;
 }
 
 export type PasswordResetLinkRequest = {

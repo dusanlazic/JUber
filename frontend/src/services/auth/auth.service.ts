@@ -30,7 +30,7 @@ export class AuthService {
     login(loginRequest: LoginRequest) : Observable<TokenResponse> {
         const url = environment.API_BASE_URL + "/auth/login";
         const body = JSON.stringify(loginRequest);
-        
+
         return this.httpRequestService.post(url, body) as Observable<TokenResponse>;
     }
 
@@ -50,15 +50,15 @@ export class AuthService {
     }
 
     isAuthenticated(): boolean {
-        const token = this.localStorage.getToken();
-        if(token) {
-            return !jwtHelper.isTokenExpired(token);
+        const tokenExpiration = this.localStorage.getTokenExpiration();
+        if(tokenExpiration) {
+            return Date.now() < tokenExpiration;
         }
         return false;
     }
 
-    handleSuccessfulAuth(token: string, redirectPath: string) : void {
-        this.localStorage.setToken(token);
+    handleSuccessfulAuth(expiresAt: number, redirectPath: string) : void {
+        this.localStorage.setTokenExpiration(expiresAt);
 
         this.getCurrentUser().subscribe({
             next: (user: LoggedUser) => {
@@ -76,22 +76,25 @@ export class AuthService {
     getCurrentUser() : Observable<LoggedUser>{
         if(this.loggedUser){
             return new Observable(observer => {
-                observer.next(this.loggedUser); 
+                observer.next(this.loggedUser);
             });
         }
-        
+
         const url = environment.API_BASE_URL + "/auth/me";
         return this.httpRequestService.get(url) as Observable<LoggedUser>;
     }
 
     logout() : void {
+        const url = environment.API_BASE_URL + "/auth/logout";
+        this.httpRequestService.post(url, null)
+
         this.localStorage.clearAll();
     }
 
 
     verifyEmail(token: string) : Observable<any> {
         const url = environment.API_BASE_URL + `/auth/register/verify/${token}`;
-        
+
         return this.httpRequestService.post(url, null) as Observable<any>;
     }
 }

@@ -1,26 +1,35 @@
 package com.nwt.juber.service;
 
+import com.nwt.juber.config.AppProperties;
 import com.nwt.juber.dto.request.*;
-import com.nwt.juber.exception.EmailAlreadyInUseException;
-import com.nwt.juber.exception.InvalidPasswordRequestException;
-import com.nwt.juber.exception.InvalidRecoveryTokenException;
-import com.nwt.juber.exception.PhoneNumberAlreadyInUseException;
-import com.nwt.juber.exception.UserNotFoundException;
+import com.nwt.juber.dto.response.TokenResponse;
+import com.nwt.juber.exception.*;
 import com.nwt.juber.model.*;
 import com.nwt.juber.repository.PersonRepository;
 import com.nwt.juber.repository.UserRepository;
+import com.nwt.juber.security.TokenAuthenticationFilter;
 import com.nwt.juber.security.TokenProvider;
 import com.nwt.juber.security.TokenType;
+import com.nwt.juber.util.CookieUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.Optional;
 import java.util.UUID;
 
 @Service
 public class AccountService {
+
+    @Autowired
+    private AuthenticationManager authenticationManager;
 
     @Autowired
     private UserRepository userRepository;
@@ -33,6 +42,33 @@ public class AccountService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private AppProperties appProperties;
+
+    public TokenResponse login(LoginRequest loginRequest, HttpServletResponse response) {
+        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+                loginRequest.getEmail(),
+                loginRequest.getPassword()
+        ));
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        String accessToken = tokenProvider.createAccessToken(authentication);
+        Integer tokenExpirationSeconds = appProperties.getAuth().getTokenExpirationSeconds();
+        CookieUtils.addCookie(
+                response,
+                TokenAuthenticationFilter.ACCESS_TOKEN_COOKIE_NAME,
+                accessToken,
+                tokenExpirationSeconds
+        );
+
+        Long expiresAt = tokenProvider.readClaims(accessToken).getExpiration().getTime();
+        return new TokenResponse(accessToken, expiresAt);
+    }
+
+    public void logout(HttpServletRequest request, HttpServletResponse response) {
+        CookieUtils.deleteCookie(request, response, TokenAuthenticationFilter.ACCESS_TOKEN_COOKIE_NAME);
+    }
 
     public void registerUserLocal(LocalRegistrationRequest registrationRequest) {
         checkEmailAvailability(registrationRequest.getEmail());

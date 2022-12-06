@@ -4,9 +4,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nwt.juber.api.ResponseError;
 import com.nwt.juber.exception.InvalidAccessTokenException;
 import com.nwt.juber.exception.InvalidTokenTypeException;
+import com.nwt.juber.util.CookieUtils;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.UnsupportedJwtException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -17,12 +19,16 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Optional;
 import java.util.UUID;
 
 public class TokenAuthenticationFilter extends OncePerRequestFilter {
+
+    public static final String ACCESS_TOKEN_COOKIE_NAME = "access_token";
 
     @Autowired
     private TokenProvider tokenProvider;
@@ -59,9 +65,14 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
     }
 
     private String readTokenFromRequest(HttpServletRequest request) {
-        String authHeader = request.getHeader("Authorization");
+        Optional<Cookie> accessTokenCookie = CookieUtils.getCookie(request, ACCESS_TOKEN_COOKIE_NAME);
+        if (accessTokenCookie.isPresent())
+            return accessTokenCookie.get().getValue();
+
+        String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
         if (StringUtils.hasLength(authHeader) && authHeader.startsWith("Bearer "))
-            return authHeader.substring(7, authHeader.length());
+            return authHeader.substring(7);
+
         return null;
     }
 

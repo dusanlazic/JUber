@@ -1,12 +1,15 @@
 package com.nwt.juber.controller;
 
 import com.nwt.juber.api.ResponseOk;
+import com.nwt.juber.config.AppProperties;
 import com.nwt.juber.dto.request.*;
 import com.nwt.juber.dto.response.OAuth2UserInfoResponse;
 import com.nwt.juber.dto.response.TokenResponse;
 import com.nwt.juber.model.User;
+import com.nwt.juber.security.TokenAuthenticationFilter;
 import com.nwt.juber.security.TokenProvider;
 import com.nwt.juber.service.AccountService;
+import com.nwt.juber.util.CookieUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -16,6 +19,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 @RestController
@@ -31,17 +36,32 @@ public class AuthController {
     @Autowired
     private AccountService accountService;
 
+    @Autowired
+    private AppProperties appProperties;
+
     @PostMapping("/login")
-    public TokenResponse login(@Valid @RequestBody LoginRequest loginRequest) {
+    public TokenResponse login(@Valid @RequestBody LoginRequest loginRequest, HttpServletResponse response) {
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                 loginRequest.getEmail(),
                 loginRequest.getPassword()
         ));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        User user = (User) authentication.getPrincipal();
+        String accessToken = tokenProvider.createAccessToken(authentication);
+        CookieUtils.addCookie(
+                response,
+                TokenAuthenticationFilter.ACCESS_TOKEN_COOKIE_NAME,
+                accessToken,
+                appProperties.getAuth().getTokenExpirationSeconds()
+        );
 
-        return new TokenResponse(tokenProvider.createAccessToken(authentication));
+        return new TokenResponse(accessToken);
+    }
+
+    @PostMapping("/logout")
+    public ResponseOk logout(HttpServletRequest request, HttpServletResponse response) {
+        CookieUtils.deleteCookie(request, response, TokenAuthenticationFilter.ACCESS_TOKEN_COOKIE_NAME);
+        return new ResponseOk("Success");
     }
 
     @PostMapping("/register")

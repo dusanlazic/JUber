@@ -5,17 +5,15 @@ import com.nwt.juber.dto.request.*;
 import com.nwt.juber.dto.response.OAuth2UserInfoResponse;
 import com.nwt.juber.dto.response.TokenResponse;
 import com.nwt.juber.model.User;
-import com.nwt.juber.security.TokenProvider;
 import com.nwt.juber.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 @RestController
@@ -23,25 +21,17 @@ import javax.validation.Valid;
 public class AuthController {
 
     @Autowired
-    private AuthenticationManager authenticationManager;
-
-    @Autowired
-    private TokenProvider tokenProvider;
-
-    @Autowired
     private AccountService accountService;
 
     @PostMapping("/login")
-    public TokenResponse login(@Valid @RequestBody LoginRequest loginRequest) {
-        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                loginRequest.getEmail(),
-                loginRequest.getPassword()
-        ));
+    public TokenResponse login(@Valid @RequestBody LoginRequest loginRequest, HttpServletResponse response) {
+        return accountService.login(loginRequest, response);
+    }
 
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        User user = (User) authentication.getPrincipal();
-
-        return new TokenResponse(tokenProvider.createAccessToken(authentication));
+    @PostMapping("/logout")
+    public ResponseOk logout(HttpServletRequest request, HttpServletResponse response) {
+        accountService.logout(request, response);
+        return new ResponseOk("Success");
     }
 
     @PostMapping("/register")

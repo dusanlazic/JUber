@@ -6,7 +6,7 @@ import { environment } from 'src/environments/environment';
 })
 
 export class LocalStorageService {
-    private accessToken = environment.ACCESS_TOKEN;
+    private tokenExpiration = environment.TOKEN_EXPIRATION;
 
     constructor() {}
 
@@ -22,16 +22,19 @@ export class LocalStorageService {
         localStorage.removeItem(key);
     }
 
-    getToken(): string | null {
-        return localStorage.getItem(this.accessToken);
+    getTokenExpiration(): number | null {
+        const timestampString = localStorage.getItem(this.tokenExpiration);
+        if (timestampString)
+            return Number(timestampString)
+        return null;
     }
     
-    setToken(token: string): void{
-        localStorage.setItem(this.accessToken, token);
+    setTokenExpiration(timestampString: number): void{
+        localStorage.setItem(this.tokenExpiration, timestampString.toString());
     }
 
-    removeToken(): void{
-        localStorage.removeItem(this.accessToken)
+    removeTokenExpiration(): void{
+        localStorage.removeItem(this.tokenExpiration)
     }
 
     clearAll(): void {

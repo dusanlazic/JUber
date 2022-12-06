@@ -15,28 +15,23 @@ export class HttpRequestService {
         const headers = new HttpHeaders({
             'Content-type': 'application/json'
         });
-        const storedToken = this.localStorageService.getToken();
 
-        if(storedToken){
-            return headers.append('Authorization', `Bearer ${storedToken}`);
-        }
         return headers;
-    
     }
 
     post(url: string, body: any) : Observable<any> {
         const headers = this.createHeaders();
-        return this.httpClient.post(url, body, {headers}) 
+        return this.httpClient.post(url, body, {headers, withCredentials: true}) 
     }
 
     get(url: string) : Observable<any> {
         const headers = this.createHeaders();
-        return this.httpClient.get(url, {headers}) 
+        return this.httpClient.get(url, {headers, withCredentials: true}) 
     }
 
     patch(url: string, body: any) : Observable<any> {
         const headers = this.createHeaders();
-        return this.httpClient.patch(url, body, {headers}) 
+        return this.httpClient.patch(url, body, {headers, withCredentials: true}) 
     }
 }
 

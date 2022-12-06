@@ -18,12 +18,11 @@ export class Oauth2RedirectHandlerComponent implements OnInit {
     private authService: AuthService,
     private toastr: Toastr
   ) {
-
-    const token = ParserUtil.getUrlParameter('token', this.router.url);
+    const expiresAt = Number(ParserUtil.getUrlParameter('expiresAt', this.router.url));
     const error = ParserUtil.getUrlParameter('error', this.router.url);
 
-    if(token) {
-        this.authService.handleSuccessfulAuth(token, '/home');  // authenticated
+    if(expiresAt) {
+        this.authService.handleSuccessfulAuth(expiresAt, '/home');  // authenticated
     } else {
         console.log(error);
         this.toastr.error('Oops! Something went wrong. Please try again!');

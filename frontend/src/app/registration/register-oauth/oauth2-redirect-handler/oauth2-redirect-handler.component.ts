@@ -18,11 +18,11 @@ export class Oauth2RegisterRedirectHandlerComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    const token = ParserUtil.getUrlParameter('token', this.router.url);
+    const expiresAt = Number(ParserUtil.getUrlParameter('expiresAt', this.router.url));
     const error = ParserUtil.getUrlParameter('error', this.router.url);
 
-    if(token) {
-        this.authService.handleSuccessfulAuth(token, '/registration/social');
+    if(expiresAt) {
+        this.authService.handleSuccessfulAuth(expiresAt, '/registration/social');
     } else {
         console.log(error);
         this.toastr.error('Oops! Something went wrong. Please try again!');

@@ -8,7 +8,7 @@ const OAUTH2_REDIRECT_URI_REGISTER= 'http://localhost:3000/oauth2/redirect-regis
 
 export const environment = {
   production: false,
-  ACCESS_TOKEN: 'accessToken',
+  TOKEN_EXPIRATION: 'tokenExpiration',
 
   API_BASE_URL: API_BASE_URL,
   OAUTH2_REDIRECT_URI_LOGIN: OAUTH2_REDIRECT_URI_LOGIN,

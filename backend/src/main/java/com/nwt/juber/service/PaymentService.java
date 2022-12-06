@@ -66,25 +66,26 @@ public class PaymentService {
         Instant limit = Instant.now().minusSeconds(appProperties.getPayment().getPendingTimeoutSeconds());
         List<DepositAddress> recentPendingAddresses = depositAddressRepository.findPendingAndModifiedAfter(Date.from(limit));
 
-        if (recentPendingAddresses.size() > 0) {
-            List<AccountBalancePair> balances = fetchBalancesFromEtherscan(recentPendingAddresses);
+        if (recentPendingAddresses.size() == 0)
+            return;
 
-            balances.forEach(addr -> {
-                DepositAddress depositAddress = depositAddressRepository.getByEthAddress(addr.getAccount()).get();
-                Passenger passenger = depositAddress.getPassenger();
+        List<AccountBalancePair> balances = fetchBalancesFromEtherscan(recentPendingAddresses);
+        balances.forEach(addr -> {
+            if (addr.getBalance().equals("0"))
+                return;
 
-                if (!addr.getBalance().equals("0")) {
-                    BigInteger weiBalance = new BigInteger(addr.getBalance());
-                    BigDecimal currentBalance = passenger.getBalance();
-                    BigDecimal updatedBalance = currentBalance.add(convertFromWei(weiBalance));
+            DepositAddress depositAddress = depositAddressRepository.getByEthAddress(addr.getAccount()).get();
+            Passenger passenger = depositAddress.getPassenger();
 
-                    depositAddress.setStatus(DepositAddressStatus.PAID);
-                    passenger.setBalance(updatedBalance);
-                    depositAddressRepository.save(depositAddress);
-                    userRepository.save(passenger);
-                }
-            });
-        }
+            BigInteger weiBalance = new BigInteger(addr.getBalance());
+            BigDecimal currentBalance = passenger.getBalance();
+            BigDecimal updatedBalance = currentBalance.add(convertFromWei(weiBalance));
+
+            depositAddress.setStatus(DepositAddressStatus.PAID);
+            passenger.setBalance(updatedBalance);
+            depositAddressRepository.save(depositAddress);
+            userRepository.save(passenger);
+        });
     }
 
     private List<AccountBalancePair> fetchBalancesFromEtherscan(List<DepositAddress> pendingAddresses) {

@@ -12,6 +12,7 @@ import com.nwt.juber.model.Passenger;
 import com.nwt.juber.repository.DepositAddressRepository;
 import com.nwt.juber.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -44,6 +45,9 @@ public class PaymentService {
 
     @Autowired
     private AppProperties appProperties;
+
+    @Autowired
+    private SimpMessagingTemplate messagingTemplate;
 
     public BalanceResponse checkBalance(Passenger passenger) {
         return new BalanceResponse(passenger.getBalance());
@@ -85,6 +89,8 @@ public class PaymentService {
             passenger.setBalance(updatedBalance);
             depositAddressRepository.save(depositAddress);
             userRepository.save(passenger);
+
+            notifyUserAboutDeposit(passenger);
         });
     }
 
@@ -151,4 +157,10 @@ public class PaymentService {
                 .multiply(fetchEthPriceFromCryptocompare())
                 .setScale(2, RoundingMode.HALF_UP);
     }
+
+    private void notifyUserAboutDeposit(Passenger passenger) {
+        BalanceResponse response = new BalanceResponse(passenger.getBalance());
+        messagingTemplate.convertAndSendToUser(passenger.getUsername(), "/queue/balance", response);
+    }
+
 }

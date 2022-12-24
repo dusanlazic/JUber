@@ -1,5 +1,6 @@
 package com.nwt.juber.model;
 
+import com.nwt.juber.model.notification.PersistedNotification;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
@@ -9,7 +10,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 import java.util.*;
 
 @Entity
@@ -43,6 +43,9 @@ public class User implements OAuth2User, UserDetails {
 
     @Enumerated(EnumType.STRING)
     private Role role;
+
+    @ManyToMany
+    private List<PersistedNotification> notifications;
 
     @CreationTimestamp
     private Date created;

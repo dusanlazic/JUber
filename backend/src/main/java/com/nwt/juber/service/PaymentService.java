@@ -1,6 +1,7 @@
 package com.nwt.juber.service;
 
 import com.nwt.juber.config.AppProperties;
+import com.nwt.juber.dto.message.BalanceUpdatedMessage;
 import com.nwt.juber.dto.response.BalanceResponse;
 import com.nwt.juber.dto.response.DepositAddressResponse;
 import com.nwt.juber.dto.response.cryptocompare.PriceResponse;
@@ -82,15 +83,16 @@ public class PaymentService {
             Passenger passenger = depositAddress.getPassenger();
 
             BigInteger weiBalance = new BigInteger(addr.getBalance());
+            BigDecimal increase = convertFromWei(weiBalance);
             BigDecimal currentBalance = passenger.getBalance();
-            BigDecimal updatedBalance = currentBalance.add(convertFromWei(weiBalance));
+            BigDecimal updatedBalance = currentBalance.add(increase);
 
             depositAddress.setStatus(DepositAddressStatus.PAID);
             passenger.setBalance(updatedBalance);
             depositAddressRepository.save(depositAddress);
             userRepository.save(passenger);
 
-            notifyUserAboutDeposit(passenger);
+            notifyUserAboutProcessedDeposit(passenger, increase);
         });
     }
 
@@ -158,9 +160,9 @@ public class PaymentService {
                 .setScale(2, RoundingMode.HALF_UP);
     }
 
-    private void notifyUserAboutDeposit(Passenger passenger) {
-        BalanceResponse response = new BalanceResponse(passenger.getBalance());
-        messagingTemplate.convertAndSendToUser(passenger.getUsername(), "/queue/balance", response);
+    private void notifyUserAboutProcessedDeposit(Passenger passenger, BigDecimal increase) {
+        BalanceUpdatedMessage message = new BalanceUpdatedMessage(passenger.getBalance(), increase);
+        messagingTemplate.convertAndSendToUser(passenger.getUsername(), "/queue/balance", message);
     }
 
 }

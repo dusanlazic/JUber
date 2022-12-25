@@ -1,9 +1,9 @@
 import { HttpErrorResponse, HttpStatusCode } from '@angular/common/http';
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ApiResponse } from 'src/models/responses';
-import { UserService } from 'src/services/user.service';
+import { AuthService } from 'src/services/auth/auth.service';
 import { Toastr } from 'src/services/util/toastr.service';
 
 @Component({
@@ -18,7 +18,7 @@ export class PasswordResetRequestComponent implements OnInit {
   constructor(
     private builder: FormBuilder,
     private toastr: Toastr,
-    private userService: UserService,
+    private authService: AuthService,
     private router: Router
   )
   { 
@@ -45,7 +45,7 @@ export class PasswordResetRequestComponent implements OnInit {
   }
 
   private sendPasswordResetRequest() : void {
-    this.userService.requestPasswordReset(this.requestForm.value).subscribe({
+    this.authService.requestPasswordReset(this.requestForm.value).subscribe({
       next: () => {
         this.router.navigate(['/password-recovery/request-success'], {skipLocationChange: true});
       },

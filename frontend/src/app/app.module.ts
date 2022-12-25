@@ -15,7 +15,6 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { LoginPageComponent } from './login-page/login-page.component';
 import { Oauth2RedirectHandlerComponent } from './login-page/oauth2-redirect-handler/oauth2-redirect-handler.component';
-import { ProfileComponent } from './profile/profile.component';
 import { ToastrModule } from 'ngx-toastr';
 import { RegisterOauthComponent } from './registration/register-oauth/register-oauth.component';
 import { RegisterLocalComponent } from './registration/register-local/register-local.component';
@@ -29,6 +28,22 @@ import { PasswordResetRequestSuccessComponent } from './password-recovery-page/p
 import { PasswordResetSuccessComponent } from './password-recovery-page/password-reset-success/password-reset-success.component';
 import { EmailVerificationComponent } from './registration/email-verification/email-verification.component';
 
+import { HomeComponent } from './shared/homepage/home/home.component';
+import { PassengerSidebarComponent } from './passenger/passenger-sidebar/passenger-sidebar.component';
+import { PassengerMapComponent } from './passenger/passenger-map/passenger-map.component';
+import { PlacesComponent } from './passenger/passenger-sidebar/places/places.component';
+import { PalsComponent } from './passenger/passenger-sidebar/pals/pals.component';
+import { PlaceComponent } from './passenger/passenger-sidebar/places/place/place.component';
+import { EmptyPlaceComponent } from './passenger/passenger-sidebar/places/empty-place/empty-place.component';
+import { AddPalsDialogComponent } from './passenger/passenger-sidebar/pals/add-pals-dialog/add-pals-dialog.component';
+import { AdditionalComponent } from './passenger/passenger-sidebar/additional/additional.component';
+import { ScheduleComponent } from './passenger/passenger-sidebar/schedule/schedule.component';
+import { EditPlaceComponent } from './passenger/passenger-sidebar/places/edit-place/edit-place.component';
+import { StoreModule } from '@ngrx/store';
+import { RideReducer } from './store/ride.reducer';
+import { RideRequestReducer } from './store/rideRequest/rideRequest.reducer';
+
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -36,9 +51,7 @@ import { EmailVerificationComponent } from './registration/email-verification/em
 
     LoginPageComponent,
     Oauth2RedirectHandlerComponent,
-    
-    ProfileComponent,
-    
+
     RegisterOauthComponent,
     RegisterLocalComponent,
     RegisterStep1Component,
@@ -52,6 +65,18 @@ import { EmailVerificationComponent } from './registration/email-verification/em
     PasswordResetFormComponent,
     PasswordResetSuccessComponent,
 
+    HomeComponent,
+    PassengerSidebarComponent,
+    PassengerMapComponent,
+    PlacesComponent,
+    PalsComponent,
+    PlaceComponent,
+    EmptyPlaceComponent,
+    AddPalsDialogComponent,
+    AdditionalComponent,
+    ScheduleComponent,
+
+    EditPlaceComponent,
   ],
   imports: [
     BrowserModule,
@@ -65,6 +90,7 @@ import { EmailVerificationComponent } from './registration/email-verification/em
     ReactiveFormsModule,
     HttpClientModule,
     ToastrModule.forRoot(),
+    StoreModule.forRoot({state: RideReducer, rideRequest: RideRequestReducer}),
   ],
   exports: [
     RegisterStep1Component,

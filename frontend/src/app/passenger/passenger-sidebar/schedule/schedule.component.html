@@ -1,0 +1,38 @@
+<div class="mt-5">
+  <div class="has-text-grey mb-3">Need a ride for <b>later</b>?
+  <span [ngClass]="{'help is-danger' : 
+    ((hours?.dirty || hours?.touched) || (minutes?.dirty || minutes?.touched)) && 
+    scheduleForm.errors?.['invalidSchedule']}">
+      You can schedule it (up to 5h)</span>
+  </div>
+  <form class="form-container" [formGroup]="scheduleForm" autocomplete="false" novalidate>
+    <div class="columns is-vcentered">
+      <div class="column">
+        <div class="field is-horizontal">
+          <div class="field-body">
+            <div class="field">
+              <p class="control">
+                <input class="input" type="number" id="schedule-hours" (change)="changeHours()" placeholder="Hours" [attr.max]="23" [attr.min]="00" formControlName="hours">
+              </p>
+            </div>
+            <div class="field">
+              <p class="control">
+                <input class="input" type="number" id="schedule-minutes" (change)="changeMinutes()" placeholder="Minutes" [attr.max]="59" [attr.min]="00" formControlName="minutes">
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="column is-2">
+        <button class="button" (click)="clearFields()" type="button">
+          <span class="icon">
+            <span class="iconify is-size-4" data-icon="fluent:backspace-24-regular"></span>
+          </span>
+        </button>
+      </div>
+    </div>
+    <p *ngIf="" class="help is-danger">
+          Please schedule up to 5 hours
+    </p>
+    </form>
+</div>

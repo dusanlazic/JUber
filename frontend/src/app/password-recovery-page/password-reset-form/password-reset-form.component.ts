@@ -4,6 +4,7 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { Router } from '@angular/router';
 import { PasswordReset } from 'src/models/auth';
 import { ApiResponse } from 'src/models/responses';
+import { AuthService } from 'src/services/auth/auth.service';
 import { UserService } from 'src/services/user.service';
 import { CustomValidators } from 'src/services/util/custom-validators';
 import { ParserUtil } from 'src/services/util/parser-util.service';
@@ -23,7 +24,7 @@ export class PasswordResetFormComponent implements OnInit {
   constructor(
     private builder: FormBuilder,
     private toastr: Toastr,
-    private userService: UserService,
+    private authService: AuthService,
     private router: Router
   )
   { 
@@ -70,7 +71,7 @@ export class PasswordResetFormComponent implements OnInit {
   private sendResetPassword() : void {
     const passwordReset : PasswordReset = {...this.resetPasswordForm.value, token: this.resetToken}
 
-    this.userService.resetPassword(passwordReset).subscribe({
+    this.authService.resetPassword(passwordReset).subscribe({
       next: () => {
         this.router.navigate(['/password-recovery/reset-success'], {skipLocationChange: true});
       },

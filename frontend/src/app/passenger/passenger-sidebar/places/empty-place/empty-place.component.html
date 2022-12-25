@@ -1,0 +1,30 @@
+<div class="columns is-vcentered">
+	<div class="column is-1 mr-3">
+	  <span class="iconify is-size-3 has-text-grey" data-icon="ic:round-location-on"></span>
+	</div>
+	<div class="column is-6 has-custom-border">
+		<input [(ngModel)]="name" class="input" type="text" placeholder="Enter an address" (change)="changed()">
+	</div>
+	<div class="column is-5">
+		<span>
+				<button class="button"  style="margin-right: 1px; margin-left: 15px;" (click)="preview()">
+					<span class="icon">
+						<span class="iconify is-size-4" data-icon="ic:round-remove-red-eye"></span>
+					</span>
+				</button>
+
+				<button class="button"  style="margin-right: 1px;" (click)="cancel()">
+					<span class="icon">
+						<span class="iconify is-size-4" data-icon="akar-icons:cross"></span>
+					</span>
+				</button>
+		
+			  <button class="button" (click)="confirm()">
+				<span class="icon">
+					<span class="iconify is-size-4" data-icon="ion:checkmark-sharp"></span>
+				</span>
+			  </button>
+		</span>
+	  
+	</div>
+</div>

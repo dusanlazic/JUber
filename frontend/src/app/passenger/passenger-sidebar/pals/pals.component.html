@@ -1,0 +1,41 @@
+<div class="mt-5 pt-2">
+    <p class="title is-size-3 has-text-grey is-family-secondary">Add your pals</p>
+    <div class="columns is-vcentered">
+      <div class="column">
+        <div class="is-flex">
+          <figure class="image is-48x48">
+            <img class="is-rounded" src="https://lh3.googleusercontent.com/a/ALm5wu3tpc3XnB9w8EMqNHAODc0uL23tqydVlUCLYqEF6Q=s96-c">
+          </figure>
+
+          <div *ngFor="let pal of passengers; let i= index;">
+            <div *ngIf="pal.imageUrl !== undefined">
+              <figure class="image is-48x48" (click)="removePal(i)">
+                <img class="is-rounded" src="{{pal.imageUrl}}">
+              </figure>
+            </div>
+
+            <div *ngIf="!pal.imageUrl">
+              <div class="circle-initial" [ngStyle]="{'background-color': colors.at(i)}"  style="color: white"  (click)="removePal(i)">
+                {{ pal.firstName?.charAt(0) }} {{  pal.lastName?.charAt(0)}}
+                <span class="icon">
+                  <span class="iconify is-size-1" data-icon="fluent:delete-12-regular"></span>
+                </span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+      <div class="column is-2">
+        <button class="button" (click)="toggleModal()">
+          <span class="icon">
+            <span class="iconify is-size-3" data-icon="fluent:add-12-filled"></span>
+          </span>
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <app-add-pals-dialog *ngIf="isAddPalOpen" (addPalEvent)="addPal($event)"></app-add-pals-dialog>
+  

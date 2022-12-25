@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { ApiResponse } from 'src/models/responses';
 import { LoggedUser, Roles } from 'src/models/user';
 import { AuthService } from 'src/services/auth/auth.service';
+import { ValidationConstants } from 'src/services/util/custom-validators';
 import { LocalStorageService } from 'src/services/util/local-storage.service';
 import { ParserUtil } from 'src/services/util/parser-util.service';
 import { Toastr } from 'src/services/util/toastr.service';
@@ -32,9 +33,9 @@ export class RegisterOauthComponent implements OnInit {
   private createForm() : void {
     this.registrationForm = this.builder.group({
       email: new FormControl('', [Validators.required, Validators.email]),
-      firstName: new FormControl('', [Validators.required, Validators.pattern('[a-zA-Z ]*'), Validators.maxLength(40)]),
-      lastName: new FormControl('', [Validators.required, Validators.pattern('[a-zA-Z ]*'), Validators.maxLength(40)]),
-      city: new FormControl('', [Validators.required, Validators.pattern('[a-zA-Z ]*')]),
+      firstName: new FormControl('', [Validators.required, Validators.pattern(ValidationConstants.Name), Validators.maxLength(40)]),
+      lastName: new FormControl('', [Validators.required, Validators.pattern(ValidationConstants.Name), Validators.maxLength(40)]),
+      city: new FormControl('', [Validators.required, Validators.pattern(ValidationConstants.Name)]),
       phoneNumber: new FormControl('', [Validators.required, Validators.pattern('^\\+[1-9][0-9]{3,14}$')]) // custom
     })
     this.email?.disable()

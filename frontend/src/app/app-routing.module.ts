@@ -16,12 +16,13 @@ import { RegisterLocalComponent } from './registration/register-local/register-l
 import { Oauth2RegisterRedirectHandlerComponent } from './registration/register-oauth/oauth2-redirect-handler/oauth2-redirect-handler.component';
 import { RegisterOauthComponent } from './registration/register-oauth/register-oauth.component';
 import { MapComponent } from './shared/map/map.component';
+import { HomeComponent } from './shared/homepage/home/home.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginPageComponent },
   { path: 'map', component: MapComponent },
-  { path: 'oauth2/redirect-login', component: Oauth2RedirectHandlerComponent},
-  { path: 'oauth2/redirect-register', component: Oauth2RegisterRedirectHandlerComponent},
+  { path: 'home', component: HomeComponent },
+  { path: 'oauth2/redirect', component: Oauth2RedirectHandlerComponent},
   { path: 'profile', component: ProfileComponent, canActivate: [AuthGuard, RoleGuard], 
           data: { expectedRoles: [Roles.DRIVER, Roles.PASSENGER_NEW, Roles.PASSENGER ]}  },
   { path: 'registration', component: RegisterLocalComponent},

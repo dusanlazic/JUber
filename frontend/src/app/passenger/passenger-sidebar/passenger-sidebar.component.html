@@ -1,0 +1,18 @@
+<app-places></app-places>
+<app-pals></app-pals>
+
+<div class="is-custom-at-bottom has-text-right">
+  <p class="has-text-grey">
+    <span class="iconify-inline" data-icon="ic:baseline-attach-money"></span> Total cost
+  </p>
+  <p class="is-size-3 is-family-secondary mb-3">
+    <b>1 160</b> RSD
+  </p>
+  <button class="button is-success is-medium is-rounded is-fullwidth">
+    Continue to payment<span class="iconify is-size-3" data-icon="ic:baseline-chevron-right"></span>
+  </button>
+</div>
+
+<div *ngIf="isEditing">
+  <app-edit-place></app-edit-place>
+</div>

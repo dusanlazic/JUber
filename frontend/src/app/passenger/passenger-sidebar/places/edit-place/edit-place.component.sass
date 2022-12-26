@@ -1,0 +1,43 @@
+.custom-edit-destination-dialog
+    position: absolute
+    left: 480px
+    top: 10vh
+    z-index: 150000
+    * > .field
+        height: 50px
+
+.is-custom-destination-details
+    color: grey
+    margin-left: 33px
+    position: absolute
+    top: 20px
+
+
+.button.is-custom-radio
+    input[type="radio"]
+        z-index: 100
+        opacity: 0
+        &:checked + label
+            background-color: success
+            border-radius: 4px
+    background-color: white-ter
+    &:hover
+        background-color: grey-lighter
+    border: none
+    white-space: unset
+    min-height: 100px
+    width: 100px
+    flex: 0 0 auto
+    margin-right: 5px
+    margin-bottom: 13px
+    position: relative
+    label, input
+        padding-top: 15px
+        display: block
+        position: absolute
+        top: 0
+        left: 0
+        right: 0
+        bottom: 0
+        &:hover
+            cursor: pointer

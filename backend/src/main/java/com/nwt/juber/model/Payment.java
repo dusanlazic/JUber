@@ -13,6 +13,7 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 public class Payment {
+
     @Id
     @Column(columnDefinition = "uuid")
     private UUID id;

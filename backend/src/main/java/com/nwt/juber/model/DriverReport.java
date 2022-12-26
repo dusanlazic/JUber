@@ -12,6 +12,7 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 public class DriverReport {
+
     @Id
     @Column(columnDefinition = "uuid")
     private UUID id;

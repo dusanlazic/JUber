@@ -12,6 +12,7 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 public class ProfileChangeRequest {
+
     @Id
     @Column(columnDefinition = "uuid")
     private UUID id;

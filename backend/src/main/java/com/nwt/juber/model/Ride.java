@@ -17,8 +17,9 @@ public class Ride {
     @Column(columnDefinition = "uuid")
     private UUID id;
 
-    @ManyToOne
-    private Route route;
+    @OneToMany
+    @JoinColumn(name = "ride_id")
+    private List<Place> places;
 
     private Double fare;
 

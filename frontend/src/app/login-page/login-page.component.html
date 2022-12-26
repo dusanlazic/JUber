@@ -1,0 +1,70 @@
+<section class="hero is-fullheight">
+  <div class="columns is-vcentered mt-0">
+    <div class="column is-half">
+      <div class="container">
+        <section class="section is-custom-section">
+          <p class="title is-size-1 is-family-secondary">Welcome to <b>JUber</b></p>
+          <p class="subtitle is-family-secondary mb-6">Log in to continue</p>
+
+          <div class="custom-social-buttons">
+            <a href="{{GOOGLE_AUTH_URL}}" class="button is-fullwidth">
+              <span class="iconify is-size-5" data-icon="logos:google-icon"></span>
+              Continue with Google
+            </a>
+            <a href="{{FACEBOOK_AUTH_URL}}" class="button is-fullwidth mt-2">
+              <span class="iconify is-size-5" data-icon="logos:facebook"></span>
+              Continue with Facebook
+            </a>
+          </div>
+
+          <div class="is-divider mt-6 mb-6" data-content="OR"></div>
+          <form class="form-container" [formGroup]="loginForm" autocomplete="false" novalidate>
+            <div class="field">
+              <p class="control has-icons-left">
+                <input class="input" type="email" placeholder="Email" formControlName ="email" required>
+                <span class="icon is-left">
+                  <span class="iconify is-size-5" data-icon="ic:outline-email"></span>
+                </span>
+              </p>
+              <!-- <div *ngIf="email?.invalid && (email?.dirty || email?.touched)" class="help is-danger">
+                <div *ngIf="email?.errors?.['required']">
+                    Please enter a email address!
+                </div>
+                <div *ngIf="email?.errors?.['email']">
+                    Please enter a valid email address
+                </div>
+              </div> -->
+            </div>
+
+            <div class="field">
+              <p class="control has-icons-left">
+                <input class="input" type="password" placeholder="Password" formControlName ="password">
+                <span class="icon is-left">
+                  <span class="iconify is-size-5" data-icon="ic:outline-lock"></span>
+                </span>
+              </p>
+              <!-- <div *ngIf="password?.invalid && (password?.dirty || password?.touched)" class="help is-danger">
+                  <div *ngIf="password?.errors?.['required']">
+                      Please enter your password
+                  </div>
+              </div> -->
+            </div>
+
+            <a href="/password-recovery" class="has-text-grey" type="button">Forgot your password?</a>
+            <button (click)="login()" [disabled]="loginForm.invalid" class="button is-success is-medium is-fullwidth mt-5" type="submit">
+              Log in
+            </button>
+  
+          </form>
+
+          <p class="mt-5 has-text-centered has-text-grey">
+            Not a member? <a href="/registration" class="has-text-weight-bold">Register now</a>
+          </p>
+        </section>
+      </div>
+    </div>
+    <div class="column m-0 p-0 has-background-image is-image-1">
+
+    </div>
+  </div>
+</section>

@@ -1,0 +1,81 @@
+spring:
+  jpa:
+    generate-ddl: 'true'
+    properties:
+      hibernate:
+        generate_statistics: 'false'
+        search:
+          default:
+            directory_provider: filesystem
+            indexBase: ./data/index/default
+        format_sql: 'true'
+    defer-datasource-initialization: 'true'
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: 'false'
+    database-platform: org.hibernate.dialect.H2Dialect
+  datasource:
+    driverClassName: org.h2.Driver
+    password: admin
+    username: admin
+    url: jdbc:h2:./data/juber-db;DB_CLOSE_ON_EXIT=TRUE
+  h2:
+    # Enabling H2 Console
+    console:
+      path: /h2-console
+      enabled: 'true'
+  sql:
+    init:
+      mode: always
+  jackson:
+    serialization:
+      FAIL_ON_EMPTY_BEANS: 'false'
+  mvc:
+    pathmatch:
+      # https://stackoverflow.com/questions/70043841/swagger-2-issue-spring-boot
+      matching-strategy: ant-path-matcher
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            clientId: ${OAUTH_GOOGLE_CLIENT_ID}
+            clientSecret: ${OAUTH_GOOGLE_CLIENT_SECRET}
+            redirectUri: "{baseUrl}/oauth2/callback/{registrationId}"
+            scope:
+              - email
+              - profile
+          facebook:
+            clientId: ${OAUTH_FACEBOOK_CLIENT_ID}
+            clientSecret: ${OAUTH_FACEBOOK_CLIENT_SECRET}
+            redirectUri: "{baseUrl}/oauth2/callback/{registrationId}"
+            scope:
+              - email
+              - public_profile
+        provider:
+          facebook:
+            authorizationUri: https://www.facebook.com/v3.0/dialog/oauth
+            tokenUri: https://graph.facebook.com/v3.0/oauth/access_token
+            userInfoUri: https://graph.facebook.com/v3.0/me?fields=id,first_name,middle_name,last_name,name,email,picture.width(250).height(250)
+app:
+  auth:
+    tokenSecret: ${TOKEN_SECRET}
+    tokenExpirationSeconds: 864000
+    verificationTokenExpirationMinutes: 15
+    recoveryTokenExpirationMinutes: 30
+  cors:
+    allowedOrigins: http://localhost:3000, http://127.0.0.1:3000
+  oauth2:
+    authorizedRedirectUris:
+      - http://localhost:3000/oauth2/redirect
+  payment:
+    etherscanKey: ${ETHERSCAN_API_KEY}
+    etherscanUrl: 'https://api-sepolia.etherscan.io/api'
+    cryptocompareKey: ${CRYPTOCOMPARE_API_KEY}
+    cryptocompareUrl: 'https://min-api.cryptocompare.com/data/price'
+    pendingTimeoutSeconds: 15 # Increase to 120
+logging:
+  pattern:
+    console: '%d{yyyy-MM-dd HH:mm:ss} - %msg%n'
+server:
+  port: '8080'

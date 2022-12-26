@@ -25,5 +25,7 @@ public class Vehicle {
 
     private Integer capacity;
 
+    @OneToOne(mappedBy = "vehicle", fetch = FetchType.LAZY)
+    private Driver driver;
 
 }

@@ -1,30 +1,30 @@
 package com.nwt.juber.controller;
 
 import com.nwt.juber.api.ResponseOk;
-import com.nwt.juber.dto.LocationDTO;
-import com.nwt.juber.dto.SimulationInfo;
-import com.nwt.juber.service.DriverService;
+import com.nwt.juber.dto.request.DriverRegistrationRequest;
+import com.nwt.juber.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import javax.validation.Valid;
 
 @RestController
-@RequestMapping(value = "driver")
+@RequestMapping(value = "accounts/drivers", produces = MediaType.APPLICATION_JSON_VALUE)
+@PreAuthorize("hasRole('ADMIN')")
 public class DriverController {
 
     @Autowired
-    private DriverService driverService;
+    private AccountService accountService;
 
-    @GetMapping(value = "simulation-info")
-    public List<SimulationInfo> getSimulationInfo() {
-        return driverService.getSimulationInfo();
-    }
-
-    @PutMapping(value = "location/{username}")
-    public ResponseOk setDriverLocation(@PathVariable String username, @RequestBody LocationDTO location) {
-        driverService.updateLocation(username, location.getLongitude(), location.getLatitude());
-        return new ResponseOk("ok");
+    @PostMapping("/")
+    public ResponseOk register(@Valid @RequestBody DriverRegistrationRequest registrationRequest) {
+        accountService.registerDriver(registrationRequest);
+        return new ResponseOk("Driver registered successfully.");
     }
 
 }

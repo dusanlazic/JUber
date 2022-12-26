@@ -1,0 +1,100 @@
+import { HttpErrorResponse } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
+import { JwtHelperService } from "@auth0/angular-jwt";
+import { BehaviorSubject, Observable, ReplaySubject, Subject } from "rxjs";
+import { environment } from "src/environments/environment";
+import { LocalRegistrationRequest, LoginRequest, PersonalInfo, TokenResponse } from "src/models/auth";
+import { ApiResponse } from 'src/models/responses';
+import { LoggedUser } from 'src/models/user';
+import { HttpRequestService } from "../util/http-request.service";
+import { LocalStorageService } from "../util/local-storage.service";
+
+const jwtHelper = new JwtHelperService();
+
+@Injectable({
+    providedIn: 'root'
+})
+
+export class AuthService {
+
+    private loggedUser!: LoggedUser;
+
+    constructor(
+        private httpRequestService: HttpRequestService,
+        private localStorage: LocalStorageService,
+        private router: Router
+    ) {}
+
+
+    login(loginRequest: LoginRequest) : Observable<TokenResponse> {
+        const url = environment.API_BASE_URL + "/auth/login";
+        const body = JSON.stringify(loginRequest);
+
+        return this.httpRequestService.post(url, body) as Observable<TokenResponse>;
+    }
+
+
+    signup(signupRequest: LocalRegistrationRequest) : Observable<ApiResponse> {
+        const url = environment.API_BASE_URL + "/auth/register";
+        const body = JSON.stringify(signupRequest);
+
+        return this.httpRequestService.post(url, body) as Observable<ApiResponse>;
+    }
+
+    oauthSignup(signupRequest: PersonalInfo) : Observable<ApiResponse> {
+        const url = environment.API_BASE_URL + "/auth/register/oauth";
+        const body = JSON.stringify(signupRequest);
+
+        return this.httpRequestService.patch(url, body) as Observable<ApiResponse>;
+    }
+
+    isAuthenticated(): boolean {
+        const tokenExpiration = this.localStorage.getTokenExpiration();
+        if(tokenExpiration) {
+            return Date.now() < tokenExpiration;
+        }
+        return false;
+    }
+
+    handleSuccessfulAuth(expiresAt: number, redirectPath: string) : void {
+        this.localStorage.setTokenExpiration(expiresAt);
+
+        this.getCurrentUser().subscribe({
+            next: (user: LoggedUser) => {
+                this.localStorage.set('role', user.role);
+                this.loggedUser = user;
+                this.router.navigate([redirectPath]);
+            },
+            error: (e: HttpErrorResponse) => {
+                console.log(e);
+                // this.router.navigate(['/']);
+            }
+        })
+    }
+
+    getCurrentUser() : Observable<LoggedUser>{
+        if(this.loggedUser){
+            return new Observable(observer => {
+                observer.next(this.loggedUser);
+            });
+        }
+
+        const url = environment.API_BASE_URL + "/auth/me";
+        return this.httpRequestService.get(url) as Observable<LoggedUser>;
+    }
+
+    logout() : void {
+        const url = environment.API_BASE_URL + "/auth/logout";
+        this.httpRequestService.post(url, null)
+
+        this.localStorage.clearAll();
+    }
+
+
+    verifyEmail(token: string) : Observable<any> {
+        const url = environment.API_BASE_URL + `/auth/register/verify/${token}`;
+
+        return this.httpRequestService.post(url, null) as Observable<any>;
+    }
+}

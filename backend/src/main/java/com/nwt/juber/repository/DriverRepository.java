@@ -19,7 +19,7 @@ public interface DriverRepository extends JpaRepository<Driver, String> {
     @Query(value = "select d from Driver d where not exists (select r from Ride r where r.driver = d and r.rideStatus = 1)")
     public List<Driver> findAllWithNoFutureRides();
 
-    @Query(value = "select r from Ride r where r.driver.mail = :username and (r.rideStatus = 1 or r.rideStatus = 2) order by r.rideStatus desc")
+    @Query(value = "select r from Ride r where r.driver.email = :username and (r.rideStatus = 1 or r.rideStatus = 2) order by r.rideStatus desc")
     public Optional<Ride> findRouteForSimulation(String username);
 
 }

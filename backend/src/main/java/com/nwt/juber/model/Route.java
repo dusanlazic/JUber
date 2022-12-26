@@ -17,7 +17,12 @@ public class Route {
     @Column(columnDefinition = "uuid")
     private UUID id;
 
-    @ManyToMany
-    private List<Location> locations;
+    private String name;
+
+    private Double distance;
+
+    private Double duration;
+
+    private String coordinates;
 
 }

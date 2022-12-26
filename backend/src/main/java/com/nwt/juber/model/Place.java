@@ -3,15 +3,14 @@ package com.nwt.juber.model;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
 @Data
 @NoArgsConstructor
-public class Location {
+public class Place {
 
     @Id
     @Column(columnDefinition = "uuid")
@@ -19,8 +18,14 @@ public class Location {
 
     private String name;
 
-    private Double longitude;
+    private String option;
+
+    @OneToMany
+    @JoinColumn(name = "place_id")
+    private List<Route> routes;
 
     private Double latitude;
+
+    private Double longitude;
 
 }

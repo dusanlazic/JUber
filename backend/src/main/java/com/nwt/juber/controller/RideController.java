@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.nwt.juber.dto.request.RideRequest;
-import com.nwt.juber.model.Passenger;
 import com.nwt.juber.service.RideService;
 
 @RestController

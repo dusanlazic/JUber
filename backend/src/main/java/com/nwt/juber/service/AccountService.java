@@ -1,18 +1,13 @@
 package com.nwt.juber.service;
 
-import com.nwt.juber.config.AppProperties;
-import com.nwt.juber.dto.request.*;
-import com.nwt.juber.dto.response.TokenResponse;
-import com.nwt.juber.exception.*;
-import com.nwt.juber.model.*;
-import com.nwt.juber.repository.PersonRepository;
-import com.nwt.juber.repository.UserRepository;
-import com.nwt.juber.security.TokenAuthenticationFilter;
-import com.nwt.juber.security.TokenProvider;
-import com.nwt.juber.security.TokenType;
-import com.nwt.juber.util.CookieUtils;
+import java.util.ArrayList;
+import java.util.Optional;
+import java.util.UUID;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -20,10 +15,33 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.Optional;
-import java.util.UUID;
+import com.nwt.juber.config.AppProperties;
+import com.nwt.juber.dto.request.DriverRegistrationRequest;
+import com.nwt.juber.dto.request.LocalRegistrationRequest;
+import com.nwt.juber.dto.request.LoginRequest;
+import com.nwt.juber.dto.request.OAuthRegistrationRequest;
+import com.nwt.juber.dto.request.PasswordResetLinkRequest;
+import com.nwt.juber.dto.request.PasswordResetRequest;
+import com.nwt.juber.dto.response.TokenResponse;
+import com.nwt.juber.exception.EmailAlreadyInUseException;
+import com.nwt.juber.exception.InvalidPasswordRequestException;
+import com.nwt.juber.exception.InvalidRecoveryTokenException;
+import com.nwt.juber.exception.PhoneNumberAlreadyInUseException;
+import com.nwt.juber.exception.UserNotFoundException;
+import com.nwt.juber.model.AuthProvider;
+import com.nwt.juber.model.Driver;
+import com.nwt.juber.model.DriverShift;
+import com.nwt.juber.model.DriverStatus;
+import com.nwt.juber.model.Passenger;
+import com.nwt.juber.model.Role;
+import com.nwt.juber.model.User;
+import com.nwt.juber.model.Vehicle;
+import com.nwt.juber.repository.PersonRepository;
+import com.nwt.juber.repository.UserRepository;
+import com.nwt.juber.security.TokenAuthenticationFilter;
+import com.nwt.juber.security.TokenProvider;
+import com.nwt.juber.security.TokenType;
+import com.nwt.juber.util.CookieUtils;
 
 @Service
 public class AccountService {
@@ -131,7 +149,8 @@ public class AccountService {
         driver.setLastName(registrationRequest.getLastName());
         driver.setCity(registrationRequest.getCity());
         driver.setPhoneNumber(registrationRequest.getPhoneNumber());
-        driver.setActive(false);
+        driver.setStatus(DriverStatus.INACTIVE);
+        driver.setDriverShifts(new ArrayList<DriverShift>());
         driver.setVehicle(vehicle);
 
         userRepository.save(driver);

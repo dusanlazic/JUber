@@ -24,5 +24,13 @@ public class PassengerService {
 		Passenger passenger = possiblePassenger.get();
 		return new UserBasicInfoResponse(passenger.getEmail(), passenger.getFirstName(), passenger.getLastName());
 	}
+	
+	public Passenger findByEmail(String email) {
+		Optional<Passenger> possiblePassenger = passengerRepository.findByEmail(email);
+		if (possiblePassenger.isEmpty()) {
+			throw new UserNotFoundException("User does not exist.");
+		}
+		return possiblePassenger.get();
+	}
 
 }

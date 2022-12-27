@@ -17,26 +17,25 @@ public class DriverService {
     @Autowired
     private DriverRepository driverRepository;
 
-//    public List<SimulationInfo> getSimulationInfo() {
-//        List<Driver> drivers = driverRepository.findAll();
-//        List<SimulationInfo> dtos = drivers
-//                                        .stream()
-//                                        .map(this::driverToSimulationInfo)
-//                                        .toList();
-//        return dtos;
-//    }
+    public List<SimulationInfo> getSimulationInfo() {
+        List<Driver> drivers = driverRepository.findAll();
+        return drivers
+                .stream()
+                .map(this::driverToSimulationInfo)
+                .toList();
+    }
 
-//    private SimulationInfo driverToSimulationInfo(Driver driver) {
-//        SimulationInfo dto = new SimulationInfo();
-//        dto.setUsername(driver.getUsername());
-//        dto.setLongitude(driver.getVehicle().getLongitude());
-//        dto.setLatitude(driver.getVehicle().getLatitude());
-//        Optional<Ride> rideToSim = driverRepository.findRouteForSimulation(driver.getUsername());
-//        dto.setRoute(rideToSim.map(Ride::getRoute).orElse(null));
-//        dto.setStatus(rideToSim.map(Ride::getRideStatus).orElse(null));
-//        dto.setRideId(rideToSim.map(Ride::getId).orElse(null));
-//        return dto;
-//    }
+    private SimulationInfo driverToSimulationInfo(Driver driver) {
+        SimulationInfo dto = new SimulationInfo();
+        dto.setUsername(driver.getUsername());
+        dto.setLongitude(driver.getVehicle().getLongitude());
+        dto.setLatitude(driver.getVehicle().getLatitude());
+        Optional<Ride> rideToSim = driverRepository.findRouteForSimulation(driver.getUsername());
+        dto.setPlaces(rideToSim.map(Ride::getPlaces).orElse(null));
+        dto.setStatus(rideToSim.map(Ride::getRideStatus).orElse(null));
+        dto.setRideId(rideToSim.map(Ride::getId).orElse(null));
+        return dto;
+    }
 
     public void updateLocation(String username, Double longitude, Double latitude) {
         Driver driver = driverRepository.findById(username).orElseThrow(() -> new RuntimeException("No driver with username: " + username));

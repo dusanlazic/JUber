@@ -31,12 +31,13 @@ class Driver(HostInterface):
 		self.latitude = latitude
 		self.places = places
 		self.state = DriverState.WAITING
-		self.ride_status = None if status is None else RideStatus[status]
+		self.ride_status = DriverState.WAITING if status is None else RideStatus[status]
 		self.coordinates = []
 		self.visiting = 0
 		self.route_visited = []
 		self.route_visited_colors = []
 		self.ride_id = rideId
+		self.random_coordinates = []
 
 
 	def _set_new_coordinates(self, curr, succ):
@@ -56,11 +57,11 @@ class Driver(HostInterface):
 		if self._check_visited(curr, succ):
 			self.visiting += 1
 			if self.visiting >= len(self.coordinates):
-				self.route = None
+				self.places = None
 				self.state = DriverState.WAITING
 				self._finish_log()
 				self.send_end()
-			elif self.visiting > self.start_idx and self.ride_status == RideStatus.ACCEPTED:
+			elif self.visiting >= self.start_idx and self.ride_status == RideStatus.ACCEPTED:
 				self.send_start()
 		else:
 			self._set_new_coordinates(curr, succ)
@@ -72,26 +73,62 @@ class Driver(HostInterface):
 				continue
 			selected_route = list(filter(lambda x: x['selected'], place['routes']))[0]
 			self.coordinates.extend(polyline.decode(selected_route['coordinates']))
-		self.start_idx = len(self.coordinates)
 		temp_coords = self.get_route(self.longitude, self.latitude, self.coordinates[0][1], self.coordinates[0][0])
+		self.start_idx = len(temp_coords) - 1
 		temp_coords.extend(self.coordinates)
 		self.coordinates = temp_coords
-		print(f"MY COORDINATES {self.coordinates}")
+
+
+	def generate_random_coordinates(self):
+		self.random_coordinates = []
+		random_vector_angle = np.random.random() * 2 * np.pi
+		magnitude = 5e-3
+		random_goal_lat = self.latitude + np.sin(random_vector_angle) * magnitude
+		random_goal_lon = self.longitude + np.cos(random_vector_angle) * magnitude
+		print(f'MOVING TO .  .  . => {random_goal_lat}, {random_goal_lon}')
+		self.random_coordinates.extend(self.get_route(self.longitude, self.latitude, random_goal_lon, random_goal_lat))
+
+	
+	def move_randomly(self):
+		if len(self.random_coordinates) == 0:
+			self.random_visiting = 0
+			self.generate_random_coordinates()
+		
+		curr = self.latitude, self.longitude
+		succ = self.random_coordinates[self.random_visiting]
+		if self._check_visited(curr, succ):
+			self.random_visiting += 1
+			if self.random_visiting >= len(self.random_coordinates):
+				self.generate_random_coordinates()
+				self._finish_log()
+				exit(0)
+		else:
+			self._set_new_coordinates(curr, succ)
 
 
 	def update(self):
+
+		color_coding = {
+			RideStatus.ACCEPTED: 'purple',
+			RideStatus.IN_PROGRESS: 'blue',
+			RideStatus.WAITING: 'green'
+		}
+
+		self.route_visited.append((self.longitude, self.latitude))
+		self.route_visited_colors.append(color_coding[self.ride_status])
+
+		if self.ride_status == RideStatus.WAITING:
+			self.move_randomly()
+			return
 
 		if self.places is None or len(self.places) == 0:
 			return
 
 		if len(self.coordinates) == 0 and self.places is not None:
 			self.extract_coordinates()
-		print(self.latitude, self.longitude)
-		if self.ride_status != RideStatus.WAITING:
-			self.update_coordinates()
-			self.route_visited.append((self.longitude, self.latitude))
-			self.route_visited_colors.append('purple' if self.ride_status == RideStatus.ACCEPTED else 'blue')
-			self.log()
+
+		self.update_coordinates()
+		self.log()
 				
 		self.send_location()
 
@@ -116,7 +153,7 @@ class Driver(HostInterface):
 
 
 	def __repr__(self):
-		return f'Driver({self.username=}, {self.longitude=}, {self.latitude=}, {self.state=}, {self.ride_status=}, places: {len(self.places)})'
+		return f'Driver({self.username=}, {self.longitude=}, {self.latitude=}, {self.state=}, {self.ride_status=}, places: {len(self.places) if self.places else None})'
 
 
 def get_drivers():
@@ -137,14 +174,15 @@ def get_drivers():
 def update_drivers():
 	global drivers
 	r = requests.get(f'{BACKEND_URL}/simulation/drivers')
+
 	data = r.json()
 	for info in data:
 		if 'places' in info:
 			status = info['status']
 			drivers[info['username']].route = info['places']
-			drivers[info['username']].ride_status = None if status is None else RideStatus[status]
-	
+			drivers[info['username']].ride_status = RideStatus.WAITING if status is None else RideStatus[status]
 	for driver in drivers.values():
+		print(driver)
 		driver.update()
 		
 

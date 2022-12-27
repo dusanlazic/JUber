@@ -4,6 +4,7 @@ from abc import ABC
 
 BACKEND_URL = 'http://localhost:8080'
 ROUTING_URL = 'http://router.project-osrm.org/route/v1/driving'
+NOMINATIM_URL = 'http://nominatim.openstreetmap.org/'
 
 
 class HostInterface(ABC):

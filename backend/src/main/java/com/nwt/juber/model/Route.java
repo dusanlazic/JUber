@@ -25,4 +25,6 @@ public class Route {
 
     private String coordinates;
 
+    private Boolean selected;
+
 }

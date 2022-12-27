@@ -16,7 +16,7 @@ class HostInterface(ABC):
 			'latitude': self.latitude
 		}
 
-		r = requests.put(f'{BACKEND_URL}/driver/location/{self.username}', json=payload) 
+		r = requests.put(f'{BACKEND_URL}/simulation/driver-location/{self.username}', json=payload) 
 
 	def send_start(self):
 		payload = {
@@ -24,7 +24,7 @@ class HostInterface(ABC):
 			'latitude': self.latitude
 		}
 		print("\n\nSTARTING RIDE...\n\n")
-		r = requests.put(f'{BACKEND_URL}/ride/start/{self.ride_id}', json=payload)
+		r = requests.put(f'{BACKEND_URL}/simulation/start-ride/{self.ride_id}', json=payload)
 		print(r)
 
 	def send_end(self):
@@ -33,7 +33,7 @@ class HostInterface(ABC):
 			'latitude': self.latitude
 		}
 		print("\n\ENDING RIDE...\n\n")
-		r = requests.put(f'{BACKEND_URL}/ride/end/{self.ride_id}', json=payload)
+		r = requests.put(f'{BACKEND_URL}/simulation/end-ride/{self.ride_id}', json=payload)
 		print(r)
 
 	def get_route(self, longitude, latitude, next_longitude, next_latitude):
@@ -46,5 +46,5 @@ class HostInterface(ABC):
 		temp_routes = polyline.decode(res['routes'][0]['geometry'])
 		routes = []
 		for loc in temp_routes:
-			routes.append((loc[1], loc[0]))
+			routes.append((loc[0], loc[1]))
 		return routes

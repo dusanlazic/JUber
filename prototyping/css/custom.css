@@ -8104,3 +8104,33 @@ input::-webkit-inner-spin-button {
   cursor: pointer; }
   .is-custom-copy-button:hover {
     color: #48c78e; }
+
+.has-custom-scrollable-container {
+  display: flex;
+  flex-direction: column; }
+
+.is-custom-scrollable-container {
+  background-image: linear-gradient(red, yellow);
+  height: 515px;
+  width: 100%;
+  position: relative;
+  overflow-y: scroll; }
+
+th {
+  vertical-align: middle !important;
+  border: none !important;
+  font-weight: normal; }
+
+tr:hover th > .is-visible-on-row-hover {
+  visibility: visible; }
+
+.is-visible-on-row-hover {
+  visibility: hidden; }
+
+table.is-custom-table thead {
+  position: sticky;
+  background-color: white;
+  top: 0px;
+  box-shadow: 1px 1px 25px #00000011; }
+  table.is-custom-table thead th {
+    font-weight: bold !important; }

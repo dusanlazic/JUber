@@ -332,7 +332,8 @@
               </p>
             </div>
             <div class="field">
-              <input class="is-checkradio is-success" id="destination-1" type="radio" name="destination-picker" checked="checked">
+              <input class="is-checkradio is-success" id="destination-1" type="radio" name="destination-picker"
+                checked="checked">
               <label for="destination-1">
                 via Kej Žrtava Racije
                 <span class="badge is-success">Fastest</span>
@@ -344,7 +345,8 @@
               </label>
             </div>
             <div class="field">
-              <input class="is-checkradio is-success" id="destination-2" type="radio" name="destination-picker" checked="checked">
+              <input class="is-checkradio is-success" id="destination-2" type="radio" name="destination-picker"
+                checked="checked">
               <label for="destination-2">
                 <span>via Dunavska</span>
                 <span class="badge is-success is-hidden">Fastest</span>
@@ -356,7 +358,8 @@
               </label>
             </div>
             <div class="field">
-              <input class="is-checkradio is-success" id="destination-3" type="radio" name="destination-picker" checked="checked">
+              <input class="is-checkradio is-success" id="destination-3" type="radio" name="destination-picker"
+                checked="checked">
               <label for="destination-3">
                 via Bulevar Mihajla Pupina
                 <span class="badge is-success is-hidden">Fastest</span>
@@ -401,20 +404,87 @@
   </section>
 
   <div class="navigation">
-    <figure class="image is-48x48">
+    <figure class="image is-32x32 is-clickable">
       <img class="is-rounded"
         src="https://lh3.googleusercontent.com/a/ALm5wu3tpc3XnB9w8EMqNHAODc0uL23tqydVlUCLYqEF6Q=s96-c">
     </figure>
-    <button class="button is-rounded mr-2">
-      Profile<span class="iconify ml-2" data-icon="ic:baseline-person"></span>
-    </button>
-    <button class="button is-rounded mr-1">
-      Support<span class="iconify ml-2" data-icon="ic:baseline-contact-support"></span>
-    </button>
-    <button class="button is-rounded mr-1">
-      Logout<span class="iconify ml-2" data-icon="material-symbols:logout"></span>
-    </button>
+
+    <div class="is-relative is-custom-navigation-icon">
+      <span class="iconify is-size-4" data-icon="fluent:alert-24-filled"></span>
+      <span class="badge">1</span>
+    </div>
   </div>
+
+  <div class="custom-notifications-box">
+    <div class="box">
+      <p class="title is-size-5 ml-4 pt-4 mb-3 is-family-secondary">Notifications</p>
+      <div class="notification-item is-unread">
+        <div class="columns">
+          <div class="column is-2 has-content-align-center">
+            <div class="circle-notification has-background-info">
+              <span class="icon">
+                <span class="iconify is-size-1" data-icon="mdi:car-side"></span>
+              </span>
+            </div>
+          </div>
+          <div class="column">
+            <p class="has-text-grey is-size-7">Just now</p>
+            <p>Your driver has arrived!</p>
+          </div>
+        </div>
+      </div>
+      <div class="notification-item">
+        <div class="columns">
+          <div class="column is-2 has-content-align-center">
+            <div class="circle-notification has-background-success">
+              <span class="icon">
+                <span class="iconify is-size-1" data-icon="fluent:checkmark-12-filled"></span>
+              </span>
+            </div>
+          </div>
+          <div class="column">
+            <p class="has-text-grey is-size-7">21 minute ago</p>
+            <p>Ride accepted! Your driver will be there in about <b>20 minutes</b>.</p>
+          </div>
+        </div>
+      </div>
+      <div class="notification-item">
+        <div class="columns">
+          <div class="column is-2 has-content-align-center">
+            <figure class="image is-48x48">
+              <img class="is-rounded"
+                src="https://lh3.googleusercontent.com/a/ALm5wu3tpc3XnB9w8EMqNHAODc0uL23tqydVlUCLYqEF6Q=s96-c">
+            </figure>
+          </div>
+          <div class="column">
+            <p class="has-text-grey is-size-7">23 minutes ago</p>
+            <p>User <strong>Dušan Lazić</strong> has invited you to a ride to <strong>Menza</strong>.</p>
+
+            <button class="button is-small is-success mt-2">
+              Accept
+            </button>
+            <button class="button is-small is-outlined mt-2 ml-1">
+              Decline
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="notification-item">
+        <div class="columns">
+          <div class="column is-2 has-content-align-center">
+            <div class="circle-notification has-background-danger">
+              <span class="icon">
+                <span class="iconify is-size-1" data-icon="fluent:emoji-sad-16-regular"></span>
+              </span>
+            </div>
+          </div>
+          <div class="column">
+            <p class="has-text-grey is-size-7">21 minute ago</p>
+            <p>Ride rejected! There are no available drivers right now. Try again later, or schedule a ride for later.</p>
+          </div>
+        </div>
+      </div>
+    </div>
 </body>
 <script>
   function clearScheduleFields() {

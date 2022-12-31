@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(value = "payment", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/payment", produces = MediaType.APPLICATION_JSON_VALUE)
 @PreAuthorize("hasRole('PASSENGER')")
 public class PaymentController {
 

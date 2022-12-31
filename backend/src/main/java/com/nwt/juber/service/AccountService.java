@@ -2,6 +2,7 @@ package com.nwt.juber.service;
 
 import com.nwt.juber.config.AppProperties;
 import com.nwt.juber.dto.request.*;
+import com.nwt.juber.dto.response.PhotoUploadResponse;
 import com.nwt.juber.dto.response.TokenResponse;
 import com.nwt.juber.exception.*;
 import com.nwt.juber.model.*;
@@ -12,13 +13,13 @@ import com.nwt.juber.security.TokenProvider;
 import com.nwt.juber.security.TokenType;
 import com.nwt.juber.util.CookieUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -45,6 +46,9 @@ public class AccountService {
 
     @Autowired
     private AppProperties appProperties;
+
+    @Autowired
+    private FileStorageService storageService;
 
     public TokenResponse login(LoginRequest loginRequest, HttpServletResponse response) {
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
@@ -175,6 +179,21 @@ public class AccountService {
             throw new InvalidRecoveryTokenException("Password reset link is invalidated.");
         user.setPassword(passwordEncoder.encode(passwordResetRequest.getPassword()));
 
+        userRepository.save(user);
+    }
+
+    public PhotoUploadResponse setProfilePicture(MultipartFile file, Authentication authentication) {
+        User user = (User) authentication.getPrincipal();
+        String imageUrl = storageService.store(file);
+
+        user.setImageUrl(imageUrl);
+        userRepository.save(user);
+        return new PhotoUploadResponse(imageUrl);
+    }
+
+    public void removeProfilePicture(Authentication authentication) {
+        User user = (User) authentication.getPrincipal();
+        user.setImageUrl(null);
         userRepository.save(user);
     }
 

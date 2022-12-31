@@ -1,12 +1,6 @@
 package com.nwt.juber.api;
 
-import com.nwt.juber.exception.EmailAlreadyInUseException;
-import com.nwt.juber.exception.PhoneNumberAlreadyInUseException;
-import com.nwt.juber.exception.UserNotFoundException;
-import com.nwt.juber.exception.InvalidPasswordRequestException;
-import com.nwt.juber.exception.InvalidRecoveryTokenException;
-import com.nwt.juber.exception.InvalidVerificationTokenException;
-
+import com.nwt.juber.exception.*;
 import io.jsonwebtoken.JwtException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -76,5 +70,17 @@ public class ControllerAdvisor {
     @ExceptionHandler(InvalidVerificationTokenException.class)
     public ResponseError handleInvalidVerificationTokenException(InvalidVerificationTokenException e) {
         return new ResponseError(HttpStatus.UNAUTHORIZED, e.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
+    @ExceptionHandler(FileUploadException.class)
+    public ResponseError handleFileUploadException(FileUploadException e) {
+        return new ResponseError(HttpStatus.UNPROCESSABLE_ENTITY, e.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(FileNotFoundException.class)
+    public ResponseError handleFileNotFoundException(FileNotFoundException e) {
+        return new ResponseError(HttpStatus.NOT_FOUND, e.getMessage());
     }
 }

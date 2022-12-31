@@ -74,6 +74,12 @@ app:
     cryptocompareKey: ${CRYPTOCOMPARE_API_KEY}
     cryptocompareUrl: 'https://min-api.cryptocompare.com/data/price'
     pendingTimeoutSeconds: 15 # Increase to 120
+  uploads:
+    uploadsLocation: 'uploads'
+    servingEndpoint: 'uploads/'
+    allowedContentTypes:
+      - 'image/jpeg'
+      - 'image/png'
 logging:
   pattern:
     console: '%d{yyyy-MM-dd HH:mm:ss} - %msg%n'

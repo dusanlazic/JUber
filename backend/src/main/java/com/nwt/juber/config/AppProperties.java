@@ -6,12 +6,14 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @ConfigurationProperties(prefix = "app")
 public class AppProperties {
     private final Auth auth = new Auth();
     private final OAuth2 oauth2 = new OAuth2();
     private final Payment payment = new Payment();
+    private final Uploads uploads = new Uploads();
 
     @Getter
     @Setter
@@ -45,6 +47,14 @@ public class AppProperties {
         private Integer pendingTimeoutSeconds;
     }
 
+    @Getter
+    @Setter
+    public static class Uploads {
+        private String uploadsLocation;
+        private String servingEndpoint;
+        private Set<String> allowedContentTypes;
+    }
+
     public Auth getAuth() {
         return auth;
     }
@@ -55,5 +65,9 @@ public class AppProperties {
 
     public Payment getPayment() {
         return payment;
+    }
+
+    public Uploads getUploads() {
+        return uploads;
     }
 }

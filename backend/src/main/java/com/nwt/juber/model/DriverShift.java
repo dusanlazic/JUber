@@ -9,26 +9,28 @@ import javax.persistence.Id;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class DriverShift {
     @Id
     @Column(columnDefinition = "uuid")
     private UUID id;
     
-	private Timestamp startShift;
-	private Timestamp endShift;
-	private Long duration;
+	private Timestamp startOfShift;
+	private Timestamp endOfShift;
+	private long duration;
 
-	public DriverShift(Timestamp startShift) {
+	public DriverShift(Timestamp startOfShift) {
 		super();
-		this.startShift = startShift;
+		this.startOfShift = startOfShift;
 	}
 	
 	public void setEndShift(Timestamp endShift) {
-		this.endShift = endShift;
-		this.duration = endShift.getTime() - startShift.getTime();
+		this.endOfShift = endShift;
+		this.duration = endShift.getTime() - startOfShift.getTime();
 	}
 }

@@ -8,6 +8,8 @@ import { PassengerSidebarComponent } from 'src/app/passenger/passenger-sidebar/p
 import { Place, Ride } from 'src/models/ride';
 import { Store } from '@ngrx/store';
 import { AppState } from 'src/app/store/ride.reducer';
+import { LoggedUser, Roles } from 'src/models/user';
+import { DriverService } from 'src/services/driver/driver.service';
 
 @Component({
   selector: 'app-home',
@@ -16,12 +18,13 @@ import { AppState } from 'src/app/store/ride.reducer';
 })
 export class HomeComponent implements AfterViewInit {
 
-  loggedUser: any;
+  loggedUser!: LoggedUser;
   ride: Ride | undefined;
   
 
   constructor(
     private authService: AuthService,
+    private driverService: DriverService,
     private router: Router,
     private store: Store<{state: AppState}>
   ) { 
@@ -43,6 +46,9 @@ export class HomeComponent implements AfterViewInit {
   }
 
   logout(): void {
+    if(this.loggedUser.role === Roles.DRIVER){
+      this.driverService.inactivate(this.loggedUser.email);
+    }
     this.authService.logout();
     this.router.navigate(['/login']);
   }

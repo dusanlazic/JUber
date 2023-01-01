@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import javax.transaction.Transactional;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -20,8 +23,10 @@ import kotlin.NotImplementedError;
 @Service
 public class DriverService {
 
+	@Autowired
 	private DriverShiftService driverShiftService;
 
+	@Autowired
 	private DriverRepository driverRepository;
 
 	public Driver findSuitableDriver(Ride ride, AdditionalRideRequests additionalRequsets) {
@@ -31,28 +36,32 @@ public class DriverService {
 	public Driver findByEmail(String email) {
 		Optional<Driver> possibleDriver = driverRepository.findByEmail(email);
 		if (possibleDriver.isEmpty()) {
+			System.out.println("[!] User does not exist.");
 			throw new UserNotFoundException("User does not exist.");
 		}
 		return possibleDriver.get();
 	}
 
-	public void activateDriver(String driverEmail) {
+	@Transactional
+	public Driver activateDriver(String driverEmail) {
 		Driver driver = findByEmail(driverEmail);
-		boolean isNewWorkingDay = driverShiftService.isNewWorkDay(driver);
-
-		if (isNewWorkingDay) {
-			driver.setDriverShifts(new ArrayList<DriverShift>());
-		}
+		
+		stopShiftsOver8h(driver);
+		boolean isNewWorkingDay = resetShiftForNewDay(driver);
+		
 		if (driver.getStatus().equals(DriverStatus.INACTIVE)
 				|| (driver.getStatus().equals(DriverStatus.OVERTIME) && isNewWorkingDay)) {
 
 			driver.setStatus(DriverStatus.ACTIVE);
 			driver = driverShiftService.startShift(driver);
-			driverRepository.save(driver);
+			driver = driverRepository.save(driver);
 		}
+
+		return driver;
 	}
 
-	public void inactivateDriver(String driverEmail) {
+	@Transactional
+	public Driver inactivateDriver(String driverEmail) {
 		Driver driver = findByEmail(driverEmail);
 
 		if (driver.getStatus().equals(DriverStatus.ACTIVE)) {
@@ -60,28 +69,40 @@ public class DriverService {
 			driver = driverShiftService.stopShift(driver);
 			driverRepository.save(driver);
 		}
+
+		return driver;
 	}
 
+	@Transactional
 	@Scheduled(cron = "0 * * * * *")
-	private void check8hourShifts() {
+	public void checkAllDriverShifts() {
 		List<Driver> drivers = driverRepository.findByStatus(DriverStatus.ACTIVE);
-
 		for (Driver driver : drivers) {
 
-			// Shifts over 8h in sum (in last 24h) are forbidden
-			if (driverShiftService.isWorkingOver8Hours(driver)) {
-				driver.setStatus(DriverStatus.OVERTIME);
-				driver = driverShiftService.stopShift(driver);
-				driverRepository.save(driver);
-
+			if(stopShiftsOver8h(driver)) {
 				startOvertimeCountdown(driver);
 			}
+			resetShiftForNewDay(driver);
 
-			// New working day - reset shifts
-			if (driverShiftService.isNewWorkDay(driver)) {
-				driver.setDriverShifts(new ArrayList<DriverShift>());
-			}
+			driverRepository.save(driver);
 		}
+	}
+
+	private boolean stopShiftsOver8h(Driver driver) {
+		if (driverShiftService.isWorkingOver8Hours(driver)) {
+			driver.setStatus(DriverStatus.OVERTIME);
+			driver = driverShiftService.stopShift(driver);
+			return true;
+		}
+		return false;
+	}
+
+	private boolean resetShiftForNewDay(Driver driver) {
+		if (driverShiftService.isNewWorkDay(driver)) {
+			driver.setDriverShifts(new ArrayList<DriverShift>());
+			return true;
+		}
+		return false;
 	}
 
 	private void startOvertimeCountdown(Driver driver) {

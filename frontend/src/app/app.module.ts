@@ -42,6 +42,7 @@ import { EditPlaceComponent } from './passenger/passenger-sidebar/places/edit-pl
 import { StoreModule } from '@ngrx/store';
 import { RideReducer } from './store/ride.reducer';
 import { RideRequestReducer } from './store/rideRequest/rideRequest.reducer';
+import { ActiveStatusComponent } from './driver/active-status/active-status.component';
 
 
 @NgModule({
@@ -77,6 +78,7 @@ import { RideRequestReducer } from './store/rideRequest/rideRequest.reducer';
     ScheduleComponent,
 
     EditPlaceComponent,
+      ActiveStatusComponent,
   ],
   imports: [
     BrowserModule,

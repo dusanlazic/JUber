@@ -21,6 +21,7 @@
             <button class="button is-rounded mr-2">Profile<span class="iconify ml-2" data-icon="ic:baseline-person"></span></button>
             <button class="button is-rounded mr-1">Support<span class="iconify ml-2" data-icon="ic:baseline-contact-support"></span></button>
             <button class="button is-rounded mr-1" (click)="logout()">Logout<span class="iconify ml-2" data-icon="material-symbols:logout"></span></button>
+            <active-status *ngIf="loggedUser && loggedUser.role == 'ROLE_DRIVER'" ></active-status>
         </div>
     </div>
 </div>

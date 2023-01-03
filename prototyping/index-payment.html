@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://code.iconify.design/3/3.0.0/iconify.min.js"></script>
+  <link rel="stylesheet" href="css/custom.css">
+  <title>JUber</title>
+</head>
+
+<body>
+  <section class="hero is-fullheight is-unscrollable">
+    <div class="columns mt-0">
+      <div class="column is-sidebar pl-6 pr-5">
+        <div class="mt-5">
+          <p class="title is-size-3 has-text-grey is-family-secondary">Payment</p>
+          <div class="is-custom-payments-list">
+            <div class="person-paying-item">
+              <div class="columns">
+                <div class="column is-2 has-content-align-center">
+                  <figure class="image is-48x48">
+                    <img class="is-rounded"
+                      src="https://lh3.googleusercontent.com/a/ALm5wu3tpc3XnB9w8EMqNHAODc0uL23tqydVlUCLYqEF6Q=s96-c">
+                  </figure>
+                </div>
+                <div class="column">
+                  <p><strong>You</strong></p>
+                  <p class="has-text-success has-text-weight-bold">Ready</p>
+                </div>
+              </div>
+            </div>
+            <div class="person-paying-item">
+              <div class="columns">
+                <div class="column is-2 has-content-align-center">
+                  <div class="circle-initial-payment" style="background-color: #791eae; color: white">
+                    AC
+                  </div>
+                </div>
+                <div class="column">
+                  <p><strong>Aleksandar Cvetković</strong></p>
+                  <p class="has-text-success has-text-weight-bold">Ready</p>
+                </div>
+              </div>
+            </div>
+            <div class="person-paying-item">
+              <div class="columns">
+                <div class="column is-2 has-content-align-center">
+                  <div class="circle-initial-payment" style="background-color: #c33232; color: white">
+                    AB
+                    <span class="icon">
+                      <span class="iconify is-size-1" data-icon="fluent:delete-12-regular"></span>
+                    </span>
+                  </div>
+                </div>
+                <div class="column">
+                  <p><strong>Aleksa Bojanić</strong></p>
+                  <p class="has-text-grey">Waiting ...</p>
+                </div>
+              </div>
+            </div>
+            <div class="person-paying-item">
+              <div class="columns">
+                <div class="column is-2 has-content-align-center">
+                  <div class="circle-initial-payment" style="background-color: #1298db; color: white">
+                    ZR
+                    <span class="icon">
+                      <span class="iconify is-size-1" data-icon="fluent:delete-12-regular"></span>
+                    </span>
+                  </div>
+                </div>
+                <div class="column">
+                  <p><strong>Zoran Radović</strong></p>
+                  <p class="has-text-grey">Waiting ...</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <p class="mt-4">Ride will be ordered as soon as everyone accepts the invitation.</p>
+          <div class="notification is-info mt-4">
+            <div class="columns">
+              <div class="column is-1 pl-2 pt-5">
+                <span class="iconify is-size-4" data-icon="la:coins"></span>
+              </div>
+              <div class="column">
+                <p><b>232</b> RSD will be deducted from each passenger's balance.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="column m-0 p-0 is-map">
+        <iframe width="100%" height="100%" scrolling="no"
+          src="https://www.openstreetmap.org/export/embed.html?bbox=19.770412445068363%2C45.224974448135534%2C19.913749694824222%2C45.27983898702871&amp;layer=mapnik"></iframe>
+      </div>
+    </div>
+  </section>
+
+  <div class="navigation">
+    <figure class="image is-32x32 is-clickable">
+      <img class="is-rounded"
+        src="https://lh3.googleusercontent.com/a/ALm5wu3tpc3XnB9w8EMqNHAODc0uL23tqydVlUCLYqEF6Q=s96-c">
+    </figure>
+
+    <div class="is-relative is-custom-navigation-icon">
+      <span class="iconify is-size-4" data-icon="fluent:alert-24-filled"></span>
+      <span class="badge">1</span>
+    </div>
+  </div>
+</body>
+<script>
+  function clearScheduleFields() {
+    document.getElementById("schedule-minutes").value = "";
+    document.getElementById("schedule-hours").value = "";
+  }
+</script>
+
+</html>

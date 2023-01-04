@@ -1,6 +1,7 @@
 package com.nwt.juber.service;
 
 import com.nwt.juber.config.AppProperties;
+import com.nwt.juber.dto.message.BalanceUpdatedMessage;
 import com.nwt.juber.dto.response.BalanceResponse;
 import com.nwt.juber.dto.response.DepositAddressResponse;
 import com.nwt.juber.dto.response.cryptocompare.PriceResponse;
@@ -12,6 +13,7 @@ import com.nwt.juber.model.Passenger;
 import com.nwt.juber.repository.DepositAddressRepository;
 import com.nwt.juber.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -44,6 +46,9 @@ public class PaymentService {
 
     @Autowired
     private AppProperties appProperties;
+
+    @Autowired
+    private SimpMessagingTemplate messagingTemplate;
 
     public BalanceResponse checkBalance(Passenger passenger) {
         return new BalanceResponse(passenger.getBalance());
@@ -78,13 +83,16 @@ public class PaymentService {
             Passenger passenger = depositAddress.getPassenger();
 
             BigInteger weiBalance = new BigInteger(addr.getBalance());
+            BigDecimal increase = convertFromWei(weiBalance);
             BigDecimal currentBalance = passenger.getBalance();
-            BigDecimal updatedBalance = currentBalance.add(convertFromWei(weiBalance));
+            BigDecimal updatedBalance = currentBalance.add(increase);
 
             depositAddress.setStatus(DepositAddressStatus.PAID);
             passenger.setBalance(updatedBalance);
             depositAddressRepository.save(depositAddress);
             userRepository.save(passenger);
+
+            notifyUserAboutProcessedDeposit(passenger, increase);
         });
     }
 
@@ -151,4 +159,10 @@ public class PaymentService {
                 .multiply(fetchEthPriceFromCryptocompare())
                 .setScale(2, RoundingMode.HALF_UP);
     }
+
+    private void notifyUserAboutProcessedDeposit(Passenger passenger, BigDecimal increase) {
+        BalanceUpdatedMessage message = new BalanceUpdatedMessage(passenger.getBalance(), increase);
+        messagingTemplate.convertAndSendToUser(passenger.getUsername(), "/queue/balance", message);
+    }
+
 }

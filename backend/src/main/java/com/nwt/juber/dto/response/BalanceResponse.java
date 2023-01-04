@@ -8,5 +8,5 @@ import java.math.BigDecimal;
 @Data
 @AllArgsConstructor
 public class BalanceResponse {
-    private BigDecimal balanceRsd;
+    private BigDecimal balance;
 }

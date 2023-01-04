@@ -1,0 +1,85 @@
+package com.nwt.juber.service;
+
+import com.nwt.juber.dto.response.ChatConversationResponse;
+import com.nwt.juber.dto.response.ChatMessageResponse;
+import com.nwt.juber.exception.ConversationNotFoundException;
+import com.nwt.juber.exception.UserNotFoundException;
+import com.nwt.juber.model.Admin;
+import com.nwt.juber.model.ChatConversation;
+import com.nwt.juber.model.PersistedChatMessage;
+import com.nwt.juber.model.User;
+import com.nwt.juber.repository.ChatConversationRepository;
+import com.nwt.juber.repository.ChatMessageRepository;
+import com.nwt.juber.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.stereotype.Service;
+
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
+import java.util.UUID;
+
+@Service
+public class ChatService {
+
+    @Autowired
+    private ChatConversationRepository conversationRepository;
+
+    @Autowired
+    private ChatMessageRepository messageRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    public List<ChatMessageResponse> getMessages(Authentication authentication) {
+        User user = (User) authentication.getPrincipal();
+
+        ChatConversation conversation = conversationRepository.findByUserAndIsArchivedIsFalse(user).orElseThrow(ConversationNotFoundException::new);
+        List<PersistedChatMessage> messages = conversation.getMessages();
+
+        return messages.stream()
+                .map(m -> new ChatMessageResponse(m.getContent(), m.getSentAt(), m.getIsFromSupport()))
+                .sorted(Comparator.comparing(ChatMessageResponse::getSentAt).reversed())
+                .toList();
+    }
+
+    public List<ChatMessageResponse> getMessages(Authentication authentication, UUID userId) {
+        User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+        Admin support = (Admin) authentication.getPrincipal();
+
+        ChatConversation conversation = conversationRepository
+                .findByUserAndSupportAndIsArchivedIsFalse(user, support)
+                .orElseThrow(ConversationNotFoundException::new);
+        List<PersistedChatMessage> messages = conversation.getMessages();
+
+        return messages.stream()
+                .map(m -> new ChatMessageResponse(m.getContent(), m.getSentAt(), m.getIsFromSupport()))
+                .sorted(Comparator.comparing(ChatMessageResponse::getSentAt).reversed())
+                .toList();
+    }
+
+    public List<ChatConversationResponse> getConversations(Authentication authentication) {
+        Admin support = (Admin) authentication.getPrincipal();
+
+        List<ChatConversation> conversations = conversationRepository.findBySupportAndIsArchivedIsFalse(support);
+
+        return conversations.stream()
+                .map(this::convertConversationToResponse)
+                .sorted(Comparator.comparing(ChatConversationResponse::getDate).reversed())
+                .toList();
+    }
+
+    private ChatConversationResponse convertConversationToResponse(ChatConversation c) {
+        PersistedChatMessage latestMessage = c.getMessages().get(c.getMessages().size() - 1);
+        String messagePreview = latestMessage.getContent().substring(0, 15);
+        Date date = latestMessage.getSentAt();
+
+        return new ChatConversationResponse(
+                messagePreview,
+                date,
+                c.getUser().getId(),
+                c.getUser().getName(),
+                c.getUser().getImageUrl());
+    }
+}

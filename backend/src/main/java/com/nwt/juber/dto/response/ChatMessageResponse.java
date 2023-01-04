@@ -9,6 +9,6 @@ import java.util.Date;
 @AllArgsConstructor
 public class ChatMessageResponse {
     private String content;
-    private Date date;
+    private Date sentAt;
     private Boolean isFromSupport;
 }

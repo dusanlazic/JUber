@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -22,13 +23,18 @@ public class ChatConversation {
     @ManyToOne
     private Admin support;
 
-    @OneToMany(cascade = CascadeType.PERSIST)
-    private List<PersistedChatMessage> messages;
+    @OneToMany
+    private List<PersistedChatMessage> messages = new ArrayList<>();
 
     private Boolean isArchived = false;
 
     public ChatConversation(User user, Admin support) {
         this.user = user;
         this.support = support;
+    }
+
+    public void addMessage(PersistedChatMessage message) {
+        messages.add(message);
+        message.setConversation(this);
     }
 }

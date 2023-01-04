@@ -34,7 +34,7 @@ public class ChatController {
         return new ResponseOk("Message sent.");
     }
 
-    @GetMapping("/admin/users/")
+    @GetMapping("/admin/users")
     @PreAuthorize("hasRole('ADMIN')")
     public List<ChatConversationResponse> getConversations(Authentication authentication) {
         return chatService.getConversations(authentication);

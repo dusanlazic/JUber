@@ -14,4 +14,5 @@ public class ChatConversationResponse {
     private UUID userId;
     private String userFullName;
     private String userImageUrl;
+    private Boolean isResponded;
 }

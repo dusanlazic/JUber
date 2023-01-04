@@ -82,9 +82,11 @@ public class ChatService {
                 .findByUserAndIsArchivedIsFalse(user)
                 .orElseGet(() -> createNewConversation(user));
 
-        PersistedChatMessage message = new PersistedChatMessage(conversation, messageRequest.getContent(), false);
-        messageRepository.save(message);
+        PersistedChatMessage message = new PersistedChatMessage(messageRequest.getContent(), false);
+        conversation.addMessage(message);
 
+        messageRepository.save(message);
+        conversationRepository.save(conversation);
         // TODO: Deliver over WS
     }
 
@@ -96,9 +98,11 @@ public class ChatService {
                 .findByUserAndSupportAndIsArchivedIsFalse(user, support)
                 .orElseThrow(ConversationNotFoundException::new);
 
-        PersistedChatMessage message = new PersistedChatMessage(conversation, messageRequest.getContent(), true);
-        messageRepository.save(message);
+        PersistedChatMessage message = new PersistedChatMessage(messageRequest.getContent(), true);
+        conversation.addMessage(message);
 
+        messageRepository.save(message);
+        conversationRepository.save(conversation);
         // TODO: Deliver over WS
     }
 
@@ -113,7 +117,7 @@ public class ChatService {
 
     private ChatConversationResponse convertConversationToResponse(ChatConversation c) {
         PersistedChatMessage latestMessage = c.getMessages().get(c.getMessages().size() - 1);
-        String messagePreview = latestMessage.getContent().substring(0, 15);
+        String messagePreview = previewMessage(latestMessage.getContent());
         Date date = latestMessage.getSentAt();
 
         return new ChatConversationResponse(
@@ -121,6 +125,11 @@ public class ChatService {
                 date,
                 c.getUser().getId(),
                 c.getUser().getName(),
-                c.getUser().getImageUrl());
+                c.getUser().getImageUrl(),
+                latestMessage.getIsFromSupport());
+    }
+
+    private String previewMessage(String content) {
+        return content.substring(0, Math.min(25, content.length() - 1));
     }
 }

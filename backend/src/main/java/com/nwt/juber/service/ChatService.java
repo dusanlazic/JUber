@@ -1,5 +1,8 @@
 package com.nwt.juber.service;
 
+import com.nwt.juber.dto.message.MsgFromSupportMessage;
+import com.nwt.juber.dto.message.MsgFromUserMessage;
+import com.nwt.juber.dto.message.NewConversationMessage;
 import com.nwt.juber.dto.request.ChatMessageRequest;
 import com.nwt.juber.dto.response.ChatConversationResponse;
 import com.nwt.juber.dto.response.ChatMessageResponse;
@@ -14,6 +17,7 @@ import com.nwt.juber.repository.ChatConversationRepository;
 import com.nwt.juber.repository.ChatMessageRepository;
 import com.nwt.juber.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
@@ -36,6 +40,9 @@ public class ChatService {
 
     @Autowired
     private AdminRepository adminRepository;
+
+    @Autowired
+    private SimpMessagingTemplate messagingTemplate;
 
     public List<ChatMessageResponse> getMessages(Authentication authentication) {
         User user = (User) authentication.getPrincipal();
@@ -87,7 +94,8 @@ public class ChatService {
 
         messageRepository.save(message);
         conversationRepository.save(conversation);
-        // TODO: Deliver over WS
+
+        deliverMessage(message);
     }
 
     public void sendMessageAsSupport(ChatMessageRequest messageRequest, UUID userId, Authentication authentication) {
@@ -103,11 +111,14 @@ public class ChatService {
 
         messageRepository.save(message);
         conversationRepository.save(conversation);
-        // TODO: Deliver over WS
+
+        deliverMessage(message);
     }
 
     private ChatConversation createNewConversation(User user) {
         Admin assignedSupport = findLeastRecentlyActiveSupport();
+        notifyAboutNewConversation(assignedSupport, user);
+
         return new ChatConversation(user, assignedSupport);
     }
 
@@ -131,5 +142,25 @@ public class ChatService {
 
     private String previewMessage(String content) {
         return content.substring(0, Math.min(25, content.length() - 1));
+    }
+
+    private void deliverMessage(PersistedChatMessage persistedMessage) {
+        if (persistedMessage.getIsFromSupport()) {
+            User receiver = persistedMessage.getConversation().getUser();
+            MsgFromSupportMessage transferredMessage = new MsgFromSupportMessage(persistedMessage.getContent(), persistedMessage.getSentAt());
+
+            messagingTemplate.convertAndSendToUser(receiver.getUsername(), "/queue/support/chat", transferredMessage);
+        } else {
+            User sender = persistedMessage.getConversation().getUser();
+            Admin receiver = persistedMessage.getConversation().getSupport();
+            MsgFromUserMessage transferredMessage = new MsgFromUserMessage(persistedMessage.getContent(), persistedMessage.getSentAt(), sender.getId());
+
+            messagingTemplate.convertAndSendToUser(receiver.getUsername(), "/queue/support/admin/chat", transferredMessage);
+        }
+    }
+
+    private void notifyAboutNewConversation(Admin support, User user) {
+        NewConversationMessage newConversationMessage = new NewConversationMessage(user.getId());
+        messagingTemplate.convertAndSendToUser(support.getUsername(), "/queue/support/admin/users", newConversationMessage);
     }
 }

@@ -25,6 +25,10 @@ public class ChatConversation {
     @OneToMany(cascade = CascadeType.PERSIST)
     private List<PersistedChatMessage> messages;
 
-    private Boolean isArchived;
+    private Boolean isArchived = false;
 
+    public ChatConversation(User user, Admin support) {
+        this.user = user;
+        this.support = support;
+    }
 }

@@ -4,7 +4,6 @@ import com.nwt.juber.api.ResponseOk;
 import com.nwt.juber.dto.request.ChatMessageRequest;
 import com.nwt.juber.dto.response.ChatConversationResponse;
 import com.nwt.juber.dto.response.ChatMessageResponse;
-import com.nwt.juber.exception.NotImplementedException;
 import com.nwt.juber.service.ChatService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -31,7 +30,8 @@ public class ChatController {
     @PostMapping("/chat")
     @PreAuthorize("hasAnyRole('PASSENGER', 'DRIVER')")
     public ResponseOk sendMessageAsUser(@RequestBody @Valid ChatMessageRequest messageRequest, Authentication authentication) {
-        throw new NotImplementedException();
+        chatService.sendMessageAsUser(messageRequest, authentication);
+        return new ResponseOk("Message sent.");
     }
 
     @GetMapping("/admin/users/")
@@ -51,7 +51,8 @@ public class ChatController {
     public ResponseOk sendMessageAsSupport(@RequestBody @Valid ChatMessageRequest messageRequest,
                                            @PathVariable UUID userId,
                                            Authentication authentication) {
-        throw new NotImplementedException();
+        chatService.sendMessageAsSupport(messageRequest, userId, authentication);
+        return new ResponseOk("Message sent.");
     }
 
 }

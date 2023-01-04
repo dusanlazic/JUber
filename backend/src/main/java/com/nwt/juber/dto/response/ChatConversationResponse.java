@@ -13,5 +13,5 @@ public class ChatConversationResponse {
     private Date date;
     private UUID userId;
     private String userFullName;
-    private String imageUrl;
+    private String userImageUrl;
 }

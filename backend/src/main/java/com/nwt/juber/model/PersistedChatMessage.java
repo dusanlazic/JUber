@@ -26,4 +26,10 @@ public class PersistedChatMessage {
 
     @CreationTimestamp
     private Date sentAt;
+
+    public PersistedChatMessage(ChatConversation conversation, String content, Boolean isFromSupport) {
+        this.conversation = conversation;
+        this.content = content;
+        this.isFromSupport = isFromSupport;
+    }
 }

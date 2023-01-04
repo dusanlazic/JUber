@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -26,6 +27,8 @@ public class ChatConversation {
     @OneToMany
     private List<PersistedChatMessage> messages = new ArrayList<>();
 
+    private Date lastMessageSentAt;
+
     private Boolean isArchived = false;
 
     public ChatConversation(User user, Admin support) {
@@ -36,5 +39,7 @@ public class ChatConversation {
     public void addMessage(PersistedChatMessage message) {
         messages.add(message);
         message.setConversation(this);
+
+        lastMessageSentAt = message.getSentAt();
     }
 }

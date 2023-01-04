@@ -12,15 +12,19 @@ import com.nwt.juber.model.Admin;
 import com.nwt.juber.model.ChatConversation;
 import com.nwt.juber.model.PersistedChatMessage;
 import com.nwt.juber.model.User;
+import com.nwt.juber.model.notification.PersistedNotification;
 import com.nwt.juber.repository.AdminRepository;
 import com.nwt.juber.repository.ChatConversationRepository;
 import com.nwt.juber.repository.ChatMessageRepository;
 import com.nwt.juber.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
@@ -132,11 +136,10 @@ public class ChatService {
     private ChatConversationResponse convertConversationToResponse(ChatConversation c) {
         PersistedChatMessage latestMessage = c.getMessages().get(c.getMessages().size() - 1);
         String messagePreview = previewMessage(latestMessage.getContent());
-        Date date = latestMessage.getSentAt();
 
         return new ChatConversationResponse(
                 messagePreview,
-                date,
+                c.getLastMessageSentAt(),
                 c.getUser().getId(),
                 c.getUser().getName(),
                 c.getUser().getImageUrl(),
@@ -165,5 +168,14 @@ public class ChatService {
     private void notifyAboutNewConversation(Admin support, User user) {
         NewConversationMessage newConversationMessage = new NewConversationMessage(user.getId());
         messagingTemplate.convertAndSendToUser(support.getUsername(), "/queue/support/admin/users", newConversationMessage);
+    }
+
+    @Scheduled(cron = "*/5 * * * *")
+    private void archiveInactiveConversations() {
+        Instant limit = Instant.now().minus(1, ChronoUnit.DAYS);
+        List<ChatConversation> inactiveConversations = conversationRepository.findByLastMessageSentAtBeforeAndIsArchivedIsFalse(Date.from(limit));
+
+        inactiveConversations.forEach(c -> c.setIsArchived(true));
+        conversationRepository.saveAll(inactiveConversations);
     }
 }

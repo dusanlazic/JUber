@@ -1,5 +1,6 @@
 package com.nwt.juber.service;
 
+import com.nwt.juber.dto.request.ChatMessageRequest;
 import com.nwt.juber.dto.response.ChatConversationResponse;
 import com.nwt.juber.dto.response.ChatMessageResponse;
 import com.nwt.juber.exception.ConversationNotFoundException;
@@ -8,6 +9,7 @@ import com.nwt.juber.model.Admin;
 import com.nwt.juber.model.ChatConversation;
 import com.nwt.juber.model.PersistedChatMessage;
 import com.nwt.juber.model.User;
+import com.nwt.juber.repository.AdminRepository;
 import com.nwt.juber.repository.ChatConversationRepository;
 import com.nwt.juber.repository.ChatMessageRepository;
 import com.nwt.juber.repository.UserRepository;
@@ -31,6 +33,9 @@ public class ChatService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private AdminRepository adminRepository;
 
     public List<ChatMessageResponse> getMessages(Authentication authentication) {
         User user = (User) authentication.getPrincipal();
@@ -68,6 +73,42 @@ public class ChatService {
                 .map(this::convertConversationToResponse)
                 .sorted(Comparator.comparing(ChatConversationResponse::getDate).reversed())
                 .toList();
+    }
+
+    public void sendMessageAsUser(ChatMessageRequest messageRequest, Authentication authentication) {
+        User user = (User) authentication.getPrincipal();
+
+        ChatConversation conversation = conversationRepository
+                .findByUserAndIsArchivedIsFalse(user)
+                .orElseGet(() -> createNewConversation(user));
+
+        PersistedChatMessage message = new PersistedChatMessage(conversation, messageRequest.getContent(), false);
+        messageRepository.save(message);
+
+        // TODO: Deliver over WS
+    }
+
+    public void sendMessageAsSupport(ChatMessageRequest messageRequest, UUID userId, Authentication authentication) {
+        User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+        Admin support = (Admin) authentication.getPrincipal();
+
+        ChatConversation conversation = conversationRepository
+                .findByUserAndSupportAndIsArchivedIsFalse(user, support)
+                .orElseThrow(ConversationNotFoundException::new);
+
+        PersistedChatMessage message = new PersistedChatMessage(conversation, messageRequest.getContent(), true);
+        messageRepository.save(message);
+
+        // TODO: Deliver over WS
+    }
+
+    private ChatConversation createNewConversation(User user) {
+        Admin assignedSupport = findLeastRecentlyActiveSupport();
+        return new ChatConversation(user, assignedSupport);
+    }
+
+    private Admin findLeastRecentlyActiveSupport() {
+        return adminRepository.findFirstByOrderByLastActiveAt();
     }
 
     private ChatConversationResponse convertConversationToResponse(ChatConversation c) {

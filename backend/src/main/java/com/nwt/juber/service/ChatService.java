@@ -119,7 +119,10 @@ public class ChatService {
         Admin assignedSupport = findLeastRecentlyActiveSupport();
         notifyAboutNewConversation(assignedSupport, user);
 
-        return new ChatConversation(user, assignedSupport);
+        ChatConversation conversation = new ChatConversation(user, assignedSupport);
+        conversationRepository.save(conversation);
+
+        return conversation;
     }
 
     private Admin findLeastRecentlyActiveSupport() {

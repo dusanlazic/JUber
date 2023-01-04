@@ -5,6 +5,8 @@ import com.nwt.juber.dto.request.ChatMessageRequest;
 import com.nwt.juber.dto.response.ChatConversationResponse;
 import com.nwt.juber.dto.response.ChatMessageResponse;
 import com.nwt.juber.exception.NotImplementedException;
+import com.nwt.juber.service.ChatService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -17,10 +19,13 @@ import java.util.UUID;
 @RequestMapping("/support")
 public class ChatController {
 
+    @Autowired
+    private ChatService chatService;
+
     @GetMapping("/chat")
     @PreAuthorize("hasAnyRole('PASSENGER', 'DRIVER')")
     public List<ChatMessageResponse> getMessagesAsUser(Authentication authentication) {
-        throw new NotImplementedException();
+        return chatService.getMessages(authentication);
     }
 
     @PostMapping("/chat")
@@ -32,13 +37,13 @@ public class ChatController {
     @GetMapping("/admin/users/")
     @PreAuthorize("hasRole('ADMIN')")
     public List<ChatConversationResponse> getConversations(Authentication authentication) {
-        throw new NotImplementedException();
+        return chatService.getConversations(authentication);
     }
 
     @GetMapping("/admin/users/{userId}/chat")
     @PreAuthorize("hasRole('ADMIN')")
     public List<ChatMessageResponse> getMessagesAsSupport(Authentication authentication, @PathVariable UUID userId) {
-        throw new NotImplementedException();
+        return chatService.getMessages(authentication, userId);
     }
 
     @PostMapping("/admin/users/{userId}/chat")

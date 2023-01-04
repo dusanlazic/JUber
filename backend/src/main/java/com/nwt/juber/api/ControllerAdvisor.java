@@ -83,4 +83,10 @@ public class ControllerAdvisor {
     public ResponseError handleFileNotFoundException(FileNotFoundException e) {
         return new ResponseError(HttpStatus.NOT_FOUND, e.getMessage());
     }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(ConversationNotFoundException.class)
+    public ResponseError handleConversationNotFoundException(ConversationNotFoundException e) {
+        return new ResponseError(HttpStatus.NOT_FOUND, "Conversation not found.");
+    }
 }

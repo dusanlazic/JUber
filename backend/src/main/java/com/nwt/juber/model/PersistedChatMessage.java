@@ -17,7 +17,7 @@ public class PersistedChatMessage {
     @Column(columnDefinition = "uuid")
     private UUID id = UUID.randomUUID();
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne
     private ChatConversation conversation;
 
     private String content;
@@ -27,8 +27,7 @@ public class PersistedChatMessage {
     @CreationTimestamp
     private Date sentAt;
 
-    public PersistedChatMessage(ChatConversation conversation, String content, Boolean isFromSupport) {
-        this.conversation = conversation;
+    public PersistedChatMessage(String content, Boolean isFromSupport) {
         this.content = content;
         this.isFromSupport = isFromSupport;
     }

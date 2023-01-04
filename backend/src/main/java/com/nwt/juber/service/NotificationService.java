@@ -48,7 +48,7 @@ public class NotificationService {
         messagingTemplate.convertAndSendToUser(receiver.getUsername(), NOTIFICATIONS_DESTINATION, notification.convertToTransferred());
     }
 
-    @Scheduled(cron = "*/0 2 * * * *")
+    @Scheduled(cron = "* 2 * * * *")
     private void removeOldNotifications() {
         Instant limit = Instant.now().minus(2, ChronoUnit.DAYS);
         List<PersistedNotification> oldNotifications = notificationRepository.findReadAndCreatedBefore(Date.from(limit));

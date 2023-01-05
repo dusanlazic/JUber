@@ -293,6 +293,37 @@ input::-webkit-inner-spin-button
     &:hover
         color: $success
 
+.has-custom-scrollable-container
+    display: flex
+    flex-direction: column
+
+.is-custom-scrollable-container
+    background-image: linear-gradient(red, yellow)
+    height: 515px
+    width: 100%
+    position: relative
+    overflow-y: scroll
+
+table.is-custom-table
+    thead
+        position: sticky
+        background-color: white
+        top: 0px
+        box-shadow: 1px 1px 20px #00000011;
+        height: 50px
+        th
+            font-weight: bold !important
+            color: hsl(0, 0%, 50%)
+            border-width: 0 0 0 !important
+    tbody
+        tr
+            cursor: pointer
+            th
+                vertical-align: middle !important
+                border: none !important
+                font-weight: bold
+                height: 50px
+
 .circle-initial-person
     position: relative
     border-radius: 50%

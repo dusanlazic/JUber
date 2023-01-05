@@ -100,6 +100,7 @@ public class ChatService {
         conversationRepository.save(conversation);
 
         deliverMessage(message);
+        updateSupportLastActiveAt(conversation.getSupport());
     }
 
     public void sendMessageAsSupport(ChatMessageRequest messageRequest, UUID userId, Authentication authentication) {
@@ -170,7 +171,12 @@ public class ChatService {
         messagingTemplate.convertAndSendToUser(support.getUsername(), "/queue/support/admin/users", newConversationMessage);
     }
 
-    @Scheduled(cron = "*/5 * * * *")
+    private void updateSupportLastActiveAt(Admin support) {
+        support.setLastActiveAt(new Date());
+        adminRepository.save(support);
+    }
+
+    @Scheduled(cron = "0 */5 * * * *")
     private void archiveInactiveConversations() {
         Instant limit = Instant.now().minus(1, ChronoUnit.DAYS);
         List<ChatConversation> inactiveConversations = conversationRepository.findByLastMessageSentAtBeforeAndIsArchivedIsFalse(Date.from(limit));

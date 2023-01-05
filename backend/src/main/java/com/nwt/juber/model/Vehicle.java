@@ -1,13 +1,14 @@
 package com.nwt.juber.model;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.UUID;
 
 @Entity
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode(exclude = {"driver"})
 @NoArgsConstructor
 public class Vehicle {
 

@@ -1,12 +1,13 @@
 package com.nwt.juber.service;
 
+import com.nwt.juber.api.ResponseOk;
 import com.nwt.juber.config.AppProperties;
 import com.nwt.juber.dto.request.*;
-import com.nwt.juber.dto.response.PhotoUploadResponse;
-import com.nwt.juber.dto.response.TokenResponse;
+import com.nwt.juber.dto.response.*;
 import com.nwt.juber.exception.*;
 import com.nwt.juber.model.*;
 import com.nwt.juber.repository.PersonRepository;
+import com.nwt.juber.repository.ProfileChangeRequestRepository;
 import com.nwt.juber.repository.UserRepository;
 import com.nwt.juber.security.TokenAuthenticationFilter;
 import com.nwt.juber.security.TokenProvider;
@@ -23,8 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class AccountService {
@@ -37,6 +37,9 @@ public class AccountService {
 
     @Autowired
     private PersonRepository personRepository;
+
+    @Autowired
+    private ProfileChangeRequestRepository profileChangeRequestRepository;
 
     @Autowired
     private TokenProvider tokenProvider;
@@ -197,6 +200,77 @@ public class AccountService {
         userRepository.save(user);
     }
 
+    public ProfileInfoResponse getProfileInfo(Authentication authentication) {
+        Person person = (Person) authentication.getPrincipal();
+        return new ProfileInfoResponse(
+                person.getFirstName(),
+                person.getLastName(),
+                person.getCity(),
+                person.getPhoneNumber(),
+                person.getImageUrl()
+        );
+    }
+
+    public ResponseOk updateProfileInfo(ProfileInfoChangeRequest profileInfo, Authentication authentication) {
+        Person person = (Person) authentication.getPrincipal();
+
+        Map<String, String> changes = extractChangesFromRequestBody(profileInfo);
+        ProfileChangeRequest changeRequest = new ProfileChangeRequest(person, changes);
+
+        switch (person.getRole()) {
+            case ROLE_PASSENGER -> {
+                applyProfileChanges(changeRequest);
+                personRepository.save(person);
+                return new ResponseOk("Changes saved.");
+            }
+            case ROLE_DRIVER -> {
+                profileChangeRequestRepository.save(changeRequest);
+                return new ResponseOk("Changes requested.");
+            }
+            default -> {
+                return null;
+            }
+        }
+    }
+
+    public List<ProfileChangeRequestResponse> getPendingProfileChangeRequests() {
+        return profileChangeRequestRepository.findPending()
+                .stream().map(r -> new ProfileChangeRequestResponse(
+                        r.getId(),
+                        r.getPerson().getId(),
+                        r.getPerson().getName(),
+                        r.getChanges(),
+                        r.getRequestedAt()))
+                .toList();
+    }
+
+    public ResponseOk resolveProfileChangeRequest(UUID requestId, ProfileInfoChangeResolveRequest resolveRequest) {
+        ProfileChangeRequest changeRequest = profileChangeRequestRepository.findById(requestId).orElseThrow(ProfileChangeRequestNotFoundException::new);
+
+        if (!changeRequest.getStatus().equals(ChangeRequestStatus.PENDING))
+            throw new ProfileChangeRequestAlreadyResolvedException();
+
+        ChangeRequestStatus newStatus = ChangeRequestStatus.valueOf(resolveRequest.getNewStatus());
+        switch (newStatus) {
+            case APPROVED -> {
+                applyProfileChanges(changeRequest);
+                changeRequest.setStatus(ChangeRequestStatus.APPROVED);
+
+                profileChangeRequestRepository.save(changeRequest);
+                personRepository.save(changeRequest.getPerson());
+                return new ResponseOk("Changes saved.");
+            }
+            case DENIED -> {
+                changeRequest.setStatus(ChangeRequestStatus.DENIED);
+                profileChangeRequestRepository.save(changeRequest);
+                return new ResponseOk("Changes denied.");
+            }
+            default -> {
+                return null;
+            }
+        }
+    }
+
     private void checkEmailAvailability(String email) {
         if (userRepository.existsByEmail(email))
             throw new EmailAlreadyInUseException();
@@ -205,5 +279,27 @@ public class AccountService {
     private void checkPhoneNumberAvailability(String phoneNumber) {
         if (personRepository.existsByPhoneNumber(phoneNumber))
             throw new PhoneNumberAlreadyInUseException();
+    }
+
+    private Map<String, String> extractChangesFromRequestBody(ProfileInfoChangeRequest changeRequestData) {
+        Map<String, String> changes = new HashMap<>();
+
+        changes.put("firstName", changeRequestData.getFirstName());
+        changes.put("lastName", changeRequestData.getLastName());
+        changes.put("city", changeRequestData.getCity());
+        changes.put("phoneNumber", changeRequestData.getPhoneNumber());
+        changes.values().removeAll(Collections.singleton(null));
+
+        return changes;
+    }
+
+    private void applyProfileChanges(ProfileChangeRequest changeRequest) {
+        Map<String, String> changes = changeRequest.getChanges();
+        Person person = changeRequest.getPerson();
+
+        person.setFirstName(changes.getOrDefault("firstName", person.getFirstName()));
+        person.setLastName(changes.getOrDefault("lastName", person.getLastName()));
+        person.setCity(changes.getOrDefault("city", person.getCity()));
+        person.setPhoneNumber(changes.getOrDefault("phoneNumber", person.getPhoneNumber()));
     }
 }

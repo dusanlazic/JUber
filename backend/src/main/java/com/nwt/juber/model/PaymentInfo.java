@@ -11,16 +11,11 @@ import java.util.UUID;
 @Entity
 @Data
 @NoArgsConstructor
-public class Location {
+public class PaymentInfo {
 
     @Id
     @Column(columnDefinition = "uuid")
     private UUID id;
 
-    private String name;
-
-    private Double longitude;
-
-    private Double latitude;
-
+    private String accountNumber;
 }

@@ -9,6 +9,8 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
+import java.io.IOException;
+
 @SpringBootApplication
 @EnableScheduling
 @EnableConfigurationProperties(AppProperties.class)

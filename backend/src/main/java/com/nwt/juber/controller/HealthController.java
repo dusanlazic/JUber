@@ -13,6 +13,7 @@ public class HealthController {
 
     @GetMapping("/health")
     public ResponseOk health() {
+        System.out.println("Health.");
         return new ResponseOk("It works.");
     }
 

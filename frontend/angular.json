@@ -33,6 +33,12 @@
               "./node_modules/@angular/material/prebuilt-themes/deeppurple-amber.css",
               "./node_modules/leaflet/dist/leaflet.css",
               "node_modules/bulma/css/bulma.min.css",
+              "node_modules/bulma/bulma.sass",
+              "node_modules/bulma-switch/dist/css/bulma-switch.min.css",
+              "node_modules/bulma-divider/dist/css/bulma-divider.min.css",
+              "node_modules/bulma-checkradio/dist/css/bulma-checkradio.min.css",
+              "node_modules/@creativebulma/bulma-badge/dist/bulma-badge.min.css",
+              "./node_modules/leaflet-routing-machine/dist/leaflet-routing-machine.css",
               "src/styles.sass"
             ],
             "scripts": []

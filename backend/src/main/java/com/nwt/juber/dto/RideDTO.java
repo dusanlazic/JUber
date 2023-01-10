@@ -1,6 +1,7 @@
 package com.nwt.juber.dto;
 
 import com.nwt.juber.model.Place;
+import com.nwt.juber.model.RideStatus;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -15,5 +16,6 @@ public class RideDTO {
     private Double fare;
     private List<PersonDTO> passengers;
     private PersonDTO driver;
+    private RideStatus rideStatus;
 
 }

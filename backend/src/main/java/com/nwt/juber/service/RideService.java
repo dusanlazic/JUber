@@ -145,6 +145,7 @@ public class RideService {
         dto.setFare(ride.getFare());
         dto.setPlaces(ride.getPlaces());
         dto.setPassengers(ride.getPassengers().stream().map(this::convertPersonToDTO).toList());
+        dto.setRideStatus(ride.getRideStatus());
         return dto;
     }
 

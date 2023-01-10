@@ -26,6 +26,9 @@ public class Ride {
     @ManyToMany
     private List<Passenger> passengers;
 
+    @ElementCollection
+    private List<Boolean> passengersReady;
+
     @ManyToOne
     private Driver driver;
 

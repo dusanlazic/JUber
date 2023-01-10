@@ -1,6 +1,7 @@
 import { Component, Output, Input, EventEmitter } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { LocalRegistrationInputs, PersonalInfo } from 'src/models/auth';
+import { ValidationConstants } from 'src/services/util/custom-validators';
 import { Toastr } from 'src/services/util/toastr.service';
 
 @Component({
@@ -24,9 +25,9 @@ export class RegisterStep2Component {
 
   private createForm(): void {
     this.registrationForm = this.builder.group({
-      firstName: new FormControl('', [Validators.required, Validators.pattern('[a-zA-Z ]*'), Validators.maxLength(40)]),
-      lastName: new FormControl('', [Validators.required, Validators.pattern('[a-zA-Z ]*'), Validators.maxLength(40)]),
-      city: new FormControl('', [Validators.required, Validators.pattern('[a-zA-Z ]*')]),
+      firstName: new FormControl('', [Validators.required, Validators.pattern(ValidationConstants.Name), Validators.maxLength(40)]),
+      lastName: new FormControl('', [Validators.required, Validators.pattern(ValidationConstants.Name), Validators.maxLength(40)]),
+      city: new FormControl('', [Validators.required, Validators.pattern(ValidationConstants.Name)]),
       phoneNumber: new FormControl('', [Validators.required, Validators.pattern('^\\+[1-9][0-9]{3,14}$')]) // custom
     });
   }

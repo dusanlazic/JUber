@@ -15,7 +15,6 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { LoginPageComponent } from './login-page/login-page.component';
 import { Oauth2RedirectHandlerComponent } from './login-page/oauth2-redirect-handler/oauth2-redirect-handler.component';
-import { ProfileComponent } from './profile/profile.component';
 import { ToastrModule } from 'ngx-toastr';
 import { RegisterOauthComponent } from './registration/register-oauth/register-oauth.component';
 import { RegisterLocalComponent } from './registration/register-local/register-local.component';
@@ -39,6 +38,11 @@ import { EmptyPlaceComponent } from './passenger/passenger-sidebar/places/empty-
 import { EditPlaceComponent } from './passenger/passenger-sidebar/places/edit-place/edit-place.component';
 import { StoreModule } from '@ngrx/store';
 import { RideReducer } from './store/ride.reducer';
+import { AddPalsDialogComponent } from './passenger/passenger-sidebar/pals/add-pals-dialog/add-pals-dialog.component';
+import { AdditionalComponent } from './passenger/passenger-sidebar/additional/additional.component';
+import { ScheduleComponent } from './passenger/passenger-sidebar/schedule/schedule.component';
+import { RideRequestReducer } from './store/rideRequest/rideRequest.reducer';
+import { ActiveStatusComponent } from './driver/active-status/active-status.component';
 
 @NgModule({
   declarations: [
@@ -47,8 +51,6 @@ import { RideReducer } from './store/ride.reducer';
 
     LoginPageComponent,
     Oauth2RedirectHandlerComponent,
-    
-    ProfileComponent,
     RegisterOauthComponent,
     RegisterLocalComponent,
     RegisterStep1Component,
@@ -61,6 +63,7 @@ import { RideReducer } from './store/ride.reducer';
     PasswordResetRequestSuccessComponent,
     PasswordResetFormComponent,
     PasswordResetSuccessComponent,
+
     HomeComponent,
     PassengerSidebarComponent,
     PassengerMapComponent,
@@ -69,6 +72,12 @@ import { RideReducer } from './store/ride.reducer';
     PlaceComponent,
     EmptyPlaceComponent,
     EditPlaceComponent,
+
+    AddPalsDialogComponent,
+    AdditionalComponent,
+    ScheduleComponent,
+
+    ActiveStatusComponent,
   ],
   imports: [
     BrowserModule,
@@ -82,7 +91,7 @@ import { RideReducer } from './store/ride.reducer';
     ReactiveFormsModule,
     HttpClientModule,
     ToastrModule.forRoot(),
-    StoreModule.forRoot({state: RideReducer}),
+    StoreModule.forRoot({state: RideReducer, rideRequest: RideRequestReducer}),
   ],
   exports: [
     RegisterStep1Component,

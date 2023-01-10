@@ -1,23 +1,24 @@
 package com.nwt.juber.service;
 
+import java.time.LocalDateTime;
+import java.util.UUID;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.nwt.juber.exception.EndRideException;
 import com.nwt.juber.exception.StartRideException;
 import com.nwt.juber.model.Ride;
 import com.nwt.juber.model.RideStatus;
 import com.nwt.juber.repository.RideRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Service
 public class RideService {
 
     @Autowired
     private RideRepository rideRepository;
-
-    public void startRide(UUID rideId) {
+    
+	public void startRide(UUID rideId) {
         Ride ride = rideRepository.findById(rideId).orElseThrow(() -> new StartRideException("No ride with id: " + rideId));
         if (ride.getRideStatus() != RideStatus.ACCEPTED) {
             throw new StartRideException("Ride not accepted!");
@@ -36,5 +37,4 @@ public class RideService {
         ride.setEndTime(LocalDateTime.now());
         rideRepository.save(ride);
     }
-
 }

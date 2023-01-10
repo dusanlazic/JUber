@@ -1,13 +1,20 @@
-INSERT INTO VEHICLE (ID, LATITUDE, LONGITUDE, BABY_FRIENDLY, PET_FRIENDLY, CAPACITY) VALUES
-('3d2becd5-aa6f-4410-9058-bed41a017457', 45.246, 19.8512, FALSE, TRUE, 4),
-('e63dbc27-1a36-4f73-b024-07e19ea91838', 45.246, 19.8512, FALSE, FALSE, 4),
-('6f513eca-b592-4e88-9cb4-ad9c14301ab2', 45.246, 19.8512, TRUE, TRUE, 7);
+INSERT INTO VEHICLE_TYPE(ID, NAME, PRICE) VALUES
+('7b4f82de-8e90-47eb-bae6-be020c45df31', 'Hatchback', 200.00),
+('920e64a8-50d7-42e0-90bd-714b48ab8e57', 'Estate', 250.00),
+('7bf754a2-7907-4b47-8b66-8269cb7da37e', 'Limousine', 1000.00),
+('388f2683-d7e6-40df-a8a8-0fee1f9ceb64', 'Sports', 500.00),
+('3b2ed711-ffeb-4841-82ed-f967db5d875a', 'Pickup', 350.00);
+
+INSERT INTO VEHICLE (ID, LONGITUDE, LATITUDE, BABY_FRIENDLY, PET_FRIENDLY, CAPACITY, VEHICLE_TYPE_ID) VALUES
+('3d2becd5-aa6f-4410-9058-bed41a017457', 45.246, 19.8512, FALSE, TRUE, 4, '7b4f82de-8e90-47eb-bae6-be020c45df31'),
+('e63dbc27-1a36-4f73-b024-07e19ea91838', 45.246, 19.8512, FALSE, FALSE, 4, '7bf754a2-7907-4b47-8b66-8269cb7da37e'),
+('6f513eca-b592-4e88-9cb4-ad9c14301ab2', 45.246, 19.8512, TRUE, TRUE, 7, '920e64a8-50d7-42e0-90bd-714b48ab8e57');
 
 -- PASSWORD = 'cascaded'
-INSERT INTO DRIVER (ID, EMAIL, EMAIL_VERIFIED, IMAGE_URL, NAME, PASSWORD, PROVIDER, PROVIDER_ID, ROLE, CITY, FIRST_NAME, LAST_NAME, PHONE_NUMBER, ACTIVE, VEHICLE_ID) VALUES
-('909dccc3-4f61-4237-b3a2-6e674edd8d52', 'zdravko.zdravkovic@gmail.com', TRUE, 'zdravko1.png', 'Zdravko Zdravkovic', '$2a$10$Qg.gpYTtZiVMJ6Fs9QbQA.BtCx4106oSj92X.A/Gv7iAEKQXAg.gy', 'local', NULL, 'ROLE_DRIVER', 'Novi Sad', 'Zdravko', 'Zdravkovic', '+38164548952', FALSE, '3d2becd5-aa6f-4410-9058-bed41a017457');
--- ('2173891a-8bdc-4b4d-b6fb-4d790fc4630f', 'marko.markovic@gmail.com', TRUE, 'marko1.png', 'Marko Markovic', '$2a$10$Qg.gpYTtZiVMJ6Fs9QbQA.BtCx4106oSj92X.A/Gv7iAEKQXAg.gy', 'local', NULL, 'ROLE_DRIVER', 'Novi Sad', 'Marko', 'Markovic', '+38164432452', FALSE, 'e63dbc27-1a36-4f73-b024-07e19ea91838'),
--- ('6bc99aaf-cc8b-4d80-a7d2-7457c39b278a', 'nikola.nikolic@gmail.com', TRUE, 'nikola.png', 'Nikola Nikolic', '$2a$10$Qg.gpYTtZiVMJ6Fs9QbQA.BtCx4106oSj92X.A/Gv7iAEKQXAg.gy', 'local', NULL, 'ROLE_DRIVER', 'Novi Sad', 'Nikola', 'Nikolic', '+38164047952', FALSE, '6f513eca-b592-4e88-9cb4-ad9c14301ab2');
+INSERT INTO DRIVER (ID, EMAIL, EMAIL_VERIFIED, IMAGE_URL, NAME, PASSWORD, PROVIDER, PROVIDER_ID, ROLE, CITY, FIRST_NAME, LAST_NAME, PHONE_NUMBER, STATUS, VEHICLE_ID) VALUES
+('909dccc3-4f61-4237-b3a2-6e674edd8d52', 'zdravko.zdravkovic@gmail.com', TRUE, 'zdravko1.png', 'Zdravko Zdravkovic', '$2a$10$Qg.gpYTtZiVMJ6Fs9QbQA.BtCx4106oSj92X.A/Gv7iAEKQXAg.gy', 'local', NULL, 'ROLE_DRIVER', 'Novi Sad', 'Zdravko', 'Zdravkovic', '+38164548952', 'INACTIVE', '3d2becd5-aa6f-4410-9058-bed41a017457'),
+('2173891a-8bdc-4b4d-b6fb-4d790fc4630f', 'marko.markovic@gmail.com', TRUE, 'marko1.png', 'Marko Markovic', '$2a$10$Qg.gpYTtZiVMJ6Fs9QbQA.BtCx4106oSj92X.A/Gv7iAEKQXAg.gy', 'local', NULL, 'ROLE_DRIVER', 'Novi Sad', 'Marko', 'Markovic', '+38164432452', 'INACTIVE', 'e63dbc27-1a36-4f73-b024-07e19ea91838'),
+('6bc99aaf-cc8b-4d80-a7d2-7457c39b278a', 'nikola.nikolic@gmail.com', TRUE, 'nikola.png', 'Nikola Nikolic', '$2a$10$Qg.gpYTtZiVMJ6Fs9QbQA.BtCx4106oSj92X.A/Gv7iAEKQXAg.gy', 'local', NULL, 'ROLE_DRIVER', 'Novi Sad', 'Nikola', 'Nikolic', '+38164047952', 'OVERTIME', '6f513eca-b592-4e88-9cb4-ad9c14301ab2');
 
 INSERT INTO ADMIN(ID, EMAIL, EMAIL_VERIFIED, IMAGE_URL, NAME, PASSWORD, PROVIDER, PROVIDER_ID, ROLE) VALUES
 ('e3661c31-d1a4-47ab-94b6-1c6500dccf24', 'admin@juber.com', TRUE, NULL, 'JUber Admin', '$2a$10$Qg.gpYTtZiVMJ6Fs9QbQA.BtCx4106oSj92X.A/Gv7iAEKQXAg.gy', 'local', NULL, 'ROLE_ADMIN');
@@ -38,3 +45,10 @@ INSERT INTO RIDE_PASSENGERS (RIDE_ID, PASSENGERS_ID) VALUES
 ('8107614c-04d9-480d-8a59-e1999d9e7bfc', '6aebc916-dd04-4674-a4f2-99edec0a1811');
 
 VALUES ( '8107614c-04d9-480d-8a59-e1999d9e7bfc', '041cd3b0-4ffa-418b-9de1-4379b2ce550d', 2500.0, 'zdravko.zdravkovic@gmail.com', '2022-06-22 11:05:29.267235', '2022-06-23 11:05:29.267235', 1);
+
+INSERT INTO DRIVER_SHIFT (ID, START_OF_SHIFT, END_OF_SHIFT, DURATION) VALUES
+('75150af6-aa36-4f58-927a-008445fd7be9', {ts '2023-01-01 08:14:00.742000000'}, NULL, 0L);
+
+INSERT INTO DRIVER_DRIVER_SHIFTS(DRIVER_ID, DRIVER_SHIFTS_ID) VALUES
+('6bc99aaf-cc8b-4d80-a7d2-7457c39b278a', '75150af6-aa36-4f58-927a-008445fd7be9')
+

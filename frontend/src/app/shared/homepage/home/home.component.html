@@ -1,7 +1,7 @@
 
 <div>
 
-    <section class="hero is-fullheight">
+    <section class="hero is-fullheight is-unscrollable">
     <div class="columns mt-0">
         <div class="column is-3 is-sidebar pl-6 pr-5" style="z-index: 100000000;">
             <passenger-sidebar *ngIf="loggedUser && loggedUser.role == 'ROLE_PASSENGER'"></passenger-sidebar>
@@ -20,7 +20,8 @@
             </figure>
             <button class="button is-rounded mr-2">Profile<span class="iconify ml-2" data-icon="ic:baseline-person"></span></button>
             <button class="button is-rounded mr-1">Support<span class="iconify ml-2" data-icon="ic:baseline-contact-support"></span></button>
-            <button class="button is-rounded mr-1">Logout<span class="iconify ml-2" data-icon="material-symbols:logout"></span></button>
+            <button class="button is-rounded mr-1" (click)="logout()">Logout<span class="iconify ml-2" data-icon="material-symbols:logout"></span></button>
+            <active-status *ngIf="loggedUser && loggedUser.role == 'ROLE_DRIVER'" ></active-status>
         </div>
     </div>
 </div>

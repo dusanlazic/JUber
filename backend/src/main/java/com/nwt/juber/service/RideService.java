@@ -72,12 +72,23 @@ public class RideService {
                 .stream()
                 .filter(x -> x.getId() != user.getId())
                 .toList();
+
+        if (ride.getPassengersReady().stream().allMatch(Boolean::booleanValue)) {
+           subtractFundsForRide(ride);
+        }
+
         for (Passenger pal: pals) {
             InvitationStatusMessage message = new InvitationStatusMessage();
             message.setId(passenger.getId());
             message.setStatus(RideInvitationStatus.ACCEPTED);
             messagingTemplate.convertAndSendToUser(pal.getUsername(), "/queue/ride", message);
         }
+    }
+
+    private void subtractFundsForRide(Ride ride) {
+        double fare = ride.getFare() / ride.getPassengers().size();
+        ride.getPassengers()
+            .forEach(x -> x.setBalance(x.getBalance().subtract(BigDecimal.valueOf(fare))));
     }
 
 
@@ -87,14 +98,18 @@ public class RideService {
         Ride ride = rideRepository.findById(rideId).orElseThrow(() -> new EndRideException("No ride with id: " + rideId));
         int passengerPosition = ride.getPassengers().indexOf(passenger);
         ride.getPassengersReady().set(passengerPosition, Boolean.FALSE);
-        // notify the rest!
         ride.setRideStatus(RideStatus.DENIED);
+        // notify the rest!
         List<Passenger> pals = ride.getPassengers()
                                 .stream()
                                 .filter(x -> x.getId() != user.getId())
                                 .toList();
         for (Passenger pal: pals) {
-
+            InvitationStatusMessage message = new InvitationStatusMessage();
+            message.setId(passenger.getId());
+            message.setStatus(RideInvitationStatus.DENIED);
+            messagingTemplate.convertAndSendToUser(pal.getUsername(), "/queue/ride", message);
         }
+        rideRepository.save(ride);
     }
 }

@@ -46,12 +46,12 @@ export class HomeComponent implements AfterViewInit {
   }
 
   logout(): void {
+
     if(this.loggedUser.role === Roles.DRIVER){
       this.driverService.inactivate(this.loggedUser.email);
     }
     this.authService.logout();
     this.router.navigate(['/login']);
   }
-
 
 }

@@ -18,7 +18,7 @@ const jwtHelper = new JwtHelperService();
 
 export class AuthService {
 
-    private loggedUser!: LoggedUser;
+    private loggedUser!: LoggedUser | undefined;
 
     constructor(
         private httpRequestService: HttpRequestService,
@@ -87,7 +87,7 @@ export class AuthService {
     logout() : void {
         const url = environment.API_BASE_URL + "/auth/logout";
         this.httpRequestService.post(url, null)
-
+        this.loggedUser = undefined;
         this.localStorage.clearAll();
     }
 

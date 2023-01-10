@@ -11,4 +11,5 @@ public interface RideRepository extends JpaRepository<Ride, UUID> {
 
     @Query("update Ride r set r.rideStatus = :status where r.id = :rideId")
     void setRideStatus(UUID rideId, RideStatus status);
+
 }

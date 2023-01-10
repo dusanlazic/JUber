@@ -1,0 +1,18 @@
+
+<div>
+    <div class="button is-rounded mr-1" *ngIf="!isOvertimeDone">
+        {{hoursToRest}}h : {{minutesToRest}}min : {{secondsToRest}}s
+        <span class="iconify ml-2" data-icon="icon-park-outline:sleep-one"></span>
+        <label>Please relax</label>
+    </div>
+    <div class="field is-horizontal" class="mr-2" *ngIf="isOvertimeDone">
+        <div class="field-body">
+            <div class="field">
+                <input id="active" type="checkbox" name="active" checked="isActive" class="switch is-success is-rounded" (change)="toggleActive()">
+                <label for="active" *ngIf="isActive">On</label>
+                <label for="active" *ngIf="!isActive">Off</label>
+            </div>
+        </div>
+    </div>
+</div>
+

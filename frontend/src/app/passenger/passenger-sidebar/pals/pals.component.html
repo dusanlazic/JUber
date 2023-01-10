@@ -6,34 +6,36 @@
           <figure class="image is-48x48">
             <img class="is-rounded" src="https://lh3.googleusercontent.com/a/ALm5wu3tpc3XnB9w8EMqNHAODc0uL23tqydVlUCLYqEF6Q=s96-c">
           </figure>
-          <div class="circle-initial" style="background-color: #791eae; color: white">
-            AC
-          </div>
-          <div class="circle-initial" style="background-color: #c33232; color: white">
-            AB
-          </div>
-          <div class="circle-initial" style="background-color: #1298db; color: white">
-            ZR
+
+          <div *ngFor="let pal of passengers; let i= index;">
+            <div *ngIf="pal.imageUrl !== undefined">
+              <figure class="image is-48x48" (click)="removePal(i)">
+                <img class="is-rounded" src="{{pal.imageUrl}}">
+              </figure>
+            </div>
+
+            <div *ngIf="!pal.imageUrl">
+              <div class="circle-initial" [ngStyle]="{'background-color': colors.at(i)}"  style="color: white"  (click)="removePal(i)">
+                {{ pal.firstName?.charAt(0) }} {{  pal.lastName?.charAt(0)}}
+                <span class="icon">
+                  <span class="iconify is-size-1" data-icon="fluent:delete-12-regular"></span>
+                </span>
+              </div>
+            </div>
+
           </div>
         </div>
+
       </div>
       <div class="column is-2">
-        <button class="button">
+        <button class="button" (click)="toggleModal()">
           <span class="icon">
-            <span class="iconify is-size-3" data-icon="ic:baseline-edit"></span>
+            <span class="iconify is-size-3" data-icon="fluent:add-12-filled"></span>
           </span>
         </button>
       </div>
     </div>
   </div>
-  <div class="mt-6">
-    <p class="title is-size-3 has-text-grey is-family-secondary">Additional</p>
-    <div class="field">
-      <input id="babyFriendly" type="checkbox" name="babyFriendly" class="switch is-success is-rounded">
-      <label for="babyFriendly">Baby friendly</label>
-    </div>
-    <div class="field">
-      <input id="petFriendly" type="checkbox" name="petFriendly" class="switch is-success is-rounded">
-      <label for="petFriendly">Pet friendly</label>
-    </div>
-  </div>
+  
+  <app-add-pals-dialog *ngIf="isAddPalOpen" (addPalEvent)="addPal($event)"></app-add-pals-dialog>
+  

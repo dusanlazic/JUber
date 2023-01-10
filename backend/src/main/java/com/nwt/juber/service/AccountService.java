@@ -1,18 +1,16 @@
 package com.nwt.juber.service;
 
-import com.nwt.juber.api.ResponseOk;
-import com.nwt.juber.config.AppProperties;
-import com.nwt.juber.dto.request.*;
-import com.nwt.juber.dto.response.*;
-import com.nwt.juber.exception.*;
-import com.nwt.juber.model.*;
-import com.nwt.juber.repository.PersonRepository;
-import com.nwt.juber.repository.ProfileChangeRequestRepository;
-import com.nwt.juber.repository.UserRepository;
-import com.nwt.juber.security.TokenAuthenticationFilter;
-import com.nwt.juber.security.TokenProvider;
-import com.nwt.juber.security.TokenType;
-import com.nwt.juber.util.CookieUtils;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -22,9 +20,45 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.*;
+import com.nwt.juber.api.ResponseOk;
+import com.nwt.juber.config.AppProperties;
+import com.nwt.juber.dto.request.DriverRegistrationRequest;
+import com.nwt.juber.dto.request.LocalRegistrationRequest;
+import com.nwt.juber.dto.request.LoginRequest;
+import com.nwt.juber.dto.request.OAuthRegistrationRequest;
+import com.nwt.juber.dto.request.PasswordResetLinkRequest;
+import com.nwt.juber.dto.request.PasswordResetRequest;
+import com.nwt.juber.dto.request.ProfileInfoChangeRequest;
+import com.nwt.juber.dto.request.ProfileInfoChangeResolveRequest;
+import com.nwt.juber.dto.response.PhotoUploadResponse;
+import com.nwt.juber.dto.response.ProfileChangeRequestResponse;
+import com.nwt.juber.dto.response.ProfileInfoResponse;
+import com.nwt.juber.dto.response.TokenResponse;
+import com.nwt.juber.exception.EmailAlreadyInUseException;
+import com.nwt.juber.exception.InvalidPasswordRequestException;
+import com.nwt.juber.exception.InvalidRecoveryTokenException;
+import com.nwt.juber.exception.PhoneNumberAlreadyInUseException;
+import com.nwt.juber.exception.ProfileChangeRequestAlreadyResolvedException;
+import com.nwt.juber.exception.ProfileChangeRequestNotFoundException;
+import com.nwt.juber.exception.UserNotFoundException;
+import com.nwt.juber.model.AuthProvider;
+import com.nwt.juber.model.ChangeRequestStatus;
+import com.nwt.juber.model.Driver;
+import com.nwt.juber.model.DriverShift;
+import com.nwt.juber.model.DriverStatus;
+import com.nwt.juber.model.Passenger;
+import com.nwt.juber.model.Person;
+import com.nwt.juber.model.ProfileChangeRequest;
+import com.nwt.juber.model.Role;
+import com.nwt.juber.model.User;
+import com.nwt.juber.model.Vehicle;
+import com.nwt.juber.repository.PersonRepository;
+import com.nwt.juber.repository.ProfileChangeRequestRepository;
+import com.nwt.juber.repository.UserRepository;
+import com.nwt.juber.security.TokenAuthenticationFilter;
+import com.nwt.juber.security.TokenProvider;
+import com.nwt.juber.security.TokenType;
+import com.nwt.juber.util.CookieUtils;
 
 @Service
 public class AccountService {
@@ -138,7 +172,8 @@ public class AccountService {
         driver.setLastName(registrationRequest.getLastName());
         driver.setCity(registrationRequest.getCity());
         driver.setPhoneNumber(registrationRequest.getPhoneNumber());
-        driver.setActive(false);
+        driver.setStatus(DriverStatus.INACTIVE);
+        driver.setDriverShifts(new ArrayList<DriverShift>());
         driver.setVehicle(vehicle);
 
         userRepository.save(driver);

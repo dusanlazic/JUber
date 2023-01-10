@@ -1,5 +1,7 @@
 package com.nwt.juber.service;
 
+import com.nwt.juber.dto.PersonDTO;
+import com.nwt.juber.dto.RideDTO;
 import com.nwt.juber.dto.message.InvitationStatusMessage;
 import com.nwt.juber.exception.EndRideException;
 import com.nwt.juber.exception.InsufficientFundsException;
@@ -7,6 +9,7 @@ import com.nwt.juber.exception.StartRideException;
 import com.nwt.juber.model.*;
 import com.nwt.juber.model.notification.NotificationStatus;
 import com.nwt.juber.model.notification.RideCancelledNotification;
+import com.nwt.juber.repository.DriverRepository;
 import com.nwt.juber.repository.PassengerRepository;
 import com.nwt.juber.repository.RideRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +22,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -30,9 +34,11 @@ public class RideService {
     @Autowired
     private PassengerRepository passengerRepository;
 
-
     @Autowired
     private SimpMessagingTemplate messagingTemplate;
+
+    @Autowired
+    private DriverRepository driverRepository;
 
 
     public void startRide(UUID rideId) {
@@ -111,5 +117,44 @@ public class RideService {
             messagingTemplate.convertAndSendToUser(pal.getUsername(), "/queue/ride", message);
         }
         rideRepository.save(ride);
+    }
+
+    public RideDTO getActiveRide(Authentication authentication) {
+        User user = (User) authentication.getPrincipal();
+        Optional<Passenger> optionalPassenger = passengerRepository.findById(user.getId());
+        Ride ride;
+        if (optionalPassenger.isEmpty()) {
+            Driver driver = driverRepository
+                                            .findById(user.getId())
+                                            .orElseThrow();
+            ride = rideRepository.getActiveRideForDriver(driver);
+        } else {
+            Passenger passenger = optionalPassenger.get();
+            ride = rideRepository.getActiveRideForPassenger(passenger);
+        }
+        // convert to dto
+        if(ride == null) {
+            return null;
+        }
+        return convertRideToDTO(ride);
+    }
+
+    private RideDTO convertRideToDTO(Ride ride) {
+        RideDTO dto = new RideDTO();
+        dto.setId(ride.getId());
+        dto.setFare(ride.getFare());
+        dto.setPlaces(ride.getPlaces());
+        dto.setPassengers(ride.getPassengers().stream().map(this::convertPersonToDTO).toList());
+        return dto;
+    }
+
+    private PersonDTO convertPersonToDTO(Person person) {
+        PersonDTO personDTO = new PersonDTO();
+        personDTO.setId(person.getId());
+        personDTO.setFirstName(person.getFirstName());
+        personDTO.setLastName(person.getLastName());
+        personDTO.setPhoneNumber(person.getPhoneNumber());
+        personDTO.setImageUrl(person.getImageUrl());
+        return personDTO;
     }
 }

@@ -9,11 +9,10 @@ import java.util.UUID;
 
 @Data
 @NoArgsConstructor
-public class RideInvitation extends TransferredNotification {
+public class RideCancelled extends TransferredNotification {
     @Setter(AccessLevel.NONE)
-    private final NotificationType type = NotificationType.RIDE_INVITATION;
-    private String inviterName;
-    private String inviterImageUrl;
+    private final NotificationType type = NotificationType.RIDE_CANCELLED;
+    private String canceler;
+    private String cancelerImageUrl;
     private UUID rideId;
-    private Double balance;
 }

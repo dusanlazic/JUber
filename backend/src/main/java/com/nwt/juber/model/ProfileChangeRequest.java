@@ -22,7 +22,7 @@ public class ProfileChangeRequest {
     private Person person;
 
     @Enumerated(EnumType.STRING)
-    private ChangeRequestStatus status = ChangeRequestStatus.PENDING;
+    private ProfileChangeRequestStatus status = ProfileChangeRequestStatus.PENDING;
 
     @ElementCollection
     private Map<String, String> changes;

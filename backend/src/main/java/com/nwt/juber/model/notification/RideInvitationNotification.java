@@ -19,7 +19,12 @@ public class RideInvitationNotification extends PersistedNotification {
     private Passenger inviter;
 
     @ManyToOne
+    private Passenger invitee;
+
+    @ManyToOne
     private Ride ride;
+
+    private Double balance;
 
     @Override
     public TransferredNotification convertToTransferred() {
@@ -28,7 +33,7 @@ public class RideInvitationNotification extends PersistedNotification {
         transferred.setRideId(ride.getId());
         transferred.setInviterName(inviter.getName());
         transferred.setInviterImageUrl(inviter.getImageUrl());
-
+        transferred.setBalance(invitee.getBalance().doubleValue());
         return transferred;
     }
 }

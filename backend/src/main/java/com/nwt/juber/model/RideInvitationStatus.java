@@ -1,7 +1,7 @@
 package com.nwt.juber.model;
 
-public enum ChangeRequestStatus {
-    APPROVED,
+public enum RideInvitationStatus {
     PENDING,
+    ACCEPTED,
     DENIED
 }

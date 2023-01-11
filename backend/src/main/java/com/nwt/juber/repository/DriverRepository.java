@@ -2,6 +2,7 @@ package com.nwt.juber.repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -20,8 +21,7 @@ public interface DriverRepository extends JpaRepository<Driver, UUID> {
 
     @Query(value = "select r from Ride r where r.driver.email = :username and (r.rideStatus = 1 or r.rideStatus = 2) order by r.rideStatus desc")
     public Optional<Ride> findRouteForSimulation(String username);
-    
-    Optional<Driver> findByEmail(String email);
+
 	
 	List<Driver> findByStatus(DriverStatus status);
 

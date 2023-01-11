@@ -2,10 +2,13 @@ import { Component, Input, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { AppState } from 'src/app/store/ride.reducer';
 import { IRideRequest } from 'src/app/store/rideRequest/rideRequest';
-import { Ride } from 'src/models/ride';
+import { Ride, Route } from 'src/models/ride';
 import { RideRequest } from 'src/models/rideRequest';
 import { MapService } from 'src/services/map/map.service';
 import { RideService } from 'src/services/ride/ride.service';
+import { Router } from '@angular/router'
+import * as _ from 'lodash';
+import { decode, encode } from "@googlemaps/polyline-codec";
 
 @Component({
 	selector: 'passenger-sidebar',
@@ -26,7 +29,8 @@ export class PassengerSidebarComponent implements OnInit {
 		private mapService: MapService, 
 		private rideService: RideService,
 		private store: Store<{state: AppState}>,
-		private rideRequestStore: Store<{rideRequest: IRideRequest}>
+		private rideRequestStore: Store<{rideRequest: IRideRequest}>,
+		public router: Router
 	) {
 		this.store.select('state').subscribe(state => {
 			this.ride = state.ride
@@ -63,20 +67,30 @@ export class PassengerSidebarComponent implements OnInit {
 
 	sendRequest() : void {
 		console.log(this.rideRequest)
-		console.log(this.ride)
 
 		let rideRequest = {...this.rideRequest}
 		rideRequest.passengerEmails = rideRequest.passengersInfo.map((pal)=> pal.email)
+		let ride: any = _.cloneDeepWith(this.ride)!;
+
+		for(let place of ride.places) {
+			place.id = Number.NaN;
+			for(let route of place.routes) {
+				let coords: any = route.coordinates.map((x: { latitude: any; longitude: any; }) => [x.latitude, x.longitude])
+				route.coordinates = encode(coords);
+			}
+		}
+		rideRequest.ride = ride;
+		
 
 		this.rideService.sendRideRequest(rideRequest).subscribe({
 			next: () => {
 				console.log("request sent")
+				this.router.navigate(['/invitation'])
 			},
 			error: (e) => {
 				console.log(e)
 			}
 		})
-		
 		
 	}
 

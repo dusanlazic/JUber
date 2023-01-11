@@ -43,6 +43,10 @@ import { AdditionalComponent } from './passenger/passenger-sidebar/additional/ad
 import { ScheduleComponent } from './passenger/passenger-sidebar/schedule/schedule.component';
 import { RideRequestReducer } from './store/rideRequest/rideRequest.reducer';
 import { ActiveStatusComponent } from './driver/active-status/active-status.component';
+import { PassengerRideInvitationComponent } from './passenger/passenger-sidebar/passenger-ride-invitation/passenger-ride-invitation.component';
+import { PersonItemComponent } from './passenger/passenger-sidebar/passenger-ride-invitation/person-item/person-item.component';
+import { WebSocketShareService } from 'src/services/ride/websocketshare.service';
+import { RideWebSocketAPI } from 'src/services/ride/ride-message.service';
 
 @NgModule({
   declarations: [
@@ -78,6 +82,8 @@ import { ActiveStatusComponent } from './driver/active-status/active-status.comp
     ScheduleComponent,
 
     ActiveStatusComponent,
+     PassengerRideInvitationComponent,
+     PersonItemComponent,
   ],
   imports: [
     BrowserModule,
@@ -104,7 +110,7 @@ import { ActiveStatusComponent } from './driver/active-status/active-status.comp
     PasswordResetFormComponent,
     PasswordResetSuccessComponent,   
   ],
-  providers: [],
+  providers: [WebSocketShareService,RideWebSocketAPI],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

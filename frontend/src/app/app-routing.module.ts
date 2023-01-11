@@ -24,6 +24,8 @@ const routes: Routes = [
   { path: 'oauth2/redirect-register', component: Oauth2RegisterRedirectHandlerComponent},
   { path: 'home', component: HomeComponent, canActivate: [AuthGuard, RoleGuard], 
           data: { expectedRoles: [Roles.DRIVER, Roles.PASSENGER_NEW, Roles.PASSENGER ]}  },
+  { path: 'invitation', component: HomeComponent, canActivate: [AuthGuard, RoleGuard], 
+          data: { expectedRoles: [Roles.DRIVER, Roles.PASSENGER_NEW, Roles.PASSENGER ]}  },
   { path: 'registration', component: RegisterLocalComponent},
   { path: 'registration/social', component: RegisterOauthComponent},
   { path: 'registration/verification', component: EmailVerificationComponent}, // registration/verification?token=...

@@ -19,6 +19,7 @@ class DriverState(Enum):
 
 
 class RideStatus(Enum):
+	WAITING_FOR_PAYMENT = auto()
 	WAITING = auto()
 	ACCEPTED = auto()
 	IN_PROGRESS = auto()
@@ -117,7 +118,7 @@ class Driver(HostInterface):
 		self.route_visited.append((self.longitude, self.latitude))
 		self.route_visited_colors.append(color_coding[self.ride_status])
 
-		if self.ride_status == RideStatus.WAITING:
+		if self.ride_status == RideStatus.WAITING or self.ride_status == RideStatus.WAITING_FOR_PAYMENT:
 			self.move_randomly()
 			return
 

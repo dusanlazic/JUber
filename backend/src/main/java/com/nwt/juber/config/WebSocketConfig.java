@@ -38,6 +38,7 @@ public class WebSocketConfig extends AbstractSecurityWebSocketMessageBrokerConfi
                 .simpSubscribeDestMatchers("/user/queue/balance").hasAnyRole("PASSENGER", "DRIVER")
                 .simpSubscribeDestMatchers("/user/queue/support/chat").hasAnyRole("PASSENGER", "DRIVER")
                 .simpSubscribeDestMatchers("/user/queue/support/admin/**").hasRole("ADMIN")
+                .simpSubscribeDestMatchers("/user/queue/ride").hasAnyRole("PASSENGER", "DRIVER")
                 .simpSubscribeDestMatchers("/user/queue/notifications").authenticated()
                 .anyMessage().denyAll();
     }

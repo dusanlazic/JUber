@@ -282,21 +282,21 @@ public class AccountService {
     public ResponseOk resolveProfileChangeRequest(UUID requestId, ProfileInfoChangeResolveRequest resolveRequest) {
         ProfileChangeRequest changeRequest = profileChangeRequestRepository.findById(requestId).orElseThrow(ProfileChangeRequestNotFoundException::new);
 
-        if (!changeRequest.getStatus().equals(ChangeRequestStatus.PENDING))
+        if (!changeRequest.getStatus().equals(ProfileChangeRequestStatus.PENDING))
             throw new ProfileChangeRequestAlreadyResolvedException();
 
-        ChangeRequestStatus newStatus = ChangeRequestStatus.valueOf(resolveRequest.getNewStatus());
+        ProfileChangeRequestStatus newStatus = ProfileChangeRequestStatus.valueOf(resolveRequest.getNewStatus());
         switch (newStatus) {
             case APPROVED -> {
                 applyProfileChanges(changeRequest);
-                changeRequest.setStatus(ChangeRequestStatus.APPROVED);
+                changeRequest.setStatus(ProfileChangeRequestStatus.APPROVED);
 
                 profileChangeRequestRepository.save(changeRequest);
                 personRepository.save(changeRequest.getPerson());
                 return new ResponseOk("Changes saved.");
             }
             case DENIED -> {
-                changeRequest.setStatus(ChangeRequestStatus.DENIED);
+                changeRequest.setStatus(ProfileChangeRequestStatus.DENIED);
                 profileChangeRequestRepository.save(changeRequest);
                 return new ResponseOk("Changes denied.");
             }

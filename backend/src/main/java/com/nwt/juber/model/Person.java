@@ -21,5 +21,7 @@ public class Person extends User {
     private String city;
 
     private String phoneNumber;
+
+    private String imageUrl;
     
 }

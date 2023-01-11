@@ -51,7 +51,7 @@ public class DriverService {
     }
 
     public void updateLocation(String username, Double longitude, Double latitude) {
-        Driver driver = driverRepository.findById(username).orElseThrow(() -> new RuntimeException("No driver with username: " + username));
+        Driver driver = driverRepository.findByEmail(username).orElseThrow(() -> new RuntimeException("No driver with username: " + username));
         driver.getVehicle().setLongitude(longitude);
         driver.getVehicle().setLatitude(latitude);
         driverRepository.save(driver);

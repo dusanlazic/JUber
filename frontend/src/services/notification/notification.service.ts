@@ -11,8 +11,7 @@ import { WebsocketshareService } from './websocketshare.service';
 export class NotificationService {
 
   constructor(
-    private httpRequestService: HttpRequestService,
-    private websocketService: WebsocketshareService
+    private httpRequestService: HttpRequestService
   ){}
 
   getAllNotifications(): Observable<Array<Notification>> {

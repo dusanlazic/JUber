@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
-import { WebsocketshareService } from 'src/services/notification/websocketshare.service';
-import { HttpRequestService } from 'src/services/util/http-request.service';
+import { Component, OnInit, Input } from '@angular/core';
+import { Notification, NotificationItemProperties, NotificationResponse, RideInvitationNotification } from 'src/models/notification';
+import { NotificationTimestampUtil } from 'src/services/util/notification-template.service';
 
 @Component({
   selector: 'app-ride-invite',
@@ -9,23 +9,35 @@ import { HttpRequestService } from 'src/services/util/http-request.service';
 })
 export class RideInviteComponent implements OnInit {
 
+  @Input()
+  notification!: Notification;
+  notificationCast!: RideInvitationNotification;
+  message: string
+  notificationTimestamp: string;
+
   constructor(
-    private websocketService: WebsocketshareService,
-    private httpRequestService: HttpRequestService) { }
+    // private httpRequestService: HttpRequestService
+  ) {
+    this.message = ''
+    this.notificationTimestamp=''
+   }
 
   ngOnInit(): void {
+    this.notificationCast = this.notification as RideInvitationNotification;
+    this.message = `User 
+      <strong>${this.notificationCast.inviterName}</strong>
+      has invited you to a ride to 
+      <strong>${this.notificationCast.startLocationName}</strong>.`;
+    this.notificationTimestamp = NotificationTimestampUtil.getTimestampText(this.notificationCast.date);
   }
 
-  public stompClient: any;
-  public msg: any = [];
-  subscription: any;
-
-  sendMessage(message: any) {
-    this.httpRequestService.get('http://localhost:8080/greet-socket').subscribe(x => {
-      console.log("GREET SOCKET RESPONSE");
-      console.log(x);
-    });
+  acceptRide() {
+    this.notificationCast.response = NotificationResponse.ACCEPTED;
+       console.log("acceptRide");
   }
-  
+  declineRide() {
+    this.notificationCast.response = NotificationResponse.DECLINED;
+    console.log("declineRide");
+}
 
 }

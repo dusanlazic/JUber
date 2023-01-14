@@ -27,6 +27,7 @@ public class RideCancelledNotification extends PersistedNotification {
     public TransferredNotification convertToTransferred() {
         RideCancelled transferred = new RideCancelled();
         transferred.setDate(this.getCreated());
+        transferred.setNotificationStatus(this.getStatus());
         String fullname = this.getCanceler().getFirstName() + " " + this.getCanceler().getLastName();
         transferred.setCanceler(fullname);
         transferred.setCancelerImageUrl(this.getCanceler().getImageUrl());

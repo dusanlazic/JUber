@@ -5,7 +5,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityManagerFactory;
@@ -40,24 +39,13 @@ public class NotificationService {
     private UserService userService;
 
     public void markNotificationsAsRead(User user) {
+    	System.out.println("MARK ALL AS READ");
+    	user = userService.fetchUserWithNotificationsById(user.getId());
         List<PersistedNotification> notifications = user.getNotifications();
         notifications.forEach(n -> n.setStatus(NotificationStatus.READ));
 
         notificationRepository.saveAll(notifications);
     }
-    
-//    private List<PersistedNotification> getUserNotifications(UUID userId) {
-//    	EntityManager entityManager = entityManagerFactory.createEntityManager();
-//    	
-//    	TypedQuery<User> q = entityManager.createQuery("SELECT a FROM User a LEFT JOIN FETCH a.notifications  WHERE a.id = ?1 ", User.class);
-//    	q.setParameter(1, userId);
-//    	User user = q.getSingleResult();
-//    	
-//    	
-//    	List<PersistedNotification> notifs = user.getNotifications();
-//    	
-//    	return notifs;
-//    }
 
     public List<TransferredNotification> getNotifications(User user) {
     	user = userService.fetchUserWithNotificationsById(user.getId());

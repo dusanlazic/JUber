@@ -23,6 +23,7 @@ public class RideStatusUpdatedNotification extends PersistedNotification {
     public TransferredNotification convertToTransferred() {
         RideStatusUpdated transferred = new RideStatusUpdated();
         transferred.setDate(this.getCreated());
+        transferred.setNotificationStatus(this.getStatus());
         transferred.setStatus(ride.getRideStatus());
 
         return transferred;

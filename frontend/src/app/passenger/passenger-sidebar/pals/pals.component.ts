@@ -12,14 +12,15 @@ import { Toastr } from 'src/services/util/toastr.service';
 export class PalsComponent implements OnInit {
 
   isAddPalOpen: boolean = false;
-  passengers!: IPal[];
+  passengers: IPal[];
   colors: string[]
 
   constructor(
     private store: Store<{rideRequest: IRideRequest}>, 
     private toastr: Toastr
   ) { 
-    this.colors = new Array<string>()
+    this.colors = new Array<string>();
+    this.passengers = new Array<IPal>();
   }
 
   ngOnInit(): void {

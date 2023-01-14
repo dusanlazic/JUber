@@ -5,6 +5,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityManagerFactory;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import com.nwt.juber.dto.notification.TransferredNotification;
 import com.nwt.juber.model.User;
+import com.nwt.juber.model.notification.NotificationResponse;
 import com.nwt.juber.model.notification.NotificationStatus;
 import com.nwt.juber.model.notification.PersistedNotification;
 import com.nwt.juber.repository.NotificationRepository;
@@ -37,6 +39,9 @@ public class NotificationService {
     
     @Autowired
     private UserService userService;
+    
+    @Autowired
+    private RideService rideService;
 
     public void markNotificationsAsRead(User user) {
     	System.out.println("MARK ALL AS READ");
@@ -68,4 +73,8 @@ public class NotificationService {
 
         notificationRepository.deleteAll(oldNotifications);
     }
+
+	public void respondToNotification(UUID notificationId, NotificationResponse response) {
+		notificationRepository.updateNotificationResponse(notificationId, response);
+	}
 }

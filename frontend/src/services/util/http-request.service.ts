@@ -33,6 +33,11 @@ export class HttpRequestService {
         const headers = this.createHeaders();
         return this.httpClient.patch(url, body, {headers, withCredentials: true}) 
     }
+
+    put(url: string, body: any) : Observable<any> {
+        const headers = this.createHeaders();
+        return this.httpClient.put(url, body, {headers, withCredentials: true}) 
+    }
 }
 
 

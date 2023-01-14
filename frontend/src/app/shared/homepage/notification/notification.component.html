@@ -1,16 +1,14 @@
 <div class="is-relative is-custom-navigation-icon" (click)="nofificationClick()">
     <span class="iconify is-size-3" data-icon="fluent:alert-24-filled"></span>
-    <span class="badge" *ngIf="notificationCount > 0">{{notificationCount}}</span>
+    <span class="badge" *ngIf="unreadCount > 0">{{unreadCount}}</span>
 </div>
 
-<div class="custom-notifications-box" *ngIf="isNotificationOpen">
+<div class="custom-notifications-box" *ngIf="showNotifications">
     <div class="box" style="overflow-y: auto;">
       <p class="title is-size-5 ml-4 pt-4 mb-3 is-family-secondary">Notifications</p>
       <div  *ngFor="let notification of notifications" >
-        <app-driver-arrived *ngIf="notification.type === 'DRIVER_ARRIVED'"></app-driver-arrived>
-        <app-ride-accepted *ngIf="notification.type === 'RIDE_ASSIGNED'"></app-ride-accepted>
-        <app-ride-invite *ngIf="notification.type === 'RIDE_INVITATION'"></app-ride-invite>
-        <app-ride-reject *ngIf="notification.type === 'RIDE_CANCELLED'"></app-ride-reject>
+        <app-notification-item [notification]="notification" *ngIf="notification.type!=='RIDE_INVITATION'"></app-notification-item>
+        <app-ride-invite [notification]="notification" *ngIf="notification.type==='RIDE_INVITATION'"></app-ride-invite>
       </div>
       <div  *ngIf="notifications.length === 0">
         <p class="title is-size-6 ml-4 pt-4 mb-3 is-family-secondary">You have 0 notifications</p>

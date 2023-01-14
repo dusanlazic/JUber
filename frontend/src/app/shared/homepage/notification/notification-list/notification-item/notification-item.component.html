@@ -1,1 +1,15 @@
-<p>notification-item works!</p>
+<div class="notification-item {{notification.notificationStatus === 'UNREAD' ? 'is-unread' : '' }} ">
+    <div class="columns">
+        <div class="column is-2 has-content-align-center">
+            <div class="circle-notification {{ properties.iconClass }}"> <!--image = has-background-info-->
+                <span class="icon">
+                <span class="iconify is-size-1" [attr.data-icon]=properties.icon></span> <!-- mdi:car-side -->
+                </span>
+            </div>
+        </div>
+        <div class="column">
+            <p class="has-text-grey is-size-7">{{notificationTimestamp}}</p>
+            <p [innerHTML]=properties.message></p>
+        </div>
+    </div>
+</div>

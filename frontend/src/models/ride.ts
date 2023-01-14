@@ -29,3 +29,13 @@ export class Ride implements IRide {
         public price: number = -1) {
     }
 }
+
+
+export enum RideStatus {
+    WAITING_FOR_PAYMENT='WAITING_FOR_PAYMENT', // waiting for passengers to pay
+    WAIT='WAIT', // waiting for driver to be assigned
+    ACCEPTED='ACCEPTED', // driver is heading to location
+    IN_PROGRES='IN_PROGRESS', // passengers are in the car
+    DENIED='DENIED', // ride didn't successfully finish
+    FINISHED='FINISHED' // ride successfully finished
+}

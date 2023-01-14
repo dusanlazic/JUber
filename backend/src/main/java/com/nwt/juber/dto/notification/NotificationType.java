@@ -6,5 +6,6 @@ public enum NotificationType {
     RIDE_INVITATION,
     RIDE_REMINDER,
     RIDE_STATUS_UPDATED,
-    RIDE_CANCELLED
+    RIDE_CANCELLED,
+    RIDE_ACCEPTED,
 }

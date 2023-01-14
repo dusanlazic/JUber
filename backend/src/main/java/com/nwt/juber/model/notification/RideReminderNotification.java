@@ -20,6 +20,7 @@ public class RideReminderNotification extends PersistedNotification {
     public TransferredNotification convertToTransferred() {
         RideReminder transferred = new RideReminder();
         transferred.setDate(this.getCreated());
+        transferred.setNotificationStatus(this.getStatus());
         transferred.setMinutesLeft(minutesLeft);
 
         return transferred;

@@ -19,6 +19,7 @@ public abstract class PersistedNotification {
     private UUID id = UUID.randomUUID();
 
     @ManyToOne
+    @JoinColumn
     private User receiver;
 
     @Enumerated(EnumType.STRING)

@@ -43,6 +43,15 @@ import { AdditionalComponent } from './passenger/passenger-sidebar/additional/ad
 import { ScheduleComponent } from './passenger/passenger-sidebar/schedule/schedule.component';
 import { RideRequestReducer } from './store/rideRequest/rideRequest.reducer';
 import { ActiveStatusComponent } from './driver/active-status/active-status.component';
+import { NotificationComponent } from './shared/homepage/notification/notification.component';
+import { DriverArrivedComponent } from './shared/homepage/notification/notification-list/driver-arrived/driver-arrived.component';
+import { RideAcceptedComponent } from './shared/homepage/notification/notification-list/ride-accepted/ride-accepted.component';
+import { RideInviteComponent } from './shared/homepage/notification/notification-list/ride-invite/ride-invite.component';
+import { RideRejectComponent } from './shared/homepage/notification/notification-list/ride-reject/ride-reject.component';
+import { NotificationListComponent } from './shared/homepage/notification/notification-list/notification-list.component';
+import { NotificationItemComponent } from './shared/homepage/notification/notification-list/notification-item/notification-item.component';
+import { WebsocketshareService } from 'src/services/notification/websocketshare.service';
+import { NotificationWebSocketAPI } from 'src/services/notification/notification-socket.service';
 
 @NgModule({
   declarations: [
@@ -78,6 +87,13 @@ import { ActiveStatusComponent } from './driver/active-status/active-status.comp
     ScheduleComponent,
 
     ActiveStatusComponent,
+      NotificationComponent,
+      DriverArrivedComponent,
+      RideAcceptedComponent,
+      RideInviteComponent,
+      RideRejectComponent,
+      NotificationListComponent,
+      NotificationItemComponent,
   ],
   imports: [
     BrowserModule,
@@ -104,7 +120,7 @@ import { ActiveStatusComponent } from './driver/active-status/active-status.comp
     PasswordResetFormComponent,
     PasswordResetSuccessComponent,   
   ],
-  providers: [],
+  providers: [WebsocketshareService, NotificationWebSocketAPI],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

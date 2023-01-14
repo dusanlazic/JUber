@@ -1,3 +1,4 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { DriverArrivedNotification, Notification, NotificationStatus, NotificationType, TransferredNotification } from 'src/models/notification';
 import { NotificationService } from 'src/services/notification/notification.service';
@@ -35,7 +36,7 @@ export class NotificationComponent implements OnInit {
         this.notifications = notifs;
         this.unreadCount = notifs.filter((notif) => notif.notificationStatus === NotificationStatus.UNREAD).length;
       },
-      error: (res: any) => {
+      error: (res: HttpErrorResponse) => {
         console.log(res)
       },
     })
@@ -48,7 +49,7 @@ export class NotificationComponent implements OnInit {
         this.notifications.push(res);
         this.notifications = [...this.notifications];
       },
-      error: (res: any) => {
+      error: (res: HttpErrorResponse) => {
         console.log(res)
       },
     })
@@ -76,7 +77,7 @@ export class NotificationComponent implements OnInit {
       next: (res: any) => {
         console.log(res)
       },
-      error: (res: any) => {
+      error: (res: HttpErrorResponse) => {
         console.log(res)
       },
     })
@@ -88,7 +89,7 @@ export class NotificationComponent implements OnInit {
       next: (res: any) => {
         console.log(res)
       },
-      error: (res: any) => {
+      error: (res: HttpErrorResponse) => {
         console.log(res)
       },
     })

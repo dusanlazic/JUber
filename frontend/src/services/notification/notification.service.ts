@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { Notification, TransferredNotification } from 'src/models/notification';
+import { Notification, NotificationResponse, TransferredNotification } from 'src/models/notification';
 import { HttpRequestService } from '../util/http-request.service';
 import { WebsocketshareService } from './websocketshare.service';
 
@@ -30,6 +30,11 @@ export class NotificationService {
     const url = environment.API_BASE_URL + '/notifications/send';
 
     return this.httpRequestService.post(url, null) as Observable<any>;
+  }
+
+  respondToNotification(notificationId: string, response: NotificationResponse) : Observable<any> {
+    const url = environment.API_BASE_URL + `/notifications/responde/${notificationId}`;
+    return this.httpRequestService.post(url, response) as Observable<any>;
   }
 
 }

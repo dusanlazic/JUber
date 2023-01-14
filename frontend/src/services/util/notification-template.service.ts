@@ -78,6 +78,19 @@ export class NotificationTimestampUtil {
   constructor() {}
   
   static getTimestampText(notificationDate: Date): string {
+      const timeDifference = new Date().getTime() - new Date(notificationDate).getTime();
+      const minutes = Math.floor((timeDifference / (1000 * 60)) % 60);
+      const hours = Math.floor((timeDifference / (1000 * 60 * 60)) );
+      if(hours > 24) {
+        return 'Yesterday';
+      }
+      if(hours > 0){
+        return `${hours}h ago`;
+      }
+      if(minutes > 0){
+        return `${minutes}m ago`;
+      }
+
       return 'Just now';
   }
 }

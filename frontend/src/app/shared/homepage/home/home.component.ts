@@ -10,6 +10,7 @@ import { Store } from '@ngrx/store';
 import { AppState } from 'src/app/store/ride.reducer';
 import { LoggedUser, Roles } from 'src/models/user';
 import { DriverService } from 'src/services/driver/driver.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-home',
@@ -20,7 +21,9 @@ export class HomeComponent implements OnInit {
 
   loggedUser!: LoggedUser;
   ride: Ride | undefined;
-  
+  URL_BASE: string = environment.API_BASE_URL;
+  DEFAULT_PROFILE_PHOTO: string = environment.DEFAULT_PROFILE_PHOTO;
+
 
   constructor(
     private authService: AuthService,

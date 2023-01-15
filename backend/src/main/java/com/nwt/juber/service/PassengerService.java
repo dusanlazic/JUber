@@ -22,7 +22,7 @@ public class PassengerService {
 		}
 
 		Passenger passenger = possiblePassenger.get();
-		return new UserBasicInfoResponse(passenger.getEmail(), passenger.getFirstName(), passenger.getLastName());
+		return new UserBasicInfoResponse(passenger.getEmail(), passenger.getFirstName(), passenger.getLastName(), passenger.getImageUrl());
 	}
 	
 	public Passenger findByEmail(String email) {

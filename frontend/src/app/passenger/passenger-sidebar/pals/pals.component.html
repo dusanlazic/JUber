@@ -3,14 +3,17 @@
     <div class="columns is-vcentered">
       <div class="column">
         <div class="is-flex">
-          <figure class="image is-48x48">
-            <img class="is-rounded" src="https://lh3.googleusercontent.com/a/ALm5wu3tpc3XnB9w8EMqNHAODc0uL23tqydVlUCLYqEF6Q=s96-c">
+          <figure class="image is-48x48" *ngIf="logged?.imageUrl">
+            <img class="is-rounded" src="{{URL_BASE}}{{logged.imageUrl}}">
+          </figure>
+          <figure class="image is-48x48" *ngIf="!logged?.imageUrl">
+            <img class="is-rounded" src="{{DEFAULT_PROFILE_PHOTO}}">
           </figure>
 
           <div *ngFor="let pal of passengers; let i= index;">
-            <div *ngIf="pal.imageUrl !== undefined">
+            <div *ngIf="pal.imageUrl">
               <figure class="image is-48x48" (click)="removePal(i)">
-                <img class="is-rounded" src="{{pal.imageUrl}}">
+                <img class="is-rounded" src="{{URL_BASE}}{{pal.imageUrl}}">
               </figure>
             </div>
 

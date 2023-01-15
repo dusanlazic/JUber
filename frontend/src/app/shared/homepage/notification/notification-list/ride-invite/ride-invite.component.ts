@@ -1,5 +1,6 @@
 import { HttpErrorResponse, HttpStatusCode } from '@angular/common/http';
 import { Component, OnInit, Input } from '@angular/core';
+import { environment } from 'src/environments/environment';
 import { Notification, NotificationItemProperties, NotificationResponse, RideInvitationNotification } from 'src/models/notification';
 import { ApiResponse } from 'src/models/responses';
 import { NotificationService } from 'src/services/notification/notification.service';
@@ -19,6 +20,7 @@ export class RideInviteComponent implements OnInit {
   notificationCast!: RideInvitationNotification;
   message: string
   notificationTimestamp: string;
+  URL_BASE: string = environment.API_BASE_URL
 
   constructor(
     private rideService: RideService,

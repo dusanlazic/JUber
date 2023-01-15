@@ -38,6 +38,11 @@ export class HttpRequestService {
         const headers = this.createHeaders();
         return this.httpClient.put(url, body, {headers, withCredentials: true}) 
     }
+
+    delete(url: string): Observable<any> {
+        const headers = this.createHeaders();
+        return this.httpClient.delete(url, {headers, withCredentials: true}) 
+    }
 }
 
 

@@ -232,7 +232,8 @@ public class AccountService {
                 person.getLastName(),
                 person.getCity(),
                 person.getPhoneNumber(),
-                person.getImageUrl()
+                person.getImageUrl(),
+                person.getEmail()
         );
     }
 

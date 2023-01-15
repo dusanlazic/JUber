@@ -26,7 +26,7 @@ export class Place implements IPlace {
 export class Ride implements IRide {
     constructor(public passengers: Array<string> = [],
         public places: Array<Place> = [],
-        public price: number = -1) {
+        public fare: number = -1) {
     }
 }
 

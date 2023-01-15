@@ -23,5 +23,5 @@ export interface IPlace {
 export interface IRide {
     passengers: Array<string>
     places: Array<IPlace>
-    price: number
+    fare: number
 }

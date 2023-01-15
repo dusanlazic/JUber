@@ -3,7 +3,7 @@ import { Observable, BehaviorSubject, ReplaySubject } from "rxjs";
 
 
 @Injectable()
-export class WebSocketShareService implements OnDestroy {
+export class RideSocketShareService implements OnDestroy {
 
     private blogDataSubject = new BehaviorSubject<string>('');
 

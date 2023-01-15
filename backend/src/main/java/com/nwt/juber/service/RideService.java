@@ -3,15 +3,15 @@ package com.nwt.juber.service;
 import com.nwt.juber.dto.PersonDTO;
 import com.nwt.juber.dto.RideDTO;
 import com.nwt.juber.dto.message.InvitationStatusMessage;
+import com.nwt.juber.dto.request.RideRequest;
 import com.nwt.juber.exception.EndRideException;
 import com.nwt.juber.exception.InsufficientFundsException;
 import com.nwt.juber.exception.StartRideException;
 import com.nwt.juber.model.*;
 import com.nwt.juber.model.notification.NotificationStatus;
 import com.nwt.juber.model.notification.RideCancelledNotification;
-import com.nwt.juber.repository.DriverRepository;
-import com.nwt.juber.repository.PassengerRepository;
-import com.nwt.juber.repository.RideRepository;
+import com.nwt.juber.model.notification.RideInvitationNotification;
+import com.nwt.juber.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.Authentication;
@@ -20,10 +20,7 @@ import org.springframework.stereotype.Service;
 import javax.naming.InsufficientResourcesException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class RideService {
@@ -35,10 +32,22 @@ public class RideService {
     private PassengerRepository passengerRepository;
 
     @Autowired
+    private PlaceRepository placeRepository;
+
+    @Autowired
+    private RouteRepository routeRepository;
+
+    @Autowired
     private SimpMessagingTemplate messagingTemplate;
 
     @Autowired
     private DriverRepository driverRepository;
+
+    @Autowired
+    private NotificationService notificationService;
+
+    @Autowired
+    private NotificationRepository notificationRepository;
 
 
     public void startRide(UUID rideId) {
@@ -59,6 +68,51 @@ public class RideService {
         ride.setRideStatus(RideStatus.FINISHED);
         ride.setEndTime(LocalDateTime.now());
         rideRepository.save(ride);
+    }
+
+    public void createRideRequest(RideRequest rideRequest, Authentication authentication) {
+        User user = (User) authentication.getPrincipal();
+        Passenger passenger = passengerRepository.findById(user.getId()).orElseThrow(() -> new RuntimeException("No passenger found!"));
+        Ride ride = new Ride();
+        List<Passenger> pass = new ArrayList<>();
+        pass.add(passenger);
+        List<Boolean> ready = new ArrayList<>();
+        ready.add(true);
+        for (String email: rideRequest.getPassengerEmails()) {
+            passengerRepository.findByEmail(email).ifPresent(pass::add);
+            ready.add(false);
+        }
+        ride.setPassengers(pass);
+        ride.setPassengersReady(ready);
+        ride.setRideStatus(RideStatus.WAITING_FOR_PAYMENT);
+        ride.setStartTime(rideRequest.getRide().getStartTime());
+        ride.setEndTime(rideRequest.getRide().getEndTime());
+        ride.setPlaces(rideRequest.getRide().getPlaces());
+        ride.setFare(rideRequest.getRide().getFare());
+        ride.getPlaces().forEach(place -> routeRepository.saveAll(place.getRoutes()));
+        ride.getPlaces().forEach(place -> place.setId(UUID.randomUUID()));
+        placeRepository.saveAll(ride.getPlaces());
+        rideRepository.save(ride);
+        System.out.println(ride);
+        for (String email: rideRequest.getPassengerEmails()) {
+            sendRideInvitation(ride, email, passenger);
+        }
+    }
+
+    private void sendRideInvitation(Ride ride, String email, Passenger inviter) {
+        System.out.println("Sending invitation to: " + email);
+        Passenger passenger = passengerRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("No pal found!"));
+        RideInvitationNotification notification = new RideInvitationNotification();
+        notification.setId(UUID.randomUUID());
+        notification.setInviter(inviter);
+        notification.setInvitee(passenger);
+        notification.setRide(ride);
+        notification.setCreated(new Date());
+        notification.setStatus(NotificationStatus.UNREAD);
+        notification.setBalance(passenger.getBalance().doubleValue());
+        System.out.println(notification);
+        notificationService.send(notification, passenger);
+        passengerRepository.save(passenger);
     }
 
     public void acceptRide(UUID rideId, Authentication authentication) throws InsufficientResourcesException {

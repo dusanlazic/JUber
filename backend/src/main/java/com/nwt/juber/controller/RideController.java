@@ -67,8 +67,10 @@ public class RideController {
     
     @PostMapping("/rideRequest")
 	@PreAuthorize("hasAnyRole('PASSENGER')")
-	public void createRideRequest(@Valid @RequestBody RideRequest rideRequest) {
+	public ResponseOk createRideRequest(@Valid @RequestBody RideRequest rideRequest, Authentication authentication) {
 		System.out.println(rideRequest.toString());
 		// TODO: rideService.createRideRequest(rideRequest);
+        rideService.createRideRequest(rideRequest, authentication);
+        return new ResponseOk("ok");
 	}
 }

@@ -11,4 +11,5 @@ public class ProfileInfoResponse {
     private String city;
     private String phoneNumber;
     private String imageUrl;
+    private String email;
 }

@@ -5,3 +5,7 @@ export interface ApiResponse {
     message: string,
     errors?: any
 }
+
+export interface PhotoUploadResponse {
+    uri: string;
+}

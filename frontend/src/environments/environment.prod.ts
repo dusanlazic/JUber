@@ -18,4 +18,6 @@ export const environment = {
 
   GOOGLE_AUTH_URL_REGISTER: API_BASE_URL + '/oauth2/authorize/google?redirect_uri=' + OAUTH2_REDIRECT_URI_REGISTER,
   FACEBOOK_AUTH_URL_REGISTER: API_BASE_URL + '/oauth2/authorize/facebook?redirect_uri=' + OAUTH2_REDIRECT_URI_REGISTER,
+
+  DEFAULT_PROFILE_PHOTO: "https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
 };

@@ -21,9 +21,9 @@ INSERT INTO ADMIN(ID, EMAIL, EMAIL_VERIFIED, IMAGE_URL, NAME, PASSWORD, PROVIDER
 
 -- PASSWORD = 'cascaded'
 INSERT INTO PASSENGER (ID, EMAIL, EMAIL_VERIFIED, IMAGE_URL, NAME, PASSWORD, PROVIDER, PROVIDER_ID, ROLE, CITY, FIRST_NAME, LAST_NAME, PHONE_NUMBER, BALANCE) VALUES
-('92348c29-e3cb-4c8f-ad5c-f31bf14db84d', 'mile.miletic@gmail.com', TRUE, 'mile1.png', 'Mile Miletic', '$2a$10$Qg.gpYTtZiVMJ6Fs9QbQA.BtCx4106oSj92X.A/Gv7iAEKQXAg.gy', 'local', NULL, 'ROLE_PASSENGER','Novi Sad', 'Mile', 'Miletic', '+38164047952', '0'),
+('92348c29-e3cb-4c8f-ad5c-f31bf14db84d', 'mile.miletic@gmail.com', TRUE, '', 'Mile Miletic', '$2a$10$Qg.gpYTtZiVMJ6Fs9QbQA.BtCx4106oSj92X.A/Gv7iAEKQXAg.gy', 'local', NULL, 'ROLE_PASSENGER','Novi Sad', 'Mile', 'Miletic', '+38164047952', '0'),
 ('6d34f2c5-32f1-47d9-9a8e-d4dd613b9cc1', 'andrej.andrejevic@gmail.com', TRUE, 'andrej1.png', 'Andrej Andrejevic', '$2a$10$Qg.gpYTtZiVMJ6Fs9QbQA.BtCx4106oSj92X.A/Gv7iAEKQXAg.gy', 'local', NULL, 'ROLE_PASSENGER','Novi Sad', 'Andrej', 'Andrejevic', '+38164047952', '0'),
-('6aebc916-dd04-4674-a4f2-99edec0a1811', 'petar.petrovic@gmail.com', TRUE, 'petar1.png', 'Petar Petrovic', '$2a$10$Qg.gpYTtZiVMJ6Fs9QbQA.BtCx4106oSj92X.A/Gv7iAEKQXAg.gy', 'local', NULL, 'ROLE_PASSENGER','Novi Sad', 'Petar', 'Petrovic', '+38164047952', '0');
+('6aebc916-dd04-4674-a4f2-99edec0a1811', 'petar.petrovic@gmail.com', TRUE, '', 'Petar Petrovic', '$2a$10$Qg.gpYTtZiVMJ6Fs9QbQA.BtCx4106oSj92X.A/Gv7iAEKQXAg.gy', 'local', NULL, 'ROLE_PASSENGER','Novi Sad', 'Petar', 'Petrovic', '+38164047952', '0');
 
 
 INSERT INTO RIDE (ID, FARE, DRIVER_ID, START_TIME, END_TIME, RIDE_STATUS) VALUES
@@ -54,5 +54,5 @@ INSERT INTO DRIVER_DRIVER_SHIFTS(DRIVER_ID, DRIVER_SHIFTS_ID) VALUES
 
 -- receiver: PASSENGER petar
 INSERT INTO PERSISTED_NOTIFICATION(ID, CREATED, STATUS, RECEIVER_ID, DTYPE,    RIDE_ID, BALANCE, MINUTES_LEFT, CANCELER_ID, INVITEE_ID, INVITER_ID, RESPONSE) VALUES
-('0676bcc1-ed94-4f8e-9b24-5c90b571b77b', '2023-01-14 23:54:29.267235', 'UNREAD', '6aebc916-dd04-4674-a4f2-99edec0a1811', 'DriverArrivedNotification', '8107614c-04d9-480d-8a59-e1999d9e7bfc',  NULL, NULL, NULL, NULL, NULL, NULL),
-('d2608eb7-a9eb-4408-b014-188f08cb628f', '2023-01-12 20:56:29.267235', 'READ', '6aebc916-dd04-4674-a4f2-99edec0a1811', 'RideInvitationNotification', '8107614c-04d9-480d-8a59-e1999d9e7bfc',  1000, NULL, NULL, '6aebc916-dd04-4674-a4f2-99edec0a1811', '92348c29-e3cb-4c8f-ad5c-f31bf14db84d', 'NO_RESPONSE');
+('0676bcc1-ed94-4f8e-9b24-5c90b571b77b', '2023-01-15 23:54:29.267235', 'UNREAD', '6aebc916-dd04-4674-a4f2-99edec0a1811', 'DriverArrivedNotification', '8107614c-04d9-480d-8a59-e1999d9e7bfc',  NULL, NULL, NULL, NULL, NULL, NULL),
+('d2608eb7-a9eb-4408-b014-188f08cb628f', '2023-01-15 20:56:29.267235', 'READ', '6aebc916-dd04-4674-a4f2-99edec0a1811', 'RideInvitationNotification', '8107614c-04d9-480d-8a59-e1999d9e7bfc',  1000, NULL, NULL, '6aebc916-dd04-4674-a4f2-99edec0a1811', '92348c29-e3cb-4c8f-ad5c-f31bf14db84d', 'NO_RESPONSE');

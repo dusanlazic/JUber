@@ -1,58 +1,67 @@
 <p class="title is-family-secondary">Profile</p>
 <div class="columns">
     <div class="column mr-5">
-    <div class="field is-horizontal">
-        <div class="field-body">
+    <form class="form-container" [formGroup]="updateProfileForm" autocomplete="false" novalidate>
+        <div class="field is-horizontal">
+            <div class="field-body">
+            <div class="field">
+                <label class="label">First name</label>
+                <p class="control">
+                    <input class="input {{firstName?.invalid && (firstName?.dirty || firstName?.touched) ? 'is-danger': ''}}" 
+                            type="text" formControlName ="firstName" required>
+                </p>
+            </div>
+            <div class="field">
+                <label class="label">Last name</label>
+                <p class="control">
+                    <input class="input {{lastName?.invalid && (lastName?.dirty || lastName?.touched) ? 'is-danger': ''}}"
+                            type="text" formControlName ="lastName" required>
+                </p>
+            </div>
+            </div>
+        </div>
         <div class="field">
-            <label class="label">First name</label>
+            <label class="label">City</label>
             <p class="control">
-            <input class="input" value="Ime">
+                <input class="input {{city?.invalid && (city?.dirty || city?.touched) ? 'is-danger': ''}}"
+                 type="text" formControlName ="city" required>
             </p>
         </div>
         <div class="field">
-            <label class="label">Last name</label>
+            <label class="label">Phone number</label>
             <p class="control">
-            <input class="input" value="Prezime">
+                <input class="input {{phoneNumber?.invalid && (phoneNumber?.dirty || phoneNumber?.touched) ? 'is-danger': ''}}"
+                     type="text" formControlName ="phoneNumber" required>
             </p>
         </div>
+        <div class="field">
+            <label class="label">Email</label>
+            <p class="control">
+                <input class="input" type="email" formControlName ="email" required readonly >
+            </p>
         </div>
-    </div>
-    <div class="field">
-        <label class="label">City</label>
-        <p class="control">
-        <input class="input" value="Novi Sad">
-        </p>
-    </div>
-    <div class="field">
-        <label class="label">Phone number</label>
-        <p class="control">
-        <input class="input" value="+381651337">
-        </p>
-    </div>
-    <div class="field">
-        <label class="label">Email</label>
-        <p class="control">
-        <input class="input" type="email" value="john@gmail.com" readonly disabled>
-        </p>
-    </div>
-    <button class="button mt-4">
-        <span>Save changes</span>
-    </button>
+        <button class="button mt-4" (click)="submit()" [disabled]="!updateProfileForm.valid">
+            <span>Save changes</span>
+        </button>
+    </form>
     </div>
     <div class="column is-5">
     <label class="label">Profile photo</label>
     <div class="columns is-vcentered">
         <div class="column is-5">
-        <figure class="image is-128x128">
-            <img class="is-rounded"
-            src="https://lh3.googleusercontent.com/a/ALm5wu3tpc3XnB9w8EMqNHAODc0uL23tqydVlUCLYqEF6Q=s96-c">
-        </figure>
+            <figure class="image is-128x128" *ngIf="accountInfo.imageUrl">
+                <img class="is-rounded" src="{{URL_BASE}}{{accountInfo.imageUrl}}">
+            </figure>
+            <figure class="image is-128x128" *ngIf="!accountInfo.imageUrl">
+                <img class="is-rounded" src="{{DEFAULT_PROFILE_PHOTO}}">
+            </figure>
         </div>
         <div class="column">
-        <button class="button is-success is-fullwidth">
+        <button class="button is-success is-fullwidth" >
             <span>Change photo</span>
+            <input #imageInput type="file" accept="image/*" (change)="uploadImage(imageInput)">
         </button>
-        <button class="button is-outlined is-fullwidth mt-2">
+        <button class="button is-outlined is-fullwidth mt-2" (click)="removeImage()">
             <span class="icon mr-1 has-text-danger">
             <span class="iconify is-size-5" data-icon="fluent:delete-12-regular"></span>
             </span>

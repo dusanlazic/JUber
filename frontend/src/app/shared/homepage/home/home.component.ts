@@ -16,7 +16,7 @@ import { DriverService } from 'src/services/driver/driver.service';
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.sass']
 })
-export class HomeComponent implements AfterViewInit {
+export class HomeComponent implements OnInit {
 
   loggedUser!: LoggedUser;
   ride: Ride | undefined;
@@ -35,7 +35,7 @@ export class HomeComponent implements AfterViewInit {
     // this.ride.places.push(new Place("Narodnog fronta 57, Novi Sad", "via Narodnog Fronta"))
   }
 
-  ngAfterViewInit(): void {
+  ngOnInit(): void {
       this.authService.getCurrentUser().subscribe({
         next: (user) => {
           this.loggedUser = user;

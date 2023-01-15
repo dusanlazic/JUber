@@ -43,6 +43,11 @@ import { AdditionalComponent } from './passenger/passenger-sidebar/additional/ad
 import { ScheduleComponent } from './passenger/passenger-sidebar/schedule/schedule.component';
 import { RideRequestReducer } from './store/rideRequest/rideRequest.reducer';
 import { ActiveStatusComponent } from './driver/active-status/active-status.component';
+import { NotificationComponent } from './shared/homepage/notification/notification.component';
+import { RideInviteComponent } from './shared/homepage/notification/notification-list/ride-invite/ride-invite.component';
+import { WebsocketshareService } from 'src/services/notification/websocketshare.service';
+import { NotificationWebSocketAPI } from 'src/services/notification/notification-socket.service';
+import { NotificationItemComponent } from './shared/homepage/notification/notification-list/notification-item/notification-item.component';
 import { PassengerRideInvitationComponent } from './passenger/passenger-sidebar/passenger-ride-invitation/passenger-ride-invitation.component';
 import { PersonItemComponent } from './passenger/passenger-sidebar/passenger-ride-invitation/person-item/person-item.component';
 import { WebSocketShareService } from 'src/services/ride/websocketshare.service';
@@ -82,6 +87,10 @@ import { RideWebSocketAPI } from 'src/services/ride/ride-message.service';
     ScheduleComponent,
 
     ActiveStatusComponent,
+
+    NotificationComponent,
+    RideInviteComponent,
+    NotificationItemComponent,
      PassengerRideInvitationComponent,
      PersonItemComponent,
   ],
@@ -110,6 +119,7 @@ import { RideWebSocketAPI } from 'src/services/ride/ride-message.service';
     PasswordResetFormComponent,
     PasswordResetSuccessComponent,   
   ],
+  providers: [WebsocketshareService, NotificationWebSocketAPI],
   providers: [WebSocketShareService,RideWebSocketAPI],
   bootstrap: [AppComponent]
 })

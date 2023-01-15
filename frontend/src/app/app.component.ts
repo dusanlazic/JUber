@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { RideWebSocketAPI } from 'src/services/ride/ride-message.service';
+import { NotificationWebSocketAPI } from 'src/services/notification/notification-socket.service';
 
 @Component({
   selector: 'app-root',
@@ -9,8 +9,7 @@ import { RideWebSocketAPI } from 'src/services/ride/ride-message.service';
 export class AppComponent {
   title = 'frontend';
 
-              
-  constructor(private webSocketAPI: RideWebSocketAPI) {
-    webSocketAPI.connect();
+  constructor(private notificationWebSocketAPI: NotificationWebSocketAPI) {
+    notificationWebSocketAPI.connect();
   }
 }

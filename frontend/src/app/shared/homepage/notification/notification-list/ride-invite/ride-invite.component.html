@@ -1,0 +1,35 @@
+<div class="notification-item">
+    <div class="columns">
+      <div class="column is-2 has-content-align-center">
+        <figure class="image is-48x48">
+          <img class="is-rounded" [src]=notificationCast.inviterImageUrl>
+          <!-- "https://lh3.googleusercontent.com/a/ALm5wu3tpc3XnB9w8EMqNHAODc0uL23tqydVlUCLYqEF6Q=s96-c" -->
+        </figure>
+      </div>
+      <div class="column">
+        <p class="has-text-grey is-size-7">{{notificationTimestamp}}</p>        
+        <p [innerHTML]=message></p>
+
+        <div  *ngIf="notificationCast.response === 'NO_RESPONSE'">
+          <button class="button is-small is-success mt-2"  (click)="acceptRide()">
+            Accept
+          </button>
+          <button class="button is-small is-outlined mt-2 ml-1" (click)="declineRide()">
+            Decline
+          </button>
+        </div>
+
+        <div *ngIf="notificationCast.response === 'ACCEPTED'">
+          <p class="has-text-success is-size-8"> Ride invite accepted.</p>
+        </div>
+  
+        <div *ngIf="notificationCast.response === 'DECLINED'">
+          <p class="has-text-danger is-size-8"> Ride invite declined.</p>
+        </div>
+        
+      </div>
+
+     
+
+    </div>
+</div>

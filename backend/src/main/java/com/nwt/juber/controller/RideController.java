@@ -45,18 +45,20 @@ public class RideController {
     }
 
     @PutMapping("/accept/{id}")
-    @PreAuthorize("hasAnyRole('PASSENGER')")
+    @PreAuthorize("hasAnyRole('PASSENGER', 'DRIVER')")
     public ResponseOk acceptRide(@PathVariable("id") UUID rideId, Authentication authentication) throws InsufficientResourcesException {
         rideService.acceptRide(rideId, authentication);
         return new ResponseOk("ok");
     }
 
     @PutMapping("/decline/{id}")
-    @PreAuthorize("hasAnyRole('PASSENGER')")
+    @PreAuthorize("hasAnyRole('PASSENGER', 'DRIVER')")
     public ResponseOk declineRide(@PathVariable("id") UUID rideId, Authentication authentication) throws InsufficientResourcesException {
         rideService.declineRide(rideId, authentication);
         return new ResponseOk("ok");
     }
+
+
 
     @GetMapping("/active")
     @PreAuthorize(("hasAnyRole('DRIVER', 'PASSENGER')"))

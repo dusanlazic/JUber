@@ -80,7 +80,8 @@ export class PassengerSidebarComponent implements OnInit {
 			}
 		}
 		rideRequest.ride = ride;
-		
+		this.calculatePrice();
+		rideRequest.ride.fare = this.price;
 
 		this.rideService.sendRideRequest(rideRequest).subscribe({
 			next: () => {

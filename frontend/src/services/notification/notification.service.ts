@@ -34,7 +34,7 @@ export class NotificationService {
 
   respondToNotification(notificationId: string, response: NotificationResponse) : Observable<any> {
     const url = environment.API_BASE_URL + `/notifications/responde/${notificationId}`;
-    return this.httpRequestService.post(url, response) as Observable<any>;
+    return this.httpRequestService.put(url, response) as Observable<any>;
   }
 
 }

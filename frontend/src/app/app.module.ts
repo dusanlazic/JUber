@@ -50,7 +50,7 @@ import { NotificationWebSocketAPI } from 'src/services/notification/notification
 import { NotificationItemComponent } from './shared/homepage/notification/notification-list/notification-item/notification-item.component';
 import { PassengerRideInvitationComponent } from './passenger/passenger-sidebar/passenger-ride-invitation/passenger-ride-invitation.component';
 import { PersonItemComponent } from './passenger/passenger-sidebar/passenger-ride-invitation/person-item/person-item.component';
-import { WebSocketShareService } from 'src/services/ride/websocketshare.service';
+import { RideSocketShareService } from 'src/services/ride/ridesocketshare.service';
 import { RideWebSocketAPI } from 'src/services/ride/ride-message.service';
 
 @NgModule({
@@ -119,8 +119,7 @@ import { RideWebSocketAPI } from 'src/services/ride/ride-message.service';
     PasswordResetFormComponent,
     PasswordResetSuccessComponent,   
   ],
-  providers: [WebsocketshareService, NotificationWebSocketAPI],
-  providers: [WebSocketShareService,RideWebSocketAPI],
+  providers: [WebsocketshareService,RideWebSocketAPI,NotificationWebSocketAPI, RideSocketShareService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

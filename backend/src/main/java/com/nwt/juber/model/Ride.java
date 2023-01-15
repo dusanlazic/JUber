@@ -15,7 +15,7 @@ public class Ride {
 
     @Id
     @Column(columnDefinition = "uuid")
-    private UUID id;
+    private UUID id = UUID.randomUUID();
 
     @OneToMany
     @JoinColumn(name = "ride_id")

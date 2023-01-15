@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { WebSocketShareService } from './websocketshare.service';
+import { RideSocketShareService } from './ridesocketshare.service';
 import { environment } from 'src/environments/environment';
 import * as Stomp from 'stompjs';
 import * as SockJS from 'sockjs-client';
@@ -10,7 +10,7 @@ export class RideWebSocketAPI {
     topic: string = "/user/queue/ride";
     stompClient: any;
     
-    constructor(private websocketShare: WebSocketShareService){
+    constructor(private websocketShare: RideSocketShareService){
          
     }
     connect() {

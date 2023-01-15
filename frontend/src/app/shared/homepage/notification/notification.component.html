@@ -4,7 +4,7 @@
 </div>
 
 <div class="custom-notifications-box" *ngIf="showNotifications">
-    <div class="box" style="overflow-y: auto;">
+    <div class="box" style="overflow-y: auto;  max-height: 350px;">
       <p class="title is-size-5 ml-4 pt-4 mb-3 is-family-secondary">Notifications</p>
       <div  *ngFor="let notification of notifications" >
         <app-notification-item [notification]="notification" *ngIf="notification.type!=='RIDE_INVITATION'"></app-notification-item>

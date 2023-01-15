@@ -30,7 +30,7 @@ public class EveryoneAcceptedRideNotification extends PersistedNotification {
     	EveryoneAcceptedRide transferred = new EveryoneAcceptedRide();
         transferred.setDate(this.getCreated());
         transferred.setNotificationStatus(this.getStatus());
-        if(ride!=null && ride.getDriver()!=null) {
+        if(ride!=null) {
         	LocalDateTime now = new Date().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
         	long minutes = ChronoUnit.MINUTES.between(now, ride.getStartTime());
         	transferred.setUntilDriverArival(minutes);

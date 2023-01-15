@@ -44,10 +44,13 @@ export class NotificationComponent implements OnInit {
 
   private subscribeToNewNotifications() : void {
     this.websocketService.getNewValue().subscribe({
-      next: (res: Notification) => {
-        this.unreadCount += 1;
-        this.notifications.push(res);
-        this.notifications = [...this.notifications];
+      next: (res: string) => {
+        if(res){
+          this.unreadCount += 1;
+          const notif = JSON.parse(res) as Notification;
+          this.notifications.splice(0, 0, notif);
+          this.notifications = [...this.notifications];
+        }
       },
       error: (res: HttpErrorResponse) => {
         console.log(res)
@@ -56,7 +59,6 @@ export class NotificationComponent implements OnInit {
   }
 
   nofificationClick(): void {
-    // this.sendNewNotification();
     if(!this.showNotifications){
 
       if(this.unreadCount > 0){
@@ -84,15 +86,15 @@ export class NotificationComponent implements OnInit {
   }
 
 
-  private sendNewNotification(): void {
-    this.notificationService.sendNotification().subscribe({
-      next: (res: any) => {
-        console.log(res)
-      },
-      error: (res: HttpErrorResponse) => {
-        console.log(res)
-      },
-    })
-  }
+  // private sendNewNotification(): void {
+  //   this.notificationService.sendNotification().subscribe({
+  //     next: (res: any) => {
+  //       console.log(res)
+  //     },
+  //     error: (res: HttpErrorResponse) => {
+  //       console.log(res)
+  //     },
+  //   })
+  // }
 
 }

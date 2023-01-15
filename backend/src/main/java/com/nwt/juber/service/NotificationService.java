@@ -39,9 +39,6 @@ public class NotificationService {
     
     @Autowired
     private UserService userService;
-    
-    @Autowired
-    private RideService rideService;
 
     public void markNotificationsAsRead(User user) {
     	System.out.println("MARK ALL AS READ");

@@ -39,7 +39,7 @@ export class NotificationTemplate {
     return {
       icon: Properties.CAR_ICON, 
       iconClass: Properties.INFO_CLASS,
-      message: `Your driver <b>${driverName}</b> has arrived!`
+      message: `Your driver <b>${driverName ? driverName : ''}</b> has arrived!`
     }
   } 
 
@@ -48,7 +48,7 @@ export class NotificationTemplate {
     return {
       icon: Properties.CAR_ICON, 
       iconClass: Properties.INFO_CLASS,
-      message: `You've got a new ride! Starting location: <b>${startLocationName}</b>!`
+      message: `You've got a new ride! Starting location: <b>${startLocationName ? startLocationName : ''}</b>`
     }
   }
 
@@ -57,7 +57,7 @@ export class NotificationTemplate {
     return {
       icon: Properties.SAD_EMOJI_ICON, 
       iconClass: Properties.FAIL_CLASS,
-      message: `Your pal <b>${cancelerName}</b> has denclined a ride.`
+      message: `Your pal <b>${cancelerName ? cancelerName : ''}</b> has denclined a ride.`
     }
   }
 

@@ -43,6 +43,10 @@ import { AdditionalComponent } from './passenger/passenger-sidebar/additional/ad
 import { ScheduleComponent } from './passenger/passenger-sidebar/schedule/schedule.component';
 import { RideRequestReducer } from './store/rideRequest/rideRequest.reducer';
 import { ActiveStatusComponent } from './driver/active-status/active-status.component';
+import { DriverMapComponent } from './driver/driver-map/driver-map.component';
+import { DriverSidebarComponent } from './driver/driver-sidebar/driver-sidebar.component';
+import { DriverRideComponent } from './driver/driver-sidebar/driver-ride/driver-ride.component';
+import { DriverRideReducer } from './store/driverRide/driver-ride.reducer';
 
 @NgModule({
   declarations: [
@@ -78,6 +82,9 @@ import { ActiveStatusComponent } from './driver/active-status/active-status.comp
     ScheduleComponent,
 
     ActiveStatusComponent,
+     DriverMapComponent,
+     DriverSidebarComponent,
+     DriverRideComponent,
   ],
   imports: [
     BrowserModule,
@@ -91,7 +98,7 @@ import { ActiveStatusComponent } from './driver/active-status/active-status.comp
     ReactiveFormsModule,
     HttpClientModule,
     ToastrModule.forRoot(),
-    StoreModule.forRoot({state: RideReducer, rideRequest: RideRequestReducer}),
+    StoreModule.forRoot({state: RideReducer, rideRequest: RideRequestReducer, driverRide: DriverRideReducer}),
   ],
   exports: [
     RegisterStep1Component,

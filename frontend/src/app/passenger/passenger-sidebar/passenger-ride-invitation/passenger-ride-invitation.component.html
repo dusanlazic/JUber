@@ -4,7 +4,7 @@
         <p class="title is-size-3 has-text-grey is-family-secondary">Payment</p>
 
         <div class="is-custom-payments-list">            
-            <app-person-item *ngFor="let pal of pals" [person]="pal"></app-person-item>
+            <app-person-item *ngFor="let pal of pals; let i = index" [person]="pal" [status]="palsStatus[i]"></app-person-item>
             <button (click)="sendMessage('heyaaa')">Send message</button>
         </div>
         <p class="mt-4">Ride will be ordered as soon as everyone accepts the invitation.</p>

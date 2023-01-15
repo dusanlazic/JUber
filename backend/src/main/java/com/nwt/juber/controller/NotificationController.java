@@ -73,10 +73,11 @@ public class NotificationController {
 //		return new ResponseOk("Notifications sent.");
 //	}
    
-    @PutMapping("/responde/{id}")
+    @PutMapping("/respond/{id}")
     @PreAuthorize("hasAnyRole('PASSENGER')")
-    public ResponseOk respondToNotification(@PathVariable("id") UUID notificationId, @RequestBody NotificationResponse response) {
-    	notificationService.respondToNotification(notificationId, response);
+    public ResponseOk respondToNotification(@PathVariable("id") UUID notificationId, @RequestBody String response) {
+        NotificationResponse response1 = NotificationResponse.valueOf(response);
+    	notificationService.respondToNotification(notificationId, response1);
         return new ResponseOk("ok");
     }
 }

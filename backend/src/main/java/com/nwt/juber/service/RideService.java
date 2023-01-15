@@ -140,6 +140,8 @@ public class RideService {
         for (Passenger pal: pals) {
             InvitationStatusMessage message = new InvitationStatusMessage();
             message.setId(passenger.getId());
+            message.setEmail(passenger.getEmail());
+            message.setUsername(passenger.getUsername());
             message.setStatus(RideInvitationStatus.ACCEPTED);
             messagingTemplate.convertAndSendToUser(pal.getUsername(), "/queue/ride", message);
         }
@@ -167,6 +169,8 @@ public class RideService {
         for (Passenger pal: pals) {
             InvitationStatusMessage message = new InvitationStatusMessage();
             message.setId(passenger.getId());
+            message.setUsername(passenger.getUsername());
+            message.setEmail(passenger.getEmail());
             message.setStatus(RideInvitationStatus.DENIED);
             messagingTemplate.convertAndSendToUser(pal.getUsername(), "/queue/ride", message);
         }

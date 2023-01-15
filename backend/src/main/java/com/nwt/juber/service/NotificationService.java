@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceUnit;
+import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -71,6 +72,7 @@ public class NotificationService {
         notificationRepository.deleteAll(oldNotifications);
     }
 
+    @Transactional
 	public void respondToNotification(UUID notificationId, NotificationResponse response) {
 		notificationRepository.updateNotificationResponse(notificationId, response);
 	}

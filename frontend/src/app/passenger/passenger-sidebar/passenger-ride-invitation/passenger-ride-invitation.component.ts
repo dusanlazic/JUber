@@ -15,7 +15,17 @@ import { WebsocketshareService } from 'src/services/notification/websocketshare.
 })
 export class PassengerRideInvitationComponent implements OnInit {
 
-  pals: any = [];
+  pals: any[] = [];
+  palsStatus: string[] = [];
+
+  convert = {
+    "ACCEPTED": "Ready",
+    "PENDING": "Waiting...",
+    "DENIED": "Denied",
+    "Ready": "Ready",
+    "Denied": "Denied",
+    "Waiting...": "Waiting...",
+  }
 
   constructor(private authService:AuthService, 
               private store: Store<{rideRequest: IRideRequest}>,
@@ -25,14 +35,31 @@ export class PassengerRideInvitationComponent implements OnInit {
     this.store.select('rideRequest').subscribe(state => {
 			if(state === undefined) return;
       authService.getCurrentUser().subscribe(x => {
+        this.pals = [];
         this.pals.push(x);
         this.pals.push(...state.passengersInfo);
+        this.palsStatus.push('Ready');
+        state.passengersInfo.forEach(element => {
+          this.palsStatus.push('Waiting...');
+        });
       })
 		})
 
-    websocketService.getNewValue().subscribe((data: any) => {
-      console.log('GOT THIS SHIIEET');
-      console.log(data);
+    
+
+    websocketService.getNewValue().subscribe((resp: any) => {
+      console.log(resp);
+      console.log(this.pals);
+      let data = JSON.parse(resp);
+      let i = 0;
+      for(let pal of this.pals) {
+        console.log(pal.email, data);
+        
+        if(pal.email === data.email) {
+          this.palsStatus[i] = this.convert[data.status as keyof typeof this.convert];
+        }
+        i++;
+      }
     })
 
   }

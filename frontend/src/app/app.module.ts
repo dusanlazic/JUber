@@ -48,6 +48,13 @@ import { RideInviteComponent } from './shared/homepage/notification/notification
 import { WebsocketshareService } from 'src/services/notification/websocketshare.service';
 import { NotificationWebSocketAPI } from 'src/services/notification/notification-socket.service';
 import { NotificationItemComponent } from './shared/homepage/notification/notification-list/notification-item/notification-item.component';
+import { ProfileDetailsComponent } from './shared/profile-page/profile-page/profile-details/profile-details.component';
+import { ChangePasswordComponent } from './shared/profile-page/profile-page/change-password/change-password.component';
+import { BalanceComponent } from './shared/profile-page/profile-page/balance/balance.component';
+import { SavedRoutesComponent } from './shared/profile-page/profile-page/saved-routes/saved-routes.component';
+import { PastRidesComponent } from './shared/profile-page/profile-page/past-rides/past-rides.component';
+import { SupportComponent } from './shared/profile-page/profile-page/support/support.component';
+import { ProfilePageComponent } from './shared/profile-page/profile-page/profile-page.component';
 
 @NgModule({
   declarations: [
@@ -87,6 +94,15 @@ import { NotificationItemComponent } from './shared/homepage/notification/notifi
     NotificationComponent,
     RideInviteComponent,
     NotificationItemComponent,
+
+    ProfilePageComponent,
+
+    ProfileDetailsComponent,
+    ChangePasswordComponent,
+    BalanceComponent,
+    SavedRoutesComponent,
+    PastRidesComponent,
+    SupportComponent
   ],
   imports: [
     BrowserModule,
@@ -112,6 +128,13 @@ import { NotificationItemComponent } from './shared/homepage/notification/notifi
 
     PasswordResetFormComponent,
     PasswordResetSuccessComponent,   
+
+    ProfileDetailsComponent,
+    ChangePasswordComponent,
+    BalanceComponent,
+    SavedRoutesComponent,
+    PastRidesComponent,
+    SupportComponent
   ],
   providers: [WebsocketshareService, NotificationWebSocketAPI],
   bootstrap: [AppComponent]

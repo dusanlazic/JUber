@@ -6,7 +6,8 @@ import { BehaviorSubject, Observable, ReplaySubject, Subject } from "rxjs";
 import { environment } from "src/environments/environment";
 import { LocalRegistrationRequest, LoginRequest, PasswordReset, PasswordResetLinkRequest, PersonalInfo, TokenResponse } from "src/models/auth";
 import { ApiResponse } from 'src/models/responses';
-import { LoggedUser } from 'src/models/user';
+import { LoggedUser, Roles } from 'src/models/user';
+import { DriverService } from '../driver/driver.service';
 import { HttpRequestService } from "../util/http-request.service";
 import { LocalStorageService } from "../util/local-storage.service";
 
@@ -23,7 +24,8 @@ export class AuthService {
     constructor(
         private httpRequestService: HttpRequestService,
         private localStorage: LocalStorageService,
-        private router: Router
+        private router: Router,
+        private driverService: DriverService
     ) {}
 
 
@@ -85,6 +87,10 @@ export class AuthService {
     }
 
     logout() : void {
+        if(this.loggedUser?.role === Roles.DRIVER){
+            this.driverService.inactivate(this.loggedUser.email);
+        }
+
         const url = environment.API_BASE_URL + "/auth/logout";
         this.httpRequestService.post(url, null)
         this.loggedUser = undefined;

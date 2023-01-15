@@ -115,9 +115,15 @@ public class RideService {
         passengerRepository.save(passenger);
     }
 
-    public void acceptRide(UUID rideId, Authentication authentication) throws InsufficientResourcesException {
-        User user = (User) authentication.getPrincipal();
-        Passenger passenger = passengerRepository.findById(user.getId()).orElseThrow();
+    public void acceptRideDriver(Driver driver, UUID rideId) {
+        Ride ride = rideRepository.findById(rideId).orElseThrow(() -> new EndRideException("No ride with id: " + rideId));
+        ride.setDriver(driver);
+        ride.setRideStatus(RideStatus.ACCEPTED);
+        rideRepository.save(ride);
+        // notify everyone
+    }
+
+    public void acceptRidePassenger(Passenger passenger, UUID rideId) {
         Ride ride = rideRepository.findById(rideId).orElseThrow(() -> new EndRideException("No ride with id: " + rideId));
         BigDecimal fare = BigDecimal.valueOf(ride.getFare() / ride.getPassengers().size());
 
@@ -130,12 +136,9 @@ public class RideService {
         ride.getPassengersReady().set(passengerPosition, true);
         List<Passenger> pals = ride.getPassengers()
                 .stream()
-                .filter(x -> x.getId() != user.getId())
+                .filter(x -> x.getId() != passenger.getId())
                 .toList();
 
-        if (ride.getPassengersReady().stream().allMatch(Boolean::booleanValue)) {
-           subtractFundsForRide(ride);
-        }
 
         for (Passenger pal: pals) {
             InvitationStatusMessage message = new InvitationStatusMessage();
@@ -145,6 +148,41 @@ public class RideService {
             message.setStatus(RideInvitationStatus.ACCEPTED);
             messagingTemplate.convertAndSendToUser(pal.getUsername(), "/queue/ride", message);
         }
+
+        // look for a driver if everybody has accepted!
+        // subtract the funds from the passengers
+        if (ride.getPassengersReady().stream().allMatch(Boolean::booleanValue)) {
+            subtractFundsForRide(ride);
+            ride.setRideStatus(RideStatus.WAIT);
+            rideRepository.save(ride);
+            assignSuitableDriver(ride);
+        }
+    }
+
+    public void acceptRide(UUID rideId, Authentication authentication) {
+        User user = (User) authentication.getPrincipal();
+        Optional<Passenger> passenger = passengerRepository.findById(user.getId());
+        if(passenger.isPresent()) {
+            acceptRidePassenger(passenger.get(), rideId);
+        } else {
+            Driver driver = driverRepository.findById(user.getId()).orElseThrow(() -> new RuntimeException("No driver found!"));
+            acceptRideDriver(driver, rideId);
+        }
+    }
+
+    private void assignSuitableDriver(Ride ride) {
+        Driver driver = findSuitableDriver(ride);
+        if (driver == null) {
+            throw new RuntimeException("No driver found!");
+        }
+        ride.setDriver(driver);
+        ride.setRideStatus(RideStatus.ACCEPTED);
+    }
+
+    public Driver findSuitableDriver(Ride ride) {
+        // find by conditions
+        // ask the driver if he wants to start a ride
+        return null;
     }
 
     private void subtractFundsForRide(Ride ride) {
@@ -153,19 +191,16 @@ public class RideService {
             .forEach(x -> x.setBalance(x.getBalance().subtract(BigDecimal.valueOf(fare))));
     }
 
-
-    public void declineRide(UUID rideId, Authentication authentication) {
-        User user = (User) authentication.getPrincipal();
-        Passenger passenger = passengerRepository.findById(user.getId()).orElseThrow();
+    public void declineRidePassenger(Passenger passenger, UUID rideId) {
         Ride ride = rideRepository.findById(rideId).orElseThrow(() -> new EndRideException("No ride with id: " + rideId));
         int passengerPosition = ride.getPassengers().indexOf(passenger);
         ride.getPassengersReady().set(passengerPosition, Boolean.FALSE);
         ride.setRideStatus(RideStatus.DENIED);
         // notify the rest!
         List<Passenger> pals = ride.getPassengers()
-                                .stream()
-                                .filter(x -> x.getId() != user.getId())
-                                .toList();
+                .stream()
+                .filter(x -> x.getId() != passenger.getId())
+                .toList();
         for (Passenger pal: pals) {
             InvitationStatusMessage message = new InvitationStatusMessage();
             message.setId(passenger.getId());
@@ -175,6 +210,24 @@ public class RideService {
             messagingTemplate.convertAndSendToUser(pal.getUsername(), "/queue/ride", message);
         }
         rideRepository.save(ride);
+    }
+
+    public void declineRideDriver(Driver driver, UUID rideId) {
+        Ride ride = rideRepository.findById(rideId).orElseThrow(() -> new EndRideException("No ride with id: " + rideId));
+        ride.setRideStatus(RideStatus.DENIED);
+        rideRepository.save(ride);
+        // notify people
+    }
+
+    public void declineRide(UUID rideId, Authentication authentication) {
+        User user = (User) authentication.getPrincipal();
+        Optional<Passenger> passenger = passengerRepository.findById(user.getId());
+        if(passenger.isPresent()) {
+            declineRidePassenger(passenger.get(), rideId);
+        } else {
+            Driver driver = driverRepository.findById(user.getId()).orElseThrow(() -> new RuntimeException("No driver found!"));
+            declineRideDriver(driver, rideId);
+        }
     }
 
     public RideDTO getActiveRide(Authentication authentication) {

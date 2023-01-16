@@ -116,7 +116,7 @@ import { ProfilePageComponent } from './shared/profile-page/profile-page/profile
     ReactiveFormsModule,
     HttpClientModule,
     ToastrModule.forRoot(),
-    StoreModule.forRoot({state: RideReducer, rideRequest: RideRequestReducer}),
+    StoreModule.forRoot({state: RideReducer, rideRequest: RideRequestReducer})
   ],
   exports: [
     RegisterStep1Component,

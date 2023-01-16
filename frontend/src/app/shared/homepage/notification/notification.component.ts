@@ -2,8 +2,8 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { DriverArrivedNotification, Notification, NotificationStatus, NotificationType, TransferredNotification } from 'src/models/notification';
 import { NotificationService } from 'src/services/notification/notification.service';
-import { WebsocketshareService } from 'src/services/notification/websocketshare.service';
 import { HttpRequestService } from 'src/services/util/http-request.service';
+import { WebsocketshareService } from 'src/services/websocketshare/websocketshare.service';
 
 @Component({
   selector: 'app-notification',

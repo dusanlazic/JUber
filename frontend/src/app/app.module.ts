@@ -45,7 +45,6 @@ import { RideRequestReducer } from './store/rideRequest/rideRequest.reducer';
 import { ActiveStatusComponent } from './driver/active-status/active-status.component';
 import { NotificationComponent } from './shared/homepage/notification/notification.component';
 import { RideInviteComponent } from './shared/homepage/notification/notification-list/ride-invite/ride-invite.component';
-import { WebsocketshareService } from 'src/services/notification/websocketshare.service';
 import { NotificationWebSocketAPI } from 'src/services/notification/notification-socket.service';
 import { NotificationItemComponent } from './shared/homepage/notification/notification-list/notification-item/notification-item.component';
 import { ProfileDetailsComponent } from './shared/profile-page/profile-page/profile-details/profile-details.component';
@@ -55,6 +54,11 @@ import { SavedRoutesComponent } from './shared/profile-page/profile-page/saved-r
 import { PastRidesComponent } from './shared/profile-page/profile-page/past-rides/past-rides.component';
 import { SupportComponent } from './shared/profile-page/profile-page/support/support.component';
 import { ProfilePageComponent } from './shared/profile-page/profile-page/profile-page.component';
+import { SupportMessageComponent } from './shared/profile-page/profile-page/support/support-message/support-message.component';
+import { WebsocketshareService } from 'src/services/websocketshare/websocketshare.service';
+import { SupportChatWebSocketAPI } from 'src/services/support/support-chat-socket.service';
+import { SupportAdminWebSocketAPI } from 'src/services/support/support-admin-socket.service';
+import { AdminSupportComponent } from './admin-pages/admin-support/admin-support.component';
 
 @NgModule({
   declarations: [
@@ -102,7 +106,9 @@ import { ProfilePageComponent } from './shared/profile-page/profile-page/profile
     BalanceComponent,
     SavedRoutesComponent,
     PastRidesComponent,
-    SupportComponent
+    SupportComponent,
+    SupportMessageComponent,
+    AdminSupportComponent
   ],
   imports: [
     BrowserModule,
@@ -136,7 +142,7 @@ import { ProfilePageComponent } from './shared/profile-page/profile-page/profile
     PastRidesComponent,
     SupportComponent
   ],
-  providers: [WebsocketshareService, NotificationWebSocketAPI],
+  providers: [WebsocketshareService, NotificationWebSocketAPI, SupportChatWebSocketAPI, SupportAdminWebSocketAPI],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

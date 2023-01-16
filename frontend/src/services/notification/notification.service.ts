@@ -3,7 +3,6 @@ import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { Notification, NotificationResponse, TransferredNotification } from 'src/models/notification';
 import { HttpRequestService } from '../util/http-request.service';
-import { WebsocketshareService } from './websocketshare.service';
 
 @Injectable({
   providedIn: 'root'

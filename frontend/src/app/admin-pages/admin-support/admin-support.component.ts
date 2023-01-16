@@ -1,25 +1,24 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { ChatConversationResponse, ChatMessage, ChatMessageResponse } from 'src/models/chat';
-import { LoggedUser, Roles } from 'src/models/user';
+import { ChatMessage, ChatMessageResponse } from 'src/models/chat';
+import { LoggedUser } from 'src/models/user';
 import { AuthService } from 'src/services/auth/auth.service';
-import { SupportAdminWebSocketAPI } from 'src/services/support/support-admin-socket.service';
-import { SupportChatWebSocketAPI } from 'src/services/support/support-chat-socket.service';
 import { SupportService } from 'src/services/support/support.service';
 import { WebsocketshareService } from 'src/services/websocketshare/websocketshare.service';
 
 @Component({
-  selector: 'app-support',
-  templateUrl: './support.component.html',
-  styleUrls: ['./support.component.sass']
+  selector: 'app-admin-support',
+  templateUrl: './admin-support.component.html',
+  styleUrls: ['./admin-support.component.sass']
 })
-export class SupportComponent implements OnInit {
+export class AdminSupportComponent implements OnInit {
 
-  messages: any[] = [];
+  messages: ChatMessage[] = [];
   logged!: LoggedUser;
 
   newMessage: FormControl;
+  userId: string = '6aebc916-dd04-4674-a4f2-99edec0a1811'; 
 
   constructor(
     private authService: AuthService,
@@ -42,27 +41,13 @@ export class SupportComponent implements OnInit {
     })
   }
 
-  private setupChat(): void {
-    this.getAllMessage();
+  private setupChat(): void { 
+    this.getAllMessages(this.userId)
     this.subscribeToNewMessages();
   }
 
-  private subscribeToNewMessages() : void {
-    this.websocketService.getNewValue().subscribe({
-      next: (res: string) => {
-        if(res){
-          const msg = JSON.parse(res) as ChatConversationResponse;
-          this.messages.push(msg)
-        }
-      },
-      error: (res: HttpErrorResponse) => {
-        console.log(res)
-      },
-    })
-  }
-
-  private getAllMessage(): void{
-    this.supportService.getMessagesAsUser().subscribe({
+  private getAllMessages(userId: string): void{
+    this.supportService.getMessagesAsSupport(userId).subscribe({
       next: (msgs: Array<ChatMessageResponse>) => {
         this.messages = msgs;
         console.log(this.messages)
@@ -72,9 +57,24 @@ export class SupportComponent implements OnInit {
       },
     })
   }
+  
+  private subscribeToNewMessages(): void {
+    this.websocketService.getNewValue().subscribe({
+      next: (res: string) => {
+        console.log(res)
+        if(res){
+          const msg = JSON.parse(res) as ChatMessage;
+          this.messages.push(msg)
+        }
+      },
+      error: (res: HttpErrorResponse) => {
+        console.log(res)
+      },
+    })
+  }
 
   sendNewMessage(): void {
-    this.supportService.sendMessageAsUser({content: this.newMessage.value}).subscribe({
+    this.supportService.sendMessageAsSupport(this.userId, {content: this.newMessage.value}).subscribe({
       next: (res: any) => {
         console.log(res)
       },
@@ -83,4 +83,5 @@ export class SupportComponent implements OnInit {
       },
     })
   }
+
 }

@@ -75,4 +75,5 @@ public class RideController {
         rideService.createRideRequest(rideRequest, authentication);
         return new ResponseOk("ok");
 	}
+
 }

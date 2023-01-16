@@ -9,6 +9,8 @@ export interface IRoute {
     time: number
     selected: boolean
     coordinates: Array<IPoint>
+    coordinatesEncoded: string
+    getCoordinates(): Array<IPoint>
 }
 
 export interface IPlace {

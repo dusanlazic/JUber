@@ -16,6 +16,7 @@ import { Oauth2RegisterRedirectHandlerComponent } from './registration/register-
 import { RegisterOauthComponent } from './registration/register-oauth/register-oauth.component';
 import { MapComponent } from './shared/map/map.component';
 import { HomeComponent } from './shared/homepage/home/home.component';
+import { RideDetailsComponent } from './shared/ride-details/ride-details.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginPageComponent },
@@ -25,6 +26,8 @@ const routes: Routes = [
   { path: 'home', component: HomeComponent, canActivate: [AuthGuard, RoleGuard], 
           data: { expectedRoles: [Roles.DRIVER, Roles.PASSENGER_NEW, Roles.PASSENGER ]}  },
   { path: 'invitation', component: HomeComponent, canActivate: [AuthGuard, RoleGuard], 
+          data: { expectedRoles: [Roles.DRIVER, Roles.PASSENGER_NEW, Roles.PASSENGER ]}  },
+  { path: 'ride', component: RideDetailsComponent, canActivate: [AuthGuard, RoleGuard], 
           data: { expectedRoles: [Roles.DRIVER, Roles.PASSENGER_NEW, Roles.PASSENGER ]}  },
   { path: 'registration', component: RegisterLocalComponent},
   { path: 'registration/social', component: RegisterOauthComponent},

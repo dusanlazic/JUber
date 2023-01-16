@@ -52,6 +52,10 @@ import { PassengerRideInvitationComponent } from './passenger/passenger-sidebar/
 import { PersonItemComponent } from './passenger/passenger-sidebar/passenger-ride-invitation/person-item/person-item.component';
 import { RideSocketShareService } from 'src/services/ride/ridesocketshare.service';
 import { RideWebSocketAPI } from 'src/services/ride/ride-message.service';
+import { RideDetailsComponent } from './shared/ride-details/ride-details.component';
+import { RideDetailsSidebarComponent } from './shared/ride-details/ride-details-sidebar/ride-details-sidebar.component';
+import { RideDetailsMapComponent } from './shared/ride-details/ride-details-map/ride-details-map.component';
+import { RideDetailsPlaceComponent } from './shared/ride-details/ride-details-place/ride-details-place.component';
 
 @NgModule({
   declarations: [
@@ -93,6 +97,10 @@ import { RideWebSocketAPI } from 'src/services/ride/ride-message.service';
     NotificationItemComponent,
      PassengerRideInvitationComponent,
      PersonItemComponent,
+     RideDetailsComponent,
+     RideDetailsSidebarComponent,
+     RideDetailsMapComponent,
+     RideDetailsPlaceComponent,
   ],
   imports: [
     BrowserModule,

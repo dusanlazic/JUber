@@ -7,7 +7,7 @@
             <app-person-item *ngFor="let pal of pals; let i = index" [person]="pal" [status]="palsStatus[i]"></app-person-item>
             <button (click)="sendMessage('heyaaa')">Send message</button>
         </div>
-        <p class="mt-4">Ride will be ordered as soon as everyone accepts the invitation.</p>
+        <p class="mt-4">Ride will be ordered as soon as everyone accepts the invitation and a driver is found.</p>
         <div class="notification is-info mt-4">
         <div class="columns">
             <div class="column is-1 pl-2 pt-5">

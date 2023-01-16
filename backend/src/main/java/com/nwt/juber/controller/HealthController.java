@@ -40,4 +40,12 @@ public class HealthController {
         return new ResponseOk("ok");
     }
 
+
+    @GetMapping("/greet-socket-user/{username}")
+    public ResponseOk greetSocketUser(@PathVariable String username) {
+        String message = "GREET";
+        messagingTemplate.convertAndSendToUser(username, "/queue/notifications", message);
+        return new ResponseOk("ok");
+    }
+
 }

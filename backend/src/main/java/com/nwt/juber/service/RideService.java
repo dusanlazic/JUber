@@ -143,13 +143,8 @@ public class RideService {
 
         int passengerPosition = ride.getPassengers().indexOf(passenger);
         ride.getPassengersReady().set(passengerPosition, PassengerStatus.Ready);
-        List<Passenger> pals = ride.getPassengers()
-                .stream()
-                .filter(x -> x.getId() != passenger.getId())
-                .toList();
 
-
-        for (Passenger pal: pals) {
+        for (Passenger pal: ride.getPassengers()) {
             RideMessage rideMessage = new RideMessage();
             rideMessage.setRide(convertRideToDTO(ride));
             rideMessage.setType(RideMessageType.PAL_UPDATE_STATUS);
@@ -211,11 +206,8 @@ public class RideService {
         ride.getPassengersReady().set(passengerPosition, PassengerStatus.Declined);
         ride.setRideStatus(RideStatus.DENIED);
         // notify the rest!
-        List<Passenger> pals = ride.getPassengers()
-                .stream()
-                .filter(x -> x.getId() != passenger.getId())
-                .toList();
-        for (Passenger pal: pals) {
+
+        for (Passenger pal: ride.getPassengers()) {
             RideMessage rideMessage = new RideMessage();
             rideMessage.setRide(convertRideToDTO(ride));
             rideMessage.setType(RideMessageType.PAL_UPDATE_STATUS);

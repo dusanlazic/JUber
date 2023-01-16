@@ -10,7 +10,9 @@ import { LoggedUser, Roles } from 'src/models/user';
 import { DriverService } from '../driver/driver.service';
 import { HttpRequestService } from "../util/http-request.service";
 import { LocalStorageService } from "../util/local-storage.service";
-
+import { CookieService } from 'ngx-cookie-service';
+import { NotificationWebSocketAPI } from '../notification/notification-socket.service';
+import { RideWebSocketAPI } from '../ride/ride-message.service';
 const jwtHelper = new JwtHelperService();
 
 
@@ -22,12 +24,22 @@ const jwtHelper = new JwtHelperService();
 export class AuthService {
 
     private loggedUser!: LoggedUser | undefined;
+    private loggedUserSubject = new BehaviorSubject<LoggedUser | undefined>(undefined);
+
+    getNewValue(): Observable<LoggedUser | undefined> {
+        return this.loggedUserSubject.asObservable();
+    }
+
+    onNewValueReceive(msg: LoggedUser | undefined) {        
+        this.loggedUserSubject.next(msg);
+    }
 
     constructor(
         private httpRequestService: HttpRequestService,
         private localStorage: LocalStorageService,
         private router: Router,
-        private driverService: DriverService
+        private driverService: DriverService,
+        private cookieService: CookieService,
     ) {}
 
 
@@ -68,6 +80,7 @@ export class AuthService {
             next: (user: LoggedUser) => {
                 this.localStorage.set('role', user.role);
                 this.loggedUser = user;
+                this.onNewValueReceive(user);
                 this.router.navigate([redirectPath]);
             },
             error: (e: HttpErrorResponse) => {
@@ -96,7 +109,10 @@ export class AuthService {
         const url = environment.API_BASE_URL + "/auth/logout";
         this.httpRequestService.post(url, null)
         this.loggedUser = undefined;
+        this.onNewValueReceive(this.loggedUser);
         this.localStorage.clearAll();
+        sessionStorage.clear();
+        localStorage.clear();
     }
 
 
@@ -105,6 +121,7 @@ export class AuthService {
 
         return this.httpRequestService.post(url, null) as Observable<any>;
     }
+
     requestPasswordReset(resetRequest: PasswordResetLinkRequest): Observable<any> {
         const url = environment.API_BASE_URL + "/auth/recovery";
         const body = JSON.stringify(resetRequest);

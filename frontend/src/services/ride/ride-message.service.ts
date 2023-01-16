@@ -12,9 +12,13 @@ export class RideWebSocketAPI {
     stompClient: any;
     
     constructor(private websocketShare: RideSocketShareService, private authService: AuthService){
-        authService.getCurrentUser().subscribe((user) => {
-            if (user)
+        authService.getNewValue().subscribe((user) => {
+            if (user) {
                 this.connect();
+            }
+            else {
+                this.disconnect();
+            }
         })
     }
 
@@ -22,6 +26,7 @@ export class RideWebSocketAPI {
         console.log("Initialize WebSocket Connection");
         let ws = new SockJS(this.webSocketEndPoint);
         this.stompClient = Stomp.over(ws);
+        this.stompClient.reconnect_delay = 1000;
         this.stompClient.connect({}, (frame: any) => {
             this.stompClient.subscribe(this.topic, (sdkEvent: any) => {
                 this.onMessageReceived(sdkEvent);
@@ -31,7 +36,6 @@ export class RideWebSocketAPI {
     };
 
     disconnect() {
-        alert("DISCONNECTED RIDE");
         if (this.stompClient !== null) {
             this.stompClient.disconnect();
         }

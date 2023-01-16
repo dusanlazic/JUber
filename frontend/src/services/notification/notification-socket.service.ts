@@ -14,9 +14,14 @@ export class NotificationWebSocketAPI {
   stompClient: any;
 
   constructor(private websocketShare: WebsocketshareService, private authService: AuthService) {
-    authService.getCurrentUser().subscribe((user) => {
-        if (user)
+    authService.getNewValue().subscribe((user) => {
+        if (user) {
+            console.log(user);
             this.connect();
+        }
+        else {
+            this.disconnect();
+        }
     })
   }
 
@@ -25,6 +30,7 @@ export class NotificationWebSocketAPI {
       let ws = new SockJS(this.webSocketEndPoint);
 
       this.stompClient = Stomp.over(ws);
+      this.stompClient.reconnect_delay = 1000;
       this.stompClient.connect({}, (frame: any) => {
           this.stompClient.subscribe(this.topic, (sdkEvent: any) => {
             this.onMessageReceived(sdkEvent);
@@ -49,7 +55,8 @@ export class NotificationWebSocketAPI {
       }, 5000);
   }  
 
-  onMessageReceived(message: any) {    
+  onMessageReceived(message: any) {
+      alert(message)
       this.websocketShare.onNewValueReceive(message.body);
   }
 

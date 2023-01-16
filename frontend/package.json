@@ -37,6 +37,7 @@
     "leaflet-routing-machine": "^3.2.12",
     "lodash": "^4.17.21",
     "net": "^1.0.2",
+    "ngx-cookie-service": "^14.0.0",
     "ngx-toastr": "^15.2.1",
     "node-sass": "^7.0.3",
     "osrm-rest-client": "^0.1.7",

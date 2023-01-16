@@ -14,7 +14,18 @@ export class RideService {
   sendRideRequest(rideRequest: RideRequest): Observable<any> {
       const url = environment.API_BASE_URL + "/ride/rideRequest";
       const body = JSON.stringify(rideRequest);
-
+      console.log(rideRequest);
+      
       return this.httpRequestService.post(url, body) as Observable<any>;
   }
+
+  acceptRide(rideId: string): Observable<any> {
+      const url = environment.API_BASE_URL + `/ride/accept/${rideId}`;
+      return this.httpRequestService.put(url, null) as Observable<any>;
+  }
+
+  declineRide(rideId: string): Observable<any> {
+    const url = environment.API_BASE_URL + `/ride/decline/${rideId}`;
+    return this.httpRequestService.put(url, null) as Observable<any>;
+}
 }

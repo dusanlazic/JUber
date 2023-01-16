@@ -14,7 +14,7 @@ export class AdditionalRequests implements IAdditionalRequest {
 
 export class RideRequest implements IRideRequest {
     constructor(
-        public route: Route = new Route(),
+        public ride: Ride = new Ride(),
         public additionalRequests: AdditionalRequests = new AdditionalRequests(),
         public scheduleTime: string = '',
         public passengersInfo: IPal[] = new Array<IPal>(),

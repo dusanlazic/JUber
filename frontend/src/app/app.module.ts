@@ -43,10 +43,26 @@ import { AdditionalComponent } from './passenger/passenger-sidebar/additional/ad
 import { ScheduleComponent } from './passenger/passenger-sidebar/schedule/schedule.component';
 import { RideRequestReducer } from './store/rideRequest/rideRequest.reducer';
 import { ActiveStatusComponent } from './driver/active-status/active-status.component';
-import { DriverMapComponent } from './driver/driver-map/driver-map.component';
-import { DriverSidebarComponent } from './driver/driver-sidebar/driver-sidebar.component';
-import { DriverRideComponent } from './driver/driver-sidebar/driver-ride/driver-ride.component';
-import { DriverRideReducer } from './store/driverRide/driver-ride.reducer';
+import { NotificationComponent } from './shared/homepage/notification/notification.component';
+import { RideInviteComponent } from './shared/homepage/notification/notification-list/ride-invite/ride-invite.component';
+import { WebsocketshareService } from 'src/services/notification/websocketshare.service';
+import { NotificationWebSocketAPI } from 'src/services/notification/notification-socket.service';
+import { NotificationItemComponent } from './shared/homepage/notification/notification-list/notification-item/notification-item.component';
+import { PassengerRideInvitationComponent } from './passenger/passenger-sidebar/passenger-ride-invitation/passenger-ride-invitation.component';
+import { PersonItemComponent } from './passenger/passenger-sidebar/passenger-ride-invitation/person-item/person-item.component';
+import { RideSocketShareService } from 'src/services/ride/ridesocketshare.service';
+import { RideWebSocketAPI } from 'src/services/ride/ride-message.service';
+import { RideDetailsComponent } from './shared/ride-details/ride-details.component';
+import { RideDetailsSidebarComponent } from './shared/ride-details/ride-details-sidebar/ride-details-sidebar.component';
+import { RideDetailsMapComponent } from './shared/ride-details/ride-details-map/ride-details-map.component';
+import { RideDetailsPlaceComponent } from './shared/ride-details/ride-details-place/ride-details-place.component';
+import { ProfileDetailsComponent } from './shared/profile-page/profile-page/profile-details/profile-details.component';
+import { ChangePasswordComponent } from './shared/profile-page/profile-page/change-password/change-password.component';
+import { BalanceComponent } from './shared/profile-page/profile-page/balance/balance.component';
+import { SavedRoutesComponent } from './shared/profile-page/profile-page/saved-routes/saved-routes.component';
+import { PastRidesComponent } from './shared/profile-page/profile-page/past-rides/past-rides.component';
+import { SupportComponent } from './shared/profile-page/profile-page/support/support.component';
+import { ProfilePageComponent } from './shared/profile-page/profile-page/profile-page.component';
 
 @NgModule({
   declarations: [
@@ -82,9 +98,25 @@ import { DriverRideReducer } from './store/driverRide/driver-ride.reducer';
     ScheduleComponent,
 
     ActiveStatusComponent,
-     DriverMapComponent,
-     DriverSidebarComponent,
-     DriverRideComponent,
+
+    NotificationComponent,
+    RideInviteComponent,
+    NotificationItemComponent,
+     PassengerRideInvitationComponent,
+     PersonItemComponent,
+     RideDetailsComponent,
+     RideDetailsSidebarComponent,
+     RideDetailsMapComponent,
+     RideDetailsPlaceComponent,
+
+    ProfilePageComponent,
+
+    ProfileDetailsComponent,
+    ChangePasswordComponent,
+    BalanceComponent,
+    SavedRoutesComponent,
+    PastRidesComponent,
+    SupportComponent
   ],
   imports: [
     BrowserModule,
@@ -98,7 +130,7 @@ import { DriverRideReducer } from './store/driverRide/driver-ride.reducer';
     ReactiveFormsModule,
     HttpClientModule,
     ToastrModule.forRoot(),
-    StoreModule.forRoot({state: RideReducer, rideRequest: RideRequestReducer, driverRide: DriverRideReducer}),
+    StoreModule.forRoot({state: RideReducer, rideRequest: RideRequestReducer})
   ],
   exports: [
     RegisterStep1Component,
@@ -110,8 +142,15 @@ import { DriverRideReducer } from './store/driverRide/driver-ride.reducer';
 
     PasswordResetFormComponent,
     PasswordResetSuccessComponent,   
+
+    ProfileDetailsComponent,
+    ChangePasswordComponent,
+    BalanceComponent,
+    SavedRoutesComponent,
+    PastRidesComponent,
+    SupportComponent
   ],
-  providers: [],
+  providers: [WebsocketshareService,RideWebSocketAPI,NotificationWebSocketAPI, RideSocketShareService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -18,3 +18,8 @@ export interface UserBasicInfo {
     email: string;
     imageUrl: string;
 }
+
+export interface AccountInfo extends UserBasicInfo{
+    city: string,
+    phoneNumber: string,
+}

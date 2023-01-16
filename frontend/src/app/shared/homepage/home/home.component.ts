@@ -10,17 +10,20 @@ import { Store } from '@ngrx/store';
 import { AppState } from 'src/app/store/ride.reducer';
 import { LoggedUser, Roles } from 'src/models/user';
 import { DriverService } from 'src/services/driver/driver.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.sass']
 })
-export class HomeComponent implements AfterViewInit {
+export class HomeComponent implements OnInit {
 
   loggedUser!: LoggedUser;
   ride: Ride | undefined;
-  
+  URL_BASE: string = environment.API_BASE_URL;
+  DEFAULT_PROFILE_PHOTO: string = environment.DEFAULT_PROFILE_PHOTO;
+
 
   constructor(
     private authService: AuthService,
@@ -35,7 +38,7 @@ export class HomeComponent implements AfterViewInit {
     // this.ride.places.push(new Place("Narodnog fronta 57, Novi Sad", "via Narodnog Fronta"))
   }
 
-  ngAfterViewInit(): void {
+  ngOnInit(): void {
       this.authService.getCurrentUser().subscribe({
         next: (user) => {
           this.loggedUser = user;
@@ -46,10 +49,6 @@ export class HomeComponent implements AfterViewInit {
   }
 
   logout(): void {
-
-    if(this.loggedUser.role === Roles.DRIVER){
-      this.driverService.inactivate(this.loggedUser.email);
-    }
     this.authService.logout();
     this.router.navigate(['/login']);
   }

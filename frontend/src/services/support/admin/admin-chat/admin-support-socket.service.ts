@@ -1,18 +1,18 @@
 import { Injectable } from '@angular/core';
-import { Stomp } from '@stomp/stompjs';
+import * as Stomp from 'stompjs';
 import * as SockJS from 'sockjs-client';
 import { environment } from 'src/environments/environment';
-import { WebsocketshareService } from '../websocketshare/websocketshare.service';
+import { AdminSupportWebsocketshareService } from './admin-support-websocketshare.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class SupportAdminWebSocketAPI {
+export class AdminSupportWebSocketAPI {
   webSocketEndPoint: string = environment.API_SOCKET_URL;
   topic: string = "/user/queue/support/admin/chat";
   stompClient: any;
 
-  constructor(private websocketShare: WebsocketshareService){
+  constructor(private websocketShare: AdminSupportWebsocketshareService){
 
   }
   connect() {

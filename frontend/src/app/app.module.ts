@@ -55,10 +55,14 @@ import { PastRidesComponent } from './shared/profile-page/profile-page/past-ride
 import { SupportComponent } from './shared/profile-page/profile-page/support/support.component';
 import { ProfilePageComponent } from './shared/profile-page/profile-page/profile-page.component';
 import { SupportMessageComponent } from './shared/profile-page/profile-page/support/support-message/support-message.component';
-import { WebsocketshareService } from 'src/services/websocketshare/websocketshare.service';
-import { SupportChatWebSocketAPI } from 'src/services/support/support-chat-socket.service';
-import { SupportAdminWebSocketAPI } from 'src/services/support/support-admin-socket.service';
 import { AdminSupportComponent } from './admin-pages/admin-support/admin-support.component';
+import { NotificationWebsocketshareService } from 'src/services/notification/notification-websocketshare.service';
+import { AdminSupportWebSocketAPI } from 'src/services/support/admin/admin-chat/admin-support-socket.service';
+import { SupportChatWebSocketAPI } from 'src/services/support/user/support-chat-socket.service';
+import { SupportChatWebsocketshareService } from 'src/services/support/user/support-chat-websocketshare.service';
+import { AdminSupportWebsocketshareService } from 'src/services/support/admin/admin-chat/admin-support-websocketshare.service';
+import { AdminConversationWebsocketshareService } from 'src/services/support/admin/admin-conversations/admin-conversation-websocketshare.service';
+import { AdminConversationWebSocketAPI } from 'src/services/support/admin/admin-conversations/admin-conversation-socket.service';
 
 @NgModule({
   declarations: [
@@ -142,7 +146,10 @@ import { AdminSupportComponent } from './admin-pages/admin-support/admin-support
     PastRidesComponent,
     SupportComponent
   ],
-  providers: [WebsocketshareService, NotificationWebSocketAPI, SupportChatWebSocketAPI, SupportAdminWebSocketAPI],
+  providers: [NotificationWebsocketshareService, NotificationWebSocketAPI, 
+              SupportChatWebsocketshareService, SupportChatWebSocketAPI,
+              AdminSupportWebsocketshareService, AdminSupportWebSocketAPI,
+              AdminConversationWebsocketshareService, AdminConversationWebSocketAPI],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

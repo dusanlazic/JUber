@@ -4,7 +4,7 @@ import { Observable, BehaviorSubject} from "rxjs";
 @Injectable({
   providedIn: 'root'
 })
-export class WebsocketshareService {
+export class NotificationWebsocketshareService {
 
   private blogDataSubject = new BehaviorSubject<any>('');
 

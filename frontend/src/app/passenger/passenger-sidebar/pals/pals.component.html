@@ -4,16 +4,16 @@
       <div class="column">
         <div class="is-flex">
           <figure class="image is-48x48" *ngIf="logged?.imageUrl">
-            <img class="is-rounded" src="{{URL_BASE}}{{logged.imageUrl}}">
+            <img class="is-rounded" src="{{URL_BASE}}{{logged.imageUrl}}" (error)="this.authService.imageUrlResolver($event, logged.name)">
           </figure>
           <figure class="image is-48x48" *ngIf="!logged?.imageUrl">
-            <img class="is-rounded" src="{{DEFAULT_PROFILE_PHOTO}}">
+            <img class="is-rounded" src="{{DEFAULT_PROFILE_PHOTO}}" (error)="this.authService.imageUrlResolver($event, logged.name)">
           </figure>
 
           <div *ngFor="let pal of passengers; let i= index;">
             <div *ngIf="pal.imageUrl">
               <figure class="image is-48x48" (click)="removePal(i)">
-                <img class="is-rounded" src="{{URL_BASE}}{{pal.imageUrl}}">
+                <img class="is-rounded" src="{{URL_BASE}}{{pal.imageUrl}}" (error)="this.authService.imageUrlResolver($event, pal.firstName + ' ' + pal.lastName)">
               </figure>
             </div>
 

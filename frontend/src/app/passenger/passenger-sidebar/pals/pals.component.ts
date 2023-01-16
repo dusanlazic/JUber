@@ -24,7 +24,7 @@ export class PalsComponent implements OnInit {
   constructor(
     private store: Store<{rideRequest: IRideRequest}>, 
     private toastr: Toastr,
-    private authService: AuthService
+    public authService: AuthService
   ) { 
     this.colors = new Array<string>();
     this.passengers = new Array<IPal>();

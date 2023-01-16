@@ -1,7 +1,18 @@
 <div *ngIf="ride">
 	<p class="title is-size-3 has-text-grey is-family-secondary">Ride details</p>
 	<div class="is-custom-people-list mb-3">
+		<div *ngIf="ride.driver && ride.rideStatus == 'WAIT' && loggedUser.role == 'ROLE_DRIVER'" class="mb-5">
+			<div class="column is-size-4 is-family-secondary">
+				Do you accept this ride?
+				<div class="mt-4">
+					<button class="button is-primary is-light" (click)="acceptRide()">Yes</button>
+					<button class="button is-danger is-light ml-3" (click)="declineRide()">No</button>
+				</div>
+			</div>
+		</div>
+
 		<p class="title is-size-5 mb-2 is-family-secondary">Driver</p>
+		
 		<div class="person-item mb-5" *ngIf="ride.driver">
 		  <div class="columns is-vcentered">
 			<div class="column is-2 has-content-align-center">
@@ -14,11 +25,12 @@
 			</div>
 		  </div>
 		</div>
-		<div *ngIf="!ride.driver" class="mb-5">
+		<div *ngIf="!ride.driver && loggedUser.role == 'ROLE_PASSENGER'" class="mb-5">
 			<div class="column">
 				No driver assigned for ride yet...
 			</div>
 		</div>
+		
 		<div class="is-custom-people-list mb-5">
             <p class="title is-size-5 mb-2 is-family-secondary">Passengers</p>
             <div class="person-item" *ngFor="let person of ride.passengers">
@@ -26,7 +38,8 @@
                 <div class="column is-2 has-content-align-center">
                   <figure class="image is-48x48">
                     <img class="is-rounded"
-                      src="https://lh3.googleusercontent.com/a/ALm5wu3tpc3XnB9w8EMqNHAODc0uL23tqydVlUCLYqEF6Q=s96-c">
+                      src="{{person.imageUrl}}"  
+					  (error)="this.authService.imageUrlResolver($event, person.firstName + ' ' + person.lastName)">
                   </figure>
                 </div>
                 <div class="column">

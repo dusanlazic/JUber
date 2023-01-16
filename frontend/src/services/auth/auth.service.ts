@@ -116,4 +116,8 @@ export class AuthService {
 
         return this.httpRequestService.patch(url, body) as Observable<any>;
     }
+
+    imageUrlResolver(event: any, name: string) {
+        event.target.src = "https://ui-avatars.com/api/?name=" + name + "&format=jpg&background=random&rounded=true";
+    }
 }

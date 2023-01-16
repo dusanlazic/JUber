@@ -11,7 +11,7 @@ export class AppComponent {
   title = 'frontend';
 
   constructor(private notificationWebSocketAPI: NotificationWebSocketAPI, private rideWebSocketAPI: RideWebSocketAPI) {
-    notificationWebSocketAPI.connect();
-    rideWebSocketAPI.connect();
   }
+
+  
 }

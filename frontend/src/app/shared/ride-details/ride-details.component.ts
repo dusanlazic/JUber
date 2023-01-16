@@ -31,7 +31,7 @@ export class RideDetailsComponent implements OnInit {
 
   
     
-  constructor(private authService: AuthService,
+  constructor(public authService: AuthService,
               private driverService: DriverService,
               private router: Router,
               private httpService: HttpRequestService,
@@ -59,12 +59,14 @@ export class RideDetailsComponent implements OnInit {
 
   getRideDetails() {
     this.httpService.get(environment.API_BASE_URL + '/ride/active').subscribe((data) => {
-      let ride = data as FullRide;
-      this.preprocessRide(ride);
-      this.ride = ride;
-      console.log(ride);
-      
-    }
+        let ride = data as FullRide;
+        if(!ride) {
+          return;
+        }
+        this.preprocessRide(ride);
+        this.ride = ride;
+        console.log(ride);
+      }
     );
   }
 
@@ -82,6 +84,7 @@ export class RideDetailsComponent implements OnInit {
   }
 
   palUpdateStatus(data: SocketMessage) {
+    alert("ALO STIGNE PORUKA ALO PORUKA");
     this.toastrService.info('A pal has been updated');
     let ride = this.ride as FullRide;
     if (ride.rideStatus === 'WAIT') {

@@ -3,6 +3,7 @@ import { WebsocketshareService } from './websocketshare.service';
 import { environment } from 'src/environments/environment';
 import * as Stomp from 'stompjs';
 import * as SockJS from 'sockjs-client';
+import { AuthService } from '../auth/auth.service';
 
 @Injectable({
   providedIn: 'root'
@@ -12,16 +13,20 @@ export class NotificationWebSocketAPI {
   topic: string = "/user/queue/notifications";
   stompClient: any;
 
-  constructor(private websocketShare: WebsocketshareService){
-
+  constructor(private websocketShare: WebsocketshareService, private authService: AuthService) {
+    authService.getCurrentUser().subscribe((user) => {
+        this.connect();
+    })
   }
+
   connect() {
       console.log("Initialize WebSocket Connection");
       let ws = new SockJS(this.webSocketEndPoint);
+
       this.stompClient = Stomp.over(ws);
       this.stompClient.connect({}, (frame: any) => {
           this.stompClient.subscribe(this.topic, (sdkEvent: any) => {
-              this.onMessageReceived(sdkEvent);
+            this.onMessageReceived(sdkEvent);
           });
           //_this.stompClient.reconnect_delay = 2000;
       }, () => this.errorCallBack);
@@ -31,11 +36,12 @@ export class NotificationWebSocketAPI {
       if (this.stompClient !== null) {
           this.stompClient.disconnect();
       }
+      alert('DISCONNECT')
       console.log("Disconnected");
   }
 
-  // on error, schedule a reconnection attempt
   errorCallBack(error: any) {
+      alert("Error: " + error);
       console.log("errorCallBack -> " + error)
       setTimeout(() => {
           this.connect();

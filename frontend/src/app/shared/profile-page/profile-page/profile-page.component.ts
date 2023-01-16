@@ -12,6 +12,7 @@ enum SelectionOptions {
   SAVED_ROUTES='/profile/saved-routes',
   PAST_RIDES='/profile/past-rides',
   SUPPORT='/profile/support',
+  ADMIN_SUPPORT='/profile/admin-support',
 }
 
 @Component({
@@ -22,7 +23,7 @@ enum SelectionOptions {
 export class ProfilePageComponent implements OnInit {
 
   logged: LoggedUser;
-  selected: SelectionOptions;
+  selected!: SelectionOptions;
 
   SelectionOptions = SelectionOptions;
 
@@ -31,7 +32,7 @@ export class ProfilePageComponent implements OnInit {
     private router: Router,
   ) { 
     this.logged={email:'', imageUrl:'' ,name: '', role: '', id: ''};
-    this.selected = SelectionOptions.PROFILE;
+    this.getCurrentHref();
   }
 
   ngOnInit(): void {
@@ -52,5 +53,9 @@ export class ProfilePageComponent implements OnInit {
     this.router.navigate(['/login']);
   }
 
+  private getCurrentHref() : void{
+    const href = this.router.url;
+    this.selected = href as SelectionOptions;
+  }
   
 }

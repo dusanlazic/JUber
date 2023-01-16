@@ -48,6 +48,14 @@ import { RideInviteComponent } from './shared/homepage/notification/notification
 import { WebsocketshareService } from 'src/services/notification/websocketshare.service';
 import { NotificationWebSocketAPI } from 'src/services/notification/notification-socket.service';
 import { NotificationItemComponent } from './shared/homepage/notification/notification-list/notification-item/notification-item.component';
+import { PassengerRideInvitationComponent } from './passenger/passenger-sidebar/passenger-ride-invitation/passenger-ride-invitation.component';
+import { PersonItemComponent } from './passenger/passenger-sidebar/passenger-ride-invitation/person-item/person-item.component';
+import { RideSocketShareService } from 'src/services/ride/ridesocketshare.service';
+import { RideWebSocketAPI } from 'src/services/ride/ride-message.service';
+import { RideDetailsComponent } from './shared/ride-details/ride-details.component';
+import { RideDetailsSidebarComponent } from './shared/ride-details/ride-details-sidebar/ride-details-sidebar.component';
+import { RideDetailsMapComponent } from './shared/ride-details/ride-details-map/ride-details-map.component';
+import { RideDetailsPlaceComponent } from './shared/ride-details/ride-details-place/ride-details-place.component';
 import { ProfileDetailsComponent } from './shared/profile-page/profile-page/profile-details/profile-details.component';
 import { ChangePasswordComponent } from './shared/profile-page/profile-page/change-password/change-password.component';
 import { BalanceComponent } from './shared/profile-page/profile-page/balance/balance.component';
@@ -94,6 +102,12 @@ import { ProfilePageComponent } from './shared/profile-page/profile-page/profile
     NotificationComponent,
     RideInviteComponent,
     NotificationItemComponent,
+     PassengerRideInvitationComponent,
+     PersonItemComponent,
+     RideDetailsComponent,
+     RideDetailsSidebarComponent,
+     RideDetailsMapComponent,
+     RideDetailsPlaceComponent,
 
     ProfilePageComponent,
 
@@ -136,7 +150,7 @@ import { ProfilePageComponent } from './shared/profile-page/profile-page/profile
     PastRidesComponent,
     SupportComponent
   ],
-  providers: [WebsocketshareService, NotificationWebSocketAPI],
+  providers: [WebsocketshareService,RideWebSocketAPI,NotificationWebSocketAPI, RideSocketShareService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

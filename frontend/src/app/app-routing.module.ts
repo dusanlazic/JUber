@@ -23,6 +23,7 @@ import { BalanceComponent } from './shared/profile-page/profile-page/balance/bal
 import { SavedRoutesComponent } from './shared/profile-page/profile-page/saved-routes/saved-routes.component';
 import { PastRidesComponent } from './shared/profile-page/profile-page/past-rides/past-rides.component';
 import { SupportComponent } from './shared/profile-page/profile-page/support/support.component';
+import { RideDetailsComponent } from './shared/ride-details/ride-details.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginPageComponent },
@@ -30,6 +31,10 @@ const routes: Routes = [
   { path: 'oauth2/redirect-login', component: Oauth2RedirectHandlerComponent},
   { path: 'oauth2/redirect-register', component: Oauth2RegisterRedirectHandlerComponent},
   { path: 'home', component: HomeComponent, canActivate: [AuthGuard, RoleGuard], 
+          data: { expectedRoles: [Roles.DRIVER, Roles.PASSENGER_NEW, Roles.PASSENGER ]}  },
+  { path: 'invitation', component: HomeComponent, canActivate: [AuthGuard, RoleGuard], 
+          data: { expectedRoles: [Roles.DRIVER, Roles.PASSENGER_NEW, Roles.PASSENGER ]}  },
+  { path: 'ride', component: RideDetailsComponent, canActivate: [AuthGuard, RoleGuard], 
           data: { expectedRoles: [Roles.DRIVER, Roles.PASSENGER_NEW, Roles.PASSENGER ]}  },
   { path: 'registration', component: RegisterLocalComponent},
   { path: 'registration/social', component: RegisterOauthComponent},

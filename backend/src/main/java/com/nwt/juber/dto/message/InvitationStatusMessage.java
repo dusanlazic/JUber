@@ -10,6 +10,7 @@ import java.util.UUID;
 @NoArgsConstructor
 public class InvitationStatusMessage {
     private UUID id;
-
+    private String username;
+    private String email;
     private RideInvitationStatus status;
 }

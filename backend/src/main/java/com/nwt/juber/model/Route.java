@@ -5,7 +5,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -15,7 +14,7 @@ public class Route {
 
     @Id
     @Column(columnDefinition = "uuid")
-    private UUID id;
+    private UUID id = UUID.randomUUID();
 
     private String name;
 
@@ -23,7 +22,7 @@ public class Route {
 
     private Double duration;
 
-    private String coordinates;
+    private String coordinatesEncoded;
 
     private Boolean selected;
 

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
-import { PersonalInfo } from 'src/models/auth';
+import { PasswordChange, PersonalInfo } from 'src/models/auth';
 import { HttpRequestService } from '../util/http-request.service';
 import { Observable } from 'rxjs';
 import { AccountInfo } from 'src/models/user';
@@ -37,4 +37,11 @@ export class AccountService {
       const url = environment.API_BASE_URL + `/account/me`;
       return this.httpRequestService.patch(url, profileInfo) as Observable<any>;
     }
+
+    changePassword(passwordChange: PasswordChange): Observable<any> {
+      const url = environment.API_BASE_URL + "/account/change-password";
+      const body = JSON.stringify(passwordChange);
+
+      return this.httpRequestService.patch(url, body) as Observable<any>;
+  }
 }

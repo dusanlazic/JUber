@@ -2,6 +2,7 @@ package com.nwt.juber.dto.validation;
 
 import com.nwt.juber.dto.request.DriverRegistrationRequest;
 import com.nwt.juber.dto.request.LocalRegistrationRequest;
+import com.nwt.juber.dto.request.PasswordChangeRequest;
 import com.nwt.juber.dto.request.PasswordResetRequest;
 
 import javax.validation.ConstraintValidator;
@@ -22,6 +23,8 @@ public class PasswordsMatchValidator implements ConstraintValidator<PasswordsMat
             return passwordsMatch(dto.getPassword(), dto.getPasswordConfirmation());
         if (o instanceof DriverRegistrationRequest dto)
             return passwordsMatch(dto.getPassword(), dto.getPasswordConfirmation());
+        if (o instanceof PasswordChangeRequest dto)
+            return passwordsMatch(dto.getNewPassword(), dto.getPasswordConfirmation());
         return false;
     }
 

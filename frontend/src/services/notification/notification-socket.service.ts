@@ -15,7 +15,8 @@ export class NotificationWebSocketAPI {
 
   constructor(private websocketShare: WebsocketshareService, private authService: AuthService) {
     authService.getCurrentUser().subscribe((user) => {
-        this.connect();
+        if (user)
+            this.connect();
     })
   }
 

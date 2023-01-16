@@ -19,6 +19,12 @@ export interface PasswordReset {
     token: string
 }
 
+export interface PasswordChange {
+    currentPassword: string,
+    newPassword: string,
+    confirmPassword: string
+}
+
 
 export interface AccountInfo {
     email: string,

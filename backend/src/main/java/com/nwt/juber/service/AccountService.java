@@ -10,6 +10,7 @@ import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 
 import com.nwt.juber.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,7 @@ import com.nwt.juber.dto.request.DriverRegistrationRequest;
 import com.nwt.juber.dto.request.LocalRegistrationRequest;
 import com.nwt.juber.dto.request.LoginRequest;
 import com.nwt.juber.dto.request.OAuthRegistrationRequest;
+import com.nwt.juber.dto.request.PasswordChangeRequest;
 import com.nwt.juber.dto.request.PasswordResetLinkRequest;
 import com.nwt.juber.dto.request.PasswordResetRequest;
 import com.nwt.juber.dto.request.ProfileInfoChangeRequest;
@@ -210,6 +212,16 @@ public class AccountService {
         userRepository.save(user);
     }
 
+	public void changePassword(PasswordChangeRequest passwordChangeRequest, User user) {
+//		String currentPasswordEncoded = passwordEncoder.encode(passwordChangeRequest.getCurrentPassword());
+//		if(!currentPasswordEncoded.equals(user.getPassword())) {
+//			throw new InvalidPasswordRequestException("Current password not valid.");
+//		}
+
+        user.setPassword(passwordEncoder.encode(passwordChangeRequest.getNewPassword()));
+        userRepository.save(user);
+	}
+
     public PhotoUploadResponse setProfilePicture(MultipartFile file, Authentication authentication) {
         User user = (User) authentication.getPrincipal();
         String imageUrl = storageService.store(file);
@@ -232,7 +244,8 @@ public class AccountService {
                 person.getLastName(),
                 person.getCity(),
                 person.getPhoneNumber(),
-                person.getImageUrl()
+                person.getImageUrl(),
+                person.getEmail()
         );
     }
 
@@ -327,4 +340,5 @@ public class AccountService {
         person.setCity(changes.getOrDefault("city", person.getCity()));
         person.setPhoneNumber(changes.getOrDefault("phoneNumber", person.getPhoneNumber()));
     }
+
 }

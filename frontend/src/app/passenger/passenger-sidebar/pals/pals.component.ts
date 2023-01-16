@@ -3,6 +3,9 @@ import { AddPalEvent, IPal, IRideRequest } from 'src/app/store/rideRequest/rideR
 import { Store } from '@ngrx/store';
 import { AddPalAction, DeletePalAction } from 'src/app/store/rideRequest/rideRequest.actions';
 import { Toastr } from 'src/services/util/toastr.service';
+import { environment } from 'src/environments/environment';
+import { AuthService } from 'src/services/auth/auth.service';
+import { LoggedUser } from 'src/models/user';
 
 @Component({
   selector: 'app-pals',
@@ -12,17 +15,27 @@ import { Toastr } from 'src/services/util/toastr.service';
 export class PalsComponent implements OnInit {
 
   isAddPalOpen: boolean = false;
-  passengers!: IPal[];
+  passengers: IPal[];
   colors: string[]
+  URL_BASE: string = environment.API_BASE_URL;
+  DEFAULT_PROFILE_PHOTO: string = environment.DEFAULT_PROFILE_PHOTO;
+  logged!: LoggedUser;
 
   constructor(
     private store: Store<{rideRequest: IRideRequest}>, 
-    private toastr: Toastr
+    private toastr: Toastr,
+    private authService: AuthService
   ) { 
-    this.colors = new Array<string>()
+    this.colors = new Array<string>();
+    this.passengers = new Array<IPal>();
   }
 
   ngOnInit(): void {
+    this.authService.getCurrentUser().subscribe({
+      next: (user: LoggedUser) => {
+        this.logged = user;
+      }
+    })
   }
 
   ngAfterViewInit(): void {

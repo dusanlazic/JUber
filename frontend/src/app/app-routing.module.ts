@@ -16,6 +16,14 @@ import { Oauth2RegisterRedirectHandlerComponent } from './registration/register-
 import { RegisterOauthComponent } from './registration/register-oauth/register-oauth.component';
 import { MapComponent } from './shared/map/map.component';
 import { HomeComponent } from './shared/homepage/home/home.component';
+import { ProfilePageComponent } from './shared/profile-page/profile-page/profile-page.component';
+import { ProfileDetailsComponent } from './shared/profile-page/profile-page/profile-details/profile-details.component';
+import { ChangePasswordComponent } from './shared/profile-page/profile-page/change-password/change-password.component';
+import { BalanceComponent } from './shared/profile-page/profile-page/balance/balance.component';
+import { SavedRoutesComponent } from './shared/profile-page/profile-page/saved-routes/saved-routes.component';
+import { PastRidesComponent } from './shared/profile-page/profile-page/past-rides/past-rides.component';
+import { SupportComponent } from './shared/profile-page/profile-page/support/support.component';
+import { RideDetailsComponent } from './shared/ride-details/ride-details.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginPageComponent },
@@ -23,6 +31,10 @@ const routes: Routes = [
   { path: 'oauth2/redirect-login', component: Oauth2RedirectHandlerComponent},
   { path: 'oauth2/redirect-register', component: Oauth2RegisterRedirectHandlerComponent},
   { path: 'home', component: HomeComponent, canActivate: [AuthGuard, RoleGuard], 
+          data: { expectedRoles: [Roles.DRIVER, Roles.PASSENGER_NEW, Roles.PASSENGER ]}  },
+  { path: 'invitation', component: HomeComponent, canActivate: [AuthGuard, RoleGuard], 
+          data: { expectedRoles: [Roles.DRIVER, Roles.PASSENGER_NEW, Roles.PASSENGER ]}  },
+  { path: 'ride', component: RideDetailsComponent, canActivate: [AuthGuard, RoleGuard], 
           data: { expectedRoles: [Roles.DRIVER, Roles.PASSENGER_NEW, Roles.PASSENGER ]}  },
   { path: 'registration', component: RegisterLocalComponent},
   { path: 'registration/social', component: RegisterOauthComponent},
@@ -33,6 +45,15 @@ const routes: Routes = [
     { path: 'request-success', component: PasswordResetRequestSuccessComponent },
     { path: 'reset', component: PasswordResetFormComponent }, // password-recovery/reset?token=...
     { path: 'reset-success', component: PasswordResetSuccessComponent }]
+  },
+
+  { path: 'profile', component: ProfilePageComponent, children: [
+    { path: '', component: ProfileDetailsComponent },
+    { path: 'change-password', component: ChangePasswordComponent },
+    { path: 'balance', component: BalanceComponent },
+    { path: 'saved-routes', component: SavedRoutesComponent },
+    { path: 'past-rides', component: PastRidesComponent },
+    { path: 'support', component: SupportComponent }]
   },
 
   { path: '**', redirectTo: '' }

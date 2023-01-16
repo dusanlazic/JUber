@@ -1,6 +1,5 @@
 package com.nwt.juber.service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,7 +13,6 @@ import com.nwt.juber.dto.SimulationInfo;
 import com.nwt.juber.dto.request.AdditionalRideRequests;
 import com.nwt.juber.exception.UserNotFoundException;
 import com.nwt.juber.model.Driver;
-import com.nwt.juber.model.DriverShift;
 import com.nwt.juber.model.DriverStatus;
 import com.nwt.juber.model.Ride;
 import com.nwt.juber.repository.DriverRepository;
@@ -43,7 +41,7 @@ public class DriverService {
         dto.setUsername(driver.getUsername());
         dto.setLongitude(driver.getVehicle().getLongitude());
         dto.setLatitude(driver.getVehicle().getLatitude());
-        Optional<Ride> rideToSim = driverRepository.findRouteForSimulation(driver.getUsername());
+        Optional<Ride> rideToSim = driverRepository.findRideForSimulation(driver.getUsername());
         dto.setPlaces(rideToSim.map(Ride::getPlaces).orElse(null));
         dto.setStatus(rideToSim.map(Ride::getRideStatus).orElse(null));
         dto.setRideId(rideToSim.map(Ride::getId).orElse(null));

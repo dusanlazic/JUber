@@ -12,6 +12,7 @@ from host_interface import HostInterface, BACKEND_URL
 
 drivers = {}
 
+# TODO: COORDINATES ENCODED
 
 class DriverState(Enum):
 	WAITING = auto()

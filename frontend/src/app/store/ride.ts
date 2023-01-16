@@ -9,6 +9,8 @@ export interface IRoute {
     time: number
     selected: boolean
     coordinates: Array<IPoint>
+    coordinatesEncoded: string
+    getCoordinates(): Array<IPoint>
 }
 
 export interface IPlace {
@@ -23,5 +25,5 @@ export interface IPlace {
 export interface IRide {
     passengers: Array<string>
     places: Array<IPlace>
-    price: number
+    fare: number
 }

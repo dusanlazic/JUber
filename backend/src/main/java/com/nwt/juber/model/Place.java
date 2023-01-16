@@ -14,7 +14,7 @@ public class Place {
 
     @Id
     @Column(columnDefinition = "uuid")
-    private UUID id;
+    private UUID id = UUID.randomUUID();
 
     private String name;
 

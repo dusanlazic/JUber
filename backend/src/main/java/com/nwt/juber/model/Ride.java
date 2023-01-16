@@ -15,7 +15,7 @@ public class Ride {
 
     @Id
     @Column(columnDefinition = "uuid")
-    private UUID id;
+    private UUID id = UUID.randomUUID();
 
     @OneToMany
     @JoinColumn(name = "ride_id")
@@ -27,7 +27,7 @@ public class Ride {
     private List<Passenger> passengers;
 
     @ElementCollection
-    private List<Boolean> passengersReady;
+    private List<PassengerStatus> passengersReady;
 
     @ManyToOne
     private Driver driver;

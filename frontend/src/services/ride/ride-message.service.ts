@@ -3,6 +3,7 @@ import { RideSocketShareService } from './ridesocketshare.service';
 import { environment } from 'src/environments/environment';
 import * as Stomp from 'stompjs';
 import * as SockJS from 'sockjs-client';
+import { AuthService } from '../auth/auth.service';
 
 @Injectable()
 export class RideWebSocketAPI {
@@ -10,9 +11,12 @@ export class RideWebSocketAPI {
     topic: string = "/user/queue/ride";
     stompClient: any;
     
-    constructor(private websocketShare: RideSocketShareService){
-         
+    constructor(private websocketShare: RideSocketShareService, private authService: AuthService){
+        authService.getCurrentUser().subscribe((user) => {
+            this.connect();
+        })
     }
+
     connect() {
         console.log("Initialize WebSocket Connection");
         let ws = new SockJS(this.webSocketEndPoint);
@@ -26,6 +30,7 @@ export class RideWebSocketAPI {
     };
 
     disconnect() {
+        alert("DISCONNECTED RIDE");
         if (this.stompClient !== null) {
             this.stompClient.disconnect();
         }

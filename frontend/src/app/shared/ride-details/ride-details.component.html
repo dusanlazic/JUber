@@ -3,7 +3,8 @@
     <section class="hero is-fullheight is-unscrollable">
     <div class="columns mt-0">
         <div class="column is-3 is-sidebar pl-6 pr-5" style="z-index: 100000000;">
-            <app-ride-details-sidebar *ngIf="loggedUser" [ride]="ride"></app-ride-details-sidebar>
+    	    <p *ngIf="!ride" class="title is-size-3 has-text-grey is-family-secondary">No ride available...</p>
+            <app-ride-details-sidebar *ngIf="loggedUser && ride" [ride]="ride"></app-ride-details-sidebar>
         </div>
         
         <div class="column m-0 p-0 is-map">
@@ -15,7 +16,7 @@
     <div>
         <div class="navigation">
             <figure class="image is-48x48">
-                <img class="is-rounded" src="https://lh3.googleusercontent.com/a/ALm5wu3tpc3XnB9w8EMqNHAODc0uL23tqydVlUCLYqEF6Q=s96-c">
+                <img class="is-rounded" src="https://lh3.googleusercontent.com/a/ALm5wu3tpc3XnB9w8EMqNHAODc0uL23tqydVlUCLYqEF6Q=s96-c" (error)="this.authService.imageUrlResolver($event, loggedUser.name)">
             </figure>
             <app-notification></app-notification>
             <!-- <button class="button is-rounded mr-2">Profile<span class="iconify ml-2" data-icon="ic:baseline-person"></span></button>

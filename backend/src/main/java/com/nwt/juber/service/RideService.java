@@ -123,6 +123,13 @@ public class RideService {
         ride.setRideStatus(RideStatus.ACCEPTED);
         rideRepository.save(ride);
         // notify everyone
+        RideMessage rideMessage = new RideMessage();
+        rideMessage.setRide(convertRideToDTO(ride));
+        rideMessage.setType(RideMessageType.DRIVER_FOUND);
+        for (Passenger pal: ride.getPassengers()) {
+            messagingTemplate.convertAndSendToUser(pal.getUsername(), "/queue/ride", rideMessage);
+        }
+        messagingTemplate.convertAndSendToUser(driver.getUsername(), "/queue/ride", rideMessage);
     }
 
     public void acceptRidePassenger(Passenger passenger, UUID rideId) {
@@ -175,14 +182,14 @@ public class RideService {
             throw new RuntimeException("No driver found!");
         }
         ride.setDriver(driver);
-        ride.setRideStatus(RideStatus.ACCEPTED);
+        ride.setRideStatus(RideStatus.WAIT);
+        RideMessage rideMessage = new RideMessage();
+        rideMessage.setRide(convertRideToDTO(ride));
+        rideMessage.setType(RideMessageType.DRIVER_FOUND);
         for (var pal: ride.getPassengers()) {
-            RideMessage rideMessage = new RideMessage();
-            rideMessage.setRide(convertRideToDTO(ride));
-            rideMessage.setType(RideMessageType.DRIVER_FOUND);
             messagingTemplate.convertAndSendToUser(pal.getUsername(), "/queue/ride", rideMessage);
         }
-
+        messagingTemplate.convertAndSendToUser(ride.getDriver().getUsername(), "/queue/ride", rideMessage);
         rideRepository.save(ride);
     }
 
@@ -221,7 +228,7 @@ public class RideService {
         Ride ride = rideRepository.findById(rideId).orElseThrow(() -> new EndRideException("No ride with id: " + rideId));
         ride.setRideStatus(RideStatus.DENIED);
         rideRepository.save(ride);
-        // notify people
+        assignSuitableDriver(ride);
     }
 
     public void declineRide(UUID rideId, Authentication authentication) {

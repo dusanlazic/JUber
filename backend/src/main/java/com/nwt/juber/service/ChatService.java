@@ -1,8 +1,20 @@
 package com.nwt.juber.service;
 
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
+import java.util.UUID;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.security.core.Authentication;
+import org.springframework.stereotype.Service;
+
 import com.nwt.juber.dto.message.MsgFromSupportMessage;
 import com.nwt.juber.dto.message.MsgFromUserMessage;
-import com.nwt.juber.dto.message.NewConversationMessage;
 import com.nwt.juber.dto.request.ChatMessageRequest;
 import com.nwt.juber.dto.response.ChatConversationResponse;
 import com.nwt.juber.dto.response.ChatMessageResponse;
@@ -12,23 +24,10 @@ import com.nwt.juber.model.Admin;
 import com.nwt.juber.model.ChatConversation;
 import com.nwt.juber.model.PersistedChatMessage;
 import com.nwt.juber.model.User;
-import com.nwt.juber.model.notification.PersistedNotification;
 import com.nwt.juber.repository.AdminRepository;
 import com.nwt.juber.repository.ChatConversationRepository;
 import com.nwt.juber.repository.ChatMessageRepository;
 import com.nwt.juber.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.security.core.Authentication;
-import org.springframework.stereotype.Service;
-
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
 
 @Service
 public class ChatService {
@@ -56,7 +55,8 @@ public class ChatService {
 
         return messages.stream()
                 .map(m -> new ChatMessageResponse(m.getContent(), m.getSentAt(), m.getIsFromSupport()))
-                .sorted(Comparator.comparing(ChatMessageResponse::getSentAt).reversed())
+//                .sorted(Comparator.comparing(ChatMessageResponse::getSentAt).reversed())
+                .sorted(Comparator.comparing(ChatMessageResponse::getSentAt))
                 .toList();
     }
 
@@ -71,7 +71,8 @@ public class ChatService {
 
         return messages.stream()
                 .map(m -> new ChatMessageResponse(m.getContent(), m.getSentAt(), m.getIsFromSupport()))
-                .sorted(Comparator.comparing(ChatMessageResponse::getSentAt).reversed())
+//                .sorted(Comparator.comparing(ChatMessageResponse::getSentAt).reversed())
+                .sorted(Comparator.comparing(ChatMessageResponse::getSentAt))
                 .toList();
     }
 
@@ -82,7 +83,8 @@ public class ChatService {
 
         return conversations.stream()
                 .map(this::convertConversationToResponse)
-                .sorted(Comparator.comparing(ChatConversationResponse::getDate).reversed())
+//                .sorted(Comparator.comparing(ChatConversationResponse::getDate).reversed())
+                .sorted(Comparator.comparing(ChatConversationResponse::getDate))
                 .toList();
     }
 
@@ -94,10 +96,10 @@ public class ChatService {
                 .orElseGet(() -> createNewConversation(user));
 
         PersistedChatMessage message = new PersistedChatMessage(messageRequest.getContent(), false);
-        conversation.addMessage(message);
 
-        messageRepository.save(message);
-        conversationRepository.save(conversation);
+        message = messageRepository.save(message);
+        conversation.addMessage(message);
+        conversation = conversationRepository.save(conversation);
 
         deliverMessage(message);
         updateSupportLastActiveAt(conversation.getSupport());
@@ -112,20 +114,21 @@ public class ChatService {
                 .orElseThrow(ConversationNotFoundException::new);
 
         PersistedChatMessage message = new PersistedChatMessage(messageRequest.getContent(), true);
+        
+        
+        message = messageRepository.save(message);
         conversation.addMessage(message);
-
-        messageRepository.save(message);
-        conversationRepository.save(conversation);
+        conversation = conversationRepository.save(conversation);
 
         deliverMessage(message);
     }
 
     private ChatConversation createNewConversation(User user) {
         Admin assignedSupport = findLeastRecentlyActiveSupport();
-        notifyAboutNewConversation(assignedSupport, user);
 
         ChatConversation conversation = new ChatConversation(user, assignedSupport);
-        conversationRepository.save(conversation);
+        conversation = conversationRepository.save(conversation);
+        notifyAboutNewConversation(conversation);
 
         return conversation;
     }
@@ -135,16 +138,23 @@ public class ChatService {
     }
 
     private ChatConversationResponse convertConversationToResponse(ChatConversation c) {
-        PersistedChatMessage latestMessage = c.getMessages().get(c.getMessages().size() - 1);
-        String messagePreview = previewMessage(latestMessage.getContent());
+    	ChatConversationResponse response = new ChatConversationResponse();
+    	
+    	response.setUserId(c.getUser().getId());
+    	response.setUserFullName(c.getUser().getName());
+    	response.setUserImageUrl(c.getUser().getImageUrl());
+    	response.setDate(c.getLastMessageSentAt() == null ? new Date() : c.getLastMessageSentAt());
+        
+    	if(c.getMessages().size() > 0) {
+    		PersistedChatMessage latestMessage = c.getMessages().get(c.getMessages().size() - 1);
+            String messagePreview = previewMessage(latestMessage.getContent());
+            
+            response.setMessagePreview(messagePreview);
+            response.setIsResponded(latestMessage.getIsFromSupport());
+    	}
+    	
 
-        return new ChatConversationResponse(
-                messagePreview,
-                c.getLastMessageSentAt(),
-                c.getUser().getId(),
-                c.getUser().getName(),
-                c.getUser().getImageUrl(),
-                latestMessage.getIsFromSupport());
+        return response;
     }
 
     private String previewMessage(String content) {
@@ -166,9 +176,9 @@ public class ChatService {
         }
     }
 
-    private void notifyAboutNewConversation(Admin support, User user) {
-        NewConversationMessage newConversationMessage = new NewConversationMessage(user.getId());
-        messagingTemplate.convertAndSendToUser(support.getUsername(), "/queue/support/admin/users", newConversationMessage);
+    private void notifyAboutNewConversation(ChatConversation conversation) {
+    	ChatConversationResponse newConversationMessage = convertConversationToResponse(conversation);
+        messagingTemplate.convertAndSendToUser(conversation.getSupport().getUsername(), "/queue/support/admin/users", newConversationMessage);
     }
 
     private void updateSupportLastActiveAt(Admin support) {

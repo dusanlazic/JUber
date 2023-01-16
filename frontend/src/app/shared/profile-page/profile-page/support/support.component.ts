@@ -1,7 +1,7 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { ChatConversationResponse, ChatMessage, ChatMessageResponse } from 'src/models/chat';
+import { ChatMessageResponse } from 'src/models/chat';
 import { LoggedUser, Roles } from 'src/models/user';
 import { AuthService } from 'src/services/auth/auth.service';
 import { SupportService } from 'src/services/support/support.service';
@@ -14,7 +14,7 @@ import { SupportChatWebsocketshareService } from 'src/services/support/user/supp
 })
 export class SupportComponent implements OnInit {
 
-  messages: any[] = [];
+  messages: ChatMessageResponse[] = [];
   logged!: LoggedUser;
 
   newMessage: FormControl;
@@ -49,8 +49,10 @@ export class SupportComponent implements OnInit {
     this.websocketService.getNewValue().subscribe({
       next: (res: string) => {
         if(res){
-          const msg = JSON.parse(res) as ChatConversationResponse;
+          const msg = JSON.parse(res) as ChatMessageResponse;
+          msg.isFromSupport=true;
           this.messages.push(msg)
+          this.messages = [...this.messages]
         }
       },
       error: (res: HttpErrorResponse) => {
@@ -72,8 +74,13 @@ export class SupportComponent implements OnInit {
   }
 
   sendNewMessage(): void {
+    const newMessage: ChatMessageResponse = {content: this.newMessage.value, sentAt: new Date(), isFromSupport: false}
+    this.messages.push(newMessage);
+    this.messages = [...this.messages];
+    
     this.supportService.sendMessageAsUser({content: this.newMessage.value}).subscribe({
       next: (res: any) => {
+        this.newMessage.setValue('')
         console.log(res)
       },
       error: (res: HttpErrorResponse) => {

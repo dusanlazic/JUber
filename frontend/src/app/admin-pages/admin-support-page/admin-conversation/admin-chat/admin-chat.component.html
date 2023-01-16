@@ -2,7 +2,7 @@
     <div class="box" style="overflow-y: auto;  max-height: 350px;">
       <p class="title is-size-5 ml-4 pt-4 mb-3 is-family-secondary">Admin Support</p>
       <div  *ngFor="let message of messages" >
-        <app-support-message></app-support-message>
+        <app-support-message [message]="message"></app-support-message>
       </div>
       <div  *ngIf="messages.length === 0">
         <p class="title is-size-6 ml-4 pt-4 mb-3 is-family-secondary">You have 0 messages</p>

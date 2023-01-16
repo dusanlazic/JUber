@@ -23,7 +23,7 @@ import { BalanceComponent } from './shared/profile-page/profile-page/balance/bal
 import { SavedRoutesComponent } from './shared/profile-page/profile-page/saved-routes/saved-routes.component';
 import { PastRidesComponent } from './shared/profile-page/profile-page/past-rides/past-rides.component';
 import { SupportComponent } from './shared/profile-page/profile-page/support/support.component';
-import { AdminSupportComponent } from './admin-pages/admin-support/admin-support.component';
+import { AdminSupportPageComponent } from './admin-pages/admin-support-page/admin-support-page.component';
 
 
 const routes: Routes = [
@@ -52,7 +52,7 @@ const routes: Routes = [
     { path: 'past-rides', component: PastRidesComponent },
     { path: 'support', component: SupportComponent, canActivate: [AuthGuard, RoleGuard],  
       data: { expectedRoles: [Roles.DRIVER, Roles.PASSENGER ]} },
-    { path: 'admin-support', component: AdminSupportComponent, canActivate: [AuthGuard, RoleGuard], 
+    { path: 'admin-support', component: AdminSupportPageComponent, canActivate: [AuthGuard, RoleGuard], 
       data: { expectedRoles: [Roles.ADMIN ]} }]
   },
 

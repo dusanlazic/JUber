@@ -1,5 +1,4 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { ChatConversationResponse, ChatMessage } from 'src/models/chat';
 
 @Component({
   selector: 'app-support-message',
@@ -9,7 +8,7 @@ import { ChatConversationResponse, ChatMessage } from 'src/models/chat';
 export class SupportMessageComponent implements OnInit {
 
   @Input()
-  message!: ChatConversationResponse
+  message!: any
 
   constructor() { }
 

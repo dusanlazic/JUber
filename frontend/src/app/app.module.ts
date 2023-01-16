@@ -55,7 +55,6 @@ import { PastRidesComponent } from './shared/profile-page/profile-page/past-ride
 import { SupportComponent } from './shared/profile-page/profile-page/support/support.component';
 import { ProfilePageComponent } from './shared/profile-page/profile-page/profile-page.component';
 import { SupportMessageComponent } from './shared/profile-page/profile-page/support/support-message/support-message.component';
-import { AdminSupportComponent } from './admin-pages/admin-support/admin-support.component';
 import { NotificationWebsocketshareService } from 'src/services/notification/notification-websocketshare.service';
 import { AdminSupportWebSocketAPI } from 'src/services/support/admin/admin-chat/admin-support-socket.service';
 import { SupportChatWebSocketAPI } from 'src/services/support/user/support-chat-socket.service';
@@ -63,6 +62,9 @@ import { SupportChatWebsocketshareService } from 'src/services/support/user/supp
 import { AdminSupportWebsocketshareService } from 'src/services/support/admin/admin-chat/admin-support-websocketshare.service';
 import { AdminConversationWebsocketshareService } from 'src/services/support/admin/admin-conversations/admin-conversation-websocketshare.service';
 import { AdminConversationWebSocketAPI } from 'src/services/support/admin/admin-conversations/admin-conversation-socket.service';
+import { AdminSupportPageComponent } from './admin-pages/admin-support-page/admin-support-page.component';
+import { AdminChatComponent } from './admin-pages/admin-support-page/admin-conversation/admin-chat/admin-chat.component';
+import { AdminConversationComponent } from './admin-pages/admin-support-page/admin-conversation/admin-conversation.component';
 
 @NgModule({
   declarations: [
@@ -112,7 +114,10 @@ import { AdminConversationWebSocketAPI } from 'src/services/support/admin/admin-
     PastRidesComponent,
     SupportComponent,
     SupportMessageComponent,
-    AdminSupportComponent
+
+    AdminConversationComponent,
+    AdminSupportPageComponent,
+    AdminChatComponent
   ],
   imports: [
     BrowserModule,

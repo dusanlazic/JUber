@@ -1,0 +1,18 @@
+<div class="is-fullwidth is">
+    <button (click)="openChat()" >
+    <figure class="image is-128x128" *ngIf="conversation?.userImageUrl">
+        <img class="is-rounded" src="{{URL_BASE}}{{conversation.userImageUrl}}">
+    </figure>
+    <figure class="image is-48x48" *ngIf="!conversation?.userImageUrl">
+        <img class="is-rounded" src="{{DEFAULT_PROFILE_PHOTO}}">
+      </figure>
+
+    <p>{{conversation.userFullName}}</p>
+    <div>
+        <p>{{conversation.messagePreview}}</p>
+        <span class="is-size-8">{{conversation.date}}</span>
+    </div>
+    </button>
+</div>
+
+<app-admin-chat [userId]="conversation.userId" *ngIf="chatOpened"></app-admin-chat>

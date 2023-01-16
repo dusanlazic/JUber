@@ -1,9 +1,8 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { DriverArrivedNotification, Notification, NotificationStatus, NotificationType, TransferredNotification } from 'src/models/notification';
+import { Notification, NotificationStatus } from 'src/models/notification';
+import { NotificationWebsocketshareService } from 'src/services/notification/notification-websocketshare.service';
 import { NotificationService } from 'src/services/notification/notification.service';
-import { HttpRequestService } from 'src/services/util/http-request.service';
-import { WebsocketshareService } from 'src/services/websocketshare/websocketshare.service';
 
 @Component({
   selector: 'app-notification',
@@ -19,7 +18,7 @@ export class NotificationComponent implements OnInit {
 
   constructor(
     private notificationService: NotificationService,
-    private websocketService: WebsocketshareService,
+    private websocketService: NotificationWebsocketshareService,
   ) { 
     this.showNotifications = false;
     this.unreadCount = 0;

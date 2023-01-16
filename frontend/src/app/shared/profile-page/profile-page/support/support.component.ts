@@ -4,10 +4,8 @@ import { FormControl } from '@angular/forms';
 import { ChatConversationResponse, ChatMessage, ChatMessageResponse } from 'src/models/chat';
 import { LoggedUser, Roles } from 'src/models/user';
 import { AuthService } from 'src/services/auth/auth.service';
-import { SupportAdminWebSocketAPI } from 'src/services/support/support-admin-socket.service';
-import { SupportChatWebSocketAPI } from 'src/services/support/support-chat-socket.service';
 import { SupportService } from 'src/services/support/support.service';
-import { WebsocketshareService } from 'src/services/websocketshare/websocketshare.service';
+import { SupportChatWebsocketshareService } from 'src/services/support/user/support-chat-websocketshare.service';
 
 @Component({
   selector: 'app-support',
@@ -24,7 +22,7 @@ export class SupportComponent implements OnInit {
   constructor(
     private authService: AuthService,
     private supportService: SupportService,
-    private websocketService: WebsocketshareService,
+    private websocketService: SupportChatWebsocketshareService,
   ) {
     this.newMessage = new FormControl();
   }

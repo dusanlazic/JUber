@@ -1,7 +1,9 @@
 import { Component } from '@angular/core';
 import { NotificationWebSocketAPI } from 'src/services/notification/notification-socket.service';
-import { SupportAdminWebSocketAPI } from 'src/services/support/support-admin-socket.service';
-import { SupportChatWebSocketAPI } from 'src/services/support/support-chat-socket.service';
+import { AdminSupportWebSocketAPI } from 'src/services/support/admin/admin-chat/admin-support-socket.service';
+import { AdminConversationWebSocketAPI } from 'src/services/support/admin/admin-conversations/admin-conversation-socket.service';
+import { SupportChatWebSocketAPI } from 'src/services/support/user/support-chat-socket.service';
+
 
 @Component({
   selector: 'app-root',
@@ -13,11 +15,13 @@ export class AppComponent {
 
   constructor(
     private notificationWebSocketAPI: NotificationWebSocketAPI,
-    private supportAdminWebSocketAPI: SupportAdminWebSocketAPI,
-    private supportChatWebSocketAPI: SupportChatWebSocketAPI
+    private supportChatWebSocketAPI: SupportChatWebSocketAPI,
+    private adminSupportWebSocketAPI: AdminSupportWebSocketAPI,
+    private adminConversationWebSocketAPI: AdminConversationWebSocketAPI,
   ) {
     notificationWebSocketAPI.connect();
-    supportAdminWebSocketAPI.connect();
     supportChatWebSocketAPI.connect();
+    adminSupportWebSocketAPI.connect();
+    adminConversationWebSocketAPI.connect();
   }
 }

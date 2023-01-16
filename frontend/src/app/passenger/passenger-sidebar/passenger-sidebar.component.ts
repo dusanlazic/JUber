@@ -76,7 +76,7 @@ export class PassengerSidebarComponent implements OnInit {
 			place.id = Number.NaN;
 			for(let route of place.routes) {
 				let coords: any = route.coordinates.map((x: { latitude: any; longitude: any; }) => [x.latitude, x.longitude])
-				route.coordinates = encode(coords);
+				route.coordinatesEncoded = encode(coords);
 			}
 		}
 		rideRequest.ride = ride;
@@ -86,7 +86,7 @@ export class PassengerSidebarComponent implements OnInit {
 		this.rideService.sendRideRequest(rideRequest).subscribe({
 			next: () => {
 				console.log("request sent")
-				this.router.navigate(['/invitation'])
+				this.router.navigate(['/ride'])
 			},
 			error: (e) => {
 				console.log(e)

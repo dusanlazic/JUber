@@ -3,6 +3,8 @@ package com.nwt.juber.service;
 import com.nwt.juber.dto.PersonDTO;
 import com.nwt.juber.dto.RideDTO;
 import com.nwt.juber.dto.message.InvitationStatusMessage;
+import com.nwt.juber.dto.message.RideMessage;
+import com.nwt.juber.dto.message.RideMessageType;
 import com.nwt.juber.dto.request.RideRequest;
 import com.nwt.juber.exception.EndRideException;
 import com.nwt.juber.exception.InsufficientFundsException;
@@ -76,11 +78,11 @@ public class RideService {
         Ride ride = new Ride();
         List<Passenger> pass = new ArrayList<>();
         pass.add(passenger);
-        List<Boolean> ready = new ArrayList<>();
-        ready.add(true);
+        List<PassengerStatus> ready = new ArrayList<>();
+        ready.add(PassengerStatus.Ready);
         for (String email: rideRequest.getPassengerEmails()) {
             passengerRepository.findByEmail(email).ifPresent(pass::add);
-            ready.add(false);
+            ready.add(PassengerStatus.Waiting);
         }
         ride.setPassengers(pass);
         ride.setPassengersReady(ready);
@@ -133,7 +135,7 @@ public class RideService {
         }
 
         int passengerPosition = ride.getPassengers().indexOf(passenger);
-        ride.getPassengersReady().set(passengerPosition, true);
+        ride.getPassengersReady().set(passengerPosition, PassengerStatus.Ready);
         List<Passenger> pals = ride.getPassengers()
                 .stream()
                 .filter(x -> x.getId() != passenger.getId())
@@ -141,18 +143,15 @@ public class RideService {
 
 
         for (Passenger pal: pals) {
-            InvitationStatusMessage message = new InvitationStatusMessage();
-            message.setId(passenger.getId());
-            message.setEmail(passenger.getEmail());
-            message.setUsername(passenger.getUsername());
-            message.setStatus(RideInvitationStatus.ACCEPTED);
-            messagingTemplate.convertAndSendToUser(pal.getUsername(), "/queue/ride", message);
+            RideMessage rideMessage = new RideMessage();
+            rideMessage.setRide(convertRideToDTO(ride));
+            rideMessage.setType(RideMessageType.PAL_UPDATE_STATUS);
+            messagingTemplate.convertAndSendToUser(pal.getUsername(), "/queue/ride", rideMessage);
         }
 
         // look for a driver if everybody has accepted!
-        // subtract the funds from the passengers
-        if (ride.getPassengersReady().stream().allMatch(Boolean::booleanValue)) {
-            subtractFundsForRide(ride);
+        if (ride.getPassengersReady().stream().allMatch(x -> x == PassengerStatus.Ready)) {
+//            subtractFundsForRide(ride);
             ride.setRideStatus(RideStatus.WAIT);
             rideRepository.save(ride);
             assignSuitableDriver(ride);
@@ -177,12 +176,20 @@ public class RideService {
         }
         ride.setDriver(driver);
         ride.setRideStatus(RideStatus.ACCEPTED);
+        for (var pal: ride.getPassengers()) {
+            RideMessage rideMessage = new RideMessage();
+            rideMessage.setRide(convertRideToDTO(ride));
+            rideMessage.setType(RideMessageType.DRIVER_FOUND);
+            messagingTemplate.convertAndSendToUser(pal.getUsername(), "/queue/ride", rideMessage);
+        }
+
+        rideRepository.save(ride);
     }
 
     public Driver findSuitableDriver(Ride ride) {
         // find by conditions
         // ask the driver if he wants to start a ride
-        return null;
+        return driverRepository.findAll().get(0);
     }
 
     private void subtractFundsForRide(Ride ride) {
@@ -194,7 +201,7 @@ public class RideService {
     public void declineRidePassenger(Passenger passenger, UUID rideId) {
         Ride ride = rideRepository.findById(rideId).orElseThrow(() -> new EndRideException("No ride with id: " + rideId));
         int passengerPosition = ride.getPassengers().indexOf(passenger);
-        ride.getPassengersReady().set(passengerPosition, Boolean.FALSE);
+        ride.getPassengersReady().set(passengerPosition, PassengerStatus.Declined);
         ride.setRideStatus(RideStatus.DENIED);
         // notify the rest!
         List<Passenger> pals = ride.getPassengers()
@@ -202,12 +209,10 @@ public class RideService {
                 .filter(x -> x.getId() != passenger.getId())
                 .toList();
         for (Passenger pal: pals) {
-            InvitationStatusMessage message = new InvitationStatusMessage();
-            message.setId(passenger.getId());
-            message.setUsername(passenger.getUsername());
-            message.setEmail(passenger.getEmail());
-            message.setStatus(RideInvitationStatus.DENIED);
-            messagingTemplate.convertAndSendToUser(pal.getUsername(), "/queue/ride", message);
+            RideMessage rideMessage = new RideMessage();
+            rideMessage.setRide(convertRideToDTO(ride));
+            rideMessage.setType(RideMessageType.PAL_UPDATE_STATUS);
+            messagingTemplate.convertAndSendToUser(pal.getUsername(), "/queue/ride", rideMessage);
         }
         rideRepository.save(ride);
     }
@@ -257,10 +262,15 @@ public class RideService {
         dto.setPlaces(ride.getPlaces());
         dto.setPassengers(ride.getPassengers().stream().map(this::convertPersonToDTO).toList());
         dto.setRideStatus(ride.getRideStatus());
+        dto.setPassengersReady(ride.getPassengersReady());
+        dto.setDriver(convertPersonToDTO(ride.getDriver()));
         return dto;
     }
 
     private PersonDTO convertPersonToDTO(Person person) {
+        if (person == null) {
+            return null;
+        }
         PersonDTO personDTO = new PersonDTO();
         personDTO.setId(person.getId());
         personDTO.setFirstName(person.getFirstName());

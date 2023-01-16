@@ -7,6 +7,7 @@ import { RideSocketShareService } from 'src/services/ride/ridesocketshare.servic
 import { RideWebSocketAPI } from 'src/services/ride/ride-message.service';
 import { HttpRequestService } from 'src/services/util/http-request.service';
 import { WebsocketshareService } from 'src/services/notification/websocketshare.service';
+import { Toastr } from 'src/services/util/toastr.service';
 
 @Component({
   selector: 'app-passenger-ride-invitation',
@@ -30,9 +31,12 @@ export class PassengerRideInvitationComponent implements OnInit {
   constructor(private authService:AuthService, 
               private store: Store<{rideRequest: IRideRequest}>,
               private websocketService: RideSocketShareService,
-              private httpRequestService: HttpRequestService) {
+              private httpRequestService: HttpRequestService,
+              private toastr: Toastr) {
 
     this.store.select('rideRequest').subscribe(state => {
+      alert(JSON.stringify(state));
+      console.log(state);
 			if(state === undefined) return;
       authService.getCurrentUser().subscribe(x => {
         this.pals = [];
@@ -48,20 +52,25 @@ export class PassengerRideInvitationComponent implements OnInit {
     
 
     websocketService.getNewValue().subscribe((resp: any) => {
-      console.log(resp);
-      console.log(this.pals);
       let data = JSON.parse(resp);
       let i = 0;
       for(let pal of this.pals) {
-        console.log(pal.email, data);
         
         if(pal.email === data.email) {
           this.palsStatus[i] = this.convert[data.status as keyof typeof this.convert];
         }
         i++;
       }
+      this.checkAllAccepted();
     })
 
+  }
+
+  checkAllAccepted() {
+    let allready = this.palsStatus.every(x => x === "Ready");
+    if(allready) {
+      this.toastr.info("All passengers are ready. Looking for a driver...")
+    }
   }
 
 

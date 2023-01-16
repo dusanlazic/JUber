@@ -18,7 +18,7 @@ public interface RideRepository extends JpaRepository<Ride, UUID> {
             "(r.rideStatus = 1 or r.rideStatus = 2 or r.rideStatus = 3)")
     Ride getActiveRideForDriver(Driver driver);
 
-    @Query("select r from Ride r where :passengerId member of r.passengers and " +
-            "(r.rideStatus = 1 or r.rideStatus = 2 or r.rideStatus = 3)")
+    @Query("select r from Ride r where :passenger member of r.passengers and " +
+            "(r.rideStatus = 0 or r.rideStatus = 1 or r.rideStatus = 2 or r.rideStatus = 3)")
     Ride getActiveRideForPassenger(Passenger passenger);
 }

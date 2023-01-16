@@ -13,7 +13,8 @@ export class RideWebSocketAPI {
     
     constructor(private websocketShare: RideSocketShareService, private authService: AuthService){
         authService.getCurrentUser().subscribe((user) => {
-            this.connect();
+            if (user)
+                this.connect();
         })
     }
 

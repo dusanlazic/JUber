@@ -13,6 +13,8 @@ import { LocalStorageService } from "../util/local-storage.service";
 
 const jwtHelper = new JwtHelperService();
 
+
+
 @Injectable({
     providedIn: 'root'
 })
@@ -120,4 +122,7 @@ export class AuthService {
     imageUrlResolver(event: any, name: string) {
         event.target.src = "https://ui-avatars.com/api/?name=" + name + "&format=jpg&background=random&rounded=true";
     }
+
 }
+
+

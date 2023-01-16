@@ -65,6 +65,9 @@ export class AuthService {
         this.getCurrentUser().subscribe({
             next: (user: LoggedUser) => {
                 this.localStorage.set('role', user.role);
+                if(user.role === Roles.ADMIN){
+                    redirectPath = '/profile/admin-support'
+                }
                 this.loggedUser = user;
                 this.router.navigate([redirectPath]);
             },

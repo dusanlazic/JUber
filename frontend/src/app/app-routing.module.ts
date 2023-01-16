@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import { RouterModule, Routes, UrlSegment } from '@angular/router';
 import { Roles } from 'src/models/user';
 import { AuthGuardService as AuthGuard } from 'src/services/auth/auth-guard.service';
 import { RoleGuardService as RoleGuard} from 'src/services/auth/role-guard.service';
@@ -23,6 +23,8 @@ import { BalanceComponent } from './shared/profile-page/profile-page/balance/bal
 import { SavedRoutesComponent } from './shared/profile-page/profile-page/saved-routes/saved-routes.component';
 import { PastRidesComponent } from './shared/profile-page/profile-page/past-rides/past-rides.component';
 import { SupportComponent } from './shared/profile-page/profile-page/support/support.component';
+import { AdminSupportComponent } from './admin-pages/admin-support/admin-support.component';
+
 
 const routes: Routes = [
   { path: 'login', component: LoginPageComponent },
@@ -48,7 +50,10 @@ const routes: Routes = [
     { path: 'balance', component: BalanceComponent },
     { path: 'saved-routes', component: SavedRoutesComponent },
     { path: 'past-rides', component: PastRidesComponent },
-    { path: 'support', component: SupportComponent }]
+    { path: 'support', component: SupportComponent, canActivate: [AuthGuard, RoleGuard],  
+      data: { expectedRoles: [Roles.DRIVER, Roles.PASSENGER ]} },
+    { path: 'admin-support', component: AdminSupportComponent, canActivate: [AuthGuard, RoleGuard], 
+      data: { expectedRoles: [Roles.ADMIN ]} }]
   },
 
   { path: '**', redirectTo: '' }

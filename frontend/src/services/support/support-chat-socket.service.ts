@@ -7,9 +7,9 @@ import { WebsocketshareService } from '../websocketshare/websocketshare.service'
 @Injectable({
   providedIn: 'root'
 })
-export class NotificationWebSocketAPI {
+export class SupportChatWebSocketAPI {
   webSocketEndPoint: string = environment.API_SOCKET_URL;
-  topic: string = "/user/queue/notifications";
+  topic: string = "/user/queue/support/chat";
   stompClient: any;
 
   constructor(private websocketShare: WebsocketshareService){

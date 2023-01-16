@@ -24,7 +24,7 @@ public class ChatConversation {
     @ManyToOne
     private Admin support;
 
-    @OneToMany
+    @OneToMany(mappedBy="conversation")
     private List<PersistedChatMessage> messages = new ArrayList<>();
 
     private Date lastMessageSentAt;

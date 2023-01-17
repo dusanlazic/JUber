@@ -10,6 +10,7 @@ import 'leaflet-routing-machine';
 import { State, StateObservable, Store } from '@ngrx/store';
 import { AppState } from 'src/app/store/ride.reducer';
 import { PreviewRouteSelectedAction } from 'src/app/store/ride.actions';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'passenger-map',
@@ -106,8 +107,8 @@ export class PassengerMapComponent implements AfterViewInit {
 				this.drawPreview(state.ride, state.previewPlace);
 			}
 			this.drawRide(state.ride)
-		})
-
+		});
+		setInterval(() => { this.getAndDrawDrivers() }, 500);
 	}
 
 	drawPreview(ride: Ride, place: Place) {
@@ -193,4 +194,40 @@ export class PassengerMapComponent implements AfterViewInit {
 		polyline.addTo(this.map);
 
 	}
+
+
+	getAndDrawDrivers() {
+		this.httpService.get(environment.API_BASE_URL + '/accounts/drivers/all-locations').subscribe(
+			(data) => {
+				this.drawDrivers(data);
+			}
+		);
+	}
+
+
+
+	driverIcon = L.icon({
+		iconUrl: '/assets/images/driver-pin.png',
+
+		iconSize:     [38, 38], // size of the icon
+		popupAnchor:  [-3, -3] // point from which the popup should open relative to the iconAnchor
+	});
+
+
+	driverMarkers: L.Marker[] = [];
+	drawDrivers(data: any) {
+		console.log(data);
+
+		for (let driverMaker of this.driverMarkers) {
+			this.map.removeLayer(driverMaker);
+		}
+
+		for(let driver of data) {
+			let marker  = L.marker([driver.latitude, driver.longitude], {icon: this.driverIcon}).addTo(this.map);
+			marker.bindPopup(driver.email);
+			this.driverMarkers.push(marker);
+		}
+		
+	}
+
 }

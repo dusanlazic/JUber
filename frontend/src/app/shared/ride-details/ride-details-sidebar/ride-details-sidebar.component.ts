@@ -46,6 +46,22 @@ export class RideDetailsSidebarComponent implements OnInit {
     })
   }
 
+  startRide() {
+    if(!this.ride) return;
+    this.httpService.put(environment.API_BASE_URL + '/simulation/start-ride/' + this.ride.id, {}).subscribe(response => {
+      console.log(response);
+      window.location.reload();
+    })
+  }
+
+  endRide() {
+    if(!this.ride) return;
+    this.httpService.put(environment.API_BASE_URL + '/simulation/end-ride/' + this.ride.id, {}).subscribe(response => {
+      console.log(response);
+      window.location.reload();
+    })
+  }
+
 
 
 }

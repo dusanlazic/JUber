@@ -95,6 +95,8 @@ public class RideService {
         ride.getPlaces().forEach(place -> place.setId(UUID.randomUUID()));
         placeRepository.saveAll(ride.getPlaces());
         System.out.println(ride);
+        rideRepository.save(ride);
+
         for (String email: rideRequest.getPassengerEmails()) {
             sendRideInvitation(ride, email, passenger);
         }

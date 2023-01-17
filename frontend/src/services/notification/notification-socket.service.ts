@@ -43,7 +43,6 @@ export class NotificationWebSocketAPI {
       if (this.stompClient !== null) {
           this.stompClient.disconnect();
       }
-      alert('DISCONNECT')
       console.log("Disconnected");
   }
 
@@ -56,7 +55,6 @@ export class NotificationWebSocketAPI {
   }  
 
   onMessageReceived(message: any) {
-      alert(message)
       this.websocketShare.onNewValueReceive(message.body);
   }
 

@@ -55,6 +55,7 @@ export class RideDetailsComponent implements OnInit {
       passenger.status = ride.passengersReady[i];
     }
     ride.places.forEach(place => place.routes.forEach(route => route.coordinates = decode(route.coordinatesEncoded).map(x => new Point(x[0], x[1]))))
+    ride.places.forEach((place: any) => place.point = new Point(place.latitude, place.longitude));
   }
 
   getRideDetails() {
@@ -84,7 +85,6 @@ export class RideDetailsComponent implements OnInit {
   }
 
   palUpdateStatus(data: SocketMessage) {
-    alert("ALO STIGNE PORUKA ALO PORUKA");
     this.toastrService.info('A pal has been updated');
     let ride = this.ride as FullRide;
     if (ride.rideStatus === 'WAIT') {

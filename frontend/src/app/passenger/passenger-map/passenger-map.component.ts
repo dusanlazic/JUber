@@ -216,7 +216,6 @@ export class PassengerMapComponent implements AfterViewInit {
 
 	driverMarkers: L.Marker[] = [];
 	drawDrivers(data: any) {
-		console.log(data);
 
 		for (let driverMaker of this.driverMarkers) {
 			this.map.removeLayer(driverMaker);

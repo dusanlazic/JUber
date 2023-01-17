@@ -9,6 +9,7 @@ import { RideService } from 'src/services/ride/ride.service';
 import { Router } from '@angular/router'
 import * as _ from 'lodash';
 import { decode, encode } from "@googlemaps/polyline-codec";
+import { IPoint } from 'src/app/store/ride';
 
 @Component({
 	selector: 'passenger-sidebar',
@@ -34,6 +35,7 @@ export class PassengerSidebarComponent implements OnInit {
 	) {
 		this.store.select('state').subscribe(state => {
 			this.ride = state.ride
+			this.calculatePrice();
 		}) 
 
 		this.rideRequestStore.select('rideRequest').subscribe(state => {
@@ -66,6 +68,7 @@ export class PassengerSidebarComponent implements OnInit {
 	}
 
 	sendRequest() : void {
+		console.info("ovo je send request...")
 		console.log(this.rideRequest)
 
 		let rideRequest = {...this.rideRequest}
@@ -78,6 +81,8 @@ export class PassengerSidebarComponent implements OnInit {
 				let coords: any = route.coordinates.map((x: { latitude: any; longitude: any; }) => [x.latitude, x.longitude])
 				route.coordinatesEncoded = encode(coords);
 			}
+			place.latitude = place.point.latitude;
+			place.longitude = place.point.longitude;
 		}
 		rideRequest.ride = ride;
 		this.calculatePrice();
@@ -102,6 +107,33 @@ export class PassengerSidebarComponent implements OnInit {
 		if(vehicleType !== undefined && vehicleType !== null){
 			sumPrice += vehicleType.price;
 		}
+
+		if(this.ride) {
+			
+			let totalDistance: number = 0;
+			this.ride.places.forEach(place => {
+				let selected = place.routes.filter(route => route.selected).at(0)
+				totalDistance += selected?.distance ? selected.distance : 0;
+			});
+			sumPrice += Math.ceil(totalDistance / 1000 * 120);
+		}
 		this.price = sumPrice
 	}
+
+
+	private extractFullRouteCoordinates(ride: Ride) : IPoint[] {
+		let coords: IPoint[] = []
+
+		for(let place of ride.places) {
+			for(let route of place.routes) {
+				if(route.selected) {
+					coords.push(...route.coordinates)
+				}
+			}
+		}
+
+		return coords;
+	}
+
+
 }

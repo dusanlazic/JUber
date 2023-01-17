@@ -4,6 +4,7 @@ import {
   Input,
   OnDestroy,
   OnInit,
+  SimpleChanges,
 } from '@angular/core';
 import * as L from 'leaflet';
 import { filter, lastValueFrom, Observable, Subscription } from 'rxjs';
@@ -76,6 +77,12 @@ export class RideDetailsMapComponent implements AfterViewInit, OnDestroy {
     },
   };
 
+  ngOnChanges(changes: SimpleChanges) {
+    if(this.ride) {
+      this.drawRide(this.ride);
+    }
+  }
+
   private initMap(): void {
     this.map = L.map('details-map', {
       center: this.center,
@@ -100,13 +107,16 @@ export class RideDetailsMapComponent implements AfterViewInit, OnDestroy {
     this.timer = setInterval(() => {
       this.getAndDrawDrivers();
     }, 500);
+    if(this.ride) {
+      this.drawRide(this.ride);
+    }
   }
 
   ngOnDestroy(): void {
     clearInterval(this.timer);
   }
 
-  drawRide(ride: Ride) {
+  drawRide(ride: FullRide) {
     if (ride.places.length > 1) {
       let i = 1;
       this.drawMarker(ride.places[0].point!, this.mapService.colors[0]);
@@ -225,7 +235,6 @@ export class RideDetailsMapComponent implements AfterViewInit, OnDestroy {
   driverMarkers: L.Marker[] = [];
 
   drawDriver(data: any) {
-    console.log(data);
     for (let driverMaker of this.driverMarkers) {
       this.map.removeLayer(driverMaker);
     }

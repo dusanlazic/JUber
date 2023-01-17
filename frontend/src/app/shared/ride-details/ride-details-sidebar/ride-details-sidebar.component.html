@@ -71,6 +71,13 @@
 	</div>
 	<div class="mb-5">
 		<p class="title is-size-5 mb-2 is-family-secondary">Route</p>
-		<app-ride-details-place *ngFor="let place of ride.places" [place]="place"></app-ride-details-place>
+		<app-ride-details-place *ngFor="let place of ride.places; let i = index" [place]="place" [index]="i"></app-ride-details-place>
+	</div>
+	<div class="mb-5">
+		<p class="title is-size-5 mb-2 is-family-secondary">Cost</p>
+		<p class="is-size-4">
+		  <strong>{{ride.fare}}</strong> total
+		</p>
+		<p class="has-text-grey"><b>{{ride.fare / ride.passengers.length}}</b> per passenger</p>
 	</div>
 </div>

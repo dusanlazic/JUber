@@ -3,6 +3,8 @@ package com.nwt.juber.controller;
 import com.nwt.juber.api.ResponseOk;
 import com.nwt.juber.dto.RideDTO;
 import com.nwt.juber.service.RideService;
+
+import java.util.List;
 import java.util.UUID;
 
 import javax.validation.Valid;
@@ -23,6 +25,8 @@ import javax.naming.InsufficientResourcesException;
 import java.util.UUID;
 import com.nwt.juber.api.ResponseOk;
 import com.nwt.juber.dto.request.RideRequest;
+import com.nwt.juber.dto.response.PastRidesResponse;
+import com.nwt.juber.model.User;
 import com.nwt.juber.service.RideService;
 
 @RestController
@@ -75,5 +79,12 @@ public class RideController {
         rideService.createRideRequest(rideRequest, authentication);
         return new ResponseOk("ok");
 	}
+
+    @GetMapping("/pastRides")
+    @PreAuthorize(("hasAnyRole('DRIVER', 'PASSENGER')"))
+    public List<PastRidesResponse> getPastRides(Authentication authentication) {
+    	User user = (User)authentication.getPrincipal();
+    	return rideService.getPastRides(user);
+    }
 
 }

@@ -301,6 +301,7 @@ public class RideService {
         dto.setRideStatus(ride.getRideStatus());
         dto.setPassengersReady(ride.getPassengersReady());
         dto.setDriver(convertPersonToDTO(ride.getDriver()));
+        dto.setScheduledTime(ride.getScheduledTime());
         return dto;
     }
 

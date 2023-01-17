@@ -59,6 +59,7 @@ export class FullRide {
         public passengers: IPerson[] = new Array<IPerson>(),
         public passengersReady: string[] = [],
         public driver: IPerson | undefined = undefined,
+        public scheduledTime: string = "",
         public rideStatus: string = '',
         public id: string = '') {
             for(let [i, passenger] of passengers.entries()) {

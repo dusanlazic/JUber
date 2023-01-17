@@ -28,9 +28,13 @@
 			</div>
 		</div>
 	</div>
-	<div class="is-custom-people-list mb-3">
-		
 
+	<div class="is-size-4 mb-5" *ngIf="ride.scheduledTime && (ride.rideStatus==='WAIT' || ride.rideStatus==='WAITING_FOR_PAYMENT')">
+		<span class="iconify ml-2" data-icon="ic:round-access-alarm"></span> Scheduled for {{ride.scheduledTime | date:'shortTime'}}
+	</div>
+
+
+	<div class="is-custom-people-list mb-3">
 		<p class="title is-size-5 mb-2 is-family-secondary">Driver</p>
 		
 		<div class="person-item mb-5" *ngIf="ride.driver && ride.rideStatus != 'WAIT'">
@@ -83,4 +87,5 @@
 		</p>
 		<p class="has-text-grey"><b>{{ride.fare / ride.passengers.length}}</b> per passenger</p>
 	</div>
+
 </div>

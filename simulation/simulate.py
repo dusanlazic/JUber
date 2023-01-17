@@ -21,7 +21,7 @@ class DriverState(Enum):
 
 class RideStatus(Enum):
 	WAITING_FOR_PAYMENT = auto()
-	WAITING = auto()
+	WAIT = auto()
 	ACCEPTED = auto()
 	IN_PROGRESS = auto()
 
@@ -29,11 +29,11 @@ class RideStatus(Enum):
 class Driver(HostInterface):
 	def __init__(self, username: str, latitude: float, longitude: float, status: str, places: list, rideId: str):
 		self.username = username
-		self.longitude = longitude
 		self.latitude = latitude
+		self.longitude = longitude
 		self.places = places
 		self.state = DriverState.WAITING
-		self.ride_status = DriverState.WAITING if status is None else RideStatus[status]
+		self.ride_status = RideStatus.WAIT if status is None else RideStatus[status]
 		self.coordinates = []
 		self.visiting = 0
 		self.route_visited = []
@@ -41,6 +41,8 @@ class Driver(HostInterface):
 		self.ride_id = rideId
 		self.random_coordinates = []
 
+		self.start_idx = math.inf;
+		self.wait_for_entered = False
 
 	def _set_new_coordinates(self, curr, succ):
 		dist = self._distance(curr, succ) 
@@ -56,15 +58,23 @@ class Driver(HostInterface):
 	def update_coordinates(self):
 		curr = self.latitude, self.longitude
 		succ = self.coordinates[self.visiting]
+		if self.wait_for_entered:
+			return
+
 		if self._check_visited(curr, succ):
 			self.visiting += 1
-			if self.visiting >= len(self.coordinates):
+			if self.visiting >= len(self.coordinates) - 1:
 				self.places = None
 				self.state = DriverState.WAITING
+				self.coordinates = []
+				self.ride_status = RideStatus.WAIT
+				self.start_idx = math.inf
+				self.wait_for_entered = False
 				self._finish_log()
-				self.send_end()
+				# self.send_end()
 			elif self.visiting >= self.start_idx and self.ride_status == RideStatus.ACCEPTED:
-				self.send_start()
+				self.wait_for_entered = True
+				# self.send_start()
 		else:
 			self._set_new_coordinates(curr, succ)
 
@@ -74,7 +84,7 @@ class Driver(HostInterface):
 			if len(place["routes"]) == 0:
 				continue
 			selected_route = list(filter(lambda x: x['selected'], place['routes']))[0]
-			self.coordinates.extend(polyline.decode(selected_route['coordinates']))
+			self.coordinates.extend(polyline.decode(selected_route['coordinatesEncoded']))
 		temp_coords = self.get_route(self.longitude, self.latitude, self.coordinates[0][1], self.coordinates[0][0])
 		self.start_idx = len(temp_coords) - 1
 		temp_coords.extend(self.coordinates)
@@ -87,8 +97,9 @@ class Driver(HostInterface):
 		magnitude = 5e-3
 		random_goal_lat = self.latitude + np.sin(random_vector_angle) * magnitude
 		random_goal_lon = self.longitude + np.cos(random_vector_angle) * magnitude
-		print(f'MOVING TO .  .  . => {random_goal_lat}, {random_goal_lon}')
+		print(f'MOVING TO RANDOM COORDINATES .  .  . => {self.latitude} {self.longitude} {random_goal_lat}, {random_goal_lon}')
 		self.random_coordinates.extend(self.get_route(self.longitude, self.latitude, random_goal_lon, random_goal_lat))
+		self.random_visiting
 
 	
 	def move_randomly(self):
@@ -98,12 +109,13 @@ class Driver(HostInterface):
 		
 		curr = self.latitude, self.longitude
 		succ = self.random_coordinates[self.random_visiting]
+
 		if self._check_visited(curr, succ):
 			self.random_visiting += 1
-			if self.random_visiting >= len(self.random_coordinates):
+			if self.random_visiting >= len(self.random_coordinates) - 1:
 				self.generate_random_coordinates()
 				self._finish_log()
-				exit(0)
+				self.random_coordinates = []
 		else:
 			self._set_new_coordinates(curr, succ)
 
@@ -113,20 +125,29 @@ class Driver(HostInterface):
 		color_coding = {
 			RideStatus.ACCEPTED: 'purple',
 			RideStatus.IN_PROGRESS: 'blue',
-			RideStatus.WAITING: 'green'
+			RideStatus.WAIT: 'green'
 		}
 
-		self.route_visited.append((self.longitude, self.latitude))
+		self.route_visited.append((self.latitude, self.longitude))
 		self.route_visited_colors.append(color_coding[self.ride_status])
 
-		if self.ride_status == RideStatus.WAITING or self.ride_status == RideStatus.WAITING_FOR_PAYMENT:
-			self.move_randomly()
+		print("Doing: ", self.ride_status, self.state, self.start_idx, len(self.coordinates), self.wait_for_entered, len(self.places) if self.places else 0)
+		print()
+		if self.ride_status == RideStatus.WAIT or self.ride_status == RideStatus.WAITING_FOR_PAYMENT:
+			# self.move_randomly()
+			# self.send_location()
+			print("Moving randomly")
 			return
+
+		if self.ride_status == RideStatus.IN_PROGRESS and self.wait_for_entered:
+			print("Wait for entered is false, resuming ride")
+			self.wait_for_entered = False
 
 		if self.places is None or len(self.places) == 0:
 			return
 
 		if len(self.coordinates) == 0 and self.places is not None:
+			print("DID EXTRACT!!!!!!!!!!!!!!!")
 			self.extract_coordinates()
 
 		self.update_coordinates()
@@ -163,6 +184,9 @@ def get_drivers():
 	r = requests.get(f'{BACKEND_URL}/simulation/drivers')
 	data = r.json()
 	for info in data:
+		print(data)
+		if info['username'] != 'zdravko.zdravkovic@gmail.com':
+			continue
 		driver = Driver(**info)
 		drivers[driver.username] = driver
 		if driver.places is None:
@@ -171,6 +195,7 @@ def get_drivers():
 
 		for place in driver.places:
 			print(place['name'], len(place['routes']))
+	print("Done getting drivers.")
 
 
 def update_drivers():
@@ -179,14 +204,22 @@ def update_drivers():
 
 	data = r.json()
 	for info in data:
+		if info['username'] != 'zdravko.zdravkovic@gmail.com':
+			continue
 		if 'places' in info:
 			status = info['status']
-			drivers[info['username']].route = info['places']
-			drivers[info['username']].ride_status = RideStatus.WAITING if status is None else RideStatus[status]
-	for driver in drivers.values():
-		print(driver)
-		driver.update()
-		
+			if info['rideId'] != drivers[info['username']].ride_id:
+				driver = Driver(**info)
+				drivers[info['username']] = driver	
+				print()
+			else:
+				drivers[info['username']].places = info['places']
+				drivers[info['username']].ride_status = RideStatus.WAIT if status is None else RideStatus[status]
+	try:
+		for driver in drivers.values():
+			driver.update()
+	except Exception as e:
+		print(e)
 
 def loop(sleep):
 	# while True:

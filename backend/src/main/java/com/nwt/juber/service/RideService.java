@@ -94,11 +94,16 @@ public class RideService {
         ride.getPlaces().forEach(place -> routeRepository.saveAll(place.getRoutes()));
         ride.getPlaces().forEach(place -> place.setId(UUID.randomUUID()));
         placeRepository.saveAll(ride.getPlaces());
-        rideRepository.save(ride);
         System.out.println(ride);
         for (String email: rideRequest.getPassengerEmails()) {
             sendRideInvitation(ride, email, passenger);
         }
+        if(rideRequest.getPassengerEmails().size() == 0) {
+            ride.setRideStatus(RideStatus.WAIT);
+            assignSuitableDriver(ride);
+        }
+        rideRepository.save(ride);
+
     }
 
     private void sendRideInvitation(Ride ride, String email, Passenger inviter) {
@@ -181,9 +186,6 @@ public class RideService {
         RideMessage rideMessage = new RideMessage();
         rideMessage.setRide(convertRideToDTO(ride));
         rideMessage.setType(RideMessageType.DRIVER_FOUND);
-        for (var pal: ride.getPassengers()) {
-            messagingTemplate.convertAndSendToUser(pal.getUsername(), "/queue/ride", rideMessage);
-        }
         messagingTemplate.convertAndSendToUser(ride.getDriver().getUsername(), "/queue/ride", rideMessage);
         rideRepository.save(ride);
     }

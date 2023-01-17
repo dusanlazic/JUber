@@ -63,6 +63,8 @@ import { SavedRoutesComponent } from './shared/profile-page/profile-page/saved-r
 import { PastRidesComponent } from './shared/profile-page/profile-page/past-rides/past-rides.component';
 import { SupportComponent } from './shared/profile-page/profile-page/support/support.component';
 import { ProfilePageComponent } from './shared/profile-page/profile-page/profile-page.component';
+import { MatTableModule } from '@angular/material/table';
+import { MatSortModule } from '@angular/material/sort';
 
 @NgModule({
   declarations: [
@@ -129,6 +131,8 @@ import { ProfilePageComponent } from './shared/profile-page/profile-page/profile
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
+    MatTableModule,
+    MatSortModule,
     ToastrModule.forRoot(),
     StoreModule.forRoot({state: RideReducer, rideRequest: RideRequestReducer})
   ],

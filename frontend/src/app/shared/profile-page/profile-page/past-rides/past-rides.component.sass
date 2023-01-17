@@ -1,5 +1,6 @@
 
 @import "../../../../../../node_modules/bulma/bulma.sass"
+@import url('https://fonts.googleapis.com/css2?family=Titillium+Web:wght@400;600;700&display=swap')
 
 
 .columns
@@ -45,28 +46,26 @@
     flex-direction: column
 
 .is-custom-scrollable-container
-    background-image: linear-gradient(red, yellow)
     height: 515px
     width: 100%
     position: relative
     overflow-y: scroll
 
-table.is-custom-table
-    thead
-        position: sticky
-        background-color: white
-        top: 0px
-        box-shadow: 1px 1px 20px #00000011
+.mat-header-row
+    position: sticky
+    background-color: white
+    top: 0px
+    box-shadow: 1px 1px 20px #00000011
+    height: 50px
+    .mat-sort-header
+        font-weight: bold !important
+        color: hsl(0, 0%, 50%)
+        border-width: 0 0 0 !important
+
+.mat-row
+    cursor: pointer
+    .mat-cell
+        vertical-align: middle !important
+        border: none !important
+        font-weight: bold
         height: 50px
-        th
-            font-weight: bold !important
-            color: hsl(0, 0%, 50%)
-            border-width: 0 0 0 !important
-    tbody
-        tr
-            cursor: pointer
-            th
-                vertical-align: middle !important
-                border: none !important
-                font-weight: bold
-                height: 50px

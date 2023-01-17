@@ -14,6 +14,7 @@ import com.nwt.juber.model.notification.NotificationStatus;
 import com.nwt.juber.model.notification.RideCancelledNotification;
 import com.nwt.juber.model.notification.RideInvitationNotification;
 import com.nwt.juber.repository.*;
+import okhttp3.internal.concurrent.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.Authentication;
@@ -21,7 +22,9 @@ import org.springframework.stereotype.Service;
 
 import javax.naming.InsufficientResourcesException;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.*;
 
 @Service
@@ -50,6 +53,9 @@ public class RideService {
 
     @Autowired
     private NotificationRepository notificationRepository;
+
+    @Autowired
+    private TaskScheduling taskScheduling;
 
 
     public void startRide(UUID rideId) {
@@ -89,6 +95,7 @@ public class RideService {
         ride.setRideStatus(RideStatus.WAITING_FOR_PAYMENT);
         ride.setStartTime(rideRequest.getRide().getStartTime());
         ride.setEndTime(rideRequest.getRide().getEndTime());
+        ride.setScheduledTime(parseScheduledTime(rideRequest.getScheduleTime()));
         ride.setPlaces(rideRequest.getRide().getPlaces());
         ride.setFare(rideRequest.getRide().getFare());
         ride.getPlaces().forEach(place -> routeRepository.saveAll(place.getRoutes()));
@@ -96,16 +103,60 @@ public class RideService {
         placeRepository.saveAll(ride.getPlaces());
         System.out.println(ride);
         rideRepository.save(ride);
-
         for (String email: rideRequest.getPassengerEmails()) {
             sendRideInvitation(ride, email, passenger);
         }
         if(rideRequest.getPassengerEmails().size() == 0) {
             ride.setRideStatus(RideStatus.WAIT);
-            assignSuitableDriver(ride);
+            assignSuitableDriverWhenNeeded(ride);
         }
         rideRepository.save(ride);
 
+    }
+
+    private void assignSuitableDriverWhenNeeded(Ride ride) {
+        if (ride.getScheduledTime() != null) {
+            if(ride.getScheduledTime().isAfter(LocalDateTime.now())) {
+                taskScheduling.scheduling(() -> assignSuitableDriver(ride), ride.getScheduledTime());
+            } else {
+                // ride failed!
+                RideMessageType type = RideMessageType.RIDE_FAILED_LATE;
+                sendRideMessageToPassengers(ride, type);
+                ride.setRideStatus(RideStatus.DENIED);
+                rideRepository.save(ride);
+            }
+        } else {
+            assignSuitableDriver(ride);
+        }
+    }
+
+    private void sendRideMessageToPassengers(Ride ride, RideMessageType type) {
+        RideMessage rideMessage = new RideMessage();
+        rideMessage.setRide(convertRideToDTO(ride));
+        rideMessage.setType(type);
+        for (Passenger pal: ride.getPassengers()) {
+            messagingTemplate.convertAndSendToUser(pal.getUsername(), "/queue/ride", rideMessage);
+        }
+    }
+
+    private LocalDateTime parseScheduledTime(String scheduledTime) {
+        LocalTime parsedTime;
+
+        if (scheduledTime.isEmpty() || scheduledTime.isBlank()) {
+            return null;
+        }
+
+        try {
+            parsedTime = LocalTime.parse(scheduledTime);
+        } catch (Exception e) {
+            return null;
+        }
+
+        LocalDateTime parsedDateTime = parsedTime.atDate(LocalDate.now());
+        if (parsedDateTime.isBefore(LocalDateTime.now())) {
+            parsedDateTime = parsedDateTime.plusDays(1);
+        }
+        return parsedDateTime;
     }
 
     private void sendRideInvitation(Ride ride, String email, Passenger inviter) {
@@ -130,13 +181,7 @@ public class RideService {
         ride.setRideStatus(RideStatus.ACCEPTED);
         rideRepository.save(ride);
         // notify everyone
-        RideMessage rideMessage = new RideMessage();
-        rideMessage.setRide(convertRideToDTO(ride));
-        rideMessage.setType(RideMessageType.DRIVER_FOUND);
-        for (Passenger pal: ride.getPassengers()) {
-            messagingTemplate.convertAndSendToUser(pal.getUsername(), "/queue/ride", rideMessage);
-        }
-        messagingTemplate.convertAndSendToUser(driver.getUsername(), "/queue/ride", rideMessage);
+        sendRideMessageToPassengers(ride, RideMessageType.DRIVER_FOUND);
     }
 
     public void acceptRidePassenger(Passenger passenger, UUID rideId) {
@@ -151,19 +196,13 @@ public class RideService {
         int passengerPosition = ride.getPassengers().indexOf(passenger);
         ride.getPassengersReady().set(passengerPosition, PassengerStatus.Ready);
 
-        for (Passenger pal: ride.getPassengers()) {
-            RideMessage rideMessage = new RideMessage();
-            rideMessage.setRide(convertRideToDTO(ride));
-            rideMessage.setType(RideMessageType.PAL_UPDATE_STATUS);
-            messagingTemplate.convertAndSendToUser(pal.getUsername(), "/queue/ride", rideMessage);
-        }
+        sendRideMessageToPassengers(ride, RideMessageType.PAL_UPDATE_STATUS);
 
         // look for a driver if everybody has accepted!
         if (ride.getPassengersReady().stream().allMatch(x -> x == PassengerStatus.Ready)) {
-//            subtractFundsForRide(ride);
             ride.setRideStatus(RideStatus.WAIT);
             rideRepository.save(ride);
-            assignSuitableDriver(ride);
+            assignSuitableDriverWhenNeeded(ride);
         }
     }
 
@@ -179,6 +218,7 @@ public class RideService {
     }
 
     private void assignSuitableDriver(Ride ride) {
+        System.out.println("Assigning suitable driver at: " + LocalDateTime.now());
         Driver driver = findSuitableDriver(ride);
         if (driver == null) {
             throw new RuntimeException("No driver found!");
@@ -210,13 +250,7 @@ public class RideService {
         ride.getPassengersReady().set(passengerPosition, PassengerStatus.Declined);
         ride.setRideStatus(RideStatus.DENIED);
         // notify the rest!
-
-        for (Passenger pal: ride.getPassengers()) {
-            RideMessage rideMessage = new RideMessage();
-            rideMessage.setRide(convertRideToDTO(ride));
-            rideMessage.setType(RideMessageType.PAL_UPDATE_STATUS);
-            messagingTemplate.convertAndSendToUser(pal.getUsername(), "/queue/ride", rideMessage);
-        }
+        sendRideMessageToPassengers(ride, RideMessageType.PAL_UPDATE_STATUS);
         rideRepository.save(ride);
     }
 

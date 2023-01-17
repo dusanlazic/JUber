@@ -80,6 +80,8 @@ export class RideDetailsComponent implements OnInit {
         this.palUpdateStatus(data);
       } else if(data.type === 'DRIVER_FOUND') {
         this.driverUpdateStatus(data);
+      } else if(data.type === 'RIDE_FAILED_LATE') {
+        this.rideFailedLate(data, 'RIDE_FAILED_LATE');
       }
     });
   }
@@ -94,6 +96,15 @@ export class RideDetailsComponent implements OnInit {
 
   driverUpdateStatus(data: SocketMessage) {
     this.toastrService.success('A driver has been assigned and is heading towards your location!');
+  }
+
+  rideFailedLate(data: SocketMessage, reason: string) {
+    this.toastrService.error("The ride has failed because a pal was late!");
+    // wait for 5 seconds and then redirect to home
+    setTimeout(() => {
+      this.router.navigate(['/home']);
+      window.location.reload();
+    }, 5000);
   }
 
 

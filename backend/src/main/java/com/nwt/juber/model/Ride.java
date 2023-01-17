@@ -41,4 +41,7 @@ public class Ride {
     @Column(name = "RIDE_STATUS")
     private RideStatus rideStatus;
 
+    @Column(name = "SCHEDULED_TIME")
+    private LocalDateTime scheduledTime;
+
 }

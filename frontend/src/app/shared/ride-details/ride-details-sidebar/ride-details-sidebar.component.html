@@ -1,5 +1,8 @@
 <div *ngIf="ride">
 	<p class="title is-size-3 has-text-grey is-family-secondary">Ride details</p>
+
+	<p *ngIf="ride.rideStatus == 'DENIED'" class="title is-size-3 has-text-danger is-family-secondary">Ride failed/denied.</p>
+
 	<div *ngIf="ride.driver && ride.rideStatus == 'WAIT' && loggedUser.role == 'ROLE_DRIVER'">
 		<div class="column is-size-4 is-family-secondary">
 			Do you accept this ride?

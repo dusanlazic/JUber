@@ -45,6 +45,7 @@ export interface IPerson {
     email: string;
     imageUrl?: string;
     status? : string;
+    id?: string;
 }
 
 export class FullRide {

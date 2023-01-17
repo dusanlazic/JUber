@@ -2,9 +2,11 @@ package com.nwt.juber.service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import javax.transaction.Transactional;
 
+import com.nwt.juber.dto.message.PersonLocationMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -133,6 +135,18 @@ public class DriverService {
 
 	private void startOvertimeCountdown(Driver driver) {
 		// TODO: socket - set timer countdown
+	}
+
+    public List<PersonLocationMessage> getAllLocations() {
+		return driverRepository.findAllLocations();
+    }
+
+	public PersonLocationMessage locationForDriverEmail(String email) {
+		return driverRepository.locationForDriverEmail(email);
+	}
+
+	public PersonLocationMessage locationForDriverId(UUID id) {
+		return driverRepository.locationForDriverId(id);
 	}
 }
 

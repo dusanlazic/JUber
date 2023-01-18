@@ -1,0 +1,32 @@
+<div class="columns is-vcentered">
+    <div class="column is-1 mr-3">
+      <span class="iconify is-size-3" data-icon="ic:round-location-on" [style.color]="color"></span>
+    </div>
+    <div class="column is-6 has-custom-border">
+      <p *ngIf="index===0" class="has-text-grey">
+        Starting point <span class="iconify-inline" data-icon="ic:baseline-rocket-launch"></span>
+      </p>
+      <p *ngIf="index!==0 && place" class="has-text-grey">
+        via {{place.option}}
+      </p>
+      <p class="is-size-5 has-text-weight-bold has-text-black">{{place?.name}}</p>
+      
+    </div>
+    <div class="column is-4 has-custom-swap-button">
+      <button class="button is-custom-swap is-up" [disabled]="index === 0" (click)="swapUp()">
+        <span class="icon">
+          <span class="iconify is-size-4" data-icon="fluent:arrow-up-12-filled"></span>
+        </span>
+      </button>
+      <button class="button is-custom-swap is-down" (click)="swapDown()">
+        <span class="icon">
+          <span class="iconify is-size-4" data-icon="fluent:arrow-down-12-filled"></span>
+        </span>
+      </button>
+      <button class="button" (click)="editPlace()">
+        <span class="icon">
+          <span class="iconify is-size-4" data-icon="ic:baseline-edit"></span>
+        </span>
+      </button>
+    </div>
+</div>

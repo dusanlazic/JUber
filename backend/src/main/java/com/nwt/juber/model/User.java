@@ -44,8 +44,8 @@ public class User implements OAuth2User, UserDetails {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @ManyToMany
-    private List<PersistedNotification> notifications;
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "receiver")
+    private List<PersistedNotification> notifications = new ArrayList<PersistedNotification>();
 
     @CreationTimestamp
     private Date created;

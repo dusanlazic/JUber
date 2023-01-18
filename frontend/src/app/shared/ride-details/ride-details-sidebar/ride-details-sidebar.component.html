@@ -1,0 +1,44 @@
+<div *ngIf="ride">
+	<p class="title is-size-3 has-text-grey is-family-secondary">Ride details</p>
+	<div class="is-custom-people-list mb-3">
+		<p class="title is-size-5 mb-2 is-family-secondary">Driver</p>
+		<div class="person-item mb-5" *ngIf="ride.driver">
+		  <div class="columns is-vcentered">
+			<div class="column is-2 has-content-align-center">
+			  <div class="circle-initial-person" style="background-color: #ff8800; color: white">
+				MM
+			  </div>
+			</div>
+			<div class="column">
+			  <p><strong>{{ride.driver.firstName + " " + ride.driver.lastName}}</strong></p>
+			</div>
+		  </div>
+		</div>
+		<div *ngIf="!ride.driver" class="mb-5">
+			<div class="column">
+				No driver assigned for ride yet...
+			</div>
+		</div>
+		<div class="is-custom-people-list mb-5">
+            <p class="title is-size-5 mb-2 is-family-secondary">Passengers</p>
+            <div class="person-item" *ngFor="let person of ride.passengers">
+              <div class="columns is-vcentered">
+                <div class="column is-2 has-content-align-center">
+                  <figure class="image is-48x48">
+                    <img class="is-rounded"
+                      src="https://lh3.googleusercontent.com/a/ALm5wu3tpc3XnB9w8EMqNHAODc0uL23tqydVlUCLYqEF6Q=s96-c">
+                  </figure>
+                </div>
+                <div class="column">
+                  <p><strong>{{person.firstName + " " + person.lastName}}</strong> </p>
+				  <p class="has-text-success has-text-weight-bold">{{person.status}}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+	</div>
+	<div class="mb-5">
+		<p class="title is-size-5 mb-2 is-family-secondary">Route</p>
+		<app-ride-details-place *ngFor="let place of ride.places" [place]="place"></app-ride-details-place>
+	</div>
+</div>

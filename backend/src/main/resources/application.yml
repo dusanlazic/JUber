@@ -1,4 +1,14 @@
 spring:
+  mail:
+    host: 'smtp.gmail.com'
+    port: 587
+    username: ${EMAIL_SENDER_ADDRESS}
+    password: ${EMAIL_SENDER_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          starttls:
+            enable: true
   jpa:
     generate-ddl: 'true'
     properties:
@@ -80,6 +90,8 @@ app:
     allowedContentTypes:
       - 'image/jpeg'
       - 'image/png'
+  mailing:
+    templatesLocation: 'templates'
 logging:
   pattern:
     console: '%d{yyyy-MM-dd HH:mm:ss} - %msg%n'

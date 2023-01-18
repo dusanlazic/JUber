@@ -14,6 +14,7 @@ public class AppProperties {
     private final OAuth2 oauth2 = new OAuth2();
     private final Payment payment = new Payment();
     private final Uploads uploads = new Uploads();
+    private final Mailing mailing = new Mailing();
 
     @Getter
     @Setter
@@ -55,6 +56,12 @@ public class AppProperties {
         private Set<String> allowedContentTypes;
     }
 
+    @Getter
+    @Setter
+    public static class Mailing {
+        private String templatesLocation;
+    }
+
     public Auth getAuth() {
         return auth;
     }
@@ -70,4 +77,6 @@ public class AppProperties {
     public Uploads getUploads() {
         return uploads;
     }
+
+    public Mailing getMailing() { return mailing; }
 }

@@ -50,6 +50,9 @@ public class AccountService {
     @Autowired
     private FileStorageService storageService;
 
+    @Autowired
+    private MailingService mailingService;
+
     public TokenResponse login(LoginRequest loginRequest, HttpServletResponse response) {
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                 loginRequest.getEmail(),
@@ -92,9 +95,8 @@ public class AccountService {
         passenger.setPhoneNumber(registrationRequest.getPhoneNumber());
         userRepository.save(passenger);
 
-        // TODO: Send mail
-        System.out.println("[i] Make a POST request to this link to verify email:" );
-        System.out.println("[i] http://localhost:8080/auth/register/verify/" + tokenProvider.createEmailVerificationToken(passenger));
+        String token = tokenProvider.createEmailVerificationToken(passenger);
+        mailingService.sendEmailVerificationMail(passenger, token);
     }
 
     public void registerWithOAuth(OAuthRegistrationRequest registrationRequest, Authentication authentication) {
@@ -163,9 +165,8 @@ public class AccountService {
         } else if (!user.getEmailVerified()) {
         	throw new InvalidPasswordRequestException("User's email is not verified.");
         } else {
-            // TODO: Send mail
-            System.out.println("[+] Password reset token (30 min):");
-            System.out.println(tokenProvider.createRecoveryToken(user));
+            String token = tokenProvider.createRecoveryToken(user);
+            mailingService.sendPasswordRecoveryMail(user, token);
         }
     }
 

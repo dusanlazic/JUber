@@ -1,0 +1,16 @@
+<div class="mt-5">
+    <p class="title is-size-3 has-text-grey is-family-secondary">Choose your places</p>
+    
+    <div *ngIf="ride !== undefined">
+        <app-place *ngFor="let place of ride.places; let i = index;" [index]="i" [place]="place"></app-place>
+    </div>
+
+    <app-empty-place *ngIf="isModalActive" (updateEvent)="updateEmptyPlace($event)"></app-empty-place>
+    
+    <div *ngIf="!isModalActive">
+        <button style="margin-top: 1em;" *ngIf="ride!.places.length > 0" class="button is-outlined is-fullwidth" (click)="toggleModal()">Add another</button>
+        <button style="margin-top: 1em;" *ngIf="!ride!.places.length" class="button is-outlined is-fullwidth" (click)="toggleModal()">Add a place</button>
+    </div>
+    
+    
+</div>

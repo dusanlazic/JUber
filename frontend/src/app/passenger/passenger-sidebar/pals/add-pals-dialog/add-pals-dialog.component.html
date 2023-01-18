@@ -1,0 +1,37 @@
+<div class="custom-add-pals-dialog">
+    <div class="box">
+      <form class="form-container" [formGroup]="palForm" autocomplete="false" validate> 
+        <div class="field">
+          <p class="control has-icons-left">
+            <input class="input" type="email" placeholder="Email*" formControlName="email">
+            <span class="icon is-left">
+              <span class="iconify is-size-5" data-icon="ic:outline-email"></span>
+            </span>
+          </p>
+          <div *ngIf="email?.invalid && (email?.dirty || email?.touched)" class="help is-danger">
+            <div *ngIf="email?.errors?.['required']">
+                Please enter a email address!
+            </div>
+            <div *ngIf="email?.errors?.['email']">
+                Please enter a valid email address
+            </div>
+          </div>
+        </div>
+        <div class="field mt-4 is-grouped is-grouped-right is">
+          <p class="control">
+            <button class="button is-light" (click)="cancel()" type="button">
+              Cancel
+            </button>
+          </p>
+          <p class="control">
+            <button class="button is-success" (click)="add()" type="submit" [disabled]="palForm.invalid">
+              Add
+              <span class="icon ml-1">
+                <span class="iconify is-size-5" data-icon="fluent:add-12-filled"></span>
+              </span>
+            </button>
+          </p>
+        </div>
+      </form>
+    </div>
+  </div>

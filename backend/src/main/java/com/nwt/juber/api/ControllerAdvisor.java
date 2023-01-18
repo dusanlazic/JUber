@@ -89,4 +89,16 @@ public class ControllerAdvisor {
     public ResponseError handleConversationNotFoundException(ConversationNotFoundException e) {
         return new ResponseError(HttpStatus.NOT_FOUND, "Conversation not found.");
     }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(ProfileChangeRequestNotFoundException.class)
+    public ResponseError handleProfileChangeRequestNotFoundException(ProfileChangeRequestNotFoundException e) {
+        return new ResponseError(HttpStatus.NOT_FOUND, "Change request not found.");
+    }
+
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ExceptionHandler(ProfileChangeRequestAlreadyResolvedException.class)
+    public ResponseError handleProfileChangeRequestAlreadyResolvedException(ProfileChangeRequestAlreadyResolvedException e) {
+        return new ResponseError(HttpStatus.CONFLICT, "Profile change request is already resolved.");
+    }
 }

@@ -15,15 +15,19 @@ public class Ride {
 
     @Id
     @Column(columnDefinition = "uuid")
-    private UUID id;
+    private UUID id = UUID.randomUUID();
 
-    @ManyToOne
-    private Route route;
+    @OneToMany
+    @JoinColumn(name = "ride_id")
+    private List<Place> places;
 
     private Double fare;
 
     @ManyToMany
     private List<Passenger> passengers;
+
+    @ElementCollection
+    private List<PassengerStatus> passengersReady;
 
     @ManyToOne
     private Driver driver;

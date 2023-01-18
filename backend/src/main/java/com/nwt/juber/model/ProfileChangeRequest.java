@@ -2,9 +2,10 @@ package com.nwt.juber.model;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.Map;
 import java.util.UUID;
 
@@ -15,15 +16,22 @@ public class ProfileChangeRequest {
 
     @Id
     @Column(columnDefinition = "uuid")
-    private UUID id;
+    private UUID id = UUID.randomUUID();
 
     @ManyToOne
-    private User user;
+    private Person person;
 
-    private boolean approved = false;
+    @Enumerated(EnumType.STRING)
+    private ProfileChangeRequestStatus status = ProfileChangeRequestStatus.PENDING;
 
     @ElementCollection
     private Map<String, String> changes;
 
-    private LocalDateTime requestTime;
+    @CreationTimestamp
+    private Date requestedAt;
+
+    public ProfileChangeRequest(Person person, Map<String, String> changes) {
+        this.person = person;
+        this.changes = changes;
+    }
 }

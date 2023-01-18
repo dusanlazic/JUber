@@ -61,6 +61,7 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
             sendResponse(response, HttpServletResponse.SC_UNAUTHORIZED, e.getMessage());
         } catch (Exception e) {
             sendResponse(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "An error has occurred.");
+            e.getCause().printStackTrace();
         }
     }
 

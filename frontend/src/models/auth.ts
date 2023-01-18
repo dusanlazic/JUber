@@ -1,44 +1,50 @@
 
-export type LoginRequest = {
+export interface LoginRequest {
     email: string;
     password: string;
 }
 
-export type TokenResponse = {
+export interface TokenResponse {
     accessToken: string;
     expiresAt: number;
 }
 
-export type PasswordResetLinkRequest = {
+export interface PasswordResetLinkRequest {
     email: string;
 }
 
-export type PasswordReset = {
+export interface PasswordReset {
     password: string,
     passwordConfirmation: string,
     token: string
 }
 
+export interface PasswordChange {
+    currentPassword: string,
+    newPassword: string,
+    confirmPassword: string
+}
 
-export type AccountInfo = {
+
+export interface AccountInfo {
     email: string,
     password: string,
     passwordConfirmation: string
 }
 
-export type PersonalInfo = {
+export interface PersonalInfo {
     firstName: string,
     lastName: string,
     city: string,
     phoneNumber: string,
 }
 
-export type LocalRegistrationInputs = {
+export interface LocalRegistrationInputs {
     step1Inputs?: AccountInfo,
     step2Inputs?: PersonalInfo
 }
 
-export type LocalRegistrationRequest = {
+export interface LocalRegistrationRequest {
     email: string,
     password: string,
     passwordConfirmation: string

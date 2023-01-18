@@ -1,0 +1,27 @@
+
+<div>
+    <section class="hero is-fullheight is-unscrollable">
+    <div class="columns mt-0">
+        <div class="column is-3 is-sidebar pl-6 pr-5" style="z-index: 100000000;">
+            <app-ride-details-sidebar *ngIf="loggedUser" [ride]="ride"></app-ride-details-sidebar>
+        </div>
+        
+        <div class="column m-0 p-0 is-map">
+            <app-ride-details-map *ngIf="loggedUser" width="100%" height="100%"></app-ride-details-map>
+        </div>
+
+    </div>
+    </section>
+    <div>
+        <div class="navigation">
+            <figure class="image is-48x48">
+                <img class="is-rounded" src="https://lh3.googleusercontent.com/a/ALm5wu3tpc3XnB9w8EMqNHAODc0uL23tqydVlUCLYqEF6Q=s96-c">
+            </figure>
+            <app-notification></app-notification>
+            <!-- <button class="button is-rounded mr-2">Profile<span class="iconify ml-2" data-icon="ic:baseline-person"></span></button>
+            <button class="button is-rounded mr-1">Support<span class="iconify ml-2" data-icon="ic:baseline-contact-support"></span></button> -->
+            <button class="button is-rounded mr-1" (click)="logout()">Logout<span class="iconify ml-2" data-icon="material-symbols:logout"></span></button>
+            <active-status *ngIf="loggedUser && loggedUser.role == 'ROLE_DRIVER'" ></active-status>
+        </div>
+    </div>
+</div>

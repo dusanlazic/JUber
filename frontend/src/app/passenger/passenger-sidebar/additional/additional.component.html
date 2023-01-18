@@ -1,0 +1,36 @@
+<div class="mt-6">
+    <p class="title is-size-3 has-text-grey is-family-secondary">Additional</p>
+
+    <div class="field is-horizontal">
+        <div class="field-body">
+            <div class="field">
+                <input id="baby-friendly" type="checkbox" name="baby-friendly" class="switch is-success is-rounded"
+                    (change)="toggleBabyFriendly()">
+                <label for="baby-friendly">Baby friendly</label>
+            </div>
+            <div class="field">
+                <input id="pet-friendly" type="checkbox" name="pet-friendly" class="switch is-success is-rounded"
+                    (change)="togglePetFriendly()">
+                <label for="pet-friendly">Pet friendly</label>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="control is-custom-car-type-picker mt-5">
+    <div class="button is-custom-radio">
+        <input type="radio" id="car-any" name="car-type" [checked]="true" (change)="onVehicleChange(null)"/>
+        <label for="car-any">
+            <span class="iconify is-size-2" data-icon="mdi:car-side"></span>
+            <p>Any</p>
+        </label>
+    </div>
+    <div class="button is-custom-radio" *ngFor="let type of vehicleTypes">
+        <input type="radio" id="car-{{type.name.toLowerCase()}}" name="car-type" (change)="onVehicleChange(type)"/>
+        <label for="car-{{type.name.toLowerCase()}}">
+            <span class="iconify is-size-2" [attr.data-icon]="'mdi:car-' + type.name.toLowerCase()"></span>
+            <div>{{ type.name | titlecase }}</div>
+            <span style="font-size: 12px;">    *{{ type.price }} RSD</span>
+        </label>
+    </div> 
+</div>

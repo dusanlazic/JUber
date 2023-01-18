@@ -15,7 +15,6 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { LoginPageComponent } from './login-page/login-page.component';
 import { Oauth2RedirectHandlerComponent } from './login-page/oauth2-redirect-handler/oauth2-redirect-handler.component';
-import { ProfileComponent } from './profile/profile.component';
 import { ToastrModule } from 'ngx-toastr';
 import { RegisterOauthComponent } from './registration/register-oauth/register-oauth.component';
 import { RegisterLocalComponent } from './registration/register-local/register-local.component';
@@ -29,6 +28,42 @@ import { PasswordResetRequestSuccessComponent } from './password-recovery-page/p
 import { PasswordResetSuccessComponent } from './password-recovery-page/password-reset-success/password-reset-success.component';
 import { EmailVerificationComponent } from './registration/email-verification/email-verification.component';
 
+import { HomeComponent } from './shared/homepage/home/home.component';
+import { PassengerSidebarComponent } from './passenger/passenger-sidebar/passenger-sidebar.component';
+import { PassengerMapComponent } from './passenger/passenger-map/passenger-map.component';
+import { PlacesComponent } from './passenger/passenger-sidebar/places/places.component';
+import { PalsComponent } from './passenger/passenger-sidebar/pals/pals.component';
+import { PlaceComponent } from './passenger/passenger-sidebar/places/place/place.component';
+import { EmptyPlaceComponent } from './passenger/passenger-sidebar/places/empty-place/empty-place.component';
+import { EditPlaceComponent } from './passenger/passenger-sidebar/places/edit-place/edit-place.component';
+import { StoreModule } from '@ngrx/store';
+import { RideReducer } from './store/ride.reducer';
+import { AddPalsDialogComponent } from './passenger/passenger-sidebar/pals/add-pals-dialog/add-pals-dialog.component';
+import { AdditionalComponent } from './passenger/passenger-sidebar/additional/additional.component';
+import { ScheduleComponent } from './passenger/passenger-sidebar/schedule/schedule.component';
+import { RideRequestReducer } from './store/rideRequest/rideRequest.reducer';
+import { ActiveStatusComponent } from './driver/active-status/active-status.component';
+import { NotificationComponent } from './shared/homepage/notification/notification.component';
+import { RideInviteComponent } from './shared/homepage/notification/notification-list/ride-invite/ride-invite.component';
+import { WebsocketshareService } from 'src/services/notification/websocketshare.service';
+import { NotificationWebSocketAPI } from 'src/services/notification/notification-socket.service';
+import { NotificationItemComponent } from './shared/homepage/notification/notification-list/notification-item/notification-item.component';
+import { PassengerRideInvitationComponent } from './passenger/passenger-sidebar/passenger-ride-invitation/passenger-ride-invitation.component';
+import { PersonItemComponent } from './passenger/passenger-sidebar/passenger-ride-invitation/person-item/person-item.component';
+import { RideSocketShareService } from 'src/services/ride/ridesocketshare.service';
+import { RideWebSocketAPI } from 'src/services/ride/ride-message.service';
+import { RideDetailsComponent } from './shared/ride-details/ride-details.component';
+import { RideDetailsSidebarComponent } from './shared/ride-details/ride-details-sidebar/ride-details-sidebar.component';
+import { RideDetailsMapComponent } from './shared/ride-details/ride-details-map/ride-details-map.component';
+import { RideDetailsPlaceComponent } from './shared/ride-details/ride-details-place/ride-details-place.component';
+import { ProfileDetailsComponent } from './shared/profile-page/profile-page/profile-details/profile-details.component';
+import { ChangePasswordComponent } from './shared/profile-page/profile-page/change-password/change-password.component';
+import { BalanceComponent } from './shared/profile-page/profile-page/balance/balance.component';
+import { SavedRoutesComponent } from './shared/profile-page/profile-page/saved-routes/saved-routes.component';
+import { PastRidesComponent } from './shared/profile-page/profile-page/past-rides/past-rides.component';
+import { SupportComponent } from './shared/profile-page/profile-page/support/support.component';
+import { ProfilePageComponent } from './shared/profile-page/profile-page/profile-page.component';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -36,9 +71,6 @@ import { EmailVerificationComponent } from './registration/email-verification/em
 
     LoginPageComponent,
     Oauth2RedirectHandlerComponent,
-    
-    ProfileComponent,
-    
     RegisterOauthComponent,
     RegisterLocalComponent,
     RegisterStep1Component,
@@ -52,6 +84,39 @@ import { EmailVerificationComponent } from './registration/email-verification/em
     PasswordResetFormComponent,
     PasswordResetSuccessComponent,
 
+    HomeComponent,
+    PassengerSidebarComponent,
+    PassengerMapComponent,
+    PlacesComponent,
+    PalsComponent,
+    PlaceComponent,
+    EmptyPlaceComponent,
+    EditPlaceComponent,
+
+    AddPalsDialogComponent,
+    AdditionalComponent,
+    ScheduleComponent,
+
+    ActiveStatusComponent,
+
+    NotificationComponent,
+    RideInviteComponent,
+    NotificationItemComponent,
+     PassengerRideInvitationComponent,
+     PersonItemComponent,
+     RideDetailsComponent,
+     RideDetailsSidebarComponent,
+     RideDetailsMapComponent,
+     RideDetailsPlaceComponent,
+
+    ProfilePageComponent,
+
+    ProfileDetailsComponent,
+    ChangePasswordComponent,
+    BalanceComponent,
+    SavedRoutesComponent,
+    PastRidesComponent,
+    SupportComponent
   ],
   imports: [
     BrowserModule,
@@ -65,6 +130,7 @@ import { EmailVerificationComponent } from './registration/email-verification/em
     ReactiveFormsModule,
     HttpClientModule,
     ToastrModule.forRoot(),
+    StoreModule.forRoot({state: RideReducer, rideRequest: RideRequestReducer})
   ],
   exports: [
     RegisterStep1Component,
@@ -76,8 +142,15 @@ import { EmailVerificationComponent } from './registration/email-verification/em
 
     PasswordResetFormComponent,
     PasswordResetSuccessComponent,   
+
+    ProfileDetailsComponent,
+    ChangePasswordComponent,
+    BalanceComponent,
+    SavedRoutesComponent,
+    PastRidesComponent,
+    SupportComponent
   ],
-  providers: [],
+  providers: [WebsocketshareService,RideWebSocketAPI,NotificationWebSocketAPI, RideSocketShareService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

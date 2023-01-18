@@ -4,9 +4,10 @@ import { Router } from '@angular/router';
 import { JwtHelperService } from "@auth0/angular-jwt";
 import { BehaviorSubject, Observable, ReplaySubject, Subject } from "rxjs";
 import { environment } from "src/environments/environment";
-import { LocalRegistrationRequest, LoginRequest, PersonalInfo, TokenResponse } from "src/models/auth";
+import { LocalRegistrationRequest, LoginRequest, PasswordReset, PasswordResetLinkRequest, PersonalInfo, TokenResponse } from "src/models/auth";
 import { ApiResponse } from 'src/models/responses';
-import { LoggedUser } from 'src/models/user';
+import { LoggedUser, Roles } from 'src/models/user';
+import { DriverService } from '../driver/driver.service';
 import { HttpRequestService } from "../util/http-request.service";
 import { LocalStorageService } from "../util/local-storage.service";
 
@@ -18,12 +19,13 @@ const jwtHelper = new JwtHelperService();
 
 export class AuthService {
 
-    private loggedUser!: LoggedUser;
+    private loggedUser!: LoggedUser | undefined;
 
     constructor(
         private httpRequestService: HttpRequestService,
         private localStorage: LocalStorageService,
-        private router: Router
+        private router: Router,
+        private driverService: DriverService
     ) {}
 
 
@@ -85,9 +87,13 @@ export class AuthService {
     }
 
     logout() : void {
+        if(this.loggedUser?.role === Roles.DRIVER){
+            this.driverService.inactivate(this.loggedUser.email);
+        }
+
         const url = environment.API_BASE_URL + "/auth/logout";
         this.httpRequestService.post(url, null)
-
+        this.loggedUser = undefined;
         this.localStorage.clearAll();
     }
 
@@ -96,5 +102,18 @@ export class AuthService {
         const url = environment.API_BASE_URL + `/auth/register/verify/${token}`;
 
         return this.httpRequestService.post(url, null) as Observable<any>;
+    }
+    requestPasswordReset(resetRequest: PasswordResetLinkRequest): Observable<any> {
+        const url = environment.API_BASE_URL + "/auth/recovery";
+        const body = JSON.stringify(resetRequest);
+
+        return this.httpRequestService.post(url, body) as Observable<any>;
+    }
+
+    resetPassword(passwordReset: PasswordReset): Observable<any> {
+        const url = environment.API_BASE_URL + "/auth/recovery";
+        const body = JSON.stringify(passwordReset);
+
+        return this.httpRequestService.patch(url, body) as Observable<any>;
     }
 }

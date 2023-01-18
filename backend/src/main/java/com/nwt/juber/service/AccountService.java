@@ -1,17 +1,18 @@
 package com.nwt.juber.service;
 
-import com.nwt.juber.config.AppProperties;
-import com.nwt.juber.dto.request.*;
-import com.nwt.juber.dto.response.PhotoUploadResponse;
-import com.nwt.juber.dto.response.TokenResponse;
-import com.nwt.juber.exception.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
+
 import com.nwt.juber.model.*;
-import com.nwt.juber.repository.PersonRepository;
-import com.nwt.juber.repository.UserRepository;
-import com.nwt.juber.security.TokenAuthenticationFilter;
-import com.nwt.juber.security.TokenProvider;
-import com.nwt.juber.security.TokenType;
-import com.nwt.juber.util.CookieUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -21,10 +22,35 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.Optional;
-import java.util.UUID;
+import com.nwt.juber.api.ResponseOk;
+import com.nwt.juber.config.AppProperties;
+import com.nwt.juber.dto.request.DriverRegistrationRequest;
+import com.nwt.juber.dto.request.LocalRegistrationRequest;
+import com.nwt.juber.dto.request.LoginRequest;
+import com.nwt.juber.dto.request.OAuthRegistrationRequest;
+import com.nwt.juber.dto.request.PasswordChangeRequest;
+import com.nwt.juber.dto.request.PasswordResetLinkRequest;
+import com.nwt.juber.dto.request.PasswordResetRequest;
+import com.nwt.juber.dto.request.ProfileInfoChangeRequest;
+import com.nwt.juber.dto.request.ProfileInfoChangeResolveRequest;
+import com.nwt.juber.dto.response.PhotoUploadResponse;
+import com.nwt.juber.dto.response.ProfileChangeRequestResponse;
+import com.nwt.juber.dto.response.ProfileInfoResponse;
+import com.nwt.juber.dto.response.TokenResponse;
+import com.nwt.juber.exception.EmailAlreadyInUseException;
+import com.nwt.juber.exception.InvalidPasswordRequestException;
+import com.nwt.juber.exception.InvalidRecoveryTokenException;
+import com.nwt.juber.exception.PhoneNumberAlreadyInUseException;
+import com.nwt.juber.exception.ProfileChangeRequestAlreadyResolvedException;
+import com.nwt.juber.exception.ProfileChangeRequestNotFoundException;
+import com.nwt.juber.exception.UserNotFoundException;
+import com.nwt.juber.repository.PersonRepository;
+import com.nwt.juber.repository.ProfileChangeRequestRepository;
+import com.nwt.juber.repository.UserRepository;
+import com.nwt.juber.security.TokenAuthenticationFilter;
+import com.nwt.juber.security.TokenProvider;
+import com.nwt.juber.security.TokenType;
+import com.nwt.juber.util.CookieUtils;
 
 @Service
 public class AccountService {
@@ -37,6 +63,9 @@ public class AccountService {
 
     @Autowired
     private PersonRepository personRepository;
+
+    @Autowired
+    private ProfileChangeRequestRepository profileChangeRequestRepository;
 
     @Autowired
     private TokenProvider tokenProvider;
@@ -137,7 +166,8 @@ public class AccountService {
         driver.setLastName(registrationRequest.getLastName());
         driver.setCity(registrationRequest.getCity());
         driver.setPhoneNumber(registrationRequest.getPhoneNumber());
-        driver.setActive(false);
+        driver.setStatus(DriverStatus.INACTIVE);
+        driver.setDriverShifts(new ArrayList<DriverShift>());
         driver.setVehicle(vehicle);
 
         userRepository.save(driver);
@@ -183,6 +213,16 @@ public class AccountService {
         userRepository.save(user);
     }
 
+	public void changePassword(PasswordChangeRequest passwordChangeRequest, User user) {
+//		String currentPasswordEncoded = passwordEncoder.encode(passwordChangeRequest.getCurrentPassword());
+//		if(!currentPasswordEncoded.equals(user.getPassword())) {
+//			throw new InvalidPasswordRequestException("Current password not valid.");
+//		}
+
+        user.setPassword(passwordEncoder.encode(passwordChangeRequest.getNewPassword()));
+        userRepository.save(user);
+	}
+
     public PhotoUploadResponse setProfilePicture(MultipartFile file, Authentication authentication) {
         User user = (User) authentication.getPrincipal();
         String imageUrl = storageService.store(file);
@@ -198,6 +238,78 @@ public class AccountService {
         userRepository.save(user);
     }
 
+    public ProfileInfoResponse getProfileInfo(Authentication authentication) {
+        Person person = (Person) authentication.getPrincipal();
+        return new ProfileInfoResponse(
+                person.getFirstName(),
+                person.getLastName(),
+                person.getCity(),
+                person.getPhoneNumber(),
+                person.getImageUrl(),
+                person.getEmail()
+        );
+    }
+
+    public ResponseOk updateProfileInfo(ProfileInfoChangeRequest profileInfo, Authentication authentication) {
+        Person person = (Person) authentication.getPrincipal();
+
+        Map<String, String> changes = extractChangesFromRequestBody(profileInfo);
+        ProfileChangeRequest changeRequest = new ProfileChangeRequest(person, changes);
+
+        switch (person.getRole()) {
+            case ROLE_PASSENGER -> {
+                applyProfileChanges(changeRequest);
+                personRepository.save(person);
+                return new ResponseOk("Changes saved.");
+            }
+            case ROLE_DRIVER -> {
+                profileChangeRequestRepository.save(changeRequest);
+                return new ResponseOk("Changes requested.");
+            }
+            default -> {
+                return null;
+            }
+        }
+    }
+
+    public List<ProfileChangeRequestResponse> getPendingProfileChangeRequests() {
+        return profileChangeRequestRepository.findPending()
+                .stream().map(r -> new ProfileChangeRequestResponse(
+                        r.getId(),
+                        r.getPerson().getId(),
+                        r.getPerson().getName(),
+                        r.getChanges(),
+                        r.getRequestedAt()))
+                .toList();
+    }
+
+    public ResponseOk resolveProfileChangeRequest(UUID requestId, ProfileInfoChangeResolveRequest resolveRequest) {
+        ProfileChangeRequest changeRequest = profileChangeRequestRepository.findById(requestId).orElseThrow(ProfileChangeRequestNotFoundException::new);
+
+        if (!changeRequest.getStatus().equals(ProfileChangeRequestStatus.PENDING))
+            throw new ProfileChangeRequestAlreadyResolvedException();
+
+        ProfileChangeRequestStatus newStatus = ProfileChangeRequestStatus.valueOf(resolveRequest.getNewStatus());
+        switch (newStatus) {
+            case APPROVED -> {
+                applyProfileChanges(changeRequest);
+                changeRequest.setStatus(ProfileChangeRequestStatus.APPROVED);
+
+                profileChangeRequestRepository.save(changeRequest);
+                personRepository.save(changeRequest.getPerson());
+                return new ResponseOk("Changes saved.");
+            }
+            case DENIED -> {
+                changeRequest.setStatus(ProfileChangeRequestStatus.DENIED);
+                profileChangeRequestRepository.save(changeRequest);
+                return new ResponseOk("Changes denied.");
+            }
+            default -> {
+                return null;
+            }
+        }
+    }
+
     private void checkEmailAvailability(String email) {
         if (userRepository.existsByEmail(email))
             throw new EmailAlreadyInUseException();
@@ -207,4 +319,27 @@ public class AccountService {
         if (personRepository.existsByPhoneNumber(phoneNumber))
             throw new PhoneNumberAlreadyInUseException();
     }
+
+    private Map<String, String> extractChangesFromRequestBody(ProfileInfoChangeRequest changeRequestData) {
+        Map<String, String> changes = new HashMap<>();
+
+        changes.put("firstName", changeRequestData.getFirstName());
+        changes.put("lastName", changeRequestData.getLastName());
+        changes.put("city", changeRequestData.getCity());
+        changes.put("phoneNumber", changeRequestData.getPhoneNumber());
+        changes.values().removeAll(Collections.singleton(null));
+
+        return changes;
+    }
+
+    private void applyProfileChanges(ProfileChangeRequest changeRequest) {
+        Map<String, String> changes = changeRequest.getChanges();
+        Person person = changeRequest.getPerson();
+
+        person.setFirstName(changes.getOrDefault("firstName", person.getFirstName()));
+        person.setLastName(changes.getOrDefault("lastName", person.getLastName()));
+        person.setCity(changes.getOrDefault("city", person.getCity()));
+        person.setPhoneNumber(changes.getOrDefault("phoneNumber", person.getPhoneNumber()));
+    }
+
 }

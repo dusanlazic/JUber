@@ -6,5 +6,6 @@ public enum RideStatus {
     ACCEPTED, // driver is heading to location
     IN_PROGRESS, // passengers are in the car
     DENIED, // ride didn't successfully finish
-    FINISHED // ride successfully finished
+    FINISHED, // ride successfully finished
+    SCHEDULED // driver has accepted that he will drive the ride in the future
 }

@@ -24,6 +24,7 @@ class RideStatus(Enum):
 	WAIT = auto()
 	ACCEPTED = auto()
 	IN_PROGRESS = auto()
+	SCHEDULED = auto()
 
 
 class Driver(HostInterface):
@@ -133,7 +134,7 @@ class Driver(HostInterface):
 
 		print("Doing: ", self.ride_status, self.state, self.start_idx, len(self.coordinates), self.wait_for_entered, len(self.places) if self.places else 0)
 		print()
-		if self.ride_status == RideStatus.WAIT or self.ride_status == RideStatus.WAITING_FOR_PAYMENT:
+		if self.ride_status == RideStatus.WAIT or self.ride_status == RideStatus.WAITING_FOR_PAYMENT or self.ride_status == RideStatus.SCHEDULED:
 			self.move_randomly()
 			self.send_location()
 			return

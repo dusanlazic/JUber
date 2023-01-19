@@ -66,7 +66,7 @@ export class AuthService {
             next: (user: LoggedUser) => {
                 this.localStorage.set('role', user.role);
                 if(user.role === Roles.ADMIN){
-                    redirectPath = '/profile/admin-support'
+                    redirectPath = '/admin-support'
                 }
                 this.loggedUser = user;
                 this.router.navigate([redirectPath]);
@@ -118,5 +118,9 @@ export class AuthService {
         const body = JSON.stringify(passwordReset);
 
         return this.httpRequestService.patch(url, body) as Observable<any>;
+    }
+
+    imageUrlResolver(event: any, name: string) {
+        event.target.src = "https://ui-avatars.com/api/?name=" + name + "&format=jpg&background=random&rounded=true";
     }
 }

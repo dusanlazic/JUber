@@ -63,7 +63,7 @@ import { AdminSupportWebsocketshareService } from 'src/services/support/admin/ad
 import { AdminConversationWebsocketshareService } from 'src/services/support/admin/admin-conversations/admin-conversation-websocketshare.service';
 import { AdminConversationWebSocketAPI } from 'src/services/support/admin/admin-conversations/admin-conversation-socket.service';
 import { AdminSupportPageComponent } from './admin-pages/admin-support-page/admin-support-page.component';
-import { AdminChatComponent } from './admin-pages/admin-support-page/admin-conversation/admin-chat/admin-chat.component';
+import { AdminChatComponent } from './admin-pages/admin-support-page/admin-chat/admin-chat.component';
 import { AdminConversationComponent } from './admin-pages/admin-support-page/admin-conversation/admin-conversation.component';
 
 @NgModule({
@@ -117,7 +117,7 @@ import { AdminConversationComponent } from './admin-pages/admin-support-page/adm
 
     AdminConversationComponent,
     AdminSupportPageComponent,
-    AdminChatComponent
+    AdminChatComponent,
   ],
   imports: [
     BrowserModule,

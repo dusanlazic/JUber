@@ -8,10 +8,11 @@ export enum DriverStatus {
 export interface ChatMessage {
     content: string,
     sentAt: Date,
+    isFromSupport: boolean
 }
 
 export interface ChatMessageResponse extends ChatMessage{
-    isFromSupport: boolean
+    // isFromSupport: boolean
 }
 export interface ChatMessageRequest {
     content: string; //max 500
@@ -22,7 +23,9 @@ export interface ChatConversationResponse {
     userId: string,
     userFullName: string
     userImageUrl: string,
-    isResponded: boolean
+    isResponded: boolean,
+    isRead?: boolean;
+    isSelected?: boolean;
 }
 
 export interface MsgFromSupportMessage extends ChatMessage{
@@ -32,6 +35,7 @@ export interface MsgFromUserMessage  extends ChatMessage {
     userId: string,
 }
 
-export interface NewConversationMessage {
+export interface NewMessageEvent {
+    content: string,
     userId: string,
 }

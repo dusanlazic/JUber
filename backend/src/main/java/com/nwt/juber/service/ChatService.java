@@ -5,6 +5,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,7 +56,6 @@ public class ChatService {
 
         return messages.stream()
                 .map(m -> new ChatMessageResponse(m.getContent(), m.getSentAt(), m.getIsFromSupport()))
-//                .sorted(Comparator.comparing(ChatMessageResponse::getSentAt).reversed())
                 .sorted(Comparator.comparing(ChatMessageResponse::getSentAt))
                 .toList();
     }
@@ -71,7 +71,6 @@ public class ChatService {
 
         return messages.stream()
                 .map(m -> new ChatMessageResponse(m.getContent(), m.getSentAt(), m.getIsFromSupport()))
-//                .sorted(Comparator.comparing(ChatMessageResponse::getSentAt).reversed())
                 .sorted(Comparator.comparing(ChatMessageResponse::getSentAt))
                 .toList();
     }
@@ -83,17 +82,23 @@ public class ChatService {
 
         return conversations.stream()
                 .map(this::convertConversationToResponse)
-//                .sorted(Comparator.comparing(ChatConversationResponse::getDate).reversed())
-                .sorted(Comparator.comparing(ChatConversationResponse::getDate))
+                .sorted(Comparator.comparing(ChatConversationResponse::getDate).reversed())
                 .toList();
     }
 
     public void sendMessageAsUser(ChatMessageRequest messageRequest, Authentication authentication) {
         User user = (User) authentication.getPrincipal();
 
-        ChatConversation conversation = conversationRepository
-                .findByUserAndIsArchivedIsFalse(user)
-                .orElseGet(() -> createNewConversation(user));
+        Optional<ChatConversation> optionalConversation = conversationRepository.findByUserAndIsArchivedIsFalse(user);
+        ChatConversation conversation;
+        boolean isNew = false;
+        if(optionalConversation.isEmpty()) {
+        	conversation = createNewConversation(user);
+        	isNew = true;
+        }
+        else {
+        	conversation = optionalConversation.get();
+        }
 
         PersistedChatMessage message = new PersistedChatMessage(messageRequest.getContent(), false);
 
@@ -101,6 +106,9 @@ public class ChatService {
         conversation.addMessage(message);
         conversation = conversationRepository.save(conversation);
 
+        if(isNew) {
+        	notifyAboutNewConversation(conversation);
+        }
         deliverMessage(message);
         updateSupportLastActiveAt(conversation.getSupport());
     }
@@ -124,17 +132,11 @@ public class ChatService {
     }
 
     private ChatConversation createNewConversation(User user) {
-        Admin assignedSupport = findLeastRecentlyActiveSupport();
-
+        Admin assignedSupport = adminRepository.findFirstByOrderByLastActiveAt();
         ChatConversation conversation = new ChatConversation(user, assignedSupport);
         conversation = conversationRepository.save(conversation);
-        notifyAboutNewConversation(conversation);
 
         return conversation;
-    }
-
-    private Admin findLeastRecentlyActiveSupport() {
-        return adminRepository.findFirstByOrderByLastActiveAt();
     }
 
     private ChatConversationResponse convertConversationToResponse(ChatConversation c) {

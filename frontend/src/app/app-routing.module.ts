@@ -51,10 +51,10 @@ const routes: Routes = [
     { path: 'saved-routes', component: SavedRoutesComponent },
     { path: 'past-rides', component: PastRidesComponent },
     { path: 'support', component: SupportComponent, canActivate: [AuthGuard, RoleGuard],  
-      data: { expectedRoles: [Roles.DRIVER, Roles.PASSENGER ]} },
-    { path: 'admin-support', component: AdminSupportPageComponent, canActivate: [AuthGuard, RoleGuard], 
-      data: { expectedRoles: [Roles.ADMIN ]} }]
+      data: { expectedRoles: [Roles.DRIVER, Roles.PASSENGER ]} }]
   },
+  { path: 'admin-support', component: AdminSupportPageComponent, canActivate: [AuthGuard, RoleGuard], 
+      data: { expectedRoles: [Roles.ADMIN ]} },
 
   { path: '**', redirectTo: '' }
 ];

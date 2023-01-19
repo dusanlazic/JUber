@@ -71,7 +71,9 @@
               </div>
             </div>
           </div>
-          <div class="column is-content">
+          <div class="column is-content {{
+            (selected===SelectionOptions.ADMIN_SUPPORT || selected===SelectionOptions.SUPPORT)
+              ? 'has-custom-scrollable-container has-chat-control p-0' : '' }}">
             <router-outlet></router-outlet>
           </div>
         </div>

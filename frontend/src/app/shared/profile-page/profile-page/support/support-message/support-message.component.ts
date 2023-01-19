@@ -8,7 +8,10 @@ import { Component, OnInit, Input } from '@angular/core';
 export class SupportMessageComponent implements OnInit {
 
   @Input()
-  message!: any
+  message!: string;
+
+  @Input()
+  isSent: boolean = true;
 
   constructor() { }
 

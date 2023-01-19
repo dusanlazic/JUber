@@ -1,5 +1,6 @@
 package com.nwt.juber.service;
 
+import com.nwt.juber.config.AppProperties;
 import com.nwt.juber.dto.PersonDTO;
 import com.nwt.juber.dto.RideDTO;
 import com.nwt.juber.dto.message.InvitationStatusMessage;
@@ -292,6 +293,15 @@ public class RideService {
         return convertRideToDTO(ride);
     }
 
+    public RideDTO getRide(UUID rideId, Authentication authentication) {
+        Ride ride = rideRepository.findById(rideId).orElseThrow(() -> new RuntimeException("No ride found!"));
+        User user = (User) authentication.getPrincipal();
+        if (!ride.getDriver().getId().equals(user.getId()) && ride.getPassengers().stream().map(Person::getId).noneMatch(x -> x.equals(user.getId()))) {
+            throw new RuntimeException("You are not allowed to see this ride!");
+        }
+        return convertRideToDTO(ride);
+    }
+
     private RideDTO convertRideToDTO(Ride ride) {
         RideDTO dto = new RideDTO();
         dto.setId(ride.getId());
@@ -302,6 +312,8 @@ public class RideService {
         dto.setPassengersReady(ride.getPassengersReady());
         dto.setDriver(convertPersonToDTO(ride.getDriver()));
         dto.setScheduledTime(ride.getScheduledTime());
+        dto.setStartTime(ride.getStartTime());
+        dto.setEndTime(ride.getEndTime());
         return dto;
     }
 
@@ -316,5 +328,29 @@ public class RideService {
         personDTO.setPhoneNumber(person.getPhoneNumber());
         personDTO.setImageUrl(person.getImageUrl());
         return personDTO;
+    }
+
+
+    public void toggleFavourite(UUID rideId, Authentication authentication) {
+        Passenger passenger = passengerRepository.findById(((User) authentication.getPrincipal()).getId()).orElseThrow();
+        Ride ride = rideRepository.findById(rideId).orElseThrow();
+        if (!ride.getPassengers().contains(passenger)) {
+            throw new RuntimeException("You are not allowed to toggle favourite for this ride!");
+        }
+        if (passenger.getFavouriteRoutes().contains(ride)) {
+            passenger.getFavouriteRoutes().remove(ride);
+        } else {
+            passenger.getFavouriteRoutes().add(ride);
+        }
+        passengerRepository.save(passenger);
+    }
+
+    public boolean checkIfFavourite(UUID rideId, Authentication authentication) {
+        Passenger passenger = passengerRepository.findById(((User) authentication.getPrincipal()).getId()).orElseThrow();
+        Ride ride = rideRepository.findById(rideId).orElseThrow();
+        if (!ride.getPassengers().contains(passenger)) {
+            throw new RuntimeException("You are not allowed to toggle favourite for this ride!");
+        }
+        return passenger.getFavouriteRoutes().contains(ride);
     }
 }

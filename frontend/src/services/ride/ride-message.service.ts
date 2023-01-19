@@ -12,7 +12,7 @@ export class RideWebSocketAPI {
     stompClient: any;
     
     constructor(private websocketShare: RideSocketShareService, private authService: AuthService){
-        authService.getNewValue().subscribe((user) => {
+        authService.getNewLoggedUser().subscribe((user) => {
             if (user) {
                 this.connect();
             }

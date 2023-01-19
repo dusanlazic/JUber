@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { throwToolbarMixedModesError } from '@angular/material/toolbar';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { environment } from 'src/environments/environment';
 import { FullRide, Ride } from 'src/models/ride';
 import { LoggedUser, Roles } from 'src/models/user';
@@ -28,6 +28,7 @@ export class RideDetailsComponent implements OnInit {
 
   loggedUser!: LoggedUser;
   ride: FullRide | undefined;
+  rideInProgress: boolean = true;
 
   
     
@@ -36,7 +37,8 @@ export class RideDetailsComponent implements OnInit {
               private router: Router,
               private httpService: HttpRequestService,
               private websocketService: RideSocketShareService,
-              private toastrService: ToastrService) { }
+              private toastrService: ToastrService,
+              private route: ActivatedRoute) { }
 
   ngOnInit(): void {
 
@@ -56,10 +58,14 @@ export class RideDetailsComponent implements OnInit {
     }
     ride.places.forEach(place => place.routes.forEach(route => route.coordinates = decode(route.coordinatesEncoded).map(x => new Point(x[0], x[1]))))
     ride.places.forEach((place: any) => place.point = new Point(place.latitude, place.longitude));
+    
   }
 
   getRideDetails() {
-    this.httpService.get(environment.API_BASE_URL + '/ride/active').subscribe((data) => {
+    let id = this.route.snapshot.paramMap.get('rideId');
+
+
+    this.httpService.get(environment.API_BASE_URL + '/ride/' + (id ? id : 'active')).subscribe((data) => {
         let ride = data as FullRide;
         if(!ride) {
           return;

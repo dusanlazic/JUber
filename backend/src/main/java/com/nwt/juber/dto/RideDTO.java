@@ -23,5 +23,7 @@ public class RideDTO {
     private Boolean babyFriendly;
     private Boolean petFriendly;
     private LocalDateTime scheduledTime;
+    private LocalDateTime startTime;
+    private LocalDateTime endTime;
 
 }

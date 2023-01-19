@@ -3,10 +3,14 @@ package com.nwt.juber.controller;
 import com.nwt.juber.api.ResponseOk;
 import com.nwt.juber.dto.RideDTO;
 import com.nwt.juber.service.RideService;
+
+import java.util.HashMap;
 import java.util.UUID;
 
 import javax.validation.Valid;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -56,6 +60,32 @@ public class RideController {
     public ResponseOk declineRide(@PathVariable("id") UUID rideId, Authentication authentication) throws InsufficientResourcesException {
         rideService.declineRide(rideId, authentication);
         return new ResponseOk("ok");
+    }
+
+    @GetMapping("{id}")
+    @PreAuthorize("hasAnyRole('PASSENGER', 'DRIVER', 'ADMIN')")
+    public RideDTO getRide(@PathVariable("id") UUID rideId, Authentication authentication) {
+        return rideService.getRide(rideId, authentication);
+    }
+
+    @PutMapping("favourite/{id}")
+    @PreAuthorize("hasAnyRole('PASSENGER')")
+    public ResponseOk toggleFavouriteRide(@PathVariable("id") UUID rideId, Authentication authentication) {
+        System.out.println("Toggling favourite...");
+        rideService.toggleFavourite(rideId, authentication);
+        return new ResponseOk("ok");
+    }
+
+    @GetMapping("is-favourite/{id}")
+    @PreAuthorize("hasAnyRole('PASSENGER')")
+    public CheckFavouriteResponse checkFavouriteRide(@PathVariable("id") UUID rideId, Authentication authentication) {
+        return new CheckFavouriteResponse(rideService.checkIfFavourite(rideId, authentication));
+    }
+
+    @Data
+    @AllArgsConstructor
+    class CheckFavouriteResponse {
+        boolean isFavourite;
     }
 
 

@@ -26,11 +26,11 @@ export class AuthService {
     private loggedUser!: LoggedUser | undefined;
     private loggedUserSubject = new BehaviorSubject<LoggedUser | undefined>(undefined);
 
-    getNewValue(): Observable<LoggedUser | undefined> {
+    getNewLoggedUser(): Observable<LoggedUser | undefined> {
         return this.loggedUserSubject.asObservable();
     }
 
-    onNewValueReceive(msg: LoggedUser | undefined) {        
+    onNewUserReceived(msg: LoggedUser | undefined) {        
         this.loggedUserSubject.next(msg);
     }
 
@@ -80,7 +80,7 @@ export class AuthService {
             next: (user: LoggedUser) => {
                 this.localStorage.set('role', user.role);
                 this.loggedUser = user;
-                this.onNewValueReceive(user);
+                this.onNewUserReceived(user);
                 this.router.navigate([redirectPath]);
             },
             error: (e: HttpErrorResponse) => {
@@ -109,7 +109,7 @@ export class AuthService {
         const url = environment.API_BASE_URL + "/auth/logout";
         this.httpRequestService.post(url, null)
         this.loggedUser = undefined;
-        this.onNewValueReceive(this.loggedUser);
+        this.onNewUserReceived(this.loggedUser);
         this.localStorage.clearAll();
         sessionStorage.clear();
         localStorage.clear();

@@ -1,0 +1,97 @@
+
+@import "../../../../node_modules/bulma/bulma.sass"
+
+
+.box.is-custom-settings-box
+    height: 600px
+    width: 1344px
+    margin-top: 100px
+    padding-left: 0px
+    padding-top: 0px
+    .columns
+        margin: 0px
+        .column.is-navigation-sidebar
+            display: flex
+            flex-direction: column
+            height: 600px
+            border-top-left-radius: 6px
+            border-bottom-left-radius: 6px
+            border-right: 1px solid $grey-lighter
+            padding-left: 0px
+            padding-top: 0px
+            .navigation-item
+                margin-left: 0px
+                padding-left: 10px
+                height: 60px
+                line-height: 60px
+                font-weight: bold
+                border-left: 3px solid transparent
+                &:hover
+                    border-left: 3px solid $grey-lighter
+                    cursor: pointer
+                &.is-selected
+                    border-left: 3px solid $success
+                &.is-first
+                    border-top-left-radius: 6px
+                &.is-at-bottom
+                    margin-top: auto
+                    border-bottom-left-radius: 6px
+                    margin-bottom: 0px
+                .iconify-inline
+                    margin-right: 8px
+            .is-user-info
+                display: flex
+                flex-direction: row
+                align-items: center
+                margin-left: 0px
+                padding-left: 10px
+                margin-top: auto
+        .column.is-content
+            padding-left: 25px
+            padding-top: 25px
+
+
+
+.is-chat-header
+    display: flex
+    flex-direction: row
+    align-items: center
+    padding: 15px 15px 15px 15px
+    border-bottom: 1px solid $grey-lighter
+
+.is-custom-scrollable-container
+    height: 515px
+    width: 100%
+    position: relative
+    overflow-y: scroll
+
+.is-chat-container
+    background-color: #fafafa
+    padding-bottom: 55px
+    padding-top: 10px
+    height: 480px
+    padding-left: 10px
+    padding-right: 10px
+
+.is-chat-control
+    position: relative
+    height: 50px
+    bottom: 0px
+    padding-left: 6px
+    padding-right: 10px
+
+
+.custom-search-botton 
+  position: absolute
+  right: 11px
+  top: 0px
+  bottom: 10px
+  border: 0
+  background: $link
+  color: #fff
+  outline: none
+  margin: 0
+  padding: 0 10px
+  border-radius: 20px
+  width: 80px
+  z-index: 2

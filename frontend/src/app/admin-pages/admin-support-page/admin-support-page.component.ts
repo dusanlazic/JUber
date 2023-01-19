@@ -1,6 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { ChatConversationResponse } from 'src/models/chat';
+import { ChatConversationResponse, MsgFromUserMessage, NewMessageEvent } from 'src/models/chat';
 import { LoggedUser } from 'src/models/user';
 import { AuthService } from 'src/services/auth/auth.service';
 import { AdminConversationWebsocketshareService } from 'src/services/support/admin/admin-conversations/admin-conversation-websocketshare.service';
@@ -14,25 +14,17 @@ import { SupportService } from 'src/services/support/support.service';
 export class AdminSupportPageComponent implements OnInit {
 
   conversations: ChatConversationResponse[] = []
-  logged!: LoggedUser;
+  unreadCount: number = 0
+
+  openedConversation: ChatConversationResponse | undefined
 
   constructor( 
-    private authService: AuthService,
     private supportService: SupportService,
     private adminConversationService: AdminConversationWebsocketshareService
   ) { }
 
   ngOnInit(): void {
-    this.getLogged();
-  }
-
-  private getLogged() : void {
-    this.authService.getCurrentUser().subscribe({
-      next: (user: LoggedUser) => {
-        this.logged = user;
-        this.setupChat();
-      }
-    })
+    this.setupChat();
   }
 
   private setupChat(): void {
@@ -56,9 +48,7 @@ export class AdminSupportPageComponent implements OnInit {
       next: (res: string) => {
         console.log(res)
         if(res){
-          const newConversation = JSON.parse(res) as ChatConversationResponse;
-          this.conversations.push(newConversation);
-          this.conversations = [...this.conversations]
+          this.handleNewConversation(res);
         }
       },
       error: (res: HttpErrorResponse) => {
@@ -67,5 +57,42 @@ export class AdminSupportPageComponent implements OnInit {
     })
   }
 
+  private handleNewConversation(res: string): void {
+    const newConversation = JSON.parse(res) as ChatConversationResponse;
+    newConversation.isRead = false;
+    newConversation.isSelected = false;
+    this.conversations.splice(0, 0, newConversation);
+    this.conversations = [...this.conversations]
+    this.unreadCount+=1
+  }
 
+  newMessageEvent(newMsgEvent: MsgFromUserMessage): void {
+    console.log(newMsgEvent);
+    const conversation = this.conversations.find(conversation => conversation.userId===newMsgEvent.userId)
+    if(conversation) {
+      conversation.isRead=false;
+      conversation.messagePreview=newMsgEvent.content;
+      conversation.date=newMsgEvent.sentAt;
+    }
+  }
+  openChat(openedConversation: ChatConversationResponse) : void {
+    this.closePreviousChat();
+    this.openSelectedChat(openedConversation)
+  }
+
+  private closePreviousChat(){
+    const opened = this.conversations.find(conversation => conversation===this.openedConversation)
+    if(opened) {opened.isSelected=false}
+  }
+
+  private openSelectedChat(openedConversation: ChatConversationResponse){
+    this.openedConversation = openedConversation;
+    if(!openedConversation.isRead){this.unreadCount-=1;}
+
+    const obj = this.conversations.find(conversation => conversation===openedConversation)
+    if(obj) {
+      obj.isRead=true;
+      obj.isSelected=true
+    }
+  }
 }

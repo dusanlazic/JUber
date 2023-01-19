@@ -1,18 +1,15 @@
-<div class="is-fullwidth is">
-    <button (click)="openChat()" >
-    <figure class="image is-128x128" *ngIf="conversation?.userImageUrl">
-        <img class="is-rounded" src="{{URL_BASE}}{{conversation.userImageUrl}}">
+<div class="is-conversation" (click)="openChat()" 
+    [ngClass]="{'is-selected': conversation.isSelected === true, 
+                'is-unread': conversation.isRead === false}">
+    <figure class="image is-48x48">
+        <img class="is-rounded"
+        src="{{URL_BASE}}{{conversation.userImageUrl}}" (error)="authService.imageUrlResolver($event, conversation.userFullName)">
     </figure>
-    <figure class="image is-48x48" *ngIf="!conversation?.userImageUrl">
-        <img class="is-rounded" src="{{DEFAULT_PROFILE_PHOTO}}">
-      </figure>
-
-    <p>{{conversation.userFullName}}</p>
-    <div>
-        <p>{{conversation.messagePreview}}</p>
-        <span class="is-size-8">{{conversation.date}}</span>
+    <div class="is-message-preview">
+        <p>
+        <span class="has-text-weight-bold">{{conversation.userFullName}}</span>
+        <span class="has-text-grey is-pulled-right is-size-7">{{conversation.date |  date:'shortTime'}}</span>
+        </p>
+        <p class="has-text-grey">{{conversation.messagePreview}}</p>
     </div>
-    </button>
 </div>
-
-<app-admin-chat [userId]="conversation.userId" *ngIf="chatOpened"></app-admin-chat>

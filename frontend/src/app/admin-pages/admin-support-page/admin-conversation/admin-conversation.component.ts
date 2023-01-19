@@ -1,6 +1,7 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { ChatConversationResponse } from 'src/models/chat';
+import { AuthService } from 'src/services/auth/auth.service';
 
 @Component({
   selector: 'app-admin-conversation',
@@ -11,20 +12,19 @@ export class AdminConversationComponent implements OnInit {
 
   @Input()
   conversation!: ChatConversationResponse
-  chatOpened: boolean;
+  @Output() openChatEvent = new EventEmitter<ChatConversationResponse>();
 
   URL_BASE: string = environment.API_BASE_URL;
   DEFAULT_PROFILE_PHOTO: string = environment.DEFAULT_PROFILE_PHOTO
   
-  constructor() {
-    this.chatOpened = false;
+  constructor(public authService: AuthService) {
   }
 
   ngOnInit(): void {
   }
 
   openChat(){
-    this.chatOpened = !this.chatOpened
+    this.openChatEvent.emit(this.conversation);
   }
 
 }

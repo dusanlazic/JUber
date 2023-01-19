@@ -74,6 +74,7 @@ export class SupportComponent implements OnInit {
   }
 
   sendNewMessage(): void {
+    if(this.newMessage.value === ''){return}
     const newMessage: ChatMessageResponse = {content: this.newMessage.value, sentAt: new Date(), isFromSupport: false}
     this.messages.push(newMessage);
     this.messages = [...this.messages];

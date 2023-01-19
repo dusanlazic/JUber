@@ -14,7 +14,7 @@ export class NotificationWebSocketAPI {
   stompClient: any;
 
   constructor(private websocketShare: WebsocketshareService, private authService: AuthService) {
-    authService.getNewValue().subscribe((user) => {
+    authService.getNewLoggedUser().subscribe((user) => {
         if (user) {
             console.log(user);
             this.connect();

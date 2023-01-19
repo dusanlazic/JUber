@@ -1,7 +1,15 @@
 <div *ngIf="ride">
-	<p class="title is-size-3 has-text-grey is-family-secondary">Ride details</p>
-
+	<p class="title is-size-3 has-text-grey is-family-secondary">Ride details
+		<span (click)="toggleFavourite()" *ngIf="loggedUser.role === 'ROLE_PASSENGER' && isFavourite === 0" class="has-tooltip-right" data-tooltip="Add route to favourites">
+			<span class="iconify is-size-4 ml-3 is-vcentered" data-icon="material-symbols:bookmark-outline"></span> 
+		</span>
+		<span (click)="toggleFavourite()" *ngIf="loggedUser.role === 'ROLE_PASSENGER' && isFavourite === 1" class="has-tooltip-right" data-tooltip="Remove route from favourites">
+			<span class="iconify is-size-4 ml-3 is-vcentered" data-icon="material-symbols:bookmark"></span> 
+		</span>
+	</p>
 	<p *ngIf="ride.rideStatus == 'DENIED'" class="title is-size-3 has-text-danger is-family-secondary">Ride failed/denied.</p>
+	<p *ngIf="ride.rideStatus == 'FINISHED'" class="title is-size-3 has-text-success is-family-secondary">Ride finished.</p>
+	
 
 	<div *ngIf="ride.driver && ride.rideStatus == 'WAIT' && loggedUser.role == 'ROLE_DRIVER'">
 		<div class="column is-size-4 is-family-secondary">
@@ -70,7 +78,7 @@
                 </div>
                 <div class="column">
                   <p><strong>{{person.firstName + " " + person.lastName}}</strong> </p>
-				  <p class="has-text-success has-text-weight-bold">{{person.status}}</p>
+				  <p class="has-text-success has-text-weight-bold" *ngIf="rideInProgress">{{person.status}}</p>
                 </div>
               </div>
             </div>
@@ -82,10 +90,22 @@
 	</div>
 	<div class="mb-5">
 		<p class="title is-size-5 mb-2 is-family-secondary">Cost</p>
-		<p class="is-size-4">
+		<p class="is-size-4 mt-3">
 		  <strong>{{ride.fare}}</strong> total
 		</p>
 		<p class="has-text-grey"><b>{{ride.fare / ride.passengers.length}}</b> per passenger</p>
+	</div>
+
+	<div class="mb-5" *ngIf="!rideInProgress">
+		<p class="title is-size-5 mb-2 is-family-secondary">Date & Time</p>
+		<p class="is-size-5">
+		  <span class="iconify-inline is-size-5 mr-1 has-text-grey" data-icon="fluent:calendar-rtl-20-regular"></span>
+		  {{ride.startTime | date:'mediumDate'}}
+		</p>
+		<p class="is-size-5 mt-3">
+		  <span class="iconify-inline is-size-5 mr-1 has-text-grey" data-icon="fluent:clock-20-regular"></span>
+		  {{ride.startTime | date:'shortTime'}} — {{ride.endTime | date:'shortTime'}}
+		</p>
 	</div>
 
 </div>

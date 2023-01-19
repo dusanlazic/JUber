@@ -1,9 +1,8 @@
 package com.nwt.juber.service;
 
-import com.nwt.juber.config.AppProperties;
+import com.nwt.juber.dto.DriverRideDTO;
 import com.nwt.juber.dto.PersonDTO;
 import com.nwt.juber.dto.RideDTO;
-import com.nwt.juber.dto.message.InvitationStatusMessage;
 import com.nwt.juber.dto.message.RideMessage;
 import com.nwt.juber.dto.message.RideMessageType;
 import com.nwt.juber.dto.request.RideRequest;
@@ -12,20 +11,18 @@ import com.nwt.juber.exception.InsufficientFundsException;
 import com.nwt.juber.exception.StartRideException;
 import com.nwt.juber.model.*;
 import com.nwt.juber.model.notification.NotificationStatus;
-import com.nwt.juber.model.notification.RideCancelledNotification;
 import com.nwt.juber.model.notification.RideInvitationNotification;
 import com.nwt.juber.repository.*;
-import okhttp3.internal.concurrent.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
-import javax.naming.InsufficientResourcesException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 @Service
@@ -77,6 +74,15 @@ public class RideService {
         ride.setRideStatus(RideStatus.FINISHED);
         ride.setEndTime(LocalDateTime.now());
         rideRepository.save(ride);
+        // check if future should be accepted
+        findAndAcceptScheduledRide(ride.getDriver());
+    }
+
+    private void findAndAcceptScheduledRide(Driver driver) {
+        Ride ride = rideRepository.getScheduledRideForDriver(driver);
+        if (ride != null) {
+            startScheduledRide(ride.getId());
+        }
     }
 
     public void createRideRequest(RideRequest rideRequest, Authentication authentication) {
@@ -107,7 +113,8 @@ public class RideService {
         for (String email: rideRequest.getPassengerEmails()) {
             sendRideInvitation(ride, email, passenger);
         }
-        if(rideRequest.getPassengerEmails().size() == 0) {
+
+        if (rideRequest.getPassengerEmails().size() == 0) {
             ride.setRideStatus(RideStatus.WAIT);
             assignSuitableDriverWhenNeeded(ride);
         }
@@ -118,7 +125,7 @@ public class RideService {
     private void assignSuitableDriverWhenNeeded(Ride ride) {
         if (ride.getScheduledTime() != null) {
             if(ride.getScheduledTime().isAfter(LocalDateTime.now())) {
-                taskScheduling.scheduling(() -> assignSuitableDriver(ride), ride.getScheduledTime());
+                assignSuitableDriver(ride);
             } else {
                 // ride failed!
                 RideMessageType type = RideMessageType.RIDE_FAILED_LATE;
@@ -128,6 +135,17 @@ public class RideService {
             }
         } else {
             assignSuitableDriver(ride);
+        }
+    }
+
+    private void startScheduledRide(UUID rideId) {
+        Ride ride = rideRepository.findById(rideId).get();
+        Driver driver = ride.getDriver();
+        Ride activeRide = rideRepository.getActiveRideForDriver(driver);
+        if (activeRide == null) {
+            ride.setRideStatus(RideStatus.ACCEPTED);
+            rideRepository.save(ride);
+            // notify them
         }
     }
 
@@ -179,7 +197,12 @@ public class RideService {
     public void acceptRideDriver(Driver driver, UUID rideId) {
         Ride ride = rideRepository.findById(rideId).orElseThrow(() -> new EndRideException("No ride with id: " + rideId));
         ride.setDriver(driver);
-        ride.setRideStatus(RideStatus.ACCEPTED);
+        if (ride.getScheduledTime() != null) {
+            ride.setRideStatus(RideStatus.SCHEDULED);
+            taskScheduling.scheduling(() -> startScheduledRide(ride.getId()), ride.getScheduledTime());
+        } else {
+            ride.setRideStatus(RideStatus.ACCEPTED);
+        }
         rideRepository.save(ride);
         // notify everyone
         sendRideMessageToPassengers(ride, RideMessageType.DRIVER_FOUND);
@@ -234,15 +257,54 @@ public class RideService {
     }
 
     public Driver findSuitableDriver(Ride ride) {
-        // find by conditions
-        // ask the driver if he wants to start a ride
-        return driverRepository.findAll().get(0);
+        Driver closestAvailable = findClosestAvailableDriver(ride);
+        return closestAvailable != null ? closestAvailable : findFastestUnavailable(ride);
+    }
+
+    private Driver findClosestAvailableDriver(Ride ride) {
+        List<Driver> drivers = driverRepository.findAvailableDrivers(ride);
+        double startLat = ride.getPlaces().get(0).getLatitude();
+        double startLon = ride.getPlaces().get(0).getLongitude();
+        return drivers
+                .stream()
+                .min(Comparator.comparingDouble(driver -> {
+                    double driverLat = driver.getVehicle().getLatitude();
+                    double driverLon = driver.getVehicle().getLongitude();
+                    return geoDistance(startLat, startLon, driverLat, driverLon);
+                }))
+                .orElse(null);
+    }
+
+    public static double geoDistance(double startLatitude, double startLongitude,
+                                     double endLatitude, double endLongitude) {
+        double earthRadius = 6371000; // meters
+        double dLat = Math.toRadians(endLatitude - startLatitude);
+        double dLon = Math.toRadians(endLongitude - startLongitude);
+        double a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.cos(Math.toRadians(startLatitude)) * Math.cos(Math.toRadians(endLatitude)) *
+                        Math.sin(dLon / 2) * Math.sin(dLon / 2);
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        return earthRadius * c;
+    }
+
+    private Driver findFastestUnavailable(Ride ride) {
+        List<DriverRideDTO> drivers = driverRepository.findUnavailableDriversWithNoFutureRides(ride);
+        DriverRideDTO minDriverRide = drivers
+                                    .stream()
+                                    .min(Comparator.comparing(driverRideDTO -> {
+                                        LocalTime estimatedTime = ride.getEstimatedTime();
+                                        double secondsFromStart = ChronoUnit.SECONDS.between(LocalTime.now(), ride.getStartTime());
+                                        double secondsEstimated = ChronoUnit.SECONDS.between(estimatedTime, ride.getStartTime());
+                                        return secondsEstimated - secondsFromStart;
+                                    }))
+                                    .orElse(null);
+        return minDriverRide != null ? minDriverRide.getDriver() : null;
     }
 
     private void subtractFundsForRide(Ride ride) {
         double fare = ride.getFare() / ride.getPassengers().size();
         ride.getPassengers()
-            .forEach(x -> x.setBalance(x.getBalance().subtract(BigDecimal.valueOf(fare))));
+                .forEach(x -> x.setBalance(x.getBalance().subtract(BigDecimal.valueOf(fare))));
     }
 
     public void declineRidePassenger(Passenger passenger, UUID rideId) {
@@ -254,6 +316,7 @@ public class RideService {
         sendRideMessageToPassengers(ride, RideMessageType.PAL_UPDATE_STATUS);
         rideRepository.save(ride);
     }
+
 
     public void declineRideDriver(Driver driver, UUID rideId) {
         Ride ride = rideRepository.findById(rideId).orElseThrow(() -> new EndRideException("No ride with id: " + rideId));

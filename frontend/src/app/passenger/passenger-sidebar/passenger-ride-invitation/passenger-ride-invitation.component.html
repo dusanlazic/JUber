@@ -1,0 +1,23 @@
+<div class="columns mt-0">
+    <div class="column is-sidebar pl-6 pr-5">
+    <div class="mt-5">
+        <p class="title is-size-3 has-text-grey is-family-secondary">Payment</p>
+
+        <div class="is-custom-payments-list">            
+            <app-person-item *ngFor="let pal of pals; let i = index" [person]="pal" [status]="palsStatus[i]"></app-person-item>
+            <button (click)="sendMessage('heyaaa')">Send message</button>
+        </div>
+        <p class="mt-4">Ride will be ordered as soon as everyone accepts the invitation and a driver is found.</p>
+        <div class="notification is-info mt-4">
+        <div class="columns">
+            <div class="column is-1 pl-2 pt-5">
+            <span class="iconify is-size-4" data-icon="la:coins"></span>
+            </div>
+            <div class="column">
+            <p><b>232</b> RSD will be deducted from each passenger's balance once everybody accepts.</p>
+            </div>
+        </div>
+        </div>
+    </div>
+    </div>
+</div>

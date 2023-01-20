@@ -28,7 +28,7 @@ export interface IPal {
 
 
 export interface IRideRequest {
-    route: Route
+    ride: Ride
     additionalRequests: AdditionalRequests
     scheduleTime: string 
     passengersInfo: IPal[]

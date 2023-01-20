@@ -7,6 +7,7 @@ import com.nwt.juber.model.RideStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.List;
 import java.util.UUID;
 
 public interface RideRepository extends JpaRepository<Ride, UUID> {
@@ -18,7 +19,13 @@ public interface RideRepository extends JpaRepository<Ride, UUID> {
             "(r.rideStatus = 1 or r.rideStatus = 2 or r.rideStatus = 3)")
     Ride getActiveRideForDriver(Driver driver);
 
-    @Query("select r from Ride r where :passengerId member of r.passengers and " +
-            "(r.rideStatus = 1 or r.rideStatus = 2 or r.rideStatus = 3)")
+    @Query("select r from Ride r where :passenger member of r.passengers and " +
+            "(r.rideStatus = 0 or r.rideStatus = 1 or r.rideStatus = 2 or r.rideStatus = 3)")
     Ride getActiveRideForPassenger(Passenger passenger);
+
+    @Query("select r from Ride r where :passenger member of r.passengers and r.rideStatus = 5")
+    List<Ride> getPastRidesForPassenger(Passenger passenger);
+
+    @Query("select r from Ride r where r.driver = :driver and r.rideStatus = 5")
+    List<Ride> getPastRidesForDriver(Driver driver);
 }

@@ -20,7 +20,7 @@ public interface DriverRepository extends JpaRepository<Driver, UUID> {
     public List<Driver> findAllWithNoFutureRides();
 
     @Query(value = "select r from Ride r where r.driver.email = :username and (r.rideStatus = 1 or r.rideStatus = 2) order by r.rideStatus desc")
-    public Optional<Ride> findRouteForSimulation(String username);
+    public Optional<Ride> findRideForSimulation(String username);
 
 	
 	List<Driver> findByStatus(DriverStatus status);

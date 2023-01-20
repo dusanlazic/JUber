@@ -17,7 +17,8 @@ public class PersistedChatMessage {
     @Column(columnDefinition = "uuid")
     private UUID id = UUID.randomUUID();
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name="conversation_id")
     private ChatConversation conversation;
 
     private String content;

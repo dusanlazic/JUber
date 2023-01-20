@@ -1,0 +1,15 @@
+<div class="is-conversation" (click)="openChat()" 
+    [ngClass]="{'is-selected': conversation.isSelected === true, 
+                'is-unread': conversation.isRead === false}">
+    <figure class="image is-48x48">
+        <img class="is-rounded"
+        src="{{URL_BASE}}{{conversation.userImageUrl}}" (error)="authService.imageUrlResolver($event, conversation.userFullName)">
+    </figure>
+    <div class="is-message-preview">
+        <p>
+        <span class="has-text-weight-bold">{{conversation.userFullName}}</span>
+        <span class="has-text-grey is-pulled-right is-size-7">{{conversation.date |  date:'shortTime'}}</span>
+        </p>
+        <p class="has-text-grey">{{conversation.messagePreview}}</p>
+    </div>
+</div>

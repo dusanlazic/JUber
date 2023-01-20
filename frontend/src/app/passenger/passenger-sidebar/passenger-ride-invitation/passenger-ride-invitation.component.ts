@@ -4,9 +4,7 @@ import { IRideRequest } from 'src/app/store/rideRequest/rideRequest';
 import { environment } from 'src/environments/environment';
 import { AuthService } from 'src/services/auth/auth.service';
 import { RideSocketShareService } from 'src/services/ride/ridesocketshare.service';
-import { RideWebSocketAPI } from 'src/services/ride/ride-message.service';
 import { HttpRequestService } from 'src/services/util/http-request.service';
-import { WebsocketshareService } from 'src/services/notification/websocketshare.service';
 import { Toastr } from 'src/services/util/toastr.service';
 
 @Component({

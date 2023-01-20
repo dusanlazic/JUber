@@ -9,7 +9,8 @@ export interface LoggedUser {
 export enum Roles {
     PASSENGER="ROLE_PASSENGER",
     DRIVER="ROLE_DRIVER",
-    PASSENGER_NEW="ROLE_PASSENGER_NEW"
+    PASSENGER_NEW="ROLE_PASSENGER_NEW",
+    ADMIN="ROLE_ADMIN"
 }
 
 export interface UserBasicInfo {

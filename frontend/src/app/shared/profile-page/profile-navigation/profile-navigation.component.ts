@@ -4,7 +4,6 @@ import { LoggedUser } from 'src/models/user';
 import { AuthService } from 'src/services/auth/auth.service';
 
 
-
 enum SelectionOptions {
   PROFILE='/profile',
   CHANGE_PASSWORD='/profile/change-password',
@@ -12,17 +11,16 @@ enum SelectionOptions {
   SAVED_ROUTES='/profile/saved-routes',
   PAST_RIDES='/profile/past-rides',
   SUPPORT='/profile/support',
-  ADMIN_SUPPORT='/profile/admin-support',
 }
 
 @Component({
-  selector: 'app-profile-page',
-  templateUrl: './profile-page.component.html',
-  styleUrls: ['./profile-page.component.sass']
+  selector: 'app-profile-navigation',
+  templateUrl: './profile-navigation.component.html',
+  styleUrls: ['./profile-navigation.component.sass']
 })
-export class ProfilePageComponent implements OnInit {
+export class ProfileNavigationComponent implements OnInit {
 
-  logged: LoggedUser;
+  // logged: LoggedUser;
   selected!: SelectionOptions;
 
   SelectionOptions = SelectionOptions;
@@ -31,16 +29,16 @@ export class ProfilePageComponent implements OnInit {
     private authservice: AuthService,
     private router: Router,
   ) { 
-    this.logged={email:'', imageUrl:'' ,name: '', role: '', id: ''};
+    // this.logged={email:'', imageUrl:'' ,name: '', role: '', id: ''};
     this.getCurrentHref();
   }
 
   ngOnInit(): void {
-    this.authservice.getCurrentUser().subscribe({
-      next: (user: LoggedUser) => {
-        this.logged = user;
-      }
-    })
+    // this.authservice.getCurrentUser().subscribe({
+    //   next: (user: LoggedUser) => {
+    //     this.logged = user;
+    //   }
+    // })
   }
 
   navigate(option: SelectionOptions){
@@ -48,14 +46,14 @@ export class ProfilePageComponent implements OnInit {
     this.router.navigate([option])
     
   }
-  logout() : void {
-    this.authservice.logout();
-    this.router.navigate(['/login']);
-  }
+  // logout() : void {
+  //   this.authservice.logout();
+  //   this.router.navigate(['/login']);
+  // }
 
   private getCurrentHref() : void{
     const href = this.router.url;
     this.selected = href as SelectionOptions;
   }
-  
+
 }

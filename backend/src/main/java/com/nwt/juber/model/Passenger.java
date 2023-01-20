@@ -18,5 +18,5 @@ public class Passenger extends Person {
     @OneToMany(mappedBy = "passenger")
     private List<DepositAddress> depositAddresses;
 
-    private BigDecimal balance;
+    private BigDecimal balance = BigDecimal.ZERO;
 }

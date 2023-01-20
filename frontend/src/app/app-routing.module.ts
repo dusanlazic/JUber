@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import { RouterModule, Routes, UrlSegment } from '@angular/router';
 import { Roles } from 'src/models/user';
 import { AuthGuardService as AuthGuard } from 'src/services/auth/auth-guard.service';
 import { RoleGuardService as RoleGuard} from 'src/services/auth/role-guard.service';
@@ -16,13 +16,14 @@ import { Oauth2RegisterRedirectHandlerComponent } from './registration/register-
 import { RegisterOauthComponent } from './registration/register-oauth/register-oauth.component';
 import { MapComponent } from './shared/map/map.component';
 import { HomeComponent } from './shared/homepage/home/home.component';
-import { ProfilePageComponent } from './shared/profile-page/profile-page/profile-page.component';
-import { ProfileDetailsComponent } from './shared/profile-page/profile-page/profile-details/profile-details.component';
-import { ChangePasswordComponent } from './shared/profile-page/profile-page/change-password/change-password.component';
-import { BalanceComponent } from './shared/profile-page/profile-page/balance/balance.component';
-import { SavedRoutesComponent } from './shared/profile-page/profile-page/saved-routes/saved-routes.component';
-import { PastRidesComponent } from './shared/profile-page/profile-page/past-rides/past-rides.component';
-import { SupportComponent } from './shared/profile-page/profile-page/support/support.component';
+import { ProfileDetailsComponent } from './shared/profile-page/profile-navigation/profile-details/profile-details.component';
+import { ChangePasswordComponent } from './shared/profile-page/profile-navigation/change-password/change-password.component';
+import { BalanceComponent } from './shared/profile-page/profile-navigation/balance/balance.component';
+import { SavedRoutesComponent } from './shared/profile-page/profile-navigation/saved-routes/saved-routes.component';
+import { PastRidesComponent } from './shared/profile-page/profile-navigation/past-rides/past-rides.component';
+import { SupportComponent } from './shared/profile-page/profile-navigation/support/support.component';
+import { AdminSupportPageComponent } from './admin-pages/admin-support-page/admin-support-page.component';
+import { NavigationPageTemplateComponent } from './shared/navigation-page-template/navigation-page-template/navigation-page-template.component';
 import { RideDetailsComponent } from './shared/ride-details/ride-details.component';
 
 const routes: Routes = [
@@ -47,14 +48,25 @@ const routes: Routes = [
     { path: 'reset-success', component: PasswordResetSuccessComponent }]
   },
 
-  { path: 'profile', component: ProfilePageComponent, children: [
-    { path: '', component: ProfileDetailsComponent },
-    { path: 'change-password', component: ChangePasswordComponent },
-    { path: 'balance', component: BalanceComponent },
-    { path: 'saved-routes', component: SavedRoutesComponent },
-    { path: 'past-rides', component: PastRidesComponent },
-    { path: 'support', component: SupportComponent }]
+  { path: 'profile', component: NavigationPageTemplateComponent, 
+    children: [
+      { path: '', component: ProfileDetailsComponent },
+      { path: 'change-password', component: ChangePasswordComponent },
+      { path: 'balance', component: BalanceComponent },
+      { path: 'saved-routes', component: SavedRoutesComponent },
+      { path: 'past-rides', component: PastRidesComponent },
+      { path: 'support', component: SupportComponent, canActivate: [AuthGuard, RoleGuard],  data: { expectedRoles: [Roles.DRIVER, Roles.PASSENGER ]} },
+    ]
   },
+  { path: 'admin', component: NavigationPageTemplateComponent, canActivate: [AuthGuard, RoleGuard], data: { expectedRoles: [Roles.ADMIN ]}, 
+    children: [
+     
+    ]
+  },
+  { path: 'admin/support', component: AdminSupportPageComponent, 
+    canActivate: [AuthGuard, RoleGuard], data: { expectedRoles: [Roles.ADMIN ]}, 
+  },
+  
 
   { path: '**', redirectTo: '' }
 ];

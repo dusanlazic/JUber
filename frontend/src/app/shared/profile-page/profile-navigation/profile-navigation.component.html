@@ -1,0 +1,42 @@
+
+  <div class="navigation-item is-first" [routerLink]="['/home']">
+    <span class="iconify-inline is-size-5" data-icon="fluent:arrow-left-12-regular"></span>
+    Home
+  </div>
+
+  <div class="navigation-item {{ selected===SelectionOptions.PROFILE ? 'is-selected' : ''}}" 
+        (click)="navigate(SelectionOptions.PROFILE)">
+    <span class="iconify-inline is-size-5" data-icon="fluent:person-24-regular"></span>
+    Profile
+  </div>
+
+  <div class="navigation-item {{ selected===SelectionOptions.CHANGE_PASSWORD ? 'is-selected' : ''}}" 
+      (click)="navigate(SelectionOptions.CHANGE_PASSWORD)">
+    <span class="iconify-inline is-size-5" data-icon="fluent:key-24-regular"></span>
+    Change password
+  </div>
+
+  <div class="navigation-item {{ selected===SelectionOptions.BALANCE ? 'is-selected' : ''}}"
+      (click)="navigate(SelectionOptions.BALANCE)">
+    <span class="iconify-inline is-size-5" data-icon="fluent:wallet-24-regular"></span>
+    Balance
+  </div>
+
+  <div class="navigation-item {{ selected===SelectionOptions.SAVED_ROUTES ? 'is-selected' : ''}}"
+      (click)="navigate(SelectionOptions.SAVED_ROUTES)">
+    <span class="iconify-inline is-size-5" data-icon="fluent:bookmark-24-regular"></span>
+    Saved routes
+  </div>
+
+  <div  class="navigation-item {{ selected===SelectionOptions.PAST_RIDES ? 'is-selected' : ''}}"
+      (click)="navigate(SelectionOptions.PAST_RIDES)">
+    <span class="iconify-inline is-size-5" data-icon="fluent:history-24-regular"></span>
+    Past rides
+  </div>
+
+  <div 
+      class="navigation-item {{ selected===SelectionOptions.SUPPORT ? 'is-selected' : ''}}"
+      (click)="navigate(SelectionOptions.SUPPORT)">    
+    <span class="iconify-inline is-size-5" data-icon="fluent:chat-help-24-regular"></span>
+    Support
+  </div>

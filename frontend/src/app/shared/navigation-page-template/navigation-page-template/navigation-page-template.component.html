@@ -1,0 +1,28 @@
+<section class="hero is-fullheight has-background-light">
+    <div class="container is-widescreen">
+      <div class="box is-custom-settings-box">
+        <div class="columns">
+          <div class="column is-3 is-navigation-sidebar">
+
+            <app-profile-navigation *ngIf="logged?.role === 'ROLE_DRIVER' || logged?.role === 'ROLE_PASSENGER'"></app-profile-navigation>
+            <app-admin-navigation *ngIf="logged?.role === 'ROLE_ADMIN'"></app-admin-navigation>
+
+            <div class="navigation-item" (click)="logout()">
+              <span class="iconify-inline is-size-5" data-icon="fluent:arrow-exit-20-regular"></span>
+              Log out
+            </div>
+
+            <div class="is-user-info is-unselectable">
+              <div class="ml-2">
+                <p class="is-size-7 has-text-grey">{{logged.email}}</p>
+                <p class="has-text-weight-bold">{{logged.name}}</p>
+              </div>
+            </div>
+          </div>
+          <div class="column is-content {{isScrollable ? 'has-custom-scrollable-container has-chat-control p-0' : '' }}">
+            <router-outlet></router-outlet>
+          </div>
+        </div>
+      </div>
+    </div>
+</section>

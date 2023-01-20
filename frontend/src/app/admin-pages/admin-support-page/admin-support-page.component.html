@@ -1,0 +1,29 @@
+<section class="hero is-fullheight has-background-light">
+    <div class="container is-widescreen">
+      <div class="box is-custom-settings-box pr-0">
+        <div class="columns">
+          <div class="column is-3 is-navigation-sidebar pr-0 pb-0">
+            <p class="title is-size-5 ml-4 pt-4 mb-3 is-family-secondary">
+              <span>Messages</span>
+              <span class="has-text-success" >{{unreadCount}}</span>
+            </p>
+            <div class="is-conversation-list">
+                <div *ngFor="let conversation of conversations" class="is-fullwidth">
+                    <app-admin-conversation [conversation]="conversation" (openChatEvent)="openChat(conversation)">
+                    </app-admin-conversation>
+                </div>
+            </div>
+            <div class="navigation-item is-at-bottom" [routerLink]="['/admin']">
+              <span class="iconify-inline is-size-5" data-icon="fluent:arrow-left-12-regular"></span>
+              Back to panel
+            </div>
+          </div>
+          <div class="column is-content has-custom-scrollable-container has-chat-control p-0">
+            <app-admin-chat [conversation]="openedConversation" *ngIf="openedConversation"
+                (newMessageSentEvent)="handleNewMessage($event)">
+            </app-admin-chat>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>

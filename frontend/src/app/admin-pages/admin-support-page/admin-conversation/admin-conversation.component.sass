@@ -1,0 +1,28 @@
+.is-conversation
+    display: flex
+    flex-direction: row
+    align-items: center
+    margin-left: 0px
+    padding-left: 15px
+    height: 70px
+    &:hover
+        background-color: #f5f5f5 !important
+        cursor: pointer
+    &.is-selected
+        background-color: #f5f5f5
+    &.is-unread
+        background-color: #fffaeb
+        .indicator
+            visibility: visible !important
+    .is-message-preview
+        width: 100%
+        margin-left: 10px
+        margin-right: 12px
+    .indicator
+        color: #48c78e
+        visibility: hidden
+        font-weight: bold
+        font-size: 30px
+        margin-left: 4px
+    .image
+        padding-top: 7px

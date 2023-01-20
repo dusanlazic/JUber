@@ -1,0 +1,22 @@
+@import "../../../../../node_modules/bulma/bulma.sass"
+
+.navigation-item
+    margin-left: 0px
+    padding-left: 10px
+    height: 60px
+    line-height: 60px
+    font-weight: bold
+    border-left: 3px solid transparent
+    &:hover
+        border-left: 3px solid $grey-lighter
+        cursor: pointer
+    &.is-selected
+        border-left: 3px solid $success
+    &.is-first
+        border-top-left-radius: 6px
+    &.is-at-bottom
+        margin-top: auto
+        border-bottom-left-radius: 6px
+        margin-bottom: 0px
+    .iconify-inline
+        margin-right: 8px

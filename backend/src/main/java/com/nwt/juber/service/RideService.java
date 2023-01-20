@@ -1,28 +1,45 @@
 package com.nwt.juber.service;
 
-import com.nwt.juber.dto.PersonDTO;
-import com.nwt.juber.dto.RideDTO;
-import com.nwt.juber.dto.message.InvitationStatusMessage;
-import com.nwt.juber.dto.message.RideMessage;
-import com.nwt.juber.dto.message.RideMessageType;
-import com.nwt.juber.dto.request.RideRequest;
-import com.nwt.juber.exception.EndRideException;
-import com.nwt.juber.exception.InsufficientFundsException;
-import com.nwt.juber.exception.StartRideException;
-import com.nwt.juber.model.*;
-import com.nwt.juber.model.notification.NotificationStatus;
-import com.nwt.juber.model.notification.RideCancelledNotification;
-import com.nwt.juber.model.notification.RideInvitationNotification;
-import com.nwt.juber.repository.*;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
-import javax.naming.InsufficientResourcesException;
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.util.*;
+import com.nwt.juber.dto.PersonDTO;
+import com.nwt.juber.dto.RideDTO;
+import com.nwt.juber.dto.message.RideMessage;
+import com.nwt.juber.dto.message.RideMessageType;
+import com.nwt.juber.dto.request.RideRequest;
+import com.nwt.juber.dto.response.PastRidesResponse;
+import com.nwt.juber.exception.EndRideException;
+import com.nwt.juber.exception.InsufficientFundsException;
+import com.nwt.juber.exception.StartRideException;
+import com.nwt.juber.exception.UserNotFoundException;
+import com.nwt.juber.model.Driver;
+import com.nwt.juber.model.Passenger;
+import com.nwt.juber.model.PassengerStatus;
+import com.nwt.juber.model.Person;
+import com.nwt.juber.model.Ride;
+import com.nwt.juber.model.RideStatus;
+import com.nwt.juber.model.Role;
+import com.nwt.juber.model.User;
+import com.nwt.juber.model.notification.NotificationStatus;
+import com.nwt.juber.model.notification.RideInvitationNotification;
+import com.nwt.juber.repository.DriverRepository;
+import com.nwt.juber.repository.NotificationRepository;
+import com.nwt.juber.repository.PassengerRepository;
+import com.nwt.juber.repository.PlaceRepository;
+import com.nwt.juber.repository.RideRepository;
+import com.nwt.juber.repository.RouteRepository;
 
 @Service
 public class RideService {
@@ -279,4 +296,33 @@ public class RideService {
         personDTO.setImageUrl(person.getImageUrl());
         return personDTO;
     }
+
+	public List<PastRidesResponse> getPastRides(User user) {
+		List<Ride> pastRides = new ArrayList<Ride>();
+		if(user.getRole().equals(Role.ROLE_DRIVER)) {
+			Driver driver = driverRepository.findById(user.getId()).orElseThrow(UserNotFoundException::new);
+			pastRides = rideRepository.getPastRidesForDriver(driver);
+		}
+		else if(user.getRole().equals(Role.ROLE_PASSENGER)) {
+			Passenger passenger = passengerRepository.findById(user.getId()).get();
+			pastRides = rideRepository.getPastRidesForPassenger(passenger);
+		}
+        return pastRides.stream().map(ride -> convertPastRidesResponse(ride)).toList();
+	}
+
+	private PastRidesResponse convertPastRidesResponse(Ride ride) {
+		String startPlaceName = "";
+		String endPlaceName = "";
+
+		if(ride.getPlaces().size() > 0) {
+	    	startPlaceName = ride.getPlaces().get(0).getName();
+	    	endPlaceName = ride.getPlaces().get(ride.getPlaces().size() - 1).getName();
+		}
+    	String date = ride.getStartTime().format(DateTimeFormatter.ofPattern("dd.MM.yyyy."));
+    	String startTime = ride.getStartTime().format(DateTimeFormatter.ofPattern("HH:mm"));
+    	String endTime = ride.getEndTime().format(DateTimeFormatter.ofPattern("HH:mm"));
+
+    	return new PastRidesResponse(ride.getId(), startPlaceName, endPlaceName, date, startTime, endTime, ride.getFare());
+    }
+	    		
 }

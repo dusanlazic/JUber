@@ -27,5 +27,10 @@ export class RideService {
   declineRide(rideId: string): Observable<any> {
     const url = environment.API_BASE_URL + `/ride/decline/${rideId}`;
     return this.httpRequestService.put(url, null) as Observable<any>;
-}
+  }
+
+  getPastRides(): Observable<any> {
+    const url = environment.API_BASE_URL + '/ride/pastRides';
+    return this.httpRequestService.get(url) as Observable<any>;
+  }
 }

@@ -5,7 +5,7 @@
           <div class="column is-3 is-navigation-sidebar pr-0 pb-0">
             <p class="title is-size-5 ml-4 pt-4 mb-3 is-family-secondary">
               <span>Messages</span>
-              <span class="has-text-success" *ngIf="unreadCount>0">{{unreadCount}}</span>
+              <span class="has-text-success" >{{unreadCount}}</span>
             </p>
             <div class="is-conversation-list">
                 <div *ngFor="let conversation of conversations" class="is-fullwidth">
@@ -20,7 +20,7 @@
           </div>
           <div class="column is-content has-custom-scrollable-container has-chat-control p-0">
             <app-admin-chat [conversation]="openedConversation" *ngIf="openedConversation"
-                (newMessageEvent)="newMessageEvent($event)">
+                (newMessageSentEvent)="handleNewMessage($event)">
             </app-admin-chat>
           </div>
         </div>

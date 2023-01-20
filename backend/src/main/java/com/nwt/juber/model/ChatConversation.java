@@ -30,6 +30,8 @@ public class ChatConversation {
     private Date lastMessageSentAt;
 
     private Boolean isArchived = false;
+    
+    private Boolean isRead = false;
 
     public ChatConversation(User user, Admin support) {
         this.user = user;
@@ -39,7 +41,7 @@ public class ChatConversation {
     public void addMessage(PersistedChatMessage message) {
         messages.add(message);
         message.setConversation(this);
-
+        isRead = false;
         lastMessageSentAt = message.getSentAt();
     }
 }

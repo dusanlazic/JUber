@@ -1,19 +1,9 @@
-export enum DriverStatus {
-    ACTIVE="ACTIVE",
-	INACTIVE="INACTIVE",
-	OVERTIME="OVERTIME",
-	DRIVING="DRIVING"
-}
-
 export interface ChatMessage {
     content: string,
     sentAt: Date,
     isFromSupport: boolean
 }
 
-export interface ChatMessageResponse extends ChatMessage{
-    // isFromSupport: boolean
-}
 export interface ChatMessageRequest {
     content: string; //max 500
 }
@@ -23,19 +13,12 @@ export interface ChatConversationResponse {
     userId: string,
     userFullName: string
     userImageUrl: string,
-    isResponded: boolean,
     isRead?: boolean;
     isSelected?: boolean;
-}
-
-export interface MsgFromSupportMessage extends ChatMessage{
+    conversationId: string;
+    isSeen: boolean;
 }
 
 export interface MsgFromUserMessage  extends ChatMessage {
-    userId: string,
-}
-
-export interface NewMessageEvent {
-    content: string,
     userId: string,
 }

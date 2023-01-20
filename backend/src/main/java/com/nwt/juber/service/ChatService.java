@@ -146,13 +146,13 @@ public class ChatService {
     	response.setUserFullName(c.getUser().getName());
     	response.setUserImageUrl(c.getUser().getImageUrl());
     	response.setDate(c.getLastMessageSentAt() == null ? new Date() : c.getLastMessageSentAt());
-        
+        response.setConversationId(c.getId());
     	if(c.getMessages().size() > 0) {
     		PersistedChatMessage latestMessage = c.getMessages().get(c.getMessages().size() - 1);
             String messagePreview = previewMessage(latestMessage.getContent());
             
             response.setMessagePreview(messagePreview);
-            response.setIsResponded(latestMessage.getIsFromSupport());
+            response.setIsRead(c.getIsRead());
     	}
     	
 
@@ -196,4 +196,10 @@ public class ChatService {
         inactiveConversations.forEach(c -> c.setIsArchived(true));
         conversationRepository.saveAll(inactiveConversations);
     }
+
+	public void markConversationAsRead(UUID conversationId) {
+		ChatConversation conversation = conversationRepository.findById(conversationId).get();
+		conversation.setIsRead(true);
+		conversationRepository.save(conversation);
+	}
 }

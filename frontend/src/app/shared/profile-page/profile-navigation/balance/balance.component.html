@@ -21,10 +21,17 @@
             </a>
           </div>
         </div>
-        <div class="notification is-warning is-light mt-5">
+        <div class="notification is-warning is-light mt-5 mb-3">
           <p>
             <span class="iconify-inline is-size-5" data-icon="fluent:warning-16-regular"></span>
             Deposited funds are automatically converted to RSD.
+          </p>
+        </div>
+        <div class="notification is-info is-light">
+          <p>
+            <span class="iconify-inline is-size-5" data-icon="fluent:info-16-regular"></span>
+            Funds not showing up? 
+            <a (click)="expectBalanceChange()">Click here</a>
           </p>
         </div>
       </div>

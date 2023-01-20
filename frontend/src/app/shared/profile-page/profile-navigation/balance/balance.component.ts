@@ -76,4 +76,9 @@ export class BalanceComponent implements OnInit {
     this.toastr.success('Deposit address copied!');
   }
 
+  public expectBalanceChange() {
+    this.subscribeToBalanceChanges();
+    this.toastr.info('Deposit address is now being monitored for transactions. If you made a deposit, it will show up at any moment.');
+  }
+
 }

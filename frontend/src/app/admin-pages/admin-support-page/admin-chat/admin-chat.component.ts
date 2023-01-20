@@ -1,10 +1,8 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit, Input, ViewChild, ElementRef, Output, EventEmitter } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { mergeScan } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { ChatConversationResponse, ChatMessageResponse, MsgFromUserMessage } from 'src/models/chat';
-import { LoggedUser } from 'src/models/user';
+import { ChatConversationResponse, ChatMessage, MsgFromUserMessage } from 'src/models/chat';
 import { AuthService } from 'src/services/auth/auth.service';
 import { AdminSupportWebsocketshareService } from 'src/services/support/admin/admin-chat/admin-support-websocketshare.service';
 import { SupportService } from 'src/services/support/support.service';
@@ -18,11 +16,11 @@ export class AdminChatComponent implements OnInit {
   
   @Input()
   conversation!: ChatConversationResponse;
-  @Output() newMessageEvent = new EventEmitter<MsgFromUserMessage>();
+  @Output() newMessageSentEvent = new EventEmitter<MsgFromUserMessage>();
 
   userId: string = '' 
 
-  messages: ChatMessageResponse[] = [];
+  messages: ChatMessage[] = [];
 
   newMessage: FormControl;
   URL_BASE = environment.API_BASE_URL;
@@ -55,7 +53,7 @@ export class AdminChatComponent implements OnInit {
 
   private getUserMessages(): void{
     this.supportService.getMessagesAsSupport(this.userId).subscribe({
-      next: (msgs: Array<ChatMessageResponse>) => {
+      next: (msgs: Array<ChatMessage>) => {
         this.messages = msgs;
       },
       error: (res: HttpErrorResponse) => {
@@ -68,7 +66,8 @@ export class AdminChatComponent implements OnInit {
     this.adminChatService.getNewValue().subscribe({
       next: (res: string) => {
         if(res){
-          this.handleNewMessageArrived(res)
+          const msg = JSON.parse(res) as MsgFromUserMessage;
+          this.handleNewMessageArrived(msg)
         }
       },
       error: (res: HttpErrorResponse) => {
@@ -76,27 +75,18 @@ export class AdminChatComponent implements OnInit {
       },
     })
   }
-  private handleNewMessageArrived(res: string): void{
-    const msg = JSON.parse(res) as MsgFromUserMessage;
+  private handleNewMessageArrived(msg: MsgFromUserMessage): void{
     if(msg.userId === this.userId){
       msg.isFromSupport=false;
       this.messages.push(msg)
       this.messages = [...this.messages]
-      this.notifyConversationOnNewMessage(msg)
     }
   }
-  private notifyConversationOnNewMessage(msg: MsgFromUserMessage){
-    if(!this.conversation.isSelected){
-      this.newMessageEvent.emit(msg)
-    }
-  }
-
-
   sendNewMessage(): void {
     if(this.newMessage.value === ''){return}
 
     // add locally
-    const newMessage: ChatMessageResponse = {content: this.newMessage.value, sentAt: new Date(), isFromSupport: true}
+    const newMessage: ChatMessage = {content: this.newMessage.value, sentAt: new Date(), isFromSupport: true}
     this.messages.push(newMessage);
     this.messages = [...this.messages];
 
@@ -111,6 +101,9 @@ export class AdminChatComponent implements OnInit {
         // TODO: if not sent successfuly, add warning to conversation
       },
     })
+
+    // notify converstaion
+    this.newMessageSentEvent.emit({...newMessage, userId: this.userId})
   }
 
 }

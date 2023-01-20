@@ -16,5 +16,6 @@ public class ChatConversationResponse {
     private UUID userId;
     private String userFullName;
     private String userImageUrl;
-    private Boolean isResponded;
+    private UUID conversationId;
+    private Boolean isRead;
 }

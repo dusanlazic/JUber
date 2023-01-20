@@ -77,6 +77,8 @@ import { RideDetailsComponent } from './shared/ride-details/ride-details.compone
 import { RideDetailsSidebarComponent } from './shared/ride-details/ride-details-sidebar/ride-details-sidebar.component';
 import { RideDetailsMapComponent } from './shared/ride-details/ride-details-map/ride-details-map.component';
 import { RideDetailsPlaceComponent } from './shared/ride-details/ride-details-place/ride-details-place.component';
+import { PaymentWebsocketshareService } from 'src/services/payment/payment-websocketshare.service';
+import { PaymentWebSocketAPI } from 'src/services/payment/payment-socket.service';
 
 @NgModule({
   declarations: [
@@ -176,6 +178,7 @@ import { RideDetailsPlaceComponent } from './shared/ride-details/ride-details-pl
   providers: [RideSocketShareService, RideWebSocketAPI,
               NotificationWebsocketshareService, NotificationWebSocketAPI, 
               SupportChatWebsocketshareService, SupportChatWebSocketAPI,
+              PaymentWebsocketshareService, PaymentWebSocketAPI,
               AdminSupportWebsocketshareService, AdminSupportWebSocketAPI,
               AdminConversationWebsocketshareService, AdminConversationWebSocketAPI],
   bootstrap: [AppComponent]

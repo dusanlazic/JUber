@@ -2,7 +2,7 @@
     <p class="title is-family-secondary">Balance</p>
     <div class="notification is-light">
       <p>Available</p>
-      <p class="title is-size-1 is-family-secondary"><b>{{balance}}.00</b> RSD</p>
+      <p class="title is-size-1 is-family-secondary"><b>{{balance}}</b> RSD</p>
     </div>
     <div class="columns is-vcentered mt-6">
       <div class="column is-7 p-0 m-0">
@@ -16,7 +16,7 @@
             <input class="input is-rounded has-background-light" type="text" value={{ethAddress}} readonly>
           </div>
           <div class="control">
-            <a class="button is-rounded">
+            <a class="button is-rounded" (click)="copyAddress()">
               <span class="iconify is-size-4" data-icon="fluent:copy-16-regular"></span>
             </a>
           </div>
@@ -30,7 +30,7 @@
       </div>
       <div class="column p-0 m-0 has-text-centered">
         <figure class="image is-256x256 is-inline-block">
-          <img src="assets/ethqr.png">
+          <img src="http://api.qrserver.com/v1/create-qr-code/?data={{ethAddress}}&size=256x256">
         </figure>
       </div>
     </div>

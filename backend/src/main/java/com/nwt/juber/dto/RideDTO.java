@@ -1,5 +1,6 @@
 package com.nwt.juber.dto;
 
+import com.nwt.juber.model.PassengerStatus;
 import com.nwt.juber.model.Place;
 import com.nwt.juber.model.RideStatus;
 import lombok.Data;
@@ -15,7 +16,10 @@ public class RideDTO {
     private List<Place> places;
     private Double fare;
     private List<PersonDTO> passengers;
+    private List<PassengerStatus> passengersReady;
     private PersonDTO driver;
     private RideStatus rideStatus;
+    private Boolean babyFriendly;
+    private Boolean petFriendly;
 
 }

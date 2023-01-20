@@ -66,7 +66,7 @@ export class AuthService {
             next: (user: LoggedUser) => {
                 this.localStorage.set('role', user.role);
                 if(user.role === Roles.ADMIN){
-                    redirectPath = '/admin-support'
+                    redirectPath = '/admin'
                 }
                 this.loggedUser = user;
                 this.router.navigate([redirectPath]);

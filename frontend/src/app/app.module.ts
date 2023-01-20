@@ -47,14 +47,13 @@ import { NotificationComponent } from './shared/homepage/notification/notificati
 import { RideInviteComponent } from './shared/homepage/notification/notification-list/ride-invite/ride-invite.component';
 import { NotificationWebSocketAPI } from 'src/services/notification/notification-socket.service';
 import { NotificationItemComponent } from './shared/homepage/notification/notification-list/notification-item/notification-item.component';
-import { ProfileDetailsComponent } from './shared/profile-page/profile-page/profile-details/profile-details.component';
-import { ChangePasswordComponent } from './shared/profile-page/profile-page/change-password/change-password.component';
-import { BalanceComponent } from './shared/profile-page/profile-page/balance/balance.component';
-import { SavedRoutesComponent } from './shared/profile-page/profile-page/saved-routes/saved-routes.component';
-import { PastRidesComponent } from './shared/profile-page/profile-page/past-rides/past-rides.component';
-import { SupportComponent } from './shared/profile-page/profile-page/support/support.component';
-import { ProfilePageComponent } from './shared/profile-page/profile-page/profile-page.component';
-import { SupportMessageComponent } from './shared/profile-page/profile-page/support/support-message/support-message.component';
+import { ProfileDetailsComponent } from './shared/profile-page/profile-navigation/profile-details/profile-details.component';
+import { ChangePasswordComponent } from './shared/profile-page/profile-navigation/change-password/change-password.component';
+import { BalanceComponent } from './shared/profile-page/profile-navigation/balance/balance.component';
+import { SavedRoutesComponent } from './shared/profile-page/profile-navigation/saved-routes/saved-routes.component';
+import { PastRidesComponent } from './shared/profile-page/profile-navigation/past-rides/past-rides.component';
+import { SupportComponent } from './shared/profile-page/profile-navigation/support/support.component';
+import { SupportMessageComponent } from './shared/support-message/support-message.component';
 import { NotificationWebsocketshareService } from 'src/services/notification/notification-websocketshare.service';
 import { AdminSupportWebSocketAPI } from 'src/services/support/admin/admin-chat/admin-support-socket.service';
 import { SupportChatWebSocketAPI } from 'src/services/support/user/support-chat-socket.service';
@@ -65,6 +64,9 @@ import { AdminConversationWebSocketAPI } from 'src/services/support/admin/admin-
 import { AdminSupportPageComponent } from './admin-pages/admin-support-page/admin-support-page.component';
 import { AdminChatComponent } from './admin-pages/admin-support-page/admin-chat/admin-chat.component';
 import { AdminConversationComponent } from './admin-pages/admin-support-page/admin-conversation/admin-conversation.component';
+import { NavigationPageTemplateComponent } from './shared/navigation-page-template/navigation-page-template/navigation-page-template.component';
+import { AdminNavigationComponent } from './admin-pages/admin-navigation/admin-navigation.component';
+import { ProfileNavigationComponent } from './shared/profile-page/profile-navigation/profile-navigation.component';
 
 @NgModule({
   declarations: [
@@ -105,8 +107,6 @@ import { AdminConversationComponent } from './admin-pages/admin-support-page/adm
     RideInviteComponent,
     NotificationItemComponent,
 
-    ProfilePageComponent,
-
     ProfileDetailsComponent,
     ChangePasswordComponent,
     BalanceComponent,
@@ -118,6 +118,9 @@ import { AdminConversationComponent } from './admin-pages/admin-support-page/adm
     AdminConversationComponent,
     AdminSupportPageComponent,
     AdminChatComponent,
+    NavigationPageTemplateComponent,
+    AdminNavigationComponent,
+    ProfileNavigationComponent,
   ],
   imports: [
     BrowserModule,
@@ -149,7 +152,8 @@ import { AdminConversationComponent } from './admin-pages/admin-support-page/adm
     BalanceComponent,
     SavedRoutesComponent,
     PastRidesComponent,
-    SupportComponent
+    SupportComponent,
+    SupportMessageComponent,
   ],
   providers: [NotificationWebsocketshareService, NotificationWebSocketAPI, 
               SupportChatWebsocketshareService, SupportChatWebSocketAPI,

@@ -8,7 +8,9 @@ import com.nwt.juber.model.User;
 import com.nwt.juber.repository.UserRepository;
 import com.nwt.juber.security.oauth.user.OAuth2UserInfo;
 import com.nwt.juber.security.oauth.user.OAuth2UserInfoFactory;
+import com.nwt.juber.service.FileStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
@@ -25,6 +27,9 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private FileStorageService fileStorageService;
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest oAuth2UserRequest) {
@@ -75,7 +80,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         passenger.setProviderId(oAuth2UserInfo.getId());
         passenger.setName(oAuth2UserInfo.getName());
         passenger.setEmail(oAuth2UserInfo.getEmail());
-        passenger.setImageUrl(oAuth2UserInfo.getImageUrl());
+        passenger.setImageUrl(fileStorageService.store(oAuth2UserInfo.getImageUrl(), MediaType.IMAGE_JPEG_VALUE));
         passenger.setEmailVerified(true);
         passenger.setRole(Role.ROLE_PASSENGER_NEW);
         return userRepository.save(passenger);

@@ -17,8 +17,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.FileSystemUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -60,6 +62,22 @@ public class FileStorageService {
         String storedFileURI = generateStoredFileURI(storedFilename);
 
         try (InputStream is = file.getInputStream()) {
+            Files.copy(is, storedFilePath, StandardCopyOption.REPLACE_EXISTING);
+            return storedFileURI;
+        } catch (IOException e) {
+            throw new FileUploadException("Failed to store the file.", e);
+        }
+    }
+
+    public String store(String imageUrl, String contentType) {
+        String storedFilename = generateStoredFilename(contentType);
+
+        Path storedFilePath = generateStoredFilePath(storedFilename);
+        validatePath(storedFilePath);
+
+        String storedFileURI = generateStoredFileURI(storedFilename);
+
+        try (InputStream is = new BufferedInputStream(new URL(imageUrl).openStream())) {
             Files.copy(is, storedFilePath, StandardCopyOption.REPLACE_EXISTING);
             return storedFileURI;
         } catch (IOException e) {

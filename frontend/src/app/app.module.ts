@@ -47,7 +47,6 @@ import { NotificationComponent } from './shared/homepage/notification/notificati
 import { RideInviteComponent } from './shared/homepage/notification/notification-list/ride-invite/ride-invite.component';
 import { NotificationWebSocketAPI } from 'src/services/notification/notification-socket.service';
 import { NotificationItemComponent } from './shared/homepage/notification/notification-list/notification-item/notification-item.component';
-// <<<<<<< HEAD
 import { ProfileDetailsComponent } from './shared/profile-page/profile-navigation/profile-details/profile-details.component';
 import { ChangePasswordComponent } from './shared/profile-page/profile-navigation/change-password/change-password.component';
 import { BalanceComponent } from './shared/profile-page/profile-navigation/balance/balance.component';
@@ -70,7 +69,6 @@ import { AdminNavigationComponent } from './admin-pages/admin-navigation/admin-n
 import { ProfileNavigationComponent } from './shared/profile-page/profile-navigation/profile-navigation.component';
 import { MatTableModule } from '@angular/material/table';
 import { MatSortModule } from '@angular/material/sort';
-// =======
 import { PassengerRideInvitationComponent } from './passenger/passenger-sidebar/passenger-ride-invitation/passenger-ride-invitation.component';
 import { PersonItemComponent } from './passenger/passenger-sidebar/passenger-ride-invitation/person-item/person-item.component';
 import { RideSocketShareService } from 'src/services/ride/ridesocketshare.service';
@@ -79,16 +77,6 @@ import { RideDetailsComponent } from './shared/ride-details/ride-details.compone
 import { RideDetailsSidebarComponent } from './shared/ride-details/ride-details-sidebar/ride-details-sidebar.component';
 import { RideDetailsMapComponent } from './shared/ride-details/ride-details-map/ride-details-map.component';
 import { RideDetailsPlaceComponent } from './shared/ride-details/ride-details-place/ride-details-place.component';
-// import { ProfileDetailsComponent } from './shared/profile-page/profile-page/profile-details/profile-details.component';
-// import { ChangePasswordComponent } from './shared/profile-page/profile-page/change-password/change-password.component';
-// import { BalanceComponent } from './shared/profile-page/profile-page/balance/balance.component';
-// import { SavedRoutesComponent } from './shared/profile-page/profile-page/saved-routes/saved-routes.component';
-// import { PastRidesComponent } from './shared/profile-page/profile-page/past-rides/past-rides.component';
-// import { SupportComponent } from './shared/profile-page/profile-page/support/support.component';
-// import { ProfilePageComponent } from './shared/profile-page/profile-page/profile-page.component';
-// import { MatTableModule } from '@angular/material/table';
-// import { MatSortModule } from '@angular/material/sort';
-// >>>>>>> past_rides_preview
 
 @NgModule({
   declarations: [
@@ -185,15 +173,11 @@ import { RideDetailsPlaceComponent } from './shared/ride-details/ride-details-pl
     SupportComponent,
     SupportMessageComponent,
   ],
-// <<<<<<< HEAD
   providers: [RideSocketShareService, RideWebSocketAPI,
               NotificationWebsocketshareService, NotificationWebSocketAPI, 
               SupportChatWebsocketshareService, SupportChatWebSocketAPI,
               AdminSupportWebsocketshareService, AdminSupportWebSocketAPI,
               AdminConversationWebsocketshareService, AdminConversationWebSocketAPI],
-// =======
-//   providers: [WebsocketshareService,RideWebSocketAPI,NotificationWebSocketAPI, RideSocketShareService],
-// >>>>>>> past_rides_preview
   bootstrap: [AppComponent]
 })
 export class AppModule { }

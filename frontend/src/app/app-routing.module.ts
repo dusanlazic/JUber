@@ -16,7 +16,6 @@ import { Oauth2RegisterRedirectHandlerComponent } from './registration/register-
 import { RegisterOauthComponent } from './registration/register-oauth/register-oauth.component';
 import { MapComponent } from './shared/map/map.component';
 import { HomeComponent } from './shared/homepage/home/home.component';
-// <<<<<<< HEAD
 import { ProfileDetailsComponent } from './shared/profile-page/profile-navigation/profile-details/profile-details.component';
 import { ChangePasswordComponent } from './shared/profile-page/profile-navigation/change-password/change-password.component';
 import { BalanceComponent } from './shared/profile-page/profile-navigation/balance/balance.component';
@@ -26,16 +25,6 @@ import { SupportComponent } from './shared/profile-page/profile-navigation/suppo
 import { AdminSupportPageComponent } from './admin-pages/admin-support-page/admin-support-page.component';
 import { NavigationPageTemplateComponent } from './shared/navigation-page-template/navigation-page-template/navigation-page-template.component';
 import { RideDetailsComponent } from './shared/ride-details/ride-details.component';
-
-// =======
-// import { ProfilePageComponent } from './shared/profile-page/profile-page/profile-page.component';
-// import { ProfileDetailsComponent } from './shared/profile-page/profile-page/profile-details/profile-details.component';
-// import { ChangePasswordComponent } from './shared/profile-page/profile-page/change-password/change-password.component';
-// import { BalanceComponent } from './shared/profile-page/profile-page/balance/balance.component';
-// import { SavedRoutesComponent } from './shared/profile-page/profile-page/saved-routes/saved-routes.component';
-// import { PastRidesComponent } from './shared/profile-page/profile-page/past-rides/past-rides.component';
-// import { SupportComponent } from './shared/profile-page/profile-page/support/support.component';
-// >>>>>>> past_rides_preview
 
 const routes: Routes = [
   { path: 'login', component: LoginPageComponent },
@@ -71,7 +60,7 @@ const routes: Routes = [
   },
   { path: 'admin', component: NavigationPageTemplateComponent, canActivate: [AuthGuard, RoleGuard], data: { expectedRoles: [Roles.ADMIN ]}, 
     children: [
-      { path: 'past-rides', component: PastRidesComponent }
+     
     ]
   },
   { path: 'admin/support', component: AdminSupportPageComponent, 

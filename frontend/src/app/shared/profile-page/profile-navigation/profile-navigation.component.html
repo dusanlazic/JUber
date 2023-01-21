@@ -10,7 +10,8 @@
     Profile
   </div>
 
-  <div class="navigation-item {{ selected===SelectionOptions.CHANGE_PASSWORD ? 'is-selected' : ''}}" 
+  <div *ngIf="logged?.provider === 'local'" 
+      class="navigation-item {{ selected===SelectionOptions.CHANGE_PASSWORD ? 'is-selected' : ''}}" 
       (click)="navigate(SelectionOptions.CHANGE_PASSWORD)">
     <span class="iconify-inline is-size-5" data-icon="fluent:key-24-regular"></span>
     Change password

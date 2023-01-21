@@ -31,7 +31,7 @@ export class RideDetailsComponent implements OnInit, OnDestroy {
   ride: FullRide | undefined;
   rideInProgress: boolean = true;
   socketSubscription: Subscription | undefined;
-
+  URL_BASE = environment.API_BASE_URL;
   
     
   constructor(public authService: AuthService,

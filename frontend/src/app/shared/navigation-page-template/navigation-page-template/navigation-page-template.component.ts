@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NavigationEnd, NavigationStart, Router } from '@angular/router';
+import { environment } from 'src/environments/environment';
 import { LoggedUser } from 'src/models/user';
 import { AuthService } from 'src/services/auth/auth.service';
 
@@ -12,17 +13,18 @@ export class NavigationPageTemplateComponent implements OnInit {
 
   isScrollable: boolean = false;
   logged!: LoggedUser;
+  URL_BASE = environment.API_BASE_URL;
 
   constructor(
     private router: Router,
-    private authservice: AuthService
+    public authService: AuthService
   ) { 
     this.getCurrentHref();
     this.subscribeToHrefChange();
   }
 
   ngOnInit(): void {
-    this.authservice.getCurrentUser().subscribe({
+    this.authService.getCurrentUser().subscribe({
       next: (user: LoggedUser) => {
         this.logged = user;
       }
@@ -42,7 +44,7 @@ export class NavigationPageTemplateComponent implements OnInit {
   
   
   logout() : void {
-    this.authservice.logout();
+    this.authService.logout();
     this.router.navigate(['/login']);
   }
 

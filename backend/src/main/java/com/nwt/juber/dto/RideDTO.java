@@ -6,6 +6,7 @@ import com.nwt.juber.model.RideStatus;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -21,5 +22,8 @@ public class RideDTO {
     private RideStatus rideStatus;
     private Boolean babyFriendly;
     private Boolean petFriendly;
+    private LocalDateTime scheduledTime;
+    private LocalDateTime startTime;
+    private LocalDateTime endTime;
 
 }

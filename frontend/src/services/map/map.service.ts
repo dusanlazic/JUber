@@ -7,6 +7,7 @@ import { Point } from 'src/models/map';
 import { Place, Route } from 'src/models/ride';
 import { NominatimService } from './nominatim.service';
 import { RoutingService } from './routing.service';
+import { IPoint } from 'src/app/store/ride';
 
 @Injectable({
 	providedIn: 'root'
@@ -83,6 +84,33 @@ export class MapService {
 		}
 		place.routes = routes;
 		return place;
+	}
+
+	cosineDistanceBetweenPoints(pointA: IPoint, pointB: IPoint) {
+		let lat1: number = pointA.latitude
+		let lon1: number = pointA.longitude
+		let lat2: number = pointB.latitude
+		let lon2: number = pointB.longitude
+		const R = 6371e3;
+		const p1 = lat1 * Math.PI/180;
+		const p2 = lat2 * Math.PI/180;
+		const deltaP = p2 - p1;
+		const deltaLon = lon2 - lon1;
+		const deltaLambda = (deltaLon * Math.PI) / 180;
+		const a = Math.sin(deltaP/2) * Math.sin(deltaP/2) +
+				  Math.cos(p1) * Math.cos(p2) *
+				  Math.sin(deltaLambda/2) * Math.sin(deltaLambda/2);
+		const d = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)) * R;
+		return d;
+	}
+
+
+	pathLength(points: IPoint[]) {
+		let total = 0;
+		for(let i = 1; i < points.length; i++) {
+			total += this.cosineDistanceBetweenPoints(points[i - 1], points[i]);
+		}
+		return total;
 	}
 	
 

@@ -26,7 +26,7 @@ export class HomeComponent implements OnInit {
 
 
   constructor(
-    private authService: AuthService,
+    public authService: AuthService,
     private driverService: DriverService,
     private router: Router,
     private store: Store<{state: AppState}>
@@ -43,6 +43,9 @@ export class HomeComponent implements OnInit {
         next: (user) => {
           this.loggedUser = user;
           console.log(this.loggedUser);
+          if(this.loggedUser.role === 'ROLE_DRIVER') {
+            this.router.navigate(['/ride']);
+          }
           
         }
       });

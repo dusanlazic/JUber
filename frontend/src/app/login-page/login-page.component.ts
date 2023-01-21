@@ -6,6 +6,7 @@ import { TokenResponse } from 'src/models/auth';
 import { ApiResponse } from 'src/models/responses';
 import { AuthService } from 'src/services/auth/auth.service';
 import { Toastr } from 'src/services/util/toastr.service';
+import { CookieService } from 'ngx-cookie-service';
 
 @Component({
   selector: 'app-login-page',
@@ -22,7 +23,8 @@ export class LoginPageComponent implements OnInit {
   constructor(
     private builder: FormBuilder,
     private toastr: Toastr,
-    private authService: AuthService
+    private authService: AuthService,
+    private cookieService: CookieService
   )
   { 
     this.createForm();
@@ -36,6 +38,7 @@ export class LoginPageComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    
   }
 
   login() : void{

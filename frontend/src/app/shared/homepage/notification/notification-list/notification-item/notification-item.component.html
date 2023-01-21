@@ -7,7 +7,7 @@
                 </span>
             </div>
         </div>
-        <div class="column">
+        <div class="column" [routerLink]="properties.url ? properties.url : ''">
             <p class="has-text-grey is-size-7">{{notificationTimestamp}}</p>
             <p [innerHTML]=properties.message></p>
         </div>

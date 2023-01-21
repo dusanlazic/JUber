@@ -6,7 +6,7 @@ import { decode, encode } from "@googlemaps/polyline-codec";
 export class Route implements IRoute {
     constructor(public name: string = "",
         public distance: number = -1,
-        public time: number = -1,
+        public duration: number = -1,
         public selected: boolean = false,
         public coordinates: IPoint[] = [],
         public coordinatesEncoded: string = "") {
@@ -35,7 +35,9 @@ export class Place implements IPlace {
 export class Ride implements IRide {
     constructor(public passengers: Array<string> = [],
         public places: Array<Place> = [],
-        public fare: number = -1) {
+        public fare: number = -1,
+        public duration: number = -1,
+        public distance: number = -1,) {
     }
 }
 
@@ -45,6 +47,7 @@ export interface IPerson {
     email: string;
     imageUrl?: string;
     status? : string;
+    id?: string;
 }
 
 export class FullRide {
@@ -58,6 +61,9 @@ export class FullRide {
         public passengers: IPerson[] = new Array<IPerson>(),
         public passengersReady: string[] = [],
         public driver: IPerson | undefined = undefined,
+        public startTime: string = "",
+        public endTime: string = "",
+        public scheduledTime: string = "",
         public rideStatus: string = '',
         public id: string = '') {
             for(let [i, passenger] of passengers.entries()) {

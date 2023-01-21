@@ -1,8 +1,64 @@
-<div *ngIf="ride">
-	<p class="title is-size-3 has-text-grey is-family-secondary">Ride details</p>
+<div *ngIf="ride && loggedUser">
+	<p class="title is-size-3 has-text-grey is-family-secondary">Ride details
+		<span (click)="toggleFavourite()" *ngIf="loggedUser.role === 'ROLE_PASSENGER' && isFavourite === 0" class="has-tooltip-right" data-tooltip="Add route to favourites">
+			<span class="iconify is-size-4 ml-3 is-vcentered" data-icon="material-symbols:bookmark-outline"></span> 
+		</span>
+		<span (click)="toggleFavourite()" *ngIf="loggedUser.role === 'ROLE_PASSENGER' && isFavourite === 1" class="has-tooltip-right" data-tooltip="Remove route from favourites">
+			<span class="iconify is-size-4 ml-3 is-vcentered" data-icon="material-symbols:bookmark"></span> 
+		</span>
+	</p>
+	<p *ngIf="ride.rideStatus == 'DENIED'" class="title is-size-3 has-text-danger is-family-secondary">Ride failed/denied.</p>
+	<p *ngIf="ride.rideStatus == 'FINISHED'" class="title is-size-3 has-text-success is-family-secondary">Ride finished.</p>
+	
+
+	<div *ngIf="ride.driver && ride.rideStatus == 'WAIT' && loggedUser.role == 'ROLE_DRIVER'">
+		<div class="column is-size-4 is-family-secondary">
+			Do you accept this ride?
+			<div class="mt-4">
+				<button class="button is-primary is-light" (click)="acceptRide()">Yes</button>
+				<button class="button is-danger is-light ml-3" (click)="declineRide()">No</button>
+			</div>
+		</div>
+	</div>
+
+	<div *ngIf="ride.driver && ride.rideStatus == 'ACCEPTED' && loggedUser.role == 'ROLE_DRIVER'" style="display: flex;">
+		<div class="column is-size-4 is-family-secondary p-0  mb-3">
+			<div class="mt-4">
+				<button class="button is-primary is-light" (click)="startRide()">Passengers got in!</button>
+			</div>
+		</div>
+		<div class="column is-size-4 is-family-secondary p-0  mb-3" *ngIf="!this.abandon">
+			<div class="mt-4">
+				<button class="button is-warning is-light" (click)="toggleAbandonRideReason()">Abandon ride.</button>
+			</div>
+		</div>
+	</div>
+
+	<div *ngIf="this.loggedUser.role==='ROLE_DRIVER' && this.abandon">
+		<textarea class="textarea" placeholder="e.g. Hello world" [(ngModel)]="this.reason"></textarea>
+		<div class="mt-3 mb-4">
+			<button class="button is-danger is-light" (click)="abandonRide()">Abandon ride</button>
+			<button class="button is-light is-light ml-3" (click)="toggleAbandonRideReason()">Cancel</button>
+		</div>
+	</div>
+
+	<div *ngIf="ride.driver && ride.rideStatus == 'IN_PROGRESS' && loggedUser.role == 'ROLE_DRIVER'">
+		<div class="column is-size-4 is-family-secondary p-0 mb-3">
+			<div class="p-0">
+				<button class="button is-primary is-light" (click)="endRide()">Ride is finished!</button>
+			</div>
+		</div>
+	</div>
+
+	<div class="is-size-4 mb-5" *ngIf="ride.scheduledTime && (ride.rideStatus==='WAIT' || ride.rideStatus==='WAITING_FOR_PAYMENT')">
+		<span class="iconify ml-2" data-icon="ic:round-access-alarm"></span> Scheduled for {{ride.scheduledTime | date:'shortTime'}}
+	</div>
+
+
 	<div class="is-custom-people-list mb-3">
 		<p class="title is-size-5 mb-2 is-family-secondary">Driver</p>
-		<div class="person-item mb-5" *ngIf="ride.driver">
+		
+		<div class="person-item mb-5" *ngIf="ride.driver && ride.rideStatus != 'WAIT'">
 		  <div class="columns is-vcentered">
 			<div class="column is-2 has-content-align-center">
 			  <div class="circle-initial-person" style="background-color: #ff8800; color: white">
@@ -14,11 +70,14 @@
 			</div>
 		  </div>
 		</div>
-		<div *ngIf="!ride.driver" class="mb-5">
+		<div *ngIf="!ride.driver && loggedUser.role == 'ROLE_PASSENGER'" class="mb-5">
 			<div class="column">
 				No driver assigned for ride yet...
 			</div>
 		</div>
+
+		
+		
 		<div class="is-custom-people-list mb-5">
             <p class="title is-size-5 mb-2 is-family-secondary">Passengers</p>
             <div class="person-item" *ngFor="let person of ride.passengers">
@@ -26,19 +85,40 @@
                 <div class="column is-2 has-content-align-center">
                   <figure class="image is-48x48">
                     <img class="is-rounded"
-                      src="https://lh3.googleusercontent.com/a/ALm5wu3tpc3XnB9w8EMqNHAODc0uL23tqydVlUCLYqEF6Q=s96-c">
+                      src="{{person.imageUrl}}"  
+					  (error)="this.authService.imageUrlResolver($event, person.firstName + ' ' + person.lastName)">
                   </figure>
                 </div>
                 <div class="column">
                   <p><strong>{{person.firstName + " " + person.lastName}}</strong> </p>
-				  <p class="has-text-success has-text-weight-bold">{{person.status}}</p>
+				  <p class="has-text-success has-text-weight-bold" *ngIf="rideInProgress">{{person.status}}</p>
                 </div>
               </div>
             </div>
-          </div>
+		</div>
 	</div>
 	<div class="mb-5">
 		<p class="title is-size-5 mb-2 is-family-secondary">Route</p>
-		<app-ride-details-place *ngFor="let place of ride.places" [place]="place"></app-ride-details-place>
+		<app-ride-details-place *ngFor="let place of ride.places; let i = index" [place]="place" [index]="i"></app-ride-details-place>
 	</div>
+	<div class="mb-5">
+		<p class="title is-size-5 mb-2 is-family-secondary">Cost</p>
+		<p class="is-size-4 mt-3">
+		  <strong>{{ride.fare}}</strong> total
+		</p>
+		<p class="has-text-grey"><b>{{ride.fare / ride.passengers.length}}</b> per passenger</p>
+	</div>
+
+	<div class="mb-5" *ngIf="!rideInProgress">
+		<p class="title is-size-5 mb-2 is-family-secondary">Date & Time</p>
+		<p class="is-size-5">
+		  <span class="iconify-inline is-size-5 mr-1 has-text-grey" data-icon="fluent:calendar-rtl-20-regular"></span>
+		  {{ride.startTime | date:'mediumDate'}}
+		</p>
+		<p class="is-size-5 mt-3">
+		  <span class="iconify-inline is-size-5 mr-1 has-text-grey" data-icon="fluent:clock-20-regular"></span>
+		  {{ride.startTime | date:'shortTime'}} — {{ride.endTime | date:'shortTime'}}
+		</p>
+	</div>
+
 </div>

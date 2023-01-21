@@ -1,9 +1,11 @@
 package com.nwt.juber.controller;
 
 import com.nwt.juber.api.ResponseOk;
+import com.nwt.juber.dto.DriverLocationUpdateDTO;
 import com.nwt.juber.dto.SimulationInfo;
 import com.nwt.juber.service.DriverService;
 import com.nwt.juber.service.RideService;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +29,7 @@ public class SimulationController {
         return driverService.getSimulationInfo();
     }
 
-    @PostMapping(value = "driver-location")
+    @PostMapping(value = "/driver-location")
     public ResponseOk setDriverLocation(@RequestBody DriverLocationUpdateDTO update) {
         driverService.updateLocation(update.getUsername(), update.getLongitude(), update.getLatitude());
         return new ResponseOk("Success");
@@ -45,13 +47,7 @@ public class SimulationController {
         return new ResponseOk("ok");
     }
 
-    @Data
-    @NoArgsConstructor
-    class DriverLocationUpdateDTO {
-        private String username;
-        private Double latitude;
-        private Double longitude;
-    }
+
 
 
 }

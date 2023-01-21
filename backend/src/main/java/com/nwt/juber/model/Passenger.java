@@ -13,7 +13,7 @@ import java.util.List;
 public class Passenger extends Person {
 
     @ManyToMany
-    private List<Route> favouriteRoutes;
+    private List<Ride> favouriteRoutes;
 
     @OneToMany(mappedBy = "passenger")
     private List<DepositAddress> depositAddresses;

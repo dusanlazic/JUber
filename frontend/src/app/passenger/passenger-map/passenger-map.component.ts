@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
+import { AfterViewInit, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import  * as L from 'leaflet';
 import { filter, lastValueFrom, Observable, Subscription } from 'rxjs';
 import { Point } from 'src/models/map';
@@ -10,13 +10,14 @@ import 'leaflet-routing-machine';
 import { State, StateObservable, Store } from '@ngrx/store';
 import { AppState } from 'src/app/store/ride.reducer';
 import { PreviewRouteSelectedAction } from 'src/app/store/ride.actions';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'passenger-map',
   templateUrl: './passenger-map.component.html',
   styleUrls: ['./passenger-map.component.sass']
 })
-export class PassengerMapComponent implements AfterViewInit {
+export class PassengerMapComponent implements AfterViewInit, OnDestroy {
 
   	private map!: L.Map;
 
@@ -24,37 +25,10 @@ export class PassengerMapComponent implements AfterViewInit {
 
   	center: L.LatLng = new L.LatLng(45.2671, 19.8335)
   	zoom: number = 13
-
 	controls: L.Control[] = []
 	lines: L.Polyline[] = []
-
-	
-
-	// getIcon(options): void {
-	// 	var baseIcon = L.Icon.extend({
-    //         options: {
-    //             iconSize: [35, 45],
-    //             iconAnchor:   [17, 42],
-    //             popupAnchor: [1, -32],
-    //             shadowAnchor: [10, 12],
-    //             shadowSize: [36, 16],
-    //             className: 'awesome-marker',
-    //             prefix: 'fa',
-    //             spinClass: 'fa-spin',
-    //             extraClasses: '',
-    //             icon: 'snowflake-o',
-    //             markerColor: 'blue',
-    //             iconColor: 'white'
-	// 		}
-    // },
-
-	// leafIcon = helper.getIcon(
-	// 	{icon: 'leaf',
-	// 	markerColor: 'red'}
-	// );
-
 	myIcon = L.divIcon({className: 'my-div-icon'});
-
+	interval!: NodeJS.Timer;
 
   	mapOptions = {
 		show: false,
@@ -98,7 +72,6 @@ export class PassengerMapComponent implements AfterViewInit {
 		let ride = this.store.select('state');
 		ride.subscribe(state => {
 			this.clearMap()
-			console.log("Alooo");
 			console.log(state);
 			
 			if(state === undefined) return;
@@ -106,8 +79,13 @@ export class PassengerMapComponent implements AfterViewInit {
 				this.drawPreview(state.ride, state.previewPlace);
 			}
 			this.drawRide(state.ride)
-		})
+		});
+		this.interval = setInterval(() => { this.getAndDrawDrivers() }, 500);
+	}
 
+	ngOnDestroy(): void {
+		clearInterval(this.interval);
+		this.clearMap();
 	}
 
 	drawPreview(ride: Ride, place: Place) {
@@ -193,4 +171,39 @@ export class PassengerMapComponent implements AfterViewInit {
 		polyline.addTo(this.map);
 
 	}
+
+
+	getAndDrawDrivers() {
+		this.httpService.get(environment.API_BASE_URL + '/accounts/drivers/all-locations').subscribe(
+			(data) => {
+				this.drawDrivers(data);
+			}
+		);
+	}
+
+
+
+	driverIcon = L.icon({
+		iconUrl: '/assets/images/driver-pin.png',
+
+		iconSize:     [38, 38], // size of the icon
+		popupAnchor:  [-3, -3] // point from which the popup should open relative to the iconAnchor
+	});
+
+
+	driverMarkers: L.Marker[] = [];
+	drawDrivers(data: any) {
+
+		for (let driverMaker of this.driverMarkers) {
+			this.map.removeLayer(driverMaker);
+		}
+
+		for(let driver of data) {
+			let marker  = L.marker([driver.latitude, driver.longitude], {icon: this.driverIcon}).addTo(this.map);
+			marker.bindPopup(driver.email);
+			this.driverMarkers.push(marker);
+		}
+		
+	}
+
 }

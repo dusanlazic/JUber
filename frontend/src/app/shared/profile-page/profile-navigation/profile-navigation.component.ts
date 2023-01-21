@@ -26,14 +26,14 @@ export class ProfileNavigationComponent implements OnInit {
   SelectionOptions = SelectionOptions;
 
   constructor(
-    private authservice: AuthService,
+    private authService: AuthService,
     private router: Router,
   ) { 
     this.getCurrentHref();
   }
 
   ngOnInit(): void {
-    this.authservice.getCurrentUser().subscribe({
+    this.authService.getCurrentUser().subscribe({
       next: (user: LoggedUser) => {
         this.logged = user;
       }

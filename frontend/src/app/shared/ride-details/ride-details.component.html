@@ -16,7 +16,7 @@
     <div>
         <div class="navigation">
             <figure class="image is-48x48">
-                <img class="is-rounded" src="https://lh3.googleusercontent.com/a/ALm5wu3tpc3XnB9w8EMqNHAODc0uL23tqydVlUCLYqEF6Q=s96-c" (error)="this.authService.imageUrlResolver($event, loggedUser.name)">
+                <img class="is-rounded" src="{{URL_BASE}}{{ loggedUser.imageUrl }}" (error)="this.authService.imageUrlResolver($event, loggedUser.name)">
             </figure>
             <app-notification></app-notification>
             <!-- <button class="button is-rounded mr-2">Profile<span class="iconify ml-2" data-icon="ic:baseline-person"></span></button>

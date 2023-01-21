@@ -152,7 +152,7 @@ export class AuthService {
     }
 
     imageUrlResolver(event: any, name: string) {
-        event.target.src = "https://ui-avatars.com/api/?name=" + name + "&format=jpg&background=random&rounded=true";
+        event.target.src = "https://ui-avatars.com/api/?name=" + name + "&format=png&background=random&rounded=true&size=128x128";
     }
 }
 

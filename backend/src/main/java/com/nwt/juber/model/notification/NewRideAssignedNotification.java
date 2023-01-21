@@ -29,7 +29,7 @@ public class NewRideAssignedNotification extends PersistedNotification {
         transferred.setNotificationStatus(this.getStatus());
         transferred.setPassengerCount(ride.getPassengers().size());
         transferred.setStartLocationName(ride.getPlaces().get(0).getName());
-
+        transferred.setRideId(ride.getId());
         return transferred;
     }
 }

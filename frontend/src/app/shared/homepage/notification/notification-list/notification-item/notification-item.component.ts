@@ -19,7 +19,7 @@ export class NotificationItemComponent implements OnInit {
 
   constructor() {
     this.notificationTimestamp = '';
-    this.properties= { iconClass: '', icon: '', message: ''};
+    this.properties= { iconClass: '', icon: '', message: '', url: ''};
   }
 
   ngOnInit(): void {
@@ -37,7 +37,7 @@ export class NotificationItemComponent implements OnInit {
       }
       case NotificationType.RIDE_ASSIGNED: {
         const notificationCast = this.notification as NewRideAssignedNotification
-        this.properties = NotificationTemplate.rideAssigned(notificationCast.startLocationName)
+        this.properties = NotificationTemplate.rideAssigned(notificationCast.startLocationName, notificationCast.rideId)
         break;
       }
 
@@ -50,7 +50,7 @@ export class NotificationItemComponent implements OnInit {
 
       case NotificationType.RIDE_REMINDER: {
         const notificationCast = this.notification as RideReminderNotification
-        this.properties = NotificationTemplate.rideReminder(notificationCast.minutesLeft)
+        this.properties = NotificationTemplate.rideReminder(notificationCast)
         break;
       }
 

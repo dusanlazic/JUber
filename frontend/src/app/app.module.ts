@@ -79,6 +79,8 @@ import { RideDetailsMapComponent } from './shared/ride-details/ride-details-map/
 import { RideDetailsPlaceComponent } from './shared/ride-details/ride-details-place/ride-details-place.component';
 import { PaymentWebsocketshareService } from 'src/services/payment/payment-websocketshare.service';
 import { PaymentWebSocketAPI } from 'src/services/payment/payment-socket.service';
+import { UnathorizedSidebarComponent } from './unauthorized/unauthorized-sidebar/unauthorized-sidebar.component';
+import { UnathorizedMapComponent } from './unauthorized/unauthorized-map/unauthorized-map.component';
 
 @NgModule({
   declarations: [
@@ -101,6 +103,8 @@ import { PaymentWebSocketAPI } from 'src/services/payment/payment-socket.service
     PasswordResetSuccessComponent,
 
     HomeComponent,
+    UnathorizedSidebarComponent,
+    UnathorizedMapComponent,
     PassengerSidebarComponent,
     PassengerMapComponent,
     PlacesComponent,

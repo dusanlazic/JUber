@@ -20,7 +20,6 @@ public class VehicleTypeController {
 	private VehicleTypeService vehicleTypeService;
 
 	@GetMapping("/findAll")
-	@PreAuthorize("hasAnyRole('PASSENGER', 'DRIVER', 'ADMIN')")
 	public List<VehicleType> findAll() {
 		return vehicleTypeService.findAll();
 	}

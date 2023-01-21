@@ -1,5 +1,5 @@
 import { Action, createAction, props } from "@ngrx/store";
-import { Place, Route } from "src/models/ride";
+import { Place, Ride, Route } from "src/models/ride";
 
 export const ADD_PLACE: string = "ADD_PLACE"
 export const UPDATE_PLACE_ROUTE = "UPDATE_PLACE_ROUTE"
@@ -16,6 +16,13 @@ export const STOP_EDITING: string = "STOP_EDITING"
 export const DELETE_PLACE: string = "DELETE_PLACE"
 export const SWAP_PLACE_UP: string = "SWAP_PLACE_UP"
 export const SWAP_PLACE_DOWN: string = "SWAP_PLACE_DOWN"
+export const SET_RIDE: string = "SET_RIDE"
+
+
+export const SetRideAction = createAction(
+	SET_RIDE,
+	props<{ride: Ride}>()
+)
 
 
 export const SwapPlaceUpAction = createAction(

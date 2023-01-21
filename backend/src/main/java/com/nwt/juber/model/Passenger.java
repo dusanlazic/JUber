@@ -19,4 +19,13 @@ public class Passenger extends Person {
     private List<DepositAddress> depositAddresses;
 
     private BigDecimal balance = BigDecimal.ZERO;
+
+
+    @Override
+    public String toString() {
+        return "Passenger{" +
+                "favouriteRoutes=" + favouriteRoutes +
+                ", balance=" + balance +
+                '}';
+    }
 }

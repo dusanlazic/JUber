@@ -12,6 +12,7 @@ import java.util.UUID;
 
 import com.nwt.juber.dto.response.SavedRouteResponse;
 import com.nwt.juber.model.*;
+import com.nwt.juber.model.notification.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.Authentication;
@@ -27,11 +28,7 @@ import com.nwt.juber.exception.EndRideException;
 import com.nwt.juber.exception.InsufficientFundsException;
 import com.nwt.juber.exception.StartRideException;
 import com.nwt.juber.model.*;
-import com.nwt.juber.model.notification.NewRideAssignedNotification;
 import com.nwt.juber.exception.UserNotFoundException;
-import com.nwt.juber.model.notification.NotificationStatus;
-import com.nwt.juber.model.notification.RideInvitationNotification;
-import com.nwt.juber.model.notification.RideReminderNotification;
 import com.nwt.juber.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -175,6 +172,12 @@ public class RideService {
             ride.setRideStatus(RideStatus.ACCEPTED);
             rideRepository.save(ride);
             // notify them
+            RideStatusUpdatedNotification notification = new RideStatusUpdatedNotification();
+            notification.setRide(ride);
+            notification.setId(UUID.randomUUID());
+            notification.setReceiver(ride.getDriver());
+            notification.setStatus(NotificationStatus.UNREAD);
+            notificationService.send(notification, ride.getDriver());
         }
     }
 

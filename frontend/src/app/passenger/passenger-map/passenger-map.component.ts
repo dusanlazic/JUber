@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
+import { AfterViewInit, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import  * as L from 'leaflet';
 import { filter, lastValueFrom, Observable, Subscription } from 'rxjs';
 import { Point } from 'src/models/map';
@@ -17,7 +17,7 @@ import { environment } from 'src/environments/environment';
   templateUrl: './passenger-map.component.html',
   styleUrls: ['./passenger-map.component.sass']
 })
-export class PassengerMapComponent implements AfterViewInit {
+export class PassengerMapComponent implements AfterViewInit, OnDestroy {
 
   	private map!: L.Map;
 
@@ -25,37 +25,10 @@ export class PassengerMapComponent implements AfterViewInit {
 
   	center: L.LatLng = new L.LatLng(45.2671, 19.8335)
   	zoom: number = 13
-
 	controls: L.Control[] = []
 	lines: L.Polyline[] = []
-
-	
-
-	// getIcon(options): void {
-	// 	var baseIcon = L.Icon.extend({
-    //         options: {
-    //             iconSize: [35, 45],
-    //             iconAnchor:   [17, 42],
-    //             popupAnchor: [1, -32],
-    //             shadowAnchor: [10, 12],
-    //             shadowSize: [36, 16],
-    //             className: 'awesome-marker',
-    //             prefix: 'fa',
-    //             spinClass: 'fa-spin',
-    //             extraClasses: '',
-    //             icon: 'snowflake-o',
-    //             markerColor: 'blue',
-    //             iconColor: 'white'
-	// 		}
-    // },
-
-	// leafIcon = helper.getIcon(
-	// 	{icon: 'leaf',
-	// 	markerColor: 'red'}
-	// );
-
 	myIcon = L.divIcon({className: 'my-div-icon'});
-
+	interval!: NodeJS.Timer;
 
   	mapOptions = {
 		show: false,
@@ -99,7 +72,6 @@ export class PassengerMapComponent implements AfterViewInit {
 		let ride = this.store.select('state');
 		ride.subscribe(state => {
 			this.clearMap()
-			console.log("Alooo");
 			console.log(state);
 			
 			if(state === undefined) return;
@@ -108,7 +80,12 @@ export class PassengerMapComponent implements AfterViewInit {
 			}
 			this.drawRide(state.ride)
 		});
-		setInterval(() => { this.getAndDrawDrivers() }, 500);
+		this.interval = setInterval(() => { this.getAndDrawDrivers() }, 500);
+	}
+
+	ngOnDestroy(): void {
+		clearInterval(this.interval);
+		this.clearMap();
 	}
 
 	drawPreview(ride: Ride, place: Place) {

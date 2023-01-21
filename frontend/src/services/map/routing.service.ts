@@ -39,6 +39,7 @@ export class RoutingService {
       selected = true;
       route.coordinates = decode(apiRoute.geometry!).map(x => new Point(x[0], x[1]))
       route.distance = apiRoute.distance!.valueOf()
+      route.duration = apiRoute.duration!.valueOf()
       route.name = apiRoute.legs![0].summary!
       routes.push(route)
     }

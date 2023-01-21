@@ -6,7 +6,7 @@ export interface IPoint {
 export interface IRoute {
     name: string
     distance: number
-    time: number
+    duration: number
     selected: boolean
     coordinates: Array<IPoint>
     coordinatesEncoded: string

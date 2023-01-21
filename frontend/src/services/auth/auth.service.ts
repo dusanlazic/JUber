@@ -40,7 +40,14 @@ export class AuthService {
         private router: Router,
         private driverService: DriverService,
         private cookieService: CookieService,
-    ) {}
+    ) {
+        this.getCurrentUser().subscribe({
+            next: (user: LoggedUser) => {
+                this.loggedUser = user;
+                this.onNewUserReceived(user);
+            }
+        });
+    }
 
 
     login(loginRequest: LoginRequest) : Observable<TokenResponse> {
@@ -73,7 +80,7 @@ export class AuthService {
         return false;
     }
 
-    handleSuccessfulAuth(expiresAt: number, redirectPath: string) : void {
+    handleSuccessfulAuth(expiresAt: number, redirectPath?: string) : void {
         this.localStorage.setTokenExpiration(expiresAt);
 
         this.getCurrentUser().subscribe({
@@ -81,7 +88,8 @@ export class AuthService {
                 this.localStorage.set('role', user.role);
                 this.loggedUser = user;
                 this.onNewUserReceived(user);
-                this.router.navigate([redirectPath]);
+                if(redirectPath)
+                    this.router.navigate([redirectPath]);
             },
             error: (e: HttpErrorResponse) => {
                 console.log(e);
@@ -113,6 +121,7 @@ export class AuthService {
         this.localStorage.clearAll();
         sessionStorage.clear();
         localStorage.clear();
+        this.cookieService.deleteAll();
     }
 
 

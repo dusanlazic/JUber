@@ -13,6 +13,8 @@ import { HttpRequestService } from 'src/services/util/http-request.service';
   styleUrls: ['./ride-details-sidebar.component.sass']
 })
 export class RideDetailsSidebarComponent implements OnInit, OnChanges {
+
+
   reload() {
     window.location.reload();
   }
@@ -21,18 +23,35 @@ export class RideDetailsSidebarComponent implements OnInit, OnChanges {
   loggedUser!: LoggedUser;
   rideInProgress: boolean = true;
   isFavourite: number = -1;
+  abandon: boolean = false;
+  reason: string = '';
 
   constructor(public authService: AuthService,
               private httpService: HttpRequestService,) { }
   
-  
-  
   ngOnChanges(changes: SimpleChanges): void {
     if(!this.ride) return;
-    this.checkFavourite();
+    this.authService.getCurrentUser().subscribe((user) =>{
+      this.loggedUser = user;
+      if(this.loggedUser.role === 'ROLE_PASSENGER') {
+        this.checkFavourite();
+      }
+    });
+    
     if(this.ride.rideStatus === 'DENIED' || this.ride.rideStatus === 'FINISHED') {
       this.rideInProgress = false;
     }
+  }
+
+  toggleAbandonRideReason() {
+    this.abandon = !this.abandon;
+  }
+
+  abandonRide() {    
+    this.httpService.put(environment.API_BASE_URL + '/ride/abandon/' + this.ride?.id, this.reason).subscribe(response => {
+      console.log(response);
+      window.location.reload();
+    });
   }
 
   checkFavourite() {
@@ -54,9 +73,7 @@ export class RideDetailsSidebarComponent implements OnInit, OnChanges {
 
   ngOnInit(): void {
     this.authService.getCurrentUser().subscribe({
-      next: (user) => {
-        console.log("OVO JE USER ALOOO: " + user.id + " " + user.role);
-        
+      next: (user) => {        
         this.loggedUser = user;
       }
     });

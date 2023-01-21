@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { throwToolbarMixedModesError } from '@angular/material/toolbar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { environment } from 'src/environments/environment';
@@ -11,6 +11,7 @@ import { HttpRequestService } from 'src/services/util/http-request.service';
 import { decode, encode } from "@googlemaps/polyline-codec";
 import { Point } from 'src/models/map';
 import { Toast, ToastrService } from 'ngx-toastr';
+import { Subscription } from 'rxjs';
 
 
 interface SocketMessage {
@@ -24,11 +25,12 @@ interface SocketMessage {
   templateUrl: './ride-details.component.html',
   styleUrls: ['./ride-details.component.sass']
 })
-export class RideDetailsComponent implements OnInit {
+export class RideDetailsComponent implements OnInit, OnDestroy {
 
   loggedUser!: LoggedUser;
   ride: FullRide | undefined;
   rideInProgress: boolean = true;
+  socketSubscription: Subscription | undefined;
 
   
     
@@ -50,6 +52,11 @@ export class RideDetailsComponent implements OnInit {
         this.setupSocekts();
       }
     });
+  }
+
+  ngOnDestroy(): void {
+    this.socketSubscription?.unsubscribe();
+    this.websocketService.onNewValueReceive('');
   }
 
   preprocessRide(ride: FullRide) {
@@ -78,8 +85,14 @@ export class RideDetailsComponent implements OnInit {
   }
 
   setupSocekts() {
-    this.websocketService.getNewValue().subscribe((resp: any) => {
-      let data = JSON.parse(resp) as SocketMessage;
+    this.socketSubscription = this.websocketService.getNewValue().subscribe((resp: any) => {
+      let data = undefined;
+      try {
+        data = JSON.parse(resp) as SocketMessage;
+      } catch (error) {
+        return;
+      }
+      if(!data) return;
       this.preprocessRide(data.ride);
       this.ride = data.ride;
       if(data.type === 'PAL_UPDATE_STATUS') {
@@ -101,7 +114,13 @@ export class RideDetailsComponent implements OnInit {
   }
 
   driverUpdateStatus(data: SocketMessage) {
-    this.toastrService.success('A driver has been assigned and is heading towards your location!');
+    console.log(this.loggedUser.role);
+  
+    if(this.loggedUser.role == 'ROLE_PASSENGER') {
+      this.toastrService.success('A driver has been assigned and is heading towards your location!');
+    } else {
+      this.toastrService.success('New ride has been assigned to you!');
+    }
   }
 
   rideFailedLate(data: SocketMessage, reason: string) {

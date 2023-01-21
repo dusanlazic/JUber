@@ -90,7 +90,7 @@ public class RideController {
 
     @GetMapping("/savedRoutes")
     @PreAuthorize("hasRole('PASSENGER')")
-    public List<SavedRouteResponse> getSavedRoutes(Authentication authentication) {
+    public List<RideDTO> getSavedRoutes(Authentication authentication) {
         Passenger passenger = (Passenger) authentication.getPrincipal();
         return rideService.getSavedRoutes(passenger);
     }

@@ -3,13 +3,8 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatSort, Sort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
+import { FullRide } from 'src/models/ride';
 import { RideService } from 'src/services/ride/ride.service';
-
-export interface SavedRouteResponse {
-	rideId: string;
-	places: Array<string>;
-	fare: number;
-}
 
 @Component({
   selector: 'app-saved-routes',
@@ -32,7 +27,7 @@ export class SavedRoutesComponent implements OnInit {
 
   ngOnInit() {
     this.rideService.getSavedRoutes().subscribe({
-      next: (res: Array<SavedRouteResponse>) => {
+      next: (res: Array<FullRide>) => {
         this.dataSource = new MatTableDataSource(res);
         this.dataSource.sort = this.sort;
       }
@@ -47,7 +42,11 @@ export class SavedRoutesComponent implements OnInit {
     }
   }
 
-  clickedRow(row: SavedRouteResponse) : void {
+  getFormatedRouteString(ride: FullRide) : string {
+    return ride.places.map(p => p.name).join(" → ");
+  }
+
+  clickedRow(row: FullRide) : void {
     console.log(row)
     // Do the rest
   }

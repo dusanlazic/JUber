@@ -25,9 +25,10 @@ import { SupportComponent } from './shared/profile-page/profile-navigation/suppo
 import { AdminSupportPageComponent } from './admin-pages/admin-support-page/admin-support-page.component';
 import { NavigationPageTemplateComponent } from './shared/navigation-page-template/navigation-page-template/navigation-page-template.component';
 import { RideDetailsComponent } from './shared/ride-details/ride-details.component';
+import { LoggedGuard } from 'src/services/auth/logged-guard.service';
 
 const routes: Routes = [
-  { path: 'login', component: LoginPageComponent },
+  { path: 'login', component: LoginPageComponent, canActivate: [LoggedGuard], data: {  }, },
   { path: 'map', component: MapComponent },
   { path: 'oauth2/redirect-login', component: Oauth2RedirectHandlerComponent},
   { path: 'oauth2/redirect-register', component: Oauth2RegisterRedirectHandlerComponent},
@@ -48,7 +49,7 @@ const routes: Routes = [
     { path: 'reset-success', component: PasswordResetSuccessComponent }]
   },
 
-  { path: 'profile', component: NavigationPageTemplateComponent, 
+  { path: 'profile', component: NavigationPageTemplateComponent, canActivate: [AuthGuard, RoleGuard],  data: { expectedRoles: [Roles.DRIVER, Roles.PASSENGER ]},
     children: [
       { path: '', component: ProfileDetailsComponent },
       { path: 'change-password', component: ChangePasswordComponent },
@@ -68,7 +69,7 @@ const routes: Routes = [
   },
   
 
-  { path: '**', redirectTo: '' }
+  { path: '**', redirectTo: '/login' }
 ];
 
 @NgModule({

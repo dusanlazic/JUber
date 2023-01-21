@@ -1,8 +1,10 @@
 import { HttpErrorResponse, HttpStatusCode } from '@angular/common/http';
 import { Component, OnInit, Input } from '@angular/core';
+import { Router } from '@angular/router';
 import { environment } from 'src/environments/environment';
 import { Notification, NotificationItemProperties, NotificationResponse, RideInvitationNotification } from 'src/models/notification';
 import { ApiResponse } from 'src/models/responses';
+import { AuthService } from 'src/services/auth/auth.service';
 import { NotificationService } from 'src/services/notification/notification.service';
 import { RideService } from 'src/services/ride/ride.service';
 import { NotificationTimestampUtil } from 'src/services/util/notification-template.service';
@@ -25,7 +27,9 @@ export class RideInviteComponent implements OnInit {
   constructor(
     private rideService: RideService,
     private notificationService: NotificationService,
-    private toastrService: Toastr
+    private toastrService: Toastr,
+    public authService: AuthService,
+    private router: Router
   ) {
     this.message = ''
     this.notificationTimestamp=''
@@ -44,6 +48,7 @@ export class RideInviteComponent implements OnInit {
     this.rideService.acceptRide(this.notificationCast.rideId).subscribe({
       next: ()=> {
         this.respondToNotification(NotificationResponse.ACCEPTED);
+        this.router.navigate(['/ride']);
       },
       error: (err: HttpErrorResponse) => {
         this.handleAcceptRideFail(err.error);

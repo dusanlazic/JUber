@@ -1,4 +1,4 @@
-import { NotificationItemProperties } from "src/models/notification"
+import { NotificationItemProperties, RideReminderNotification } from "src/models/notification"
 
 enum Properties {
   CHECK_ICON = 'fluent:checkmark-12-filled',
@@ -44,11 +44,12 @@ export class NotificationTemplate {
   } 
 
   // to driver? - on NewRideAssignedNotification notif
-  static rideAssigned(startLocationName: string): NotificationItemProperties {
+  static rideAssigned(startLocationName: string, rideId: string): NotificationItemProperties {
     return {
       icon: Properties.CAR_ICON, 
       iconClass: Properties.INFO_CLASS,
-      message: `You've got a new ride! Starting location: <b>${startLocationName ? startLocationName : ''}</b>`
+      message: `You've got a new ride! Starting location: <b>${startLocationName ? startLocationName : ''}</b>`,
+      url: `/ride/${rideId}`
     }
   }
 
@@ -62,11 +63,12 @@ export class NotificationTemplate {
   }
 
   // to passenger - on RideReminderNotification notif
-  static rideReminder(minutesLeft: number): NotificationItemProperties {
+  static rideReminder(notification: RideReminderNotification): NotificationItemProperties {
     return {
       icon: Properties.BELL_ICON, 
       iconClass: Properties.WARNING_CLASS,
-      message: `Ride reminder! Your driver will be there in about <b>${minutesLeft} minutes</b>`
+      message: `Ride reminder! Your ride at ${notification.startingLocation} is set to start at <b>${notification.startTime}</b>. `,
+      url: `/ride/${notification.rideId}`
     }
   }
 }

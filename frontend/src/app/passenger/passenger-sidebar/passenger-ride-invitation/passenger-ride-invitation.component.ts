@@ -33,7 +33,6 @@ export class PassengerRideInvitationComponent implements OnInit {
               private toastr: Toastr) {
 
     this.store.select('rideRequest').subscribe(state => {
-      alert(JSON.stringify(state));
       console.log(state);
 			if(state === undefined) return;
       authService.getCurrentUser().subscribe(x => {

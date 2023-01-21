@@ -10,8 +10,12 @@ import { LoggedUser, Roles } from 'src/models/user';
 import { DriverService } from '../driver/driver.service';
 import { HttpRequestService } from "../util/http-request.service";
 import { LocalStorageService } from "../util/local-storage.service";
-
+import { CookieService } from 'ngx-cookie-service';
+import { NotificationWebSocketAPI } from '../notification/notification-socket.service';
+import { RideWebSocketAPI } from '../ride/ride-message.service';
 const jwtHelper = new JwtHelperService();
+
+
 
 @Injectable({
     providedIn: 'root'
@@ -20,13 +24,30 @@ const jwtHelper = new JwtHelperService();
 export class AuthService {
 
     private loggedUser!: LoggedUser | undefined;
+    private loggedUserSubject = new BehaviorSubject<LoggedUser | undefined>(undefined);
+
+    getNewLoggedUser(): Observable<LoggedUser | undefined> {
+        return this.loggedUserSubject.asObservable();
+    }
+
+    onNewUserReceived(msg: LoggedUser | undefined) {        
+        this.loggedUserSubject.next(msg);
+    }
 
     constructor(
         private httpRequestService: HttpRequestService,
         private localStorage: LocalStorageService,
         private router: Router,
-        private driverService: DriverService
-    ) {}
+        private driverService: DriverService,
+        private cookieService: CookieService,
+    ) {
+        this.getCurrentUser().subscribe({
+            next: (user: LoggedUser) => {
+                this.loggedUser = user;
+                this.onNewUserReceived(user);
+            }
+        });
+    }
 
 
     login(loginRequest: LoginRequest) : Observable<TokenResponse> {
@@ -59,7 +80,7 @@ export class AuthService {
         return false;
     }
 
-    handleSuccessfulAuth(expiresAt: number, redirectPath: string) : void {
+    handleSuccessfulAuth(expiresAt: number, redirectPath?: string) : void {
         this.localStorage.setTokenExpiration(expiresAt);
 
         this.getCurrentUser().subscribe({
@@ -72,7 +93,9 @@ export class AuthService {
                     redirectPath = '/registration/social'
                 }
                 this.loggedUser = user;
-                this.router.navigate([redirectPath]);
+                this.onNewUserReceived(user);
+                if(redirectPath)
+                    this.router.navigate([redirectPath]);
             },
             error: (e: HttpErrorResponse) => {
                 console.log(e);
@@ -100,7 +123,11 @@ export class AuthService {
         const url = environment.API_BASE_URL + "/auth/logout";
         this.httpRequestService.post(url, null)
         this.loggedUser = undefined;
+        this.onNewUserReceived(this.loggedUser);
         this.localStorage.clearAll();
+        sessionStorage.clear();
+        localStorage.clear();
+        this.cookieService.deleteAll();
     }
 
 
@@ -109,6 +136,7 @@ export class AuthService {
 
         return this.httpRequestService.post(url, null) as Observable<any>;
     }
+
     requestPasswordReset(resetRequest: PasswordResetLinkRequest): Observable<any> {
         const url = environment.API_BASE_URL + "/auth/recovery";
         const body = JSON.stringify(resetRequest);
@@ -127,3 +155,5 @@ export class AuthService {
         event.target.src = "https://ui-avatars.com/api/?name=" + name + "&format=jpg&background=random&rounded=true";
     }
 }
+
+

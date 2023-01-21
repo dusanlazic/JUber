@@ -5,6 +5,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.UUID;
+
 @Data
 @NoArgsConstructor
 public class NewRideAssigned extends TransferredNotification {
@@ -12,4 +14,5 @@ public class NewRideAssigned extends TransferredNotification {
     private final NotificationType type = NotificationType.RIDE_ASSIGNED;
     private Integer passengerCount;
     private String startLocationName;
+    private UUID rideId;
 }

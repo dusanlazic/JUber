@@ -86,7 +86,7 @@ public class SecurityConfig {
                     .authenticationEntryPoint(new RestAuthenticationEntryPoint())
                     .and()
                 .authorizeRequests()
-                    .antMatchers("/auth/**", "/oauth/**", "/h2-console/**", "/simulation/**")
+                    .antMatchers("/auth/**", "/oauth/**", "/h2-console/**", "/simulation/**", "/accounts/drivers/all-locations", "/vehicleType/findAll")
                         .permitAll()
                     .anyRequest()
                         .authenticated()

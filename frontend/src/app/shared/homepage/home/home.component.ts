@@ -21,7 +21,7 @@ import { SetRideAction } from 'src/app/store/ride.actions';
 })
 export class HomeComponent implements OnInit {
 
-  loggedUser!: LoggedUser;
+  loggedUser: LoggedUser | undefined;
   ride: Ride | undefined;
   URL_BASE: string = environment.API_BASE_URL;
   DEFAULT_PROFILE_PHOTO: string = environment.DEFAULT_PROFILE_PHOTO;
@@ -54,7 +54,12 @@ export class HomeComponent implements OnInit {
       this.authService.getCurrentUser().subscribe({
         next: (user) => {
           this.loggedUser = user;
+          console.log(this.loggedUser); 
+        },
+        error: (err) => {
+          this.loggedUser = undefined;
         }
+
       });
   }
 

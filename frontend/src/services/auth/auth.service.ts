@@ -123,11 +123,11 @@ export class AuthService {
         const url = environment.API_BASE_URL + "/auth/logout";
         this.httpRequestService.post(url, null)
         this.loggedUser = undefined;
-        this.onNewUserReceived(this.loggedUser);
         this.localStorage.clearAll();
         sessionStorage.clear();
         localStorage.clear();
         this.cookieService.deleteAll();
+        this.onNewUserReceived(this.loggedUser);
     }
 
 

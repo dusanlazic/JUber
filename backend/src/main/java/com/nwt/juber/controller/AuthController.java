@@ -80,7 +80,8 @@ public class AuthController {
     @PreAuthorize("hasAnyRole('PASSENGER_NEW', 'PASSENGER', 'DRIVER', 'ADMIN')")
     public OAuth2UserInfoResponse me(Authentication authentication) {
         User user = (User) authentication.getPrincipal();
-        return new OAuth2UserInfoResponse(user.getId(), user.getName(), user.getEmail(), user.getImageUrl(), user.getAuthorities().stream().findFirst().get().toString());
+        return new OAuth2UserInfoResponse(user.getId(), user.getName(), user.getEmail(), user.getImageUrl(), 
+        								  user.getAuthorities().stream().findFirst().get().toString(), user.getProvider());
     }
 
 }

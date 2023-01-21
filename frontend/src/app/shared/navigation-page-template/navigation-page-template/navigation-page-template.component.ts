@@ -11,13 +11,12 @@ import { AuthService } from 'src/services/auth/auth.service';
 export class NavigationPageTemplateComponent implements OnInit {
 
   isScrollable: boolean = false;
-  logged: LoggedUser;
+  logged!: LoggedUser;
 
   constructor(
     private router: Router,
     private authservice: AuthService
   ) { 
-    this.logged={email:'', imageUrl:'' ,name: '', role: '', id: ''};
     this.getCurrentHref();
     this.subscribeToHrefChange();
   }

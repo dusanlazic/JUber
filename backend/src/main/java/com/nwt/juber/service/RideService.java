@@ -319,39 +319,8 @@ public class RideService {
     	return new PastRidesResponse(ride.getId(), startPlaceName, endPlaceName, date, startTime, endTime, ride.getFare());
     }
 
-    private SavedRouteResponse convertSavedRouteResponse(Ride ride) {
-        return new SavedRouteResponse(
-                ride.getId(),
-                ride.getPlaces().stream().map(Place::getName).toList(),
-                ride.getFare()
-        );
-    }
-
-    public List<SavedRouteResponse> getSavedRoutes(Passenger passenger) {
-        SavedRouteResponse example1 = new SavedRouteResponse(
-                UUID.randomUUID(),
-                List.of("Menza", "Promenada", "Futoška pijaca", "Pozorište"),
-                300.0
-        );
-
-        SavedRouteResponse example2 = new SavedRouteResponse(
-                UUID.randomUUID(),
-                List.of("Najlon pijaca", "Železnička stanica", "Promenada"),
-                400.0
-        );
-
-        SavedRouteResponse example3 = new SavedRouteResponse(
-                UUID.randomUUID(),
-                List.of("Petrovaradinska tvrđava", "Kej žrtava racije"),
-                150.0
-        );
-
-        SavedRouteResponse example4 = new SavedRouteResponse(
-                UUID.randomUUID(),
-                List.of("Pozorište", "Najlon pijaca"),
-                500.0
-        );
-
-        return List.of(example1, example2, example3, example4);
+    public List<RideDTO> getSavedRoutes(Passenger passenger) {
+        // TODO: Find saved routes instead of all
+        return rideRepository.findAll().stream().map(this::convertRideToDTO).toList();
     }
 }

@@ -68,6 +68,9 @@ export class AuthService {
                 if(user.role === Roles.ADMIN){
                     redirectPath = '/admin'
                 }
+                if(user.role === Roles.PASSENGER_NEW){
+                    redirectPath = '/registration/social'
+                }
                 this.loggedUser = user;
                 this.router.navigate([redirectPath]);
             },

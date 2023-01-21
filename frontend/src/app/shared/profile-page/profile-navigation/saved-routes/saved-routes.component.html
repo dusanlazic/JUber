@@ -1,1 +1,24 @@
-<p>saved-routes works!</p>
+<!-- <div class="column is-content has-custom-scrollable-container"> -->
+    <p class="title is-family-secondary">Saved routes</p>
+    <div class="is-custom-scrollable-container">
+      <!--(matSortChange)="announceSortChange($event)" -->
+      <table mat-table [dataSource]="dataSource" matSort  (matSortChange)="announceSortChange($event)"
+            class="table is-fullwidth is-hoverable is-custom-table">
+        <ng-container matColumnDef="route">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by route">
+            Route
+          </th>
+          <td mat-cell *matCellDef="let element"> {{ element.places.join(" → ") }}</td>
+        </ng-container>
+    
+        <ng-container matColumnDef="fare">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by fare">
+            Cost
+          </th>
+          <td mat-cell *matCellDef="let element"> {{element.fare}} RSD</td>
+        </ng-container>
+    
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="clickedRow(row)"></tr>
+      </table>
+    </div>

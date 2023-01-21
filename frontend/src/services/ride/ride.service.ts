@@ -33,4 +33,9 @@ export class RideService {
     const url = environment.API_BASE_URL + '/ride/pastRides';
     return this.httpRequestService.get(url) as Observable<any>;
   }
+
+  getSavedRoutes(): Observable<any> {
+    const url = environment.API_BASE_URL + "/ride/savedRoutes";
+    return this.httpRequestService.get(url) as Observable<any>;
+  }
 }

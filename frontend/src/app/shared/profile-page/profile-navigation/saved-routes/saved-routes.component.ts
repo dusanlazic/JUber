@@ -1,4 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { LiveAnnouncer } from '@angular/cdk/a11y';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { MatSort, Sort } from '@angular/material/sort';
+import { MatTableDataSource } from '@angular/material/table';
+import { Router } from '@angular/router';
+import { RideService } from 'src/services/ride/ride.service';
+
+export interface SavedRouteResponse {
+	rideId: string;
+	places: Array<string>;
+	fare: number;
+}
 
 @Component({
   selector: 'app-saved-routes',
@@ -7,9 +18,38 @@ import { Component, OnInit } from '@angular/core';
 })
 export class SavedRoutesComponent implements OnInit {
 
-  constructor() { }
+  displayedColumns: string[] = ['route', 'fare']
+  dataSource: any;
 
-  ngOnInit(): void {
+  constructor(
+    private _liveAnnouncer: LiveAnnouncer,
+    private rideService: RideService,
+    private router: Router
+  ) {}
+
+  @ViewChild(MatSort)
+  sort: MatSort = new MatSort;
+
+  ngOnInit() {
+    this.rideService.getSavedRoutes().subscribe({
+      next: (res: Array<SavedRouteResponse>) => {
+        this.dataSource = new MatTableDataSource(res);
+        this.dataSource.sort = this.sort;
+      }
+    })
+  }
+
+  announceSortChange(sortState: Sort) {
+    if (sortState.direction) {
+      this._liveAnnouncer.announce(`Sorted ${sortState.direction}ending`);
+    } else {
+      this._liveAnnouncer.announce('Sorting cleared');
+    }
+  }
+
+  clickedRow(row: SavedRouteResponse) : void {
+    console.log(row)
+    // Do the rest
   }
 
 }

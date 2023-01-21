@@ -4,6 +4,7 @@ import { environment } from 'src/environments/environment';
 import * as Stomp from 'stompjs';
 import * as SockJS from 'sockjs-client';
 import { AuthService } from '../auth/auth.service';
+import { LoggedUser } from 'src/models/user';
 
 @Injectable({
   providedIn: 'root'
@@ -12,14 +13,17 @@ export class NotificationWebSocketAPI {
   webSocketEndPoint: string = environment.API_SOCKET_URL;
   topic: string = "/user/queue/notifications";
   stompClient: any;
+  loggedUser: LoggedUser | undefined;
 
   constructor(private websocketShare: WebsocketshareService, private authService: AuthService) {
     authService.getNewLoggedUser().subscribe((user) => {
-        if (user) {
+        if (user && user.email != this.loggedUser?.email) {
             console.log(user);
+            this.loggedUser = user;
             this.connect();
         }
         else {
+            this.loggedUser = undefined;
             this.disconnect();
         }
     })
@@ -40,7 +44,7 @@ export class NotificationWebSocketAPI {
   };
 
   disconnect() {
-      if (this.stompClient !== null) {
+      if (this.stompClient && this.stompClient.connected) {
           this.stompClient.disconnect();
       }
       console.log("Disconnected");
@@ -59,6 +63,8 @@ export class NotificationWebSocketAPI {
   }
 
   send(message: any) {
-      this.stompClient.send()
+    console.log("OVDE ALOOO MAJKE MI");
+    
+    this.stompClient.send()
   }
 }

@@ -8,6 +8,7 @@ export interface DriverArrivedNotification extends TransferredNotification {
 export interface NewRideAssignedNotification extends TransferredNotification {
     passengerCount: number;
     startLocationName: string;
+    rideId: string;
 }
 
 export interface RideCancelledNotification  extends TransferredNotification {
@@ -31,7 +32,9 @@ export interface RideStatusUpdatedNotification  extends TransferredNotification 
 }
 
 export interface RideReminderNotification  extends TransferredNotification {
-    minutesLeft: number;
+    startingLocation: string;
+    rideId: string;
+    startTime: string;
 }
 
 export interface EveryoneAcceptedRideNotification extends TransferredNotification {
@@ -77,5 +80,6 @@ export enum NotificationResponse {
 export interface NotificationItemProperties{
     iconClass: string,
     icon: string,
-    message: string
+    message: string,
+    url?: string
   }

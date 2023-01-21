@@ -2,6 +2,8 @@ package com.nwt.juber.controller;
 
 import com.nwt.juber.api.ResponseOk;
 import com.nwt.juber.dto.RideDTO;
+import com.nwt.juber.dto.response.SavedRouteResponse;
+import com.nwt.juber.model.Passenger;
 import com.nwt.juber.service.RideService;
 
 import java.util.List;
@@ -63,7 +65,6 @@ public class RideController {
     }
 
 
-
     @GetMapping("/active")
     @PreAuthorize(("hasAnyRole('DRIVER', 'PASSENGER')"))
     public RideDTO getActiveRide(Authentication authentication) {
@@ -85,6 +86,13 @@ public class RideController {
     public List<PastRidesResponse> getPastRides(Authentication authentication) {
     	User user = (User)authentication.getPrincipal();
     	return rideService.getPastRides(user);
+    }
+
+    @GetMapping("/savedRoutes")
+    @PreAuthorize("hasRole('PASSENGER')")
+    public List<SavedRouteResponse> getSavedRoutes(Authentication authentication) {
+        Passenger passenger = (Passenger) authentication.getPrincipal();
+        return rideService.getSavedRoutes(passenger);
     }
 
 }

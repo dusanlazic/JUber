@@ -3,7 +3,7 @@
 <div class="is-custom-scrollable-container">
   <!--(matSortChange)="announceSortChange($event)" -->
   <table mat-table [dataSource]="dataSource" matSort  (matSortChange)="announceSortChange($event)"
-        class="table is-fullwidth is-hoverable is-custom-table mat-elevation-z8">
+        class="table is-fullwidth is-hoverable is-custom-table">
     <ng-container matColumnDef="startPlaceName">
       <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by route">
         Route

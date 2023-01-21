@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import com.nwt.juber.dto.response.SavedRouteResponse;
+import com.nwt.juber.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.Authentication;
@@ -24,14 +26,6 @@ import com.nwt.juber.exception.EndRideException;
 import com.nwt.juber.exception.InsufficientFundsException;
 import com.nwt.juber.exception.StartRideException;
 import com.nwt.juber.exception.UserNotFoundException;
-import com.nwt.juber.model.Driver;
-import com.nwt.juber.model.Passenger;
-import com.nwt.juber.model.PassengerStatus;
-import com.nwt.juber.model.Person;
-import com.nwt.juber.model.Ride;
-import com.nwt.juber.model.RideStatus;
-import com.nwt.juber.model.Role;
-import com.nwt.juber.model.User;
 import com.nwt.juber.model.notification.NotificationStatus;
 import com.nwt.juber.model.notification.RideInvitationNotification;
 import com.nwt.juber.repository.DriverRepository;
@@ -324,5 +318,40 @@ public class RideService {
 
     	return new PastRidesResponse(ride.getId(), startPlaceName, endPlaceName, date, startTime, endTime, ride.getFare());
     }
-	    		
+
+    private SavedRouteResponse convertSavedRouteResponse(Ride ride) {
+        return new SavedRouteResponse(
+                ride.getId(),
+                ride.getPlaces().stream().map(Place::getName).toList(),
+                ride.getFare()
+        );
+    }
+
+    public List<SavedRouteResponse> getSavedRoutes(Passenger passenger) {
+        SavedRouteResponse example1 = new SavedRouteResponse(
+                UUID.randomUUID(),
+                List.of("Menza", "Promenada", "Futoška pijaca", "Pozorište"),
+                300.0
+        );
+
+        SavedRouteResponse example2 = new SavedRouteResponse(
+                UUID.randomUUID(),
+                List.of("Najlon pijaca", "Železnička stanica", "Promenada"),
+                400.0
+        );
+
+        SavedRouteResponse example3 = new SavedRouteResponse(
+                UUID.randomUUID(),
+                List.of("Petrovaradinska tvrđava", "Kej žrtava racije"),
+                150.0
+        );
+
+        SavedRouteResponse example4 = new SavedRouteResponse(
+                UUID.randomUUID(),
+                List.of("Pozorište", "Najlon pijaca"),
+                500.0
+        );
+
+        return List.of(example1, example2, example3, example4);
+    }
 }

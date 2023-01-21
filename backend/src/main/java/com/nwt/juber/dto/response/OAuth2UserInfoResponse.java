@@ -5,6 +5,8 @@ import lombok.Data;
 
 import java.util.UUID;
 
+import com.nwt.juber.model.AuthProvider;
+
 @Data
 @AllArgsConstructor
 public class OAuth2UserInfoResponse {
@@ -13,4 +15,5 @@ public class OAuth2UserInfoResponse {
     private String email;
     private String imageUrl;
     private String role;
+    private AuthProvider provider;
 }

@@ -14,8 +14,8 @@
 
             <div class="is-user-info is-unselectable">
               <div class="ml-2">
-                <p class="is-size-7 has-text-grey">{{logged.email}}</p>
-                <p class="has-text-weight-bold">{{logged.name}}</p>
+                <p class="is-size-7 has-text-grey">{{logged ? logged.email : ''}}</p>
+                <p class="has-text-weight-bold">{{logged ? logged.name: ''}}</p>
               </div>
             </div>
           </div>

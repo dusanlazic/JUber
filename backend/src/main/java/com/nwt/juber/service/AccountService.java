@@ -213,11 +213,10 @@ public class AccountService {
         userRepository.save(user);
     }
 
-	public void changePassword(PasswordChangeRequest passwordChangeRequest, User user) {
-//		String currentPasswordEncoded = passwordEncoder.encode(passwordChangeRequest.getCurrentPassword());
-//		if(!currentPasswordEncoded.equals(user.getPassword())) {
-//			throw new InvalidPasswordRequestException("Current password not valid.");
-//		}
+	public void changePassword(PasswordChangeRequest passwordChangeRequest, User user) {		
+		if(!passwordEncoder.matches(passwordChangeRequest.getCurrentPassword(), user.getPassword())) {
+			throw new InvalidPasswordRequestException("Current password not valid.");
+		}
 
         user.setPassword(passwordEncoder.encode(passwordChangeRequest.getNewPassword()));
         userRepository.save(user);

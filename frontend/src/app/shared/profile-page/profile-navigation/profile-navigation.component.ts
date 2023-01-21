@@ -20,7 +20,7 @@ enum SelectionOptions {
 })
 export class ProfileNavigationComponent implements OnInit {
 
-  // logged: LoggedUser;
+  logged!: LoggedUser;
   selected!: SelectionOptions;
 
   SelectionOptions = SelectionOptions;
@@ -29,16 +29,15 @@ export class ProfileNavigationComponent implements OnInit {
     private authservice: AuthService,
     private router: Router,
   ) { 
-    // this.logged={email:'', imageUrl:'' ,name: '', role: '', id: ''};
     this.getCurrentHref();
   }
 
   ngOnInit(): void {
-    // this.authservice.getCurrentUser().subscribe({
-    //   next: (user: LoggedUser) => {
-    //     this.logged = user;
-    //   }
-    // })
+    this.authservice.getCurrentUser().subscribe({
+      next: (user: LoggedUser) => {
+        this.logged = user;
+      }
+    })
   }
 
   navigate(option: SelectionOptions){
@@ -46,10 +45,6 @@ export class ProfileNavigationComponent implements OnInit {
     this.router.navigate([option])
     
   }
-  // logout() : void {
-  //   this.authservice.logout();
-  //   this.router.navigate(['/login']);
-  // }
 
   private getCurrentHref() : void{
     const href = this.router.url;

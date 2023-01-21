@@ -63,6 +63,7 @@ export class ChangePasswordComponent implements OnInit {
   }
 
   get password() { return this.changePasswordForm.get('password'); }
+  get newPassword() { return this.changePasswordForm.get('newPassword'); }
   get passwordConfirmation() { return this.changePasswordForm.get('passwordConfirmation'); }
 
 }

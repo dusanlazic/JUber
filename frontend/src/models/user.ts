@@ -4,6 +4,13 @@ export interface LoggedUser {
     email: string;
     imageUrl: string;
     role: string;
+    provider: AuthProvider
+}
+
+export enum AuthProvider {
+    local="local", 
+    facebook="facebook", 
+    google="google"
 }
 
 export enum Roles {

@@ -4,6 +4,7 @@ import * as Stomp from 'stompjs';
 import * as SockJS from 'sockjs-client';
 import { AuthService } from '../auth/auth.service';
 import { LoggedUser } from 'src/models/user';
+import { NotificationWebsocketshareService } from './notification-websocketshare.service';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +15,7 @@ export class NotificationWebSocketAPI {
   stompClient: any;
   loggedUser: LoggedUser | undefined;
 
-  constructor(private websocketShare: WebsocketshareService, private authService: AuthService) {
+  constructor(private websocketShare: NotificationWebsocketshareService, private authService: AuthService) {
     authService.getNewLoggedUser().subscribe((user) => {
         if (user && user.email != this.loggedUser?.email) {
             console.log(user);

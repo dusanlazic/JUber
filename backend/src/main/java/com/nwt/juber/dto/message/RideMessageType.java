@@ -5,5 +5,6 @@ public enum RideMessageType {
     DRIVER_FOUND,
     RIDE_FAILED_LATE,
     DRIVER_ABANDONED,
-    RIDE_FINISHED
+    RIDE_FINISHED,
+    SCHEDULED_START
 }

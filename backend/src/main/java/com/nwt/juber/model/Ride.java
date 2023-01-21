@@ -5,7 +5,6 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -46,6 +45,9 @@ public class Ride {
     private LocalDateTime scheduledTime;
 
     @Column(name = "ESTIMATED_TIME")
-    private LocalTime estimatedTime;
+    private Integer duration;
+
+    @Column(name = "DISTANCE")
+    private Double distance;
 
 }

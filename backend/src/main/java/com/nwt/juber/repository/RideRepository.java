@@ -14,9 +14,9 @@ public interface RideRepository extends JpaRepository<Ride, UUID> {
     @Query("update Ride r set r.rideStatus = :status where r.id = :rideId")
     void setRideStatus(UUID rideId, RideStatus status);
 
-    @Query("select r from Ride r where r.driver = :driver and " +
-            "(r.rideStatus = 1 or r.rideStatus = 2 or r.rideStatus = 3)")
-    Ride getActiveRideForDriver(Driver driver);
+    @Query(value = "select * from Ride r where r.DRIVER_ID = ?1 and " +
+            "(r.RIDE_STATUS = 1 or r.RIDE_STATUS = 2 or r.RIDE_STATUS = 3) order by r.RIDE_STATUS desc limit 1", nativeQuery = true)
+    Ride getActiveRideForDriver(UUID driverId);
 
     @Query("select r from Ride r where :passenger member of r.passengers and " +
             "(r.rideStatus = 0 or r.rideStatus = 1 or r.rideStatus = 2 or r.rideStatus = 3 or r.rideStatus = 6)")

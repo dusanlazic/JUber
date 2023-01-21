@@ -106,4 +106,13 @@ public class RideController {
         return new ResponseOk("ok");
 	}
 
+
+    @PutMapping("/abandon/{id}")
+    @PreAuthorize("hasAnyRole('DRIVER')")
+    public ResponseOk abandonRide(@PathVariable("id") UUID rideId, @RequestBody String reason, Authentication authentication) {
+        rideService.abandonRide(rideId, reason, authentication);
+        return new ResponseOk("ok");
+    }
+
+
 }

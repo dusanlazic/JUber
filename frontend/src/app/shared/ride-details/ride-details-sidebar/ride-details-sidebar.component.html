@@ -1,4 +1,4 @@
-<div *ngIf="ride">
+<div *ngIf="ride && loggedUser">
 	<p class="title is-size-3 has-text-grey is-family-secondary">Ride details
 		<span (click)="toggleFavourite()" *ngIf="loggedUser.role === 'ROLE_PASSENGER' && isFavourite === 0" class="has-tooltip-right" data-tooltip="Add route to favourites">
 			<span class="iconify is-size-4 ml-3 is-vcentered" data-icon="material-symbols:bookmark-outline"></span> 
@@ -21,11 +21,24 @@
 		</div>
 	</div>
 
-	<div *ngIf="ride.driver && ride.rideStatus == 'ACCEPTED' && loggedUser.role == 'ROLE_DRIVER'">
+	<div *ngIf="ride.driver && ride.rideStatus == 'ACCEPTED' && loggedUser.role == 'ROLE_DRIVER'" style="display: flex;">
 		<div class="column is-size-4 is-family-secondary p-0  mb-3">
 			<div class="mt-4">
 				<button class="button is-primary is-light" (click)="startRide()">Passengers got in!</button>
 			</div>
+		</div>
+		<div class="column is-size-4 is-family-secondary p-0  mb-3" *ngIf="!this.abandon">
+			<div class="mt-4">
+				<button class="button is-warning is-light" (click)="toggleAbandonRideReason()">Abandon ride.</button>
+			</div>
+		</div>
+	</div>
+
+	<div *ngIf="this.loggedUser.role==='ROLE_DRIVER' && this.abandon">
+		<textarea class="textarea" placeholder="e.g. Hello world" [(ngModel)]="this.reason"></textarea>
+		<div class="mt-3 mb-4">
+			<button class="button is-danger is-light" (click)="abandonRide()">Abandon ride</button>
+			<button class="button is-light is-light ml-3" (click)="toggleAbandonRideReason()">Cancel</button>
 		</div>
 	</div>
 
@@ -82,7 +95,7 @@
                 </div>
               </div>
             </div>
-          </div>
+		</div>
 	</div>
 	<div class="mb-5">
 		<p class="title is-size-5 mb-2 is-family-secondary">Route</p>

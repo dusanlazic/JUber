@@ -69,17 +69,22 @@ export class PassengerSidebarComponent implements OnInit {
 
 	sendRequest() : void {
 		console.info("ovo je send request...")
-		console.log(this.rideRequest)
 
 		let rideRequest = {...this.rideRequest}
 		rideRequest.passengerEmails = rideRequest.passengersInfo.map((pal)=> pal.email)
 		let ride: any = _.cloneDeepWith(this.ride)!;
+		let totalDuration = 0;
+		let totalDistance = 0;
 
 		for(let place of ride.places) {
 			place.id = Number.NaN;
 			for(let route of place.routes) {
 				let coords: any = route.coordinates.map((x: { latitude: any; longitude: any; }) => [x.latitude, x.longitude])
 				route.coordinatesEncoded = encode(coords);
+				if(route.selected) {
+					totalDuration += route.duration;
+					totalDistance += route.distance;
+				}
 			}
 			place.latitude = place.point.latitude;
 			place.longitude = place.point.longitude;
@@ -87,7 +92,10 @@ export class PassengerSidebarComponent implements OnInit {
 		rideRequest.ride = ride;
 		this.calculatePrice();
 		rideRequest.ride.fare = this.price;
-
+		rideRequest.ride.duration = totalDuration;
+		rideRequest.ride.distance = totalDistance;
+		console.log(this.rideRequest)
+		
 		this.rideService.sendRideRequest(rideRequest).subscribe({
 			next: () => {
 				console.log("request sent")

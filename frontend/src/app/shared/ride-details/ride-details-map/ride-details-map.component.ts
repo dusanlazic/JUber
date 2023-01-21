@@ -1,6 +1,7 @@
 import {
   AfterViewInit,
   Component,
+  ElementRef,
   Input,
   OnDestroy,
   OnInit,
@@ -20,19 +21,22 @@ import { PreviewRouteSelectedAction } from 'src/app/store/ride.actions';
 import { environment } from 'src/environments/environment';
 import { LoggedUser } from 'src/models/user';
 import { AuthService } from 'src/services/auth/auth.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-ride-details-map',
   templateUrl: './ride-details-map.component.html',
   styleUrls: ['./ride-details-map.component.sass'],
 })
-export class RideDetailsMapComponent implements AfterViewInit, OnDestroy {
+export class RideDetailsMapComponent implements AfterViewInit, OnDestroy, OnInit {
   constructor(
     private mapService: MapService,
     private httpService: HttpRequestService,
     private nominatimService: NominatimService,
     private authService: AuthService,
-    private store: Store<{ state: AppState }>
+    private store: Store<{ state: AppState }>,
+    public route: ActivatedRoute,
+    private el: ElementRef
   ) {
     this.authService.getCurrentUser().subscribe({
       next: (user) => {
@@ -49,6 +53,7 @@ export class RideDetailsMapComponent implements AfterViewInit, OnDestroy {
   @Input() ride: FullRide | undefined;
 
   loggedUser!: LoggedUser;
+  container!: HTMLElement;
 
   // ride!: Observable<AppState>;
 
@@ -84,6 +89,8 @@ export class RideDetailsMapComponent implements AfterViewInit, OnDestroy {
   }
 
   private initMap(): void {
+
+
     this.map = L.map('details-map', {
       center: this.center,
       zoom: this.zoom,
@@ -102,8 +109,12 @@ export class RideDetailsMapComponent implements AfterViewInit, OnDestroy {
 
   timer!: NodeJS.Timer;
 
+  ngOnInit() {
+  }
+
   ngAfterViewInit(): void {
     this.initMap();
+    this.container = this.el.nativeElement.querySelector('#details-map');
     this.timer = setInterval(() => {
       this.getAndDrawDrivers();
     }, 500);
@@ -113,7 +124,10 @@ export class RideDetailsMapComponent implements AfterViewInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.map.remove();
+    this.map.off()
     clearInterval(this.timer);
+    this.container!.parentNode!.removeChild(this.container);
   }
 
   drawRide(ride: FullRide) {

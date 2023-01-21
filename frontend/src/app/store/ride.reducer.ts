@@ -17,6 +17,15 @@ const initialState : AppState = {
 
 const reducer = createReducer(
 	initialState,
+	on(RideAction.SetRideAction, (state, action) => {
+		return {
+		 ...state,
+		 ride: {
+			 ...action.ride
+		 }
+		}
+	 }),
+
 	on(RideAction.AddPlaceAction, (state, action) => {
 	   return {
 		...state,

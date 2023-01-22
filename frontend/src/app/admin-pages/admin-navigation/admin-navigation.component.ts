@@ -6,6 +6,7 @@ enum SelectionOptions {
   PAST_RIDES='/admin/past-rides',
   ADMIN_SUPPORT='/admin/support',
   ADMIN_BLOCKED_USERS='/admin/blocked-users',
+  ADMIN_CHANGE_REQUESTS='/admin/change-requests',
 }
 
 @Component({

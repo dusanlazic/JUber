@@ -31,4 +31,14 @@ export class AccountManagementService {
       const url = environment.API_BASE_URL + `/accounts/blocked-users/${userId}/note`;
       return this.httpRequestService.patch(url, { note: note }) as Observable<any>;
     }
+
+    getChangeRequests(): Observable<any> {
+      const url = environment.API_BASE_URL + "/accounts/change-requests";
+      return this.httpRequestService.get(url) as Observable<any>;
+    }
+
+    resolveChangeRequest(requestId: string, newStatus: string): Observable<any> {
+      const url = environment.API_BASE_URL + `/accounts/change-requests/${requestId}/resolve`;
+      return this.httpRequestService.patch(url, { newStatus: newStatus }) as Observable<any>;
+    }
 }

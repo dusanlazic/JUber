@@ -34,8 +34,7 @@ const routes: Routes = [
   { path: 'map', component: MapComponent },
   { path: 'oauth2/redirect-login', component: Oauth2RedirectHandlerComponent},
   { path: 'oauth2/redirect-register', component: Oauth2RegisterRedirectHandlerComponent},
-  { path: 'home', component: HomeComponent, canActivate: [LoggedGuard], 
-          data: { expectedRoles: [Roles.DRIVER, Roles.PASSENGER_NEW, Roles.PASSENGER ], rideId: ''}  },
+  { path: 'home', component: HomeComponent, canActivate: [],  data: { rideId: ''}  },
   { path: 'invitation', component: HomeComponent, canActivate: [AuthGuard, RoleGuard], 
           data: { expectedRoles: [Roles.DRIVER, Roles.PASSENGER_NEW, Roles.PASSENGER ]}  },
   { path: 'ride/:rideId', component: RideDetailsComponent, canActivate: [AuthGuard, RoleGuard], 
@@ -74,7 +73,7 @@ const routes: Routes = [
   },
   
 
-  { path: '**', redirectTo: '/login' }
+  { path: '**', redirectTo: '/home' }
 ];
 
 @NgModule({

@@ -80,28 +80,38 @@ export class AuthService {
         return false;
     }
 
-    handleSuccessfulAuth(expiresAt: number, redirectPath?: string) : void {
+    handleSuccessfulAuth(expiresAt: number) : void {
         this.localStorage.setTokenExpiration(expiresAt);
 
         this.getCurrentUser().subscribe({
             next: (user: LoggedUser) => {
                 this.localStorage.set('role', user.role);
-                if(user.role === Roles.ADMIN){
-                    redirectPath = '/admin'
-                }
-                if(user.role === Roles.PASSENGER_NEW){
-                    redirectPath = '/registration/social'
-                }
+                const redirectPath = this.roleBasedRedirectPath(user.role);
                 this.loggedUser = user;
                 this.onNewUserReceived(user);
-                if(redirectPath)
-                    this.router.navigate([redirectPath]);
+                this.router.navigate([redirectPath]);
             },
             error: (e: HttpErrorResponse) => {
                 console.log(e);
                 // this.router.navigate(['/']);
             }
         })
+    }
+
+    private roleBasedRedirectPath(role: string) : string {
+        if(role === Roles.ADMIN){
+            return '/admin'
+        }
+        else if(role === Roles.PASSENGER_NEW){
+            return '/registration/social'
+        }
+        else if(role === Roles.DRIVER){
+            return '/ride'
+        }
+        else if(role === Roles.PASSENGER){
+            return '/home'
+        }
+        return '/login'
     }
 
     getCurrentUser() : Observable<LoggedUser>{
@@ -121,13 +131,20 @@ export class AuthService {
         }
 
         const url = environment.API_BASE_URL + "/auth/logout";
-        this.httpRequestService.post(url, null)
-        this.loggedUser = undefined;
-        this.localStorage.clearAll();
-        sessionStorage.clear();
-        localStorage.clear();
-        this.cookieService.deleteAll();
-        this.onNewUserReceived(this.loggedUser);
+        this.httpRequestService.post(url, null).subscribe({
+            next: () => {
+                this.loggedUser = undefined;
+                this.localStorage.clearAll();
+                sessionStorage.clear();
+                localStorage.clear();
+                this.cookieService.deleteAll();
+                this.onNewUserReceived(this.loggedUser);
+                this.router.navigate(['/login']);
+            },
+            error: () => {
+
+            }
+        })
     }
 
 

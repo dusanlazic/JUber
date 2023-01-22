@@ -146,7 +146,7 @@ import { ChangeRequestsComponent } from './admin-pages/change-requests/change-re
     AdminChatComponent,
     NavigationPageTemplateComponent,
     AdminNavigationComponent,
-    ProfileNavigationComponent,
+    ProfileNavigationComponent
   ],
   imports: [
     BrowserModule,
@@ -183,7 +183,7 @@ import { ChangeRequestsComponent } from './admin-pages/change-requests/change-re
     ChangeRequestsComponent,
     BlockedUsersComponent,
     SupportComponent,
-    SupportMessageComponent,
+    SupportMessageComponent
   ],
   providers: [RideSocketShareService, RideWebSocketAPI,
               NotificationWebsocketshareService, NotificationWebSocketAPI, 

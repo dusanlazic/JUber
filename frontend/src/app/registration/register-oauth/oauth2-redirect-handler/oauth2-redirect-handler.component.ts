@@ -22,7 +22,7 @@ export class Oauth2RegisterRedirectHandlerComponent implements OnInit {
     const error = ParserUtil.getUrlParameter('error', this.router.url);
 
     if(expiresAt) {
-        this.authService.handleSuccessfulAuth(expiresAt, '/registration/social');
+        this.authService.handleSuccessfulAuth(expiresAt);
     } else {
         console.log(error);
         this.toastr.error('Oops! Something went wrong. Please try again!');

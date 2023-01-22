@@ -1,7 +1,9 @@
 package com.nwt.juber.controller;
 
 import com.nwt.juber.api.ResponseOk;
+import com.nwt.juber.dto.request.BlockedUserNoteUpdateRequest;
 import com.nwt.juber.dto.request.ProfileInfoChangeResolveRequest;
+import com.nwt.juber.dto.response.BlockedUserResponse;
 import com.nwt.juber.dto.response.ProfileChangeRequestResponse;
 import com.nwt.juber.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +28,27 @@ public class AccountManagementController {
     }
 
     @PatchMapping("/change-requests/{requestId}/resolve")
-    public ResponseOk resolveProfileChangeRequest(@RequestBody @PathVariable UUID requestId, @RequestBody @Valid ProfileInfoChangeResolveRequest resolveRequest) {
+    public ResponseOk resolveProfileChangeRequest(@PathVariable UUID requestId, @RequestBody @Valid ProfileInfoChangeResolveRequest resolveRequest) {
         return accountService.resolveProfileChangeRequest(requestId, resolveRequest);
+    }
+
+    @GetMapping("/blocked-users")
+    public List<BlockedUserResponse> getBlockedUsers() {
+        return accountService.getBlockedUsers();
+    }
+
+    @DeleteMapping("/blocked-users/{userId}")
+    public ResponseOk unblockUser(@PathVariable UUID userId) {
+        return accountService.unblockUser(userId);
+    }
+
+    @PatchMapping("/blocked-users/{userId}/note")
+    public ResponseOk updateNote(@PathVariable UUID userId, @RequestBody @Valid BlockedUserNoteUpdateRequest noteUpdateRequest) {
+        return accountService.updateNote(userId, noteUpdateRequest);
+    }
+
+    @PostMapping("/blocked-users/{userEmail}")
+    public ResponseOk blockUser(@PathVariable String userEmail) {
+        return accountService.blockUser(userEmail);
     }
 }

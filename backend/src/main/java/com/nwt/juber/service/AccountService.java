@@ -12,6 +12,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
+import com.nwt.juber.dto.request.*;
+import com.nwt.juber.dto.response.*;
+import com.nwt.juber.exception.*;
 import com.nwt.juber.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -24,26 +27,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.nwt.juber.api.ResponseOk;
 import com.nwt.juber.config.AppProperties;
-import com.nwt.juber.dto.request.DriverRegistrationRequest;
-import com.nwt.juber.dto.request.LocalRegistrationRequest;
-import com.nwt.juber.dto.request.LoginRequest;
-import com.nwt.juber.dto.request.OAuthRegistrationRequest;
-import com.nwt.juber.dto.request.PasswordChangeRequest;
-import com.nwt.juber.dto.request.PasswordResetLinkRequest;
-import com.nwt.juber.dto.request.PasswordResetRequest;
-import com.nwt.juber.dto.request.ProfileInfoChangeRequest;
-import com.nwt.juber.dto.request.ProfileInfoChangeResolveRequest;
-import com.nwt.juber.dto.response.PhotoUploadResponse;
-import com.nwt.juber.dto.response.ProfileChangeRequestResponse;
-import com.nwt.juber.dto.response.ProfileInfoResponse;
-import com.nwt.juber.dto.response.TokenResponse;
-import com.nwt.juber.exception.EmailAlreadyInUseException;
-import com.nwt.juber.exception.InvalidPasswordRequestException;
-import com.nwt.juber.exception.InvalidRecoveryTokenException;
-import com.nwt.juber.exception.PhoneNumberAlreadyInUseException;
-import com.nwt.juber.exception.ProfileChangeRequestAlreadyResolvedException;
-import com.nwt.juber.exception.ProfileChangeRequestNotFoundException;
-import com.nwt.juber.exception.UserNotFoundException;
 import com.nwt.juber.repository.PersonRepository;
 import com.nwt.juber.repository.ProfileChangeRequestRepository;
 import com.nwt.juber.repository.UserRepository;
@@ -307,6 +290,44 @@ public class AccountService {
                 return null;
             }
         }
+    }
+
+    public List<BlockedUserResponse> getBlockedUsers() {
+        return userRepository.findByBlockedIsTrue().stream().map(user -> new BlockedUserResponse(
+                user.getId(),
+                user.getName(),
+                user.getNote()
+        )).toList();
+    }
+
+    public ResponseOk blockUser(String userEmail) {
+        User user = userRepository.findByEmail(userEmail).orElseThrow(UserNotFoundException::new);
+        if (user.getBlocked())
+            throw new UserAlreadyBlockedException();
+
+        user.setBlocked(true);
+        user.setNote("");
+        userRepository.save(user);
+        return new ResponseOk("User blocked.");
+    }
+
+    public ResponseOk unblockUser(UUID userId) {
+        User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+        user.setBlocked(false);
+        user.setNote(null);
+
+        userRepository.save(user);
+        return new ResponseOk("User unblocked.");
+    }
+
+    public ResponseOk updateNote(UUID userId, BlockedUserNoteUpdateRequest noteUpdateRequest) {
+        User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+        if (!user.getBlocked())
+            throw new UserNotFoundException();
+
+        user.setNote(noteUpdateRequest.getNote());
+        userRepository.save(user);
+        return new ResponseOk("Note updated.");
     }
 
     private void checkEmailAvailability(String email) {

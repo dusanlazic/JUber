@@ -15,7 +15,7 @@
     </section>
     <div>
         <div class="navigation">
-            <figure class="image is-48x48">
+            <figure class="image is-48x48" [routerLink]="['/profile']">
                 <img class="is-rounded" src="{{URL_BASE}}{{ loggedUser.imageUrl }}" (error)="this.authService.imageUrlResolver($event, loggedUser.name)">
             </figure>
             <app-notification></app-notification>

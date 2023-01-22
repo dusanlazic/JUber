@@ -2,8 +2,6 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import {MatSort, Sort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
 import {LiveAnnouncer} from '@angular/cdk/a11y';
-import { RideService } from 'src/services/ride/ride.service';
-import { Router } from '@angular/router';
 import { AccountManagementService } from 'src/services/accountManagement/account-management.service';
 import { Toastr } from 'src/services/util/toastr.service';
 
@@ -52,6 +50,8 @@ export class ChangeRequestsComponent implements  OnInit {
   }
 
   approveChange(requestId: string) : void {
+    this.removeFromTable(requestId)
+
     this.accountManagementService.resolveChangeRequest(requestId, 'APPROVED').subscribe({
       next: (res: any) => {
         this.toastr.success(`Request approved!`, 'Success');
@@ -64,6 +64,8 @@ export class ChangeRequestsComponent implements  OnInit {
   }
 
   denyChange(requestId: string) : void {
+    this.removeFromTable(requestId)
+
     this.accountManagementService.resolveChangeRequest(requestId, 'DENIED').subscribe({
       next: (res: any) => {
         this.toastr.success(`Request denied!`, 'Success');
@@ -75,8 +77,8 @@ export class ChangeRequestsComponent implements  OnInit {
     })
   }
 
-  clickedRow(row: ChangeRequestsResponse) : void{
-    console.log(row)
-    //this.router.navigate([`/ridePreview/${row.id}`])
+  removeFromTable(requestId: string) : void{
+    this.dataSource.data = this.dataSource.data.filter((elem: { requestId: string; }) => elem.requestId !== requestId);
+    this.dataSource.data = [...this.dataSource.data];
   }
 }

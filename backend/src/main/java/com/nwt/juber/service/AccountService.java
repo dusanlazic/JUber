@@ -293,15 +293,14 @@ public class AccountService {
     }
 
     public List<BlockedUserResponse> getBlockedUsers() {
-        return userRepository.findByBlockedIsTrue().stream().map(user -> new BlockedUserResponse(
-                user.getId(),
-                user.getName(),
-                user.getRole().name(),
-                user.getNote()
-        )).toList();
+        return userRepository.findByBlockedIsTrue().stream().map(this::mapBlockedUserResponse).toList();
+    }
+    
+    private BlockedUserResponse mapBlockedUserResponse(User user) {
+    	return new BlockedUserResponse(user.getId(), user.getName(), user.getRole().name(), user.getNote());
     }
 
-    public ResponseOk blockUser(String userEmail) {
+    public BlockedUserResponse blockUser(String userEmail) {
         User user = userRepository.findByEmail(userEmail).orElseThrow(UserNotFoundException::new);
         if (user.getBlocked())
             throw new UserAlreadyBlockedException();
@@ -309,7 +308,7 @@ public class AccountService {
         user.setBlocked(true);
         user.setNote("");
         userRepository.save(user);
-        return new ResponseOk("User blocked.");
+        return mapBlockedUserResponse(user);
     }
 
     public ResponseOk unblockUser(UUID userId) {

@@ -11,3 +11,9 @@
   <span class="iconify-inline is-size-5" data-icon="fluent:person-prohibited-24-regular"></span>
   Blocked users
 </div>
+<div
+  class="navigation-item {{ selected===SelectionOptions.ADMIN_CHANGE_REQUESTS ? 'is-selected' : ''}}"
+  (click)="navigate(SelectionOptions.ADMIN_CHANGE_REQUESTS)">
+  <span class="iconify-inline is-size-5" data-icon="fluent:person-edit-24-regular"></span>
+  Change requests
+</div>

@@ -15,9 +15,15 @@ export class DriverService {
 
       return this.httpRequestService.patch(url, email) as Observable<any>;
   }
+
   inactivate(email: string): Observable<any> {
     const url = environment.API_BASE_URL + `/accounts/drivers/inactivate`;
 
     return this.httpRequestService.patch(url, email) as Observable<any>;
-}
+  }
+
+  getStatuses(): Observable<any> {
+    const url = environment.API_BASE_URL + `/accounts/drivers/statuses`;
+    return this.httpRequestService.get(url) as Observable<any>;
+  }
 }

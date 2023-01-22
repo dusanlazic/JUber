@@ -7,6 +7,8 @@ import java.util.UUID;
 import javax.transaction.Transactional;
 
 import com.nwt.juber.dto.message.PersonLocationMessage;
+import com.nwt.juber.dto.response.BriefDriverStatusResponse;
+import com.nwt.juber.repository.RideRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -26,6 +28,9 @@ public class DriverService {
 
     @Autowired
     private DriverRepository driverRepository;
+
+	@Autowired
+	private RideRepository rideRepository;
     
     @Autowired
 	private DriverShiftService driverShiftService;
@@ -148,5 +153,26 @@ public class DriverService {
 	public PersonLocationMessage locationForDriverId(UUID id) {
 		return driverRepository.locationForDriverId(id);
 	}
+
+    public List<BriefDriverStatusResponse> getAllBriefStatuses() {
+		return driverRepository.findAll().stream().map(driver -> {
+			Ride ride = rideRepository.getActiveRideForDriver(driver.getId());
+			String startPlaceName = "";
+			String endPlaceName = "";
+
+			if(ride != null && ride.getPlaces().size() > 0) {
+				startPlaceName = ride.getPlaces().get(0).getName();
+				endPlaceName = ride.getPlaces().get(ride.getPlaces().size() - 1).getName();
+			}
+
+			return new BriefDriverStatusResponse(
+					driver.getId(),
+					driver.getName(),
+					driver.getStatus(),
+					startPlaceName,
+					endPlaceName
+			);
+		}).toList();
+    }
 }
 

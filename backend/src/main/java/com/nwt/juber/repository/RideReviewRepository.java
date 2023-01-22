@@ -1,5 +1,6 @@
 package com.nwt.juber.repository;
 
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -16,4 +17,6 @@ public interface RideReviewRepository extends JpaRepository<RideReview, UUID>{
        Set<RideReview> getRideReviewsByDriverId(UUID driverId);
 
        Set<RideReview> getRideReviewsByReviewerId(UUID reviewerId);
+       
+       Optional<RideReview> getRideReviewsByReviewerIdAndRideId(UUID reviewerId, UUID rideId);
 }

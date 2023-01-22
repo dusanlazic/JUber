@@ -1,0 +1,14 @@
+<div class="mb-6">
+    <p class="title is-size-5 mb-4 is-family-secondary">Reviews</p>
+    <div *ngFor="let review of rideReviews">
+        <app-ride-review [review]="review"></app-ride-review>
+    </div>
+    <div *ngIf="canLeaveReview">
+        <button class="button is-fullwidth is-warning has-text-weight-bold" (click)="toggleModal()">
+            Leave review
+        </button>
+        <p class="has-text-centered has-text-grey is-size-7 mt-2">You have <b>{{deadlineTxt}}</b> to leave a review.</p>
+    </div>
+</div>
+
+<app-add-review-dialog *ngIf="isDialogOpened" (addReviewEvent)="leaveReview($event)"></app-add-review-dialog>

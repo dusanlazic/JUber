@@ -121,4 +121,9 @@
 		</p>
 	</div>
 
+
+	<div *ngIf="ride.rideStatus == 'FINISHED'">
+		<app-ride-reviews [rideId]="ride.id"></app-ride-reviews>
+	</div>
+
 </div>

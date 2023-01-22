@@ -83,6 +83,9 @@ import { UnathorizedSidebarComponent } from './unauthorized/unauthorized-sidebar
 import { UnathorizedMapComponent } from './unauthorized/unauthorized-map/unauthorized-map.component';
 import { BlockedUsersComponent } from './admin-pages/blocked-users/blocked-users.component';
 import { ChangeRequestsComponent } from './admin-pages/change-requests/change-requests.component';
+import { RideReviewsComponent } from './shared/ride-details/ride-reviews/ride-reviews.component';
+import { RideReviewComponent } from './shared/ride-details/ride-reviews/ride-review/ride-review.component';
+import { AddReviewDialogComponent } from './shared/ride-details/ride-reviews/add-review-dialog/add-review-dialog.component';
 
 @NgModule({
   declarations: [
@@ -146,7 +149,11 @@ import { ChangeRequestsComponent } from './admin-pages/change-requests/change-re
     AdminChatComponent,
     NavigationPageTemplateComponent,
     AdminNavigationComponent,
-    ProfileNavigationComponent
+    ProfileNavigationComponent,
+
+    RideReviewsComponent,
+    RideReviewComponent,
+    AddReviewDialogComponent
   ],
   imports: [
     BrowserModule,

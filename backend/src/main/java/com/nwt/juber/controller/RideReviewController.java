@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.nwt.juber.api.ResponseOk;
 import com.nwt.juber.dto.request.RideReviewRequest;
 import com.nwt.juber.dto.response.RideReviewResponse;
+import com.nwt.juber.dto.response.RideReviewableInfoResponse;
 import com.nwt.juber.model.Passenger;
 import com.nwt.juber.model.User;
 import com.nwt.juber.service.RideReviewService;
@@ -47,5 +48,12 @@ public class RideReviewController {
     public List<RideReviewResponse> getMyReviews(Authentication authentication) {
        User user = (User) authentication.getPrincipal();
        return rideReviewService.getMyReviews(user);
+    }
+    
+    @GetMapping("/reviewableInfo/{rideId}")
+    @PreAuthorize("hasAnyRole('PASSENGER')")
+    public RideReviewableInfoResponse getReviewableInfo(@PathVariable UUID rideId, Authentication authentication) {
+    	Passenger passenger = (Passenger) authentication.getPrincipal();
+        return rideReviewService.getReviewableInfo(passenger, rideId);
     }
 }

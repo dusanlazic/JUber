@@ -10,15 +10,13 @@
           </p>
         </div>
         <div>
-            <p>
-                <span>Driver rating: </span>
-                <input class="input" type="number"  formControlName="driverRating" (change)="changeDriverRating()">
-            </p>
+            Driver rating:
+            <igc-rating value="0" min="0" max="5" (igcChange)="changeDriverRating($event);" style="color: hsl(48, 100%, 67%); size: 20px;"></igc-rating>
         </div>
 
         <div>
             Vehicle rating:
-            <input class="input" type="number"  formControlName="vehicleRating" (change)="changeVehicleRating()">
+            <igc-rating value="0" min="0" max="5" (igcChange)="changeVehicleRating($event);" style="color: hsl(48, 100%, 67%);"></igc-rating>
         </div>
 
         <div class="field mt-4 is-grouped is-grouped-right is">

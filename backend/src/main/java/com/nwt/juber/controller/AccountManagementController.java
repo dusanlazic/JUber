@@ -48,7 +48,7 @@ public class AccountManagementController {
     }
 
     @PostMapping("/blocked-users/{userEmail}")
-    public ResponseOk blockUser(@PathVariable String userEmail) {
+    public BlockedUserResponse blockUser(@PathVariable String userEmail) {
         return accountService.blockUser(userEmail);
     }
 }

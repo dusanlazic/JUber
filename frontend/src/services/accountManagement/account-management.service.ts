@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { HttpRequestService } from '../util/http-request.service';
 import { Observable } from 'rxjs';
+import { BlockedUserResponse } from 'src/app/admin-pages/blocked-users/blocked-users.component';
 
 @Injectable({
   providedIn: 'root'
@@ -17,9 +18,9 @@ export class AccountManagementService {
       return this.httpRequestService.get(url) as Observable<any>;
     }
 
-    blockUser(email: string) : Observable<any> {
+    blockUser(email: string) : Observable<BlockedUserResponse> {
       const url = environment.API_BASE_URL + `/accounts/blocked-users/${email}`;
-      return this.httpRequestService.post(url, {}) as Observable<any>;
+      return this.httpRequestService.post(url, {}) as Observable<BlockedUserResponse>;
     }
 
     unblockUser(userId: string) : Observable<any> {

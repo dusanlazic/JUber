@@ -1,5 +1,7 @@
 package com.nwt.juber.dto.notification;
 
+import java.util.UUID;
+
 import com.nwt.juber.model.RideStatus;
 import lombok.AccessLevel;
 import lombok.Data;
@@ -12,4 +14,5 @@ public class RideStatusUpdated extends TransferredNotification {
     @Setter(AccessLevel.NONE)
     private final NotificationType type = NotificationType.RIDE_STATUS_UPDATED;
     private RideStatus status;
+    private UUID rideId;
 }

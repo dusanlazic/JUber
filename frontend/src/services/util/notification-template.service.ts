@@ -34,6 +34,16 @@ export class NotificationTemplate {
     }
   }
 
+  // to ? - on RideStatusUpdatedNotification notif
+  static rideStatusUpdated(rideId: string): NotificationItemProperties {
+    return {
+      icon: Properties.CAR_ICON, 
+      iconClass: Properties.INFO_CLASS,
+      message: 'Ride updated! Click to view changes',
+      url: `/ride/${rideId}`
+    }
+  }
+
   // to passenger - on DriverArrivedNotification notif
   static driverArived(driverName: string): NotificationItemProperties {
     return {

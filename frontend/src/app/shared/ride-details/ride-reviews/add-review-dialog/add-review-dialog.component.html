@@ -1,0 +1,41 @@
+<div class="custom-add-pals-dialog">
+    <div class="box">
+      <form class="form-container" [formGroup]="reviewForm" autocomplete="false" validate> 
+        <div class="field">
+          <p class="control has-icons-left">
+            <textarea class="input" type="text" placeholder="Comment*" formControlName="comment"></textarea>
+            <span class="icon is-left">
+              <span class="iconify is-size-5" data-icon="ic:outline-insert-comment"></span>
+            </span>
+          </p>
+        </div>
+        <div>
+            <p>
+                <span>Driver rating: </span>
+                <input class="input" type="number"  formControlName="driverRating" (change)="changeDriverRating()">
+            </p>
+        </div>
+
+        <div>
+            Vehicle rating:
+            <input class="input" type="number"  formControlName="vehicleRating" (change)="changeVehicleRating()">
+        </div>
+
+        <div class="field mt-4 is-grouped is-grouped-right is">
+          <p class="control">
+            <button class="button is-light" (click)="cancel()" type="button">
+              Cancel
+            </button>
+          </p>
+          <p class="control">
+            <button class="button is-success" (click)="add()" type="submit" [disabled]="reviewForm.invalid">
+              Add
+              <span class="icon ml-1">
+                <span class="iconify is-size-5" data-icon="fluent:add-12-filled"></span>
+              </span>
+            </button>
+          </p>
+        </div>
+      </form>
+    </div>
+</div>

@@ -15,7 +15,7 @@
             <div class="is-user-info is-unselectable">
               <figure class="image is-32x32">
                 <img class="is-rounded"
-                  src="{{URL_BASE}}{{logged.imageUrl}}"
+                  src="{{URL_BASE}}{{logged ? logged.imageUrl : ''}}"
                   (error)="this.authService.imageUrlResolver($event, logged.name)">
               </figure>
               <div class="ml-2">

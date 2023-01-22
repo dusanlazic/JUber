@@ -45,7 +45,6 @@ export class NavigationPageTemplateComponent implements OnInit {
   
   logout() : void {
     this.authService.logout();
-    this.router.navigate(['/login']);
   }
 
 }

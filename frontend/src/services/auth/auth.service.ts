@@ -49,6 +49,9 @@ export class AuthService {
         });
     }
 
+    removeLogged(){
+        this.loggedUser = undefined;
+    }
 
     login(loginRequest: LoginRequest) : Observable<TokenResponse> {
         const url = environment.API_BASE_URL + "/auth/login";

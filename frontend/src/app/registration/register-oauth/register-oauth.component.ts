@@ -70,7 +70,8 @@ export class RegisterOauthComponent implements OnInit {
   register() : void {
     this.authService.oauthSignup(this.registrationForm.value).subscribe({
       next: () => {
-        this.localStorage.set('role', Roles.PASSENGER);
+        this.localStorage.set('role', Roles.PASSENGER)
+        this.authService.removeLogged();
         this.router.navigate(['/home']);    // authenticated
       },
       error: (e: HttpErrorResponse) => {

@@ -27,7 +27,7 @@ public class FacebookOAuth2UserInfo extends OAuth2UserInfo {
     public String getImageUrl() {
         try {
             Map<String, Object> pictureObj = (Map<String, Object>) attributes.get("picture");
-            Map<String, Object> dataObj = (Map<String, Object>) attributes.get("data");
+            Map<String, Object> dataObj = (Map<String, Object>) pictureObj.get("data");
             return (String) dataObj.get("url");
         } catch (NullPointerException e) {
             return null;

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { LoggedUser } from 'src/models/user';
+import { LoggedUser, Roles } from 'src/models/user';
 import { AuthService } from 'src/services/auth/auth.service';
 
 
@@ -51,4 +51,12 @@ export class ProfileNavigationComponent implements OnInit {
     this.selected = href as SelectionOptions;
   }
 
+  home(): void{
+    if(this.logged.role === Roles.PASSENGER){
+      this.router.navigate(['/home'])
+    }
+    else if(this.logged.role === Roles.DRIVER){
+      this.router.navigate(['/ride'])
+    }
+  }
 }

@@ -43,18 +43,18 @@
       <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by fare">
         Requested at
       </th>
-      <td mat-cell *matCellDef="let element"> {{element.requestedAt}} </td>
+      <td mat-cell *matCellDef="let element"> {{element.requestedAt | date:'mediumDate'}} </td>
     </ng-container>
 
     <ng-container matColumnDef="actions">
       <th mat-header-cell *matHeaderCellDef></th>
       <td mat-cell *matCellDef="let element" [class]="'has-text-right'">
-        <button class="button is-danger is-outlined is-small">
+        <button class="button is-danger is-outlined is-small" (click)="denyChange(element.requestId)">
           <span class="icon">
             <span class="iconify is-size-3" data-icon="fluent:prohibited-20-filled"></span>
           </span>
         </button>
-        <button class="button ml-4 is-success is-outlined is-small">
+        <button class="button ml-4 is-success is-outlined is-small" (click)="approveChange(element.requestId)">
           <span class="icon">
             <span class="iconify is-size-3" data-icon="fluent:checkmark-16-filled"></span>
           </span>
@@ -63,7 +63,7 @@
     </ng-container>
 
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="clickedRow(row)"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
   </table>
 
 </div>

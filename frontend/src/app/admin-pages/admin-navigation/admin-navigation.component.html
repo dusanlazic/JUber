@@ -5,6 +5,12 @@
     <span class="iconify-inline is-size-5" data-icon="fluent:chat-help-24-regular"></span>
     Support
 </div>
+<div
+  class="navigation-item {{ selected===SelectionOptions.ADMIN_DRIVERS_LIST ? 'is-selected' : ''}}"
+  (click)="navigate(SelectionOptions.ADMIN_DRIVERS_LIST)">
+  <span class="iconify-inline is-size-5" data-icon="fluent:people-list-24-regular"></span>
+  Drivers
+</div>
 <div 
   class="navigation-item {{ selected===SelectionOptions.ADMIN_BLOCKED_USERS ? 'is-selected' : ''}}"
   (click)="navigate(SelectionOptions.ADMIN_BLOCKED_USERS)">

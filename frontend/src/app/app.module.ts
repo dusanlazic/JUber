@@ -83,6 +83,7 @@ import { UnathorizedSidebarComponent } from './unauthorized/unauthorized-sidebar
 import { UnathorizedMapComponent } from './unauthorized/unauthorized-map/unauthorized-map.component';
 import { BlockedUsersComponent } from './admin-pages/blocked-users/blocked-users.component';
 import { ChangeRequestsComponent } from './admin-pages/change-requests/change-requests.component';
+import { DriversListComponent } from './admin-pages/drivers-list/drivers-list.component';
 
 @NgModule({
   declarations: [
@@ -138,6 +139,7 @@ import { ChangeRequestsComponent } from './admin-pages/change-requests/change-re
     PastRidesComponent,
     ChangeRequestsComponent,
     BlockedUsersComponent,
+    DriversListComponent,
     SupportComponent,
     SupportMessageComponent,
 
@@ -180,6 +182,7 @@ import { ChangeRequestsComponent } from './admin-pages/change-requests/change-re
     BalanceComponent,
     SavedRoutesComponent,
     PastRidesComponent,
+    DriversListComponent,
     ChangeRequestsComponent,
     BlockedUsersComponent,
     SupportComponent,

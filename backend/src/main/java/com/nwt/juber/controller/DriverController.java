@@ -3,6 +3,7 @@ package com.nwt.juber.controller;
 import javax.validation.Valid;
 
 import com.nwt.juber.dto.message.PersonLocationMessage;
+import com.nwt.juber.dto.response.BriefDriverStatusResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -70,6 +71,12 @@ public class DriverController {
     public PersonLocationMessage getAllLocations(@PathVariable("id") String id) {
         UUID uid = UUID.fromString(id);
         return driverService.locationForDriverId(uid);
+    }
+
+    @GetMapping("/statuses")
+    @PreAuthorize("hasRole('ADMIN')")
+    public List<BriefDriverStatusResponse> getAllBriefStatuses() {
+        return driverService.getAllBriefStatuses();
     }
 
 }

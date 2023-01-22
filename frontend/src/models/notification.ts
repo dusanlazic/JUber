@@ -28,6 +28,7 @@ export interface RideInvitationNotification  extends TransferredNotification {
 }
 
 export interface RideStatusUpdatedNotification  extends TransferredNotification {
+    rideId: string,
     status: RideStatus,
 }
 

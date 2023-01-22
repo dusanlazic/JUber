@@ -59,6 +59,9 @@ export class NotificationItemComponent implements OnInit {
         if (notificationCast.status === RideStatus.DENIED){
           this.properties = NotificationTemplate.rideRejected()
         }
+        else {
+          this.properties = NotificationTemplate.rideStatusUpdated(notificationCast.rideId)
+        }
         break;
       }
 

@@ -25,6 +25,7 @@ public class RideStatusUpdatedNotification extends PersistedNotification {
         transferred.setDate(this.getCreated());
         transferred.setNotificationStatus(this.getStatus());
         transferred.setStatus(ride.getRideStatus());
+        transferred.setRideId(ride.getId());
 
         return transferred;
     }

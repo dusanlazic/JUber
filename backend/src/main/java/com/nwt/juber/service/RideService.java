@@ -550,4 +550,9 @@ public class RideService {
         // TODO: Find saved routes instead of all
         return rideRepository.findAll().stream().map(this::convertRideToDTO).toList();
     }
+
+	public Ride getPastRideById(UUID rideId) {
+		return rideRepository.findById(rideId).orElseThrow(() -> new EndRideException("No finished ride with id: " + rideId));
+	}
+
 }

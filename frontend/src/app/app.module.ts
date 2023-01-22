@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -85,6 +85,10 @@ import { BlockedUsersComponent } from './admin-pages/blocked-users/blocked-users
 import { ChangeRequestsComponent } from './admin-pages/change-requests/change-requests.component';
 import { DriversListComponent } from './admin-pages/drivers-list/drivers-list.component';
 
+import { RideReviewsComponent } from './shared/ride-details/ride-reviews/ride-reviews.component';
+import { RideReviewComponent } from './shared/ride-details/ride-reviews/ride-review/ride-review.component';
+import { AddReviewDialogComponent } from './shared/ride-details/ride-reviews/add-review-dialog/add-review-dialog.component';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -148,7 +152,11 @@ import { DriversListComponent } from './admin-pages/drivers-list/drivers-list.co
     AdminChatComponent,
     NavigationPageTemplateComponent,
     AdminNavigationComponent,
-    ProfileNavigationComponent
+    ProfileNavigationComponent,
+
+    RideReviewsComponent,
+    RideReviewComponent,
+    AddReviewDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -194,6 +202,7 @@ import { DriversListComponent } from './admin-pages/drivers-list/drivers-list.co
               PaymentWebsocketshareService, PaymentWebSocketAPI,
               AdminSupportWebsocketshareService, AdminSupportWebSocketAPI,
               AdminConversationWebsocketshareService, AdminConversationWebSocketAPI],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class AppModule { }

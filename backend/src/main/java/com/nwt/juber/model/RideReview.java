@@ -16,7 +16,7 @@ public class RideReview {
 
     @Id
     @Column(columnDefinition = "uuid")
-    private UUID id;
+    private UUID id=UUID.randomUUID();
 
     @ManyToOne
     private Ride ride;
@@ -26,4 +26,7 @@ public class RideReview {
     private double vehicleRating;
 
     private String comment;
+    
+    @ManyToOne
+    private Passenger reviewer;
 }

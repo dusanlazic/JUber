@@ -1,0 +1,28 @@
+<div class="mb-5">
+    <p><strong>{{review.reviewerFullName}}</strong></p>
+    <p>{{review.comment}}</p>
+    <div class="columns mt-1">
+      <div class="column is-2 has-text-grey">
+        <p>Driver</p>
+        <p>Vehicle</p>
+      </div>
+      <div class="column">
+        <p>
+            <span *ngFor="let start of numSequence(review.driverRating)">
+                <span class="iconify-inline has-text-success is-size-6" data-icon="fluent:star-12-filled"></span>
+            </span>
+            <span *ngFor="let start of numSequence(5 - review.driverRating)">
+                <span class="iconify-inline has-text-grey-lighter is-size-6" data-icon="fluent:star-12-filled"></span>
+            </span>
+        </p>
+        <p>
+            <span *ngFor="let start of numSequence(review.vehicleRating)">
+                <span class="iconify-inline has-text-success is-size-6" data-icon="fluent:star-12-filled"></span>
+            </span>
+            <span *ngFor="let start of numSequence(5 - review.vehicleRating)">
+                <span class="iconify-inline has-text-grey-lighter is-size-6" data-icon="fluent:star-12-filled"></span>
+            </span>
+        </p>
+      </div>
+    </div>
+</div>

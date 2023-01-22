@@ -101,4 +101,10 @@ public class ControllerAdvisor {
     public ResponseError handleProfileChangeRequestAlreadyResolvedException(ProfileChangeRequestAlreadyResolvedException e) {
         return new ResponseError(HttpStatus.CONFLICT, "Profile change request is already resolved.");
     }
+
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ExceptionHandler(UserAlreadyBlockedException.class)
+    public ResponseError handleUserAlreadyBlockedException(UserAlreadyBlockedException e) {
+        return new ResponseError(HttpStatus.CONFLICT, "User is already blocked.");
+    }
 }

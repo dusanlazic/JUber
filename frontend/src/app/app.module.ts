@@ -81,6 +81,7 @@ import { PaymentWebsocketshareService } from 'src/services/payment/payment-webso
 import { PaymentWebSocketAPI } from 'src/services/payment/payment-socket.service';
 import { UnathorizedSidebarComponent } from './unauthorized/unauthorized-sidebar/unauthorized-sidebar.component';
 import { UnathorizedMapComponent } from './unauthorized/unauthorized-map/unauthorized-map.component';
+import { BlockedUsersComponent } from './admin-pages/blocked-users/blocked-users.component';
 
 @NgModule({
   declarations: [
@@ -134,6 +135,7 @@ import { UnathorizedMapComponent } from './unauthorized/unauthorized-map/unautho
     BalanceComponent,
     SavedRoutesComponent,
     PastRidesComponent,
+    BlockedUsersComponent,
     SupportComponent,
     SupportMessageComponent,
 
@@ -176,6 +178,7 @@ import { UnathorizedMapComponent } from './unauthorized/unauthorized-map/unautho
     BalanceComponent,
     SavedRoutesComponent,
     PastRidesComponent,
+    BlockedUsersComponent,
     SupportComponent,
     SupportMessageComponent,
   ],

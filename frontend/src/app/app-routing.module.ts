@@ -26,6 +26,7 @@ import { AdminSupportPageComponent } from './admin-pages/admin-support-page/admi
 import { NavigationPageTemplateComponent } from './shared/navigation-page-template/navigation-page-template/navigation-page-template.component';
 import { RideDetailsComponent } from './shared/ride-details/ride-details.component';
 import { LoggedGuard } from 'src/services/auth/logged-guard.service';
+import { BlockedUsersComponent } from './admin-pages/blocked-users/blocked-users.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginPageComponent, canActivate: [LoggedGuard], data: {  }, },
@@ -63,7 +64,7 @@ const routes: Routes = [
   },
   { path: 'admin', component: NavigationPageTemplateComponent, canActivate: [AuthGuard, RoleGuard], data: { expectedRoles: [Roles.ADMIN ]}, 
     children: [
-     
+     { path: 'blocked-users', component: BlockedUsersComponent },
     ]
   },
   { path: 'admin/support', component: AdminSupportPageComponent, 

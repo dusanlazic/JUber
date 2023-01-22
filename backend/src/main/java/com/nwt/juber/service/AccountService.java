@@ -296,6 +296,7 @@ public class AccountService {
         return userRepository.findByBlockedIsTrue().stream().map(user -> new BlockedUserResponse(
                 user.getId(),
                 user.getName(),
+                user.getRole().name(),
                 user.getNote()
         )).toList();
     }

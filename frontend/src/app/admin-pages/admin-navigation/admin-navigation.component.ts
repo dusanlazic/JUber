@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 enum SelectionOptions {
   PAST_RIDES='/admin/past-rides',
   ADMIN_SUPPORT='/admin/support',
+  ADMIN_BLOCKED_USERS='/admin/blocked-users',
 }
 
 @Component({

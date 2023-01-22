@@ -10,5 +10,6 @@ import java.util.UUID;
 public class BlockedUserResponse {
     private UUID userId;
     private String fullName;
+    private String role;
     private String note;
 }

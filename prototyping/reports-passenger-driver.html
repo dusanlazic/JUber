@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://code.iconify.design/3/3.0.0/iconify.min.js"></script>
+  <link rel="stylesheet" href="css/custom.css">
+  <title>JUber</title>
+</head>
+
+<body>
+  <section class="hero is-fullheight has-background-light">
+    <div class="container is-widescreen">
+      <div class="box is-custom-settings-box">
+        <div class="columns">
+          <div class="column is-3 is-navigation-sidebar">
+            <div class="navigation-item is-first">
+              <span class="iconify-inline is-size-5" data-icon="fluent:arrow-left-12-regular"></span>
+              Home
+            </div>
+            <div class="navigation-item">
+              <span class="iconify-inline is-size-5" data-icon="fluent:person-24-regular"></span>
+              Profile
+            </div>
+            <div class="navigation-item">
+              <span class="iconify-inline is-size-5" data-icon="fluent:key-24-regular"></span>
+              Change password
+            </div>
+            <div class="navigation-item">
+              <span class="iconify-inline is-size-5" data-icon="fluent:wallet-24-regular"></span>
+              Balance
+              <span class="is-size-7 has-text-grey is-pulled-right mr-2">420,00 RSD</span>
+            </div>
+            <div class="navigation-item">
+              <span class="iconify-inline is-size-5" data-icon="fluent:bookmark-24-regular"></span>
+              Saved routes
+            </div>
+            <div class="navigation-item">
+              <span class="iconify-inline is-size-5" data-icon="fluent:history-24-regular"></span>
+              Past rides
+            </div>
+            <div class="navigation-item is-selected">
+              <span class="iconify-inline is-size-5" data-icon="fluent:chart-multiple-20-regular"></span>
+              Reports
+            </div>
+            <div class="navigation-item">
+              <span class="iconify-inline is-size-5" data-icon="fluent:chat-help-24-regular"></span>
+              Support
+            </div>
+            <div class="navigation-item">
+              <span class="iconify-inline is-size-5" data-icon="fluent:arrow-exit-20-regular"></span>
+              Log out
+            </div>
+            <div class="is-user-info is-unselectable">
+              <figure class="image is-32x32">
+                <img class="is-rounded"
+                  src="https://lh3.googleusercontent.com/a/ALm5wu3tpc3XnB9w8EMqNHAODc0uL23tqydVlUCLYqEF6Q=s96-c">
+              </figure>
+              <div class="ml-2">
+                <p class="is-size-7 has-text-grey">lazicdusan114@gmail.com</p>
+                <p class="has-text-weight-bold">Dušan Lazić</p>
+              </div>
+            </div>
+          </div>
+          <div class="column is-content">
+            <div class="columns mb-5">
+              <div class="column m-0 p-0">
+                <p class="title is-family-secondary">
+                  Reports
+                </p>
+              </div>
+              <div class="column m-0 p-0" style="height: 36px;">
+                <div class="field is-horizontal">
+                  <div class="field-body">
+                    <div class="field">
+                      <p class="control">
+                        <input class="input" type="date">
+                      </p>
+                    </div>
+                    <div class="field">
+                      <p class="control">
+                        <input class="input"  type="date">
+                      </p>
+                    </div>
+                    <button class="button is-outlined is-success">
+                      Show
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="columns">
+              <div class="column is-9">
+                <canvas id="chart" style="height: 460px;"></canvas>
+              </div>
+              <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+              <script>
+                const ctx = document.getElementById('chart');
+              
+                new Chart(ctx, {
+                  type: 'bar',
+                  data: {
+                    labels: ['2023-01-01', '2023-01-02', '2023-01-03', '2023-01-04', '2023-01-05', '2023-01-06', '2023-01-07', '2023-01-08', '2023-01-09', '2023-01-10', '2023-01-11', '2023-01-12', '2023-01-13', '2023-01-14', '2023-01-15', '2023-01-16', '2023-01-17', '2023-01-18', '2023-01-19', '2023-01-20', '2023-01-21'],
+                    datasets: [{
+                      label: 'Rides',
+                      data: [0, 0, 1, 0, 1, 1, 1, 2, 0, 1, 2, 0, 0, 3, 0, 0, 1, 2, 1, 0, 0],
+                      borderWidth: 0,
+                      backgroundColor: "#48c78e",
+                      yAxisID: 'yRides',
+                    },
+                    {
+                      label: 'Spendings (RSD)',
+                      data: [0, 0, 100, 0, 110, 180, 190, 300, 0, 70, 280, 0, 0, 500, 0, 0, 50, 110, 40, 0, 0],
+                      borderWidth: 0,
+                      backgroundColor: "#c74848",
+                      yAxisID: 'ySpendingDistance',
+                      stack: 'Stack 0'
+                    },
+                    {
+                      label: 'Distance (km)',
+                      data: [0, 0, 10, 0, 11, 18, 19, 30, 0, 7, 28, 0, 0, 50, 0, 0, 5, 11, 4, 0, 0],
+                      borderWidth: 0,
+                      backgroundColor: "#4848c7",
+                      yAxisID: 'ySpendingDistance',
+                      stack: 'Stack 0'
+                    },]
+                  },
+                  options: {
+                    maintainAspectRatio: false,
+                    interaction: {
+                      mode: 'index',
+                    },
+                    scales: {
+                      yRides: {
+                        type: 'linear',
+                        display: true,
+                        position: 'left',
+                        beginAtZero: true,
+                        ticks: {
+                          stepSize: 1
+                        },
+                        grid: {
+                          display: false
+                        }
+                      },
+                      ySpendingDistance: {
+                        type: 'linear',
+                        display: true,
+                        position: 'right',
+                        stacked: true,
+                      },
+                      x: {
+                        ticks: {
+                          autoSkip: true,
+                          maxTicksLimit: 15
+                        },
+                        grid: {
+                          display: false
+                        }
+                      }
+                    },
+                  }
+                });
+              </script>
+              <div class="column">
+                <p class="heading mb-0">Total rides taken</p>
+                <p class="is-family-secondary is-size-4 has-text-weight-bold mb-2">12</p>
+                <p class="heading mb-0">Daily average</p>
+                <p class="is-family-secondary is-size-4 has-text-weight-bold mb-6">0.57</p>
+                <p class="heading mb-0">Total distance traveled (km)</p>
+                <p class="is-family-secondary is-size-4 has-text-weight-bold mb-2">201</p>
+                <p class="heading mb-0">Daily average</p>
+                <p class="is-family-secondary is-size-4 has-text-weight-bold mb-6">9.57</p>
+                <p class="heading mb-0">Total spent (RSD)</p>
+                <p class="is-family-secondary is-size-4 has-text-weight-bold mb-2">1420</p>
+                <p class="heading mb-0">Daily average</p>
+                <p class="is-family-secondary is-size-4 has-text-weight-bold">67.61</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</body>
+
+</html>

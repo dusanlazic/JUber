@@ -1,5 +1,9 @@
 package com.nwt.juber.controller;
 
+import com.nwt.juber.dto.PersonDTO;
+import com.nwt.juber.dto.response.DriverInfoResponse;
+import com.nwt.juber.dto.response.PastRidesResponse;
+import com.nwt.juber.service.RideService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -11,6 +15,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.nwt.juber.dto.response.UserBasicInfoResponse;
 import com.nwt.juber.service.PassengerService;
 
+import java.util.List;
+import java.util.UUID;
+
 @RestController
 @RequestMapping(value = "/passengers", produces = MediaType.APPLICATION_JSON_VALUE)
 public class PassengerController {
@@ -18,8 +25,23 @@ public class PassengerController {
 	@Autowired
 	private PassengerService passengerService;
 
+	@Autowired
+	private RideService rideService;
+
 	@GetMapping("/basicInfo/{email}")
 	private UserBasicInfoResponse getBasicInfo(@PathVariable String email) {
 		return passengerService.getBasicInfo(email);
+	}
+
+	@GetMapping("/{passengerId}/info")
+	@PreAuthorize("hasRole('ADMIN')")
+	public PersonDTO getDriversInfo(@PathVariable UUID passengerId) {
+		return passengerService.getPassengersInfo(passengerId);
+	}
+
+	@GetMapping("/{passengerId}/rides")
+	@PreAuthorize("hasRole('ADMIN')")
+	public List<PastRidesResponse> getPassengersPastRides(@PathVariable UUID passengerId) {
+		return rideService.getPastRides(passengerId);
 	}
 }

@@ -1,17 +1,21 @@
 package com.nwt.juber.service;
 
-import java.util.Optional;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
+import com.nwt.juber.dto.PersonDTO;
 import com.nwt.juber.dto.response.UserBasicInfoResponse;
 import com.nwt.juber.exception.UserNotFoundException;
 import com.nwt.juber.model.Passenger;
 import com.nwt.juber.repository.PassengerRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.Optional;
+import java.util.UUID;
+
+import static com.nwt.juber.util.MappingUtils.convertPersonToDTO;
 
 @Service
 public class PassengerService {
+
 	@Autowired
 	private PassengerRepository passengerRepository;
 
@@ -33,4 +37,8 @@ public class PassengerService {
 		return possiblePassenger.get();
 	}
 
+	public PersonDTO getPassengersInfo(UUID passengerId) {
+		Passenger passenger = passengerRepository.findById(passengerId).orElseThrow(UserNotFoundException::new);
+		return convertPersonToDTO(passenger);
+	}
 }

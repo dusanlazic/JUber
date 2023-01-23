@@ -57,6 +57,9 @@ public class RideService {
     private NotificationRepository notificationRepository;
 
     @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
     private TaskScheduling taskScheduling;
 
     @Autowired
@@ -474,6 +477,11 @@ public class RideService {
         rideCancellationRepository.save(rideCancellation);
         sendRideMessageToPassengers(ride, RideMessageType.DRIVER_ABANDONED);
 	}
+
+    public List<PastRidesResponse> getPastRides(UUID userId) {
+        User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+        return getPastRides(user);
+    }
 
 	public List<PastRidesResponse> getPastRides(User user) {
 		List<Ride> pastRides = new ArrayList<Ride>();

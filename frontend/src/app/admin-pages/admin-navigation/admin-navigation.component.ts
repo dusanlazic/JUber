@@ -8,6 +8,7 @@ enum SelectionOptions {
   ADMIN_BLOCKED_USERS='/admin/blocked-users',
   ADMIN_CHANGE_REQUESTS='/admin/change-requests',
   ADMIN_DRIVERS_LIST='/admin/drivers',
+  ADMIN_NEW_DRIVER='/admin/new-driver',
 }
 
 @Component({

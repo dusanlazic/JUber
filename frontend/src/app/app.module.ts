@@ -88,6 +88,7 @@ import { DriversListComponent } from './admin-pages/drivers-list/drivers-list.co
 import { RideReviewsComponent } from './shared/ride-details/ride-reviews/ride-reviews.component';
 import { RideReviewComponent } from './shared/ride-details/ride-reviews/ride-review/ride-review.component';
 import { AddReviewDialogComponent } from './shared/ride-details/ride-reviews/add-review-dialog/add-review-dialog.component';
+import { DriverRegistrationComponent } from './admin-pages/driver-registration/driver-registration.component';
 
 @NgModule({
   declarations: [
@@ -156,7 +157,8 @@ import { AddReviewDialogComponent } from './shared/ride-details/ride-reviews/add
 
     RideReviewsComponent,
     RideReviewComponent,
-    AddReviewDialogComponent
+    AddReviewDialogComponent,
+    DriverRegistrationComponent
   ],
   imports: [
     BrowserModule,

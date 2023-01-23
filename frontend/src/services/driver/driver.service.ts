@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
+import { DriverRegistrationRequest } from 'src/models/driver';
 import { HttpRequestService } from '../util/http-request.service';
 
 @Injectable({
@@ -25,5 +26,10 @@ export class DriverService {
   getStatuses(): Observable<any> {
     const url = environment.API_BASE_URL + `/accounts/drivers/statuses`;
     return this.httpRequestService.get(url) as Observable<any>;
+  }
+
+  registerDriver(request: DriverRegistrationRequest){
+    const url = environment.API_BASE_URL + `/accounts/drivers/`;
+    return this.httpRequestService.post(url, request) as Observable<any>;
   }
 }

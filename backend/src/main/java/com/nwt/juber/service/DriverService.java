@@ -180,14 +180,10 @@ public class DriverService {
 
 	public DriverInfoResponse getDriverInfo(UUID driverId) {
 		Driver driver = driverRepository.findById(driverId).orElseThrow(UserNotFoundException::new);
-		Ride ride = rideRepository.getActiveRideForDriver(driver.getId());
-		Pair<String, String> placeNames = getStartAndEndPlaceNames(ride);
 
 		return new DriverInfoResponse(
 				MappingUtils.convertPersonToDTO(driver),
-				driver.getStatus(),
-				placeNames.getLeft(),
-				placeNames.getRight()
+				driver.getStatus()
 		);
 	}
 

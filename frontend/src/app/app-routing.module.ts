@@ -29,6 +29,7 @@ import { LoggedGuard } from 'src/services/auth/logged-guard.service';
 import { BlockedUsersComponent } from './admin-pages/blocked-users/blocked-users.component';
 import { ChangeRequestsComponent } from './admin-pages/change-requests/change-requests.component';
 import { DriversListComponent } from './admin-pages/drivers-list/drivers-list.component';
+import { DriverRegistrationComponent } from './admin-pages/driver-registration/driver-registration.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginPageComponent, canActivate: [LoggedGuard], data: {  }, },
@@ -68,6 +69,7 @@ const routes: Routes = [
      { path: 'blocked-users', component: BlockedUsersComponent },
      { path: 'change-requests', component: ChangeRequestsComponent },
      { path: 'drivers', component: DriversListComponent },
+     { path: 'new-driver', component: DriverRegistrationComponent}
     ]
   },
   { path: 'admin/support', component: AdminSupportPageComponent, 

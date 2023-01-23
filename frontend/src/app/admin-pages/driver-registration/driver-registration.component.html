@@ -1,0 +1,147 @@
+<p class="title is-family-secondary">Driver registration</p>
+<form [formGroup]="registrationForm">
+<div class="columns">
+    <div class="column mr-5">
+        <div class="field is-horizontal">
+            <div class="field-body">
+                <div class="field">
+                    <label class="label">First name*</label>
+                    <p class="control">
+                        <input class="input" formControlName ="firstName" required>
+                    </p>
+                    <div *ngIf="firstName?.invalid && (firstName?.dirty || firstName?.touched)" class="help is-danger">
+                        <div *ngIf="firstName?.errors?.['required']">
+                            Please enter your first name
+                        </div>
+                        <div *ngIf="firstName?.errors?.['pattern'] || firstName?.errors?.['maxLength']">
+                            Please enter valid name
+                        </div>
+                    </div>
+                </div>
+                <div class="field">
+                    <label class="label">Last name*</label>
+                    <p class="control">
+                        <input class="input" formControlName ="lastName" required>
+                    </p>
+                    <div *ngIf="lastName?.invalid && (lastName?.dirty || lastName?.touched)" class="help is-danger">
+                        <div *ngIf="lastName?.errors?.['required']">
+                            Please enter your last name
+                        </div>
+                        <div *ngIf="lastName?.errors?.['pattern'] || lastName?.errors?.['maxLength']">
+                            Please enter valid name
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="field">
+            <label class="label">City*</label>
+            <p class="control">
+                <input class="input" formControlName ="city" required>
+            </p>
+            <div *ngIf="city?.invalid && (city?.dirty || city?.touched)" class="help is-danger">
+                <div *ngIf="city?.errors?.['required']">
+                    Please enter city
+                </div>
+                <div *ngIf="city?.errors?.['pattern']">
+                    Please enter valid city
+                </div>
+            </div>
+        </div>
+        <div class="field is-horizontal">
+            <div class="field-body">
+                <div class="field">
+                    <label class="label">Phone number*</label>
+                    <p class="control">
+                        <input class="input" placeholder="e.g. +381651337" formControlName ="phoneNumber" required>
+                    </p>
+                    <div *ngIf="phoneNumber?.invalid && (phoneNumber?.dirty || phoneNumber?.touched)" class="help is-danger">
+                        <div *ngIf="phoneNumber?.errors?.['required']">
+                            Please enter your phone number
+                        </div>
+                        <div *ngIf="phoneNumber?.errors?.['pattern']">
+                            Please enter valid phone number (e.g. +381651337)
+                        </div>
+                    </div>
+                </div>
+                <div class="field">
+                    <label class="label">Email*</label>
+                    <p class="control">
+                        <input class="input" autocomplete="email" 
+                                type="email" placeholder="e.g. john@gmail.com" formControlName ="email" required id="email">
+                    </p>
+            
+                    <div *ngIf="email?.invalid && (email?.dirty || email?.touched)" class="help is-danger">
+                        <div *ngIf="email?.errors?.['required']">
+                            Please enter a email address!
+                        </div>
+                        <div *ngIf="email?.errors?.['email']">
+                            Please enter a valid email address
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="field is-horizontal">
+            <div class="field-body">
+                <div class="field">
+                    <label class="label">Password*</label>
+                    <p class="control">
+                        <input class="input" type="password" autocomplete="new-password" formControlName ="password">
+                    </p>
+                    <div *ngIf="password?.invalid && (password?.dirty || password?.touched)" class="help is-danger">
+                        <div *ngIf="password?.errors?.['required']">
+                            Please enter your password
+                        </div>
+                        <div *ngIf="password?.errors?.['minlength']">
+                            Password must be longer than 8 characters.
+                        </div>
+                    </div>
+                </div>
+                <div class="field">
+                    <label class="label">Confirm password*</label>
+                    <p class="control">
+                        <input class="input" type="password" autocomplete="off"  formControlName ="passwordConfirmation">
+                    </p>
+                    <div *ngIf="passwordConfirmation?.dirty || passwordConfirmation?.touched"class="help is-danger">
+                        <div *ngIf="passwordConfirmation?.errors?.['required']">
+                            Please confirm your password
+                        </div>
+                        <div *ngIf="registrationForm.errors?.['mismatch'] && !passwordConfirmation?.errors?.['required']">
+                            Passwords do not match
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button class="button mt-4" (click)="createAccount()" [disabled]="registrationForm.invalid">
+            <span>Create account</span>
+        </button>
+
+        <div class="navigation-item is-at-bottom" [routerLink]="['/admin/drivers']">
+            <span class="iconify-inline is-size-5" data-icon="fluent:arrow-left-12-regular"></span>
+            Back to drivers
+        </div>
+    </div>
+    <div class="column is-5">
+        <div class="field">
+            <label class="label">Capacity</label>
+            <p class="control">
+            <input class="input" type="number" formControlName="capacity">
+            </p>
+        </div>
+        <div class="field is-horizontal">
+            <div class="field-body">
+            <div class="field">
+                <input id="baby-friendly" type="checkbox" name="baby-friendly" class="switch is-success is-rounded" formControlName="babyFriendly">
+                <label for="baby-friendly">Baby friendly</label>
+            </div>
+            <div class="field">
+                <input id="pet-friendly" type="checkbox" name="pet-friendly" class="switch is-success is-rounded" formControlName="petFriendly">
+                <label for="pet-friendly">Pet friendly</label>
+            </div>
+            </div>
+        </div>
+    </div>
+</div>
+</form>

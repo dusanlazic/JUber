@@ -424,3 +424,36 @@ table.is-custom-table
         flex-direction: row
         .content
             background-color: $white-ter
+
+.is-status
+    padding-left: 10px
+    padding-right: 10px
+    border-radius: 9999px
+
+.is-status.active
+    background-color: $success
+    color: white
+
+.is-status.driving
+    background-color: $info
+    color: white
+
+.is-status.inactive
+    background-color: $grey-light
+    color: white
+
+.is-status.overtime
+    background-color: $danger
+    color: white
+
+.is-custom-back-button
+    color: $grey-light
+    border: none
+    padding: 0
+    &:hover
+        color: $grey
+
+.level-item.is-hoverable
+    cursor: pointer
+    &:hover
+        color: grey

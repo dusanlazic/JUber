@@ -10,6 +10,4 @@ import lombok.Data;
 public class DriverInfoResponse {
     private PersonDTO profile;
     private DriverStatus status;
-    private String startPlaceName;
-    private String endPlaceName;
 }

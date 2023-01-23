@@ -1,26 +1,18 @@
 package com.nwt.juber.controller;
 
-import javax.validation.Valid;
-
+import com.nwt.juber.api.ResponseOk;
 import com.nwt.juber.dto.message.PersonLocationMessage;
-import com.nwt.juber.dto.response.BriefDriverStatusResponse;
+import com.nwt.juber.dto.request.DriverRegistrationRequest;
+import com.nwt.juber.dto.response.*;
+import com.nwt.juber.model.Driver;
+import com.nwt.juber.service.AccountService;
+import com.nwt.juber.service.DriverService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
-import com.nwt.juber.api.ResponseOk;
-import com.nwt.juber.dto.request.DriverRegistrationRequest;
-import com.nwt.juber.dto.response.DriverActivationResponse;
-import com.nwt.juber.model.Driver;
-import com.nwt.juber.service.AccountService;
-import com.nwt.juber.service.DriverService;
-
+import javax.validation.Valid;
 import java.util.List;
 import java.util.UUID;
 
@@ -79,4 +71,21 @@ public class DriverController {
         return driverService.getAllBriefStatuses();
     }
 
+    @GetMapping("/{driverId}/info")
+    @PreAuthorize("hasRole('ADMIN')")
+    public DriverInfoResponse getDriverInfo(@PathVariable UUID driverId) {
+        return driverService.getDriverInfo(driverId);
+    }
+
+    @GetMapping("/{driverId}/rides")
+    @PreAuthorize("hasRole('ADMIN')")
+    public List<PastRidesResponse> getDriversPastRides(@PathVariable UUID driverId) {
+        return driverService.getDriversPastRides(driverId);
+    }
+
+    @GetMapping("/{driverId}/reviews")
+    @PreAuthorize("hasRole('ADMIN')")
+    public List<RideReviewResponse> getDriversReviews(@PathVariable UUID driverId) {
+        return driverService.getDriversReviews(driverId);
+    }
 }

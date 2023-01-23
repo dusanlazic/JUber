@@ -28,6 +28,21 @@ export class DriverService {
     return this.httpRequestService.get(url) as Observable<any>;
   }
 
+  getDriversInfo(driverId: string): Observable<any> {
+    const url = environment.API_BASE_URL + `/accounts/drivers/${driverId}/info`;
+    return this.httpRequestService.get(url) as Observable<any>;
+  }
+
+  getDriversPastRides(driverId: string): Observable<any> {
+    const url = environment.API_BASE_URL + `/accounts/drivers/${driverId}/rides`;
+    return this.httpRequestService.get(url) as Observable<any>;
+  }
+
+  getDriversReviews(driverId: string): Observable<any> {
+    const url = environment.API_BASE_URL + `/accounts/drivers/${driverId}/reviews`;
+    return this.httpRequestService.get(url) as Observable<any>;
+  }
+
   registerDriver(request: DriverRegistrationRequest){
     const url = environment.API_BASE_URL + `/accounts/drivers/`;
     return this.httpRequestService.post(url, request) as Observable<any>;

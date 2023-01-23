@@ -30,4 +30,13 @@ public class Driver extends Person {
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<DriverShift> driverShifts;
+
+    @Override
+    public String toString() {
+        return "Driver{" +
+                "vehicle=" + vehicle +
+                ", status=" + status +
+                ", driverShifts=" + driverShifts +
+                '}';
+    }
 }

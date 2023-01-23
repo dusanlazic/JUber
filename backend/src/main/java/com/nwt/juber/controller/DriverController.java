@@ -73,8 +73,8 @@ public class DriverController {
 
     @GetMapping("/{driverId}/info")
     @PreAuthorize("hasRole('ADMIN')")
-    public DriverInfoResponse getDriverInfo(@PathVariable UUID driverId) {
-        return driverService.getDriverInfo(driverId);
+    public DriverInfoResponse getDriversInfo(@PathVariable UUID driverId) {
+        return driverService.getDriversInfo(driverId);
     }
 
     @GetMapping("/{driverId}/rides")

@@ -1,27 +1,33 @@
 package com.nwt.juber.service;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
-
-import javax.transaction.Transactional;
-
-import com.nwt.juber.dto.message.PersonLocationMessage;
-import com.nwt.juber.dto.response.BriefDriverStatusResponse;
-import com.nwt.juber.repository.RideRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Service;
-
+import com.nimbusds.jose.util.Pair;
 import com.nwt.juber.dto.SimulationInfo;
+import com.nwt.juber.dto.message.PersonLocationMessage;
 import com.nwt.juber.dto.request.AdditionalRideRequests;
+import com.nwt.juber.dto.response.BriefDriverStatusResponse;
+import com.nwt.juber.dto.response.DriverInfoResponse;
+import com.nwt.juber.dto.response.PastRidesResponse;
+import com.nwt.juber.dto.response.RideReviewResponse;
 import com.nwt.juber.exception.UserNotFoundException;
 import com.nwt.juber.model.Driver;
 import com.nwt.juber.model.DriverStatus;
 import com.nwt.juber.model.Ride;
 import com.nwt.juber.repository.DriverRepository;
-
+import com.nwt.juber.repository.RideRepository;
+import com.nwt.juber.repository.RideReviewRepository;
+import com.nwt.juber.util.MappingUtils;
 import kotlin.NotImplementedError;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Service;
+
+import javax.transaction.Transactional;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
+import static com.nwt.juber.util.MappingUtils.getStartAndEndPlaceNames;
 
 @Service
 public class DriverService {
@@ -31,7 +37,10 @@ public class DriverService {
 
 	@Autowired
 	private RideRepository rideRepository;
-    
+
+	@Autowired
+	private RideReviewRepository rideReviewRepository;
+
     @Autowired
 	private DriverShiftService driverShiftService;
 
@@ -157,22 +166,48 @@ public class DriverService {
     public List<BriefDriverStatusResponse> getAllBriefStatuses() {
 		return driverRepository.findAll().stream().map(driver -> {
 			Ride ride = rideRepository.getActiveRideForDriver(driver.getId());
-			String startPlaceName = "";
-			String endPlaceName = "";
-
-			if(ride != null && ride.getPlaces().size() > 0) {
-				startPlaceName = ride.getPlaces().get(0).getName();
-				endPlaceName = ride.getPlaces().get(ride.getPlaces().size() - 1).getName();
-			}
+			Pair<String, String> placeNames = getStartAndEndPlaceNames(ride);
 
 			return new BriefDriverStatusResponse(
 					driver.getId(),
 					driver.getName(),
 					driver.getStatus(),
-					startPlaceName,
-					endPlaceName
+					placeNames.getLeft(),
+					placeNames.getRight()
 			);
 		}).toList();
     }
+
+	public DriverInfoResponse getDriverInfo(UUID driverId) {
+		Driver driver = driverRepository.findById(driverId).orElseThrow(UserNotFoundException::new);
+		Ride ride = rideRepository.getActiveRideForDriver(driver.getId());
+		Pair<String, String> placeNames = getStartAndEndPlaceNames(ride);
+
+		return new DriverInfoResponse(
+				MappingUtils.convertPersonToDTO(driver),
+				driver.getStatus(),
+				placeNames.getLeft(),
+				placeNames.getRight()
+		);
+	}
+
+	public List<PastRidesResponse> getDriversPastRides(UUID driverId) {
+		Driver driver = driverRepository.findById(driverId).orElseThrow(UserNotFoundException::new);
+		return driver.getRides().stream()
+				.map(MappingUtils::convertPastRidesResponse)
+				.sorted(Comparator.comparing(PastRidesResponse::getEndTimestamp).reversed())
+				.toList();
+	}
+
+	public List<RideReviewResponse> getDriversReviews(UUID driverId) {
+		return rideReviewRepository.getRideReviewsByDriverId(driverId)
+				.stream().map(review -> new RideReviewResponse(
+						review.getReviewer().getName(),
+						review.getReviewer().getImageUrl(),
+						review.getDriverRating(),
+						review.getVehicleRating(),
+						review.getComment()
+				)).toList();
+	}
 }
 

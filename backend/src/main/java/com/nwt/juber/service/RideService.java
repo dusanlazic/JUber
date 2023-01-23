@@ -1,24 +1,6 @@
 package com.nwt.juber.service;
 
 import com.nwt.juber.dto.DriverRideDTO;
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
-
-import com.nwt.juber.dto.response.SavedRouteResponse;
-import com.nwt.juber.model.*;
-import com.nwt.juber.model.notification.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.security.core.Authentication;
-import org.springframework.stereotype.Service;
-
-import com.nwt.juber.dto.PersonDTO;
 import com.nwt.juber.dto.RideDTO;
 import com.nwt.juber.dto.message.RideMessage;
 import com.nwt.juber.dto.message.RideMessageType;
@@ -27,9 +9,11 @@ import com.nwt.juber.dto.response.PastRidesResponse;
 import com.nwt.juber.exception.EndRideException;
 import com.nwt.juber.exception.InsufficientFundsException;
 import com.nwt.juber.exception.StartRideException;
-import com.nwt.juber.model.*;
 import com.nwt.juber.exception.UserNotFoundException;
+import com.nwt.juber.model.*;
+import com.nwt.juber.model.notification.*;
 import com.nwt.juber.repository.*;
+import com.nwt.juber.util.MappingUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.Authentication;
@@ -42,6 +26,8 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+
+import static com.nwt.juber.util.MappingUtils.convertRideToDTO;
 
 @Service
 public class RideService {
@@ -450,35 +436,6 @@ public class RideService {
         return convertRideToDTO(ride);
     }
 
-    private RideDTO convertRideToDTO(Ride ride) {
-        RideDTO dto = new RideDTO();
-        dto.setId(ride.getId());
-        dto.setFare(ride.getFare());
-        dto.setPlaces(ride.getPlaces());
-        dto.setPassengers(ride.getPassengers().stream().map(this::convertPersonToDTO).toList());
-        dto.setRideStatus(ride.getRideStatus());
-        dto.setPassengersReady(ride.getPassengersReady());
-        dto.setDriver(convertPersonToDTO(ride.getDriver()));
-        dto.setScheduledTime(ride.getScheduledTime());
-        dto.setStartTime(ride.getStartTime());
-        dto.setEndTime(ride.getEndTime());
-        return dto;
-    }
-
-    private PersonDTO convertPersonToDTO(Person person) {
-        if (person == null) {
-            return null;
-        }
-        PersonDTO personDTO = new PersonDTO();
-        personDTO.setId(person.getId());
-        personDTO.setFirstName(person.getFirstName());
-        personDTO.setLastName(person.getLastName());
-        personDTO.setPhoneNumber(person.getPhoneNumber());
-        personDTO.setImageUrl(person.getImageUrl());
-        return personDTO;
-    }
-
-
     public void toggleFavourite(UUID rideId, Authentication authentication) {
         Passenger passenger = passengerRepository.findById(((User) authentication.getPrincipal()).getId()).orElseThrow();
         Ride ride = rideRepository.findById(rideId).orElseThrow();
@@ -528,27 +485,12 @@ public class RideService {
 			Passenger passenger = passengerRepository.findById(user.getId()).get();
 			pastRides = rideRepository.getPastRidesForPassenger(passenger);
 		}
-        return pastRides.stream().map(ride -> convertPastRidesResponse(ride)).toList();
+        return pastRides.stream().map(MappingUtils::convertPastRidesResponse).toList();
 	}
-
-	private PastRidesResponse convertPastRidesResponse(Ride ride) {
-		String startPlaceName = "";
-		String endPlaceName = "";
-
-		if(ride.getPlaces().size() > 0) {
-	    	startPlaceName = ride.getPlaces().get(0).getName();
-	    	endPlaceName = ride.getPlaces().get(ride.getPlaces().size() - 1).getName();
-		}
-    	String date = ride.getStartTime().format(DateTimeFormatter.ofPattern("dd.MM.yyyy."));
-    	String startTime = ride.getStartTime().format(DateTimeFormatter.ofPattern("HH:mm"));
-    	String endTime = ride.getEndTime().format(DateTimeFormatter.ofPattern("HH:mm"));
-
-    	return new PastRidesResponse(ride.getId(), startPlaceName, endPlaceName, date, startTime, endTime, ride.getFare());
-    }
 
     public List<RideDTO> getSavedRoutes(Passenger passenger) {
         // TODO: Find saved routes instead of all
-        return rideRepository.findAll().stream().map(this::convertRideToDTO).toList();
+        return rideRepository.findAll().stream().map(MappingUtils::convertRideToDTO).toList();
     }
 
 	public Ride getPastRideById(UUID rideId) {

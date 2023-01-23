@@ -124,7 +124,7 @@ public class RideController {
     @GetMapping("/pastRides")
     @PreAuthorize(("hasAnyRole('DRIVER', 'PASSENGER')"))
     public List<PastRidesResponse> getPastRides(Authentication authentication) {
-    	User user = (User)authentication.getPrincipal();
+    	User user = (User) authentication.getPrincipal();
     	return rideService.getPastRides(user);
     }
 

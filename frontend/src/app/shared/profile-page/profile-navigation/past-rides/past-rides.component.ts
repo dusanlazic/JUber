@@ -9,7 +9,7 @@ export interface PastRidesResponse {
 	id: string;
 	startPlaceName: string;
 	endPlaceName: string;
-	date: string;
+	formattedDate: string;
 	startTime: string;
 	endTime: string;
 	fare: number;
@@ -22,7 +22,7 @@ export interface PastRidesResponse {
 })
 export class PastRidesComponent implements  OnInit {
 
-  displayedColumns: string[] = ['startPlaceName', 'date', 'startTime', 'endTime', 'fare'];
+  displayedColumns: string[] = ['startPlaceName', 'formattedDate', 'startTime', 'endTime', 'fare'];
   dataSource: any;
   
   constructor(

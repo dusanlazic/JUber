@@ -1,0 +1,35 @@
+<!-- <div class="column is-content has-custom-scrollable-container"> -->
+  <p class="title is-family-secondary">
+    <span>Drivers</span>
+    <button class="button is-success is-pulled-right" [routerLink]="['/admin/new-driver']">Register new driver</button>
+  </p>
+<div class="is-custom-scrollable-container">
+  <!--(matSortChange)="announceSortChange($event)" -->
+  <table mat-table [dataSource]="dataSource" matSort  (matSortChange)="announceSortChange($event)"
+        class="table is-fullwidth is-hoverable is-custom-table">
+    <ng-container matColumnDef="fullName">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by driver name">
+        Driver name
+      </th>
+      <td mat-cell *matCellDef="let element"> {{element.fullName}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="status">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by status">
+        Status
+      </th>
+      <td mat-cell *matCellDef="let element"> {{element.status}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="ride">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by ride">
+        Ride
+      </th>
+      <td mat-cell *matCellDef="let element">{{formatRide(element)}}</td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="clickedRow(row)"></tr>
+  </table>
+
+</div>

@@ -13,7 +13,7 @@ public interface RideReviewRepository extends JpaRepository<RideReview, UUID>{
 
        Set<RideReview> getRideReviewsByRideId(UUID rideId);
 
-       @Query(value = "select r from Ride r where r.driver = :driverId")
+       @Query(value = "select r from RideReview r where r.ride.driver.id = :driverId")
        Set<RideReview> getRideReviewsByDriverId(UUID driverId);
 
        Set<RideReview> getRideReviewsByReviewerId(UUID reviewerId);

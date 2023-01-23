@@ -178,7 +178,7 @@ public class DriverService {
 		}).toList();
     }
 
-	public DriverInfoResponse getDriverInfo(UUID driverId) {
+	public DriverInfoResponse getDriversInfo(UUID driverId) {
 		Driver driver = driverRepository.findById(driverId).orElseThrow(UserNotFoundException::new);
 
 		return new DriverInfoResponse(

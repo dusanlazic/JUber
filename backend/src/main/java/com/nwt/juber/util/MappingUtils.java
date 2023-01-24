@@ -38,6 +38,7 @@ public class MappingUtils {
         personDTO.setLastName(person.getLastName());
         personDTO.setPhoneNumber(person.getPhoneNumber());
         personDTO.setImageUrl(person.getImageUrl());
+        personDTO.setEmail(person.getEmail());
         return personDTO;
     }
 

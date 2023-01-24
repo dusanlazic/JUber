@@ -22,34 +22,19 @@ export interface PastRidesResponse {
 })
 export class PastRidesComponent implements  OnInit {
 
-  displayedColumns: string[] = ['startPlaceName', 'formattedDate', 'startTime', 'endTime', 'fare'];
-  dataSource: any;
-  
   constructor(
-    private _liveAnnouncer: LiveAnnouncer,
     private rideService: RideService,
     private router: Router
   ) {}
 
-  @ViewChild(MatSort)
-  sort: MatSort = new MatSort;
+  rides!: Array<PastRidesResponse>
 
   ngOnInit() {
     this.rideService.getPastRides().subscribe({
       next: (res: Array<PastRidesResponse>) => {
-        this.dataSource = new MatTableDataSource(res);
-        this.dataSource.sort = this.sort;
+        this.rides = res;
       }
     })
-  }
-
-
-  announceSortChange(sortState: Sort) {
-    if (sortState.direction) {
-      this._liveAnnouncer.announce(`Sorted ${sortState.direction}ending`);
-    } else {
-      this._liveAnnouncer.announce('Sorting cleared');
-    }
   }
 
   clickedRow(row: PastRidesResponse) : void{

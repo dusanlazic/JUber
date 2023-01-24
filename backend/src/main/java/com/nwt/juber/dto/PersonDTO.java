@@ -16,4 +16,5 @@ public class PersonDTO {
     private String city;
     private String phoneNumber;
     private String imageUrl;
+    private String email;
 }

@@ -1,16 +1,11 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import {MatSort, Sort} from '@angular/material/sort';
-import {MatTableDataSource} from '@angular/material/table';
-import {LiveAnnouncer} from '@angular/cdk/a11y';
+import { Component, OnInit, ViewChild } from '@angular/core';;
 import { DriverService } from 'src/services/driver/driver.service';
 import { RideReview } from 'src/models/rideReview';
 import { PastRidesResponse } from 'src/app/shared/profile-page/profile-navigation/past-rides/past-rides.component';
-import { IPerson } from 'src/models/ride';
-
-export interface DriverInfo {
-  profile: IPerson,
-  status: string
-}
+import { ActivatedRoute } from '@angular/router';
+import { DriverInfo } from 'src/models/driver';
+import { environment } from 'src/environments/environment';
+import { AuthService } from 'src/services/auth/auth.service';
 
 @Component({
   selector: 'app-driver-info',
@@ -19,39 +14,56 @@ export interface DriverInfo {
 })
 export class DriverInfoComponent implements  OnInit {
 
-  displayedColumns: string[] = ['startPlaceName', 'formattedDate', 'startTime', 'endTime', 'fare'];
-  dataSource: any;
-  
+  rides: Array<PastRidesResponse> = new Array<PastRidesResponse>()
+  driverId: string = ''
+  driverInfo!: DriverInfo
+
+  URL_BASE: string = environment.API_BASE_URL;
+
   constructor(
-    private _liveAnnouncer: LiveAnnouncer,
     private driverService: DriverService,
+    private route: ActivatedRoute,
+    public authService: AuthService
   ) {}
 
-  @ViewChild(MatSort)
-  sort: MatSort = new MatSort;
-
   ngOnInit() {
-    this.driverService.getDriversPastRides('should be uuid from url').subscribe({
-      next: (res: Array<PastRidesResponse>) => {
-        this.dataSource = new MatTableDataSource(res);
-        this.dataSource.sort = this.sort;
+    this.getDriverIdFromUrl();
+    this.getDriverRides();
+    this.getDriverDetails();
+  }
+
+  private getDriverIdFromUrl(): void {
+    let id = this.route.snapshot.paramMap.get('driverId');
+    if(id){
+      this.driverId = id;
+    }
+  }
+
+  private getDriverDetails() : void {
+    this.driverService.getDriversInfo(this.driverId).subscribe({
+      next: (res: DriverInfo) => {
+        this.driverInfo = res;
       }
     })
   }
 
-  announceSortChange(sortState: Sort) {
-    if (sortState.direction) {
-      this._liveAnnouncer.announce(`Sorted ${sortState.direction}ending`);
-    } else {
-      this._liveAnnouncer.announce('Sorting cleared');
-    }
+  private getDriverRides(): void {
+    this.driverService.getDriversPastRides(this.driverId).subscribe({
+      next: (res: Array<PastRidesResponse>) => {
+        this.rides = res;
+      }
+    })
   }
 
-  clickedRideRow(row: PastRidesResponse) : void{
-    console.log(row)
+  clickedRideRow(event: any) : void{
+    console.log(event)
   }
 
   clickedReviewRow(row: RideReview) : void{
     console.log(row)
+  }
+
+  fullName(){
+    return `${this.driverInfo.profile.firstName} ${this.driverInfo.profile.lastName}`
   }
 }

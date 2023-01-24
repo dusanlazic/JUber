@@ -3,6 +3,8 @@ import { environment } from 'src/environments/environment';
 import * as Stomp from 'stompjs';
 import * as SockJS from 'sockjs-client';
 import { SupportChatWebsocketshareService } from './support-chat-websocketshare.service';
+import { AuthService } from 'src/services/auth/auth.service';
+import { LoggedUser } from 'src/models/user';
 
 @Injectable({
   providedIn: 'root'
@@ -11,9 +13,23 @@ export class SupportChatWebSocketAPI {
   webSocketEndPoint: string = environment.API_SOCKET_URL;
   topic: string = "/user/queue/support/chat";
   stompClient: any;
+  loggedUser: LoggedUser | undefined;
 
-  constructor(private websocketShare: SupportChatWebsocketshareService){
-
+  constructor(private websocketShare: SupportChatWebsocketshareService, private authService: AuthService){
+    authService.getNewLoggedUser().subscribe((user) => {
+        console.log(user);
+        
+        if (user && user.email != this.loggedUser?.email) {
+            this.loggedUser = user;
+            this.connect();
+            console.log('Connected to ride socket!');
+            
+        }
+        else {
+            this.loggedUser = undefined;
+            // this.disconnect();
+        }
+    })
   }
   connect() {
       console.log("Initialize WebSocket Connection");

@@ -3,6 +3,8 @@ import * as Stomp from 'stompjs';
 import * as SockJS from 'sockjs-client';
 import { environment } from 'src/environments/environment';
 import { AdminSupportWebsocketshareService } from './admin-support-websocketshare.service';
+import { AuthService } from 'src/services/auth/auth.service';
+import { LoggedUser } from 'src/models/user';
 
 @Injectable({
   providedIn: 'root'
@@ -11,8 +13,23 @@ export class AdminSupportWebSocketAPI {
   webSocketEndPoint: string = environment.API_SOCKET_URL;
   topic: string = "/user/queue/support/admin/chat";
   stompClient: any;
+  loggedUser: LoggedUser | undefined;
 
-  constructor(private websocketShare: AdminSupportWebsocketshareService){
+  constructor(private websocketShare: AdminSupportWebsocketshareService, private authService: AuthService){
+    authService.getNewLoggedUser().subscribe((user) => {
+        console.log(user);
+        
+        if (user && user.email != this.loggedUser?.email) {
+            this.loggedUser = user;
+            this.connect();
+            console.log('Connected to ride socket!');
+            
+        }
+        else {
+            this.loggedUser = undefined;
+            // this.disconnect();
+        }
+    })
 
   }
   connect() {

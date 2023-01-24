@@ -8,7 +8,10 @@ import org.springframework.stereotype.Service;
 import com.nwt.juber.model.VehicleType;
 import com.nwt.juber.repository.VehicleTypeRepository;
 
+import javax.transaction.Transactional;
+
 @Service
+@Transactional
 public class VehicleTypeService {
 
 	@Autowired

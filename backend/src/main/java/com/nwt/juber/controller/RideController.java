@@ -8,6 +8,7 @@ import com.nwt.juber.service.RideService;
 
 import java.util.*;
 
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 import lombok.AllArgsConstructor;
@@ -33,6 +34,7 @@ import com.nwt.juber.model.User;
 
 @RestController
 @RequestMapping(value = "ride")
+@Transactional
 public class RideController {
 
     @Autowired
@@ -89,8 +91,6 @@ public class RideController {
     class CheckFavouriteResponse {
         boolean isFavourite;
     }
-
-
 
     @GetMapping("/active")
     @PreAuthorize(("hasAnyRole('DRIVER', 'PASSENGER')"))

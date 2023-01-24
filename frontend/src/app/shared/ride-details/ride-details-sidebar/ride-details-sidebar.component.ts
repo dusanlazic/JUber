@@ -7,6 +7,7 @@ import { AuthService } from 'src/services/auth/auth.service';
 import {  } from 'src/services/auth/auth.service';
 import { HttpRequestService } from 'src/services/util/http-request.service';
 
+
 @Component({
   selector: 'app-ride-details-sidebar',
   templateUrl: './ride-details-sidebar.component.html',
@@ -25,6 +26,7 @@ export class RideDetailsSidebarComponent implements OnInit, OnChanges {
   isFavourite: number = -1;
   abandon: boolean = false;
   reason: string = '';
+  URL_BASE: string = environment.API_BASE_URL;
 
   constructor(public authService: AuthService,
               private httpService: HttpRequestService,) { }

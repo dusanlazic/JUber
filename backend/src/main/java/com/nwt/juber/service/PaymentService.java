@@ -21,6 +21,7 @@ import org.web3j.crypto.Credentials;
 import org.web3j.crypto.ECKeyPair;
 import org.web3j.crypto.Keys;
 
+import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
@@ -36,6 +37,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class PaymentService {
 
     @Autowired
@@ -67,7 +69,7 @@ public class PaymentService {
     }
 
     @Scheduled(cron = "*/5 * * * * *")
-    private void processDeposits() {
+    public void processDeposits() {
         Instant limit = Instant.now().minusSeconds(appProperties.getPayment().getPendingTimeoutSeconds());
         List<DepositAddress> recentPendingAddresses = depositAddressRepository.findPendingAndModifiedAfter(Date.from(limit));
 

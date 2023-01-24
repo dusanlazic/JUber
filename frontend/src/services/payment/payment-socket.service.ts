@@ -3,6 +3,8 @@ import { environment } from 'src/environments/environment';
 import * as Stomp from 'stompjs';
 import * as SockJS from 'sockjs-client';
 import { PaymentWebsocketshareService } from './payment-websocketshare.service';
+import { AuthService } from '../auth/auth.service';
+import { LoggedUser } from 'src/models/user';
 
 @Injectable({
     providedIn: 'root'
@@ -11,9 +13,20 @@ export class PaymentWebSocketAPI {
     webSocketEndPoint: string = environment.API_SOCKET_URL;
     topic: string = "/user/queue/balance";
     stompClient: any;
+    loggedUser: LoggedUser | undefined;
 
-    constructor(private websocketShare: PaymentWebsocketshareService) {
-
+    constructor(private websocketShare: PaymentWebsocketshareService, private authService: AuthService) {
+        authService.getNewLoggedUser().subscribe((user) => {
+            if (user && user.email != this.loggedUser?.email) {
+                console.log(user);
+                this.loggedUser = user;
+                this.connect();
+            }
+            else {
+                this.loggedUser = undefined;
+                this.disconnect();
+            }
+        })
     }
 
     connect() {

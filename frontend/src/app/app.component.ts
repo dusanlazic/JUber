@@ -22,12 +22,7 @@ export class AppComponent {
     private adminSupportWebSocketAPI: AdminSupportWebSocketAPI,
     private adminConversationWebSocketAPI: AdminConversationWebSocketAPI,
   ) {
-    rideWebSocketAPI.connect();
-    notificationWebSocketAPI.connect();
-    supportChatWebSocketAPI.connect();
-    paymentWebSocketAPI.connect();
-    adminSupportWebSocketAPI.connect();
-    adminConversationWebSocketAPI.connect();
+
   }
 
   

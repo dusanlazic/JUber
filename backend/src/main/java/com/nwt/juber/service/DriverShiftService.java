@@ -12,7 +12,10 @@ import com.nwt.juber.model.Driver;
 import com.nwt.juber.model.DriverShift;
 import com.nwt.juber.model.DriverStatus;
 
+import javax.transaction.Transactional;
+
 @Service
+@Transactional
 public class DriverShiftService {
 	
 	private final Long maxMiliseconds = 28800000L;  // 8h

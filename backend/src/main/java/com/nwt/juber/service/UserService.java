@@ -9,7 +9,10 @@ import com.nwt.juber.exception.UserNotFoundException;
 import com.nwt.juber.model.User;
 import com.nwt.juber.repository.UserRepository;
 
+import javax.transaction.Transactional;
+
 @Service
+@Transactional
 public class UserService {
 
 	 @Autowired

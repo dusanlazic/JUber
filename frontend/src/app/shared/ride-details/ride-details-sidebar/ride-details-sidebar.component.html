@@ -57,13 +57,14 @@
 
 	<div class="is-custom-people-list mb-3">
 		<p class="title is-size-5 mb-2 is-family-secondary">Driver</p>
-		
+
 		<div class="person-item mb-5" *ngIf="ride.driver && ride.rideStatus != 'WAIT'">
 		  <div class="columns is-vcentered">
 			<div class="column is-2 has-content-align-center">
-			  <div class="circle-initial-person" style="background-color: #ff8800; color: white">
-				MM
-			  </div>
+				<figure class="image is-48x48">
+					<img class="is-rounded"
+					src="{{URL_BASE}}{{ride.driver.imageUrl}}" (error)="authService.imageUrlResolver($event, ride.driver.firstName + ' ' + ride.driver.lastName)">
+				</figure>
 			</div>
 			<div class="column">
 			  <p><strong>{{ride.driver.firstName + " " + ride.driver.lastName}}</strong></p>
@@ -85,7 +86,7 @@
                 <div class="column is-2 has-content-align-center">
                   <figure class="image is-48x48">
                     <img class="is-rounded"
-                      src="{{person.imageUrl}}"  
+                      src="{{URL_BASE}}{{person.imageUrl}}"  
 					  (error)="this.authService.imageUrlResolver($event, person.firstName + ' ' + person.lastName)">
                   </figure>
                 </div>

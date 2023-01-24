@@ -6,12 +6,16 @@ import com.nwt.juber.dto.RideDTO;
 import com.nwt.juber.dto.response.PastRidesResponse;
 import com.nwt.juber.model.Person;
 import com.nwt.juber.model.Ride;
+import org.hibernate.Hibernate;
 
+import javax.transaction.Transactional;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
+@Transactional
 public class MappingUtils {
+
 
     public static RideDTO convertRideToDTO(Ride ride) {
         RideDTO dto = new RideDTO();
@@ -25,6 +29,10 @@ public class MappingUtils {
         dto.setScheduledTime(ride.getScheduledTime());
         dto.setStartTime(ride.getStartTime());
         dto.setEndTime(ride.getEndTime());
+        Hibernate.initialize(dto.getPlaces());
+        Hibernate.initialize(dto.getPassengers());
+        Hibernate.initialize(dto.getPassengersReady());
+        dto.getPlaces().forEach(place -> Hibernate.initialize(place.getRoutes()));
         return dto;
     }
 

@@ -1,6 +1,7 @@
 package com.nwt.juber.service;
 
 import com.nwt.juber.dto.DriverRideDTO;
+import com.nwt.juber.dto.PersonDTO;
 import com.nwt.juber.dto.RideDTO;
 import com.nwt.juber.dto.message.RideMessage;
 import com.nwt.juber.dto.message.RideMessageType;
@@ -18,6 +19,7 @@ import com.nwt.juber.model.*;
 import com.nwt.juber.model.notification.*;
 import com.nwt.juber.repository.*;
 import com.nwt.juber.util.MappingUtils;
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.Authentication;
@@ -36,6 +38,7 @@ import java.util.*;
 import static com.nwt.juber.util.MappingUtils.convertRideToDTO;
 
 @Service
+@Transactional
 public class RideService {
 
     @Autowired
@@ -421,6 +424,7 @@ public class RideService {
         }
     }
 
+    @Transactional(Transactional.TxType.REQUIRED)
     public RideDTO getActiveRide(Authentication authentication) {
         User user = (User) authentication.getPrincipal();
         Optional<Passenger> optionalPassenger = passengerRepository.findById(user.getId());
@@ -502,12 +506,18 @@ public class RideService {
         return pastRides.stream().map(MappingUtils::convertPastRidesResponse).toList();
 	}
 
+    @Transactional(Transactional.TxType.REQUIRED)
     public List<RideDTO> getSavedRoutes(Passenger passenger) {
-        // TODO: Find saved routes instead of all
-        return rideRepository.findAll().stream().map(MappingUtils::convertRideToDTO).toList();
+        List<Ride> favs = passengerRepository.getFavouriteRides(passenger);
+        return favs.stream().map(MappingUtils::convertRideToDTO).toList();
     }
 
 	public Ride getPastRideById(UUID rideId) {
 		return rideRepository.findById(rideId).orElseThrow(() -> new EndRideException("No finished ride with id: " + rideId));
 	}
+
+    public RideDTO getById(UUID rideId) {
+        Ride ride = rideRepository.getRideById(rideId);
+        return convertRideToDTO(ride);
+    }
 }

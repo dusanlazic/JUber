@@ -25,7 +25,7 @@
                 </figure>
             </a>
             <app-notification *ngIf="loggedUser"></app-notification>
-            <div class="is-relative is-custom-navigation-icon" *ngIf="loggedUser && loggedUser.role === 'ROLE_PASSENGER'" [routerLink]="['profile/saved-routes']">
+            <div class="is-relative is-custom-navigation-icon" *ngIf="loggedUser && loggedUser.role === 'ROLE_PASSENGER'" [routerLink]="['/profile/saved-routes']">
                 <span class="iconify is-size-4" data-icon="material-symbols:bookmark"></span>
             </div>
 

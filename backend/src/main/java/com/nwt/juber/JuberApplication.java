@@ -11,6 +11,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
@@ -18,6 +19,7 @@ import java.io.IOException;
 @SpringBootApplication
 @EnableScheduling
 @EnableAsync
+@EnableTransactionManagement
 @EnableConfigurationProperties(AppProperties.class)
 public class JuberApplication {
 

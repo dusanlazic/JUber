@@ -25,7 +25,6 @@ import { SupportComponent } from './shared/profile-page/profile-navigation/suppo
 import { AdminSupportPageComponent } from './admin-pages/admin-support-page/admin-support-page.component';
 import { NavigationPageTemplateComponent } from './shared/navigation-page-template/navigation-page-template/navigation-page-template.component';
 import { RideDetailsComponent } from './shared/ride-details/ride-details.component';
-import { LoggedGuard } from 'src/services/auth/logged-guard.service';
 import { BlockedUsersComponent } from './admin-pages/blocked-users/blocked-users.component';
 import { ChangeRequestsComponent } from './admin-pages/change-requests/change-requests.component';
 import { DriversListComponent } from './admin-pages/drivers-list/drivers-list.component';
@@ -33,7 +32,7 @@ import { DriverRegistrationComponent } from './admin-pages/driver-registration/d
 import { ReportsComponent } from './shared/profile-page/profile-navigation/reports/reports.component';
 
 const routes: Routes = [
-  { path: 'login', component: LoginPageComponent, canActivate: [LoggedGuard], data: {  }, },
+  { path: 'login', component: LoginPageComponent, data: {  }, },
   { path: 'map', component: MapComponent },
   { path: 'oauth2/redirect-login', component: Oauth2RedirectHandlerComponent},
   { path: 'oauth2/redirect-register', component: Oauth2RegisterRedirectHandlerComponent},

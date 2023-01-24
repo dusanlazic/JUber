@@ -25,6 +25,8 @@ export class PassengerSidebarComponent implements OnInit {
 
 	private rideRequest: RideRequest = new RideRequest();
 	price: number = 0;
+	totalDuration: number = 0
+	totalDistance: number = 0
 	
 	constructor(
 		private mapService: MapService, 
@@ -115,16 +117,19 @@ export class PassengerSidebarComponent implements OnInit {
 		if(vehicleType !== undefined && vehicleType !== null){
 			sumPrice += vehicleType.price;
 		}
-
+		let distance: number = 0;
+		let duration: number = 0;
 		if(this.ride) {
 			
-			let totalDistance: number = 0;
 			this.ride.places.forEach(place => {
 				let selected = place.routes.filter(route => route.selected).at(0)
-				totalDistance += selected?.distance ? selected.distance : 0;
+				distance += selected?.distance ? selected.distance : 0;
+				duration += selected?.duration ? selected.duration : 0;
 			});
-			sumPrice += Math.ceil(totalDistance / 1000 * 120);
+			sumPrice += Math.ceil(distance / 1000 * 120);
 		}
+		this.totalDuration = duration;
+		this.totalDistance = distance;
 		this.price = sumPrice
 	}
 

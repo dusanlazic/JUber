@@ -10,12 +10,14 @@ import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 import com.nwt.juber.dto.request.*;
 import com.nwt.juber.dto.response.*;
 import com.nwt.juber.exception.*;
 import com.nwt.juber.model.*;
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -36,6 +38,7 @@ import com.nwt.juber.security.TokenType;
 import com.nwt.juber.util.CookieUtils;
 
 @Service
+@Transactional
 public class AccountService {
 
     @Autowired
@@ -255,14 +258,16 @@ public class AccountService {
     }
 
     public List<ProfileChangeRequestResponse> getPendingProfileChangeRequests() {
-        return profileChangeRequestRepository.findPending()
-                .stream().map(r -> new ProfileChangeRequestResponse(
+        List<ProfileChangeRequestResponse> requests = profileChangeRequestRepository
+                        .findPending()
+                        .stream().map(r -> new ProfileChangeRequestResponse(
                         r.getId(),
                         r.getPerson().getId(),
                         r.getPerson().getName(),
                         r.getChanges(),
-                        r.getRequestedAt()))
-                .toList();
+                        r.getRequestedAt())).toList();
+        requests.forEach(r -> Hibernate.initialize(r.getChanges()));
+        return requests;
     }
 
     public ResponseOk resolveProfileChangeRequest(UUID requestId, ProfileInfoChangeResolveRequest resolveRequest) {
@@ -355,9 +360,9 @@ public class AccountService {
     private void applyProfileChanges(ProfileChangeRequest changeRequest) {
         Map<String, String> changes = changeRequest.getChanges();
         Person person = changeRequest.getPerson();
-
         person.setFirstName(changes.getOrDefault("firstName", person.getFirstName()));
         person.setLastName(changes.getOrDefault("lastName", person.getLastName()));
+        person.setName(person.getFirstName() + " " + person.getLastName());
         person.setCity(changes.getOrDefault("city", person.getCity()));
         person.setPhoneNumber(changes.getOrDefault("phoneNumber", person.getPhoneNumber()));
     }

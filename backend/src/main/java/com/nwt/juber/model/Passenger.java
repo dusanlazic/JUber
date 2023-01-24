@@ -24,7 +24,6 @@ public class Passenger extends Person {
     @Override
     public String toString() {
         return "Passenger{" +
-                "favouriteRoutes=" + favouriteRoutes +
                 ", balance=" + balance +
                 '}';
     }

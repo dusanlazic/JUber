@@ -25,6 +25,7 @@ import com.nwt.juber.model.notification.PersistedNotification;
 import com.nwt.juber.repository.NotificationRepository;
 
 @Service
+@Transactional
 public class NotificationService {
 
     private static final String NOTIFICATIONS_DESTINATION = "/queue/notifications";

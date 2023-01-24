@@ -22,10 +22,12 @@ import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.transaction.Transactional;
 import java.io.IOException;
 import java.util.Optional;
 import java.util.UUID;
 
+@Transactional
 public class TokenAuthenticationFilter extends OncePerRequestFilter {
 
     public static final String ACCESS_TOKEN_COOKIE_NAME = "access_token";
@@ -61,7 +63,7 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
             sendResponse(response, HttpServletResponse.SC_UNAUTHORIZED, e.getMessage());
         } catch (Exception e) {
             sendResponse(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "An error has occurred.");
-            e.getCause().printStackTrace();
+            e.printStackTrace();
         }
     }
 
@@ -76,6 +78,7 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
 
         return null;
     }
+
 
     private void sendResponse(HttpServletResponse response, Integer status, String message) throws IOException {
         ResponseError responseError = new ResponseError(status, message);

@@ -30,7 +30,10 @@ import com.nwt.juber.repository.ChatConversationRepository;
 import com.nwt.juber.repository.ChatMessageRepository;
 import com.nwt.juber.repository.UserRepository;
 
+import javax.transaction.Transactional;
+
 @Service
+@Transactional
 public class ChatService {
 
     @Autowired
@@ -49,6 +52,7 @@ public class ChatService {
     private SimpMessagingTemplate messagingTemplate;
 
     public List<ChatMessageResponse> getMessages(Authentication authentication) {
+        System.out.println("GET MESSAGES");
         User user = (User) authentication.getPrincipal();
 
         ChatConversation conversation = conversationRepository.findByUserAndIsArchivedIsFalse(user).orElseThrow(ConversationNotFoundException::new);
@@ -61,6 +65,7 @@ public class ChatService {
     }
 
     public List<ChatMessageResponse> getMessages(Authentication authentication, UUID userId) {
+        System.out.println("ALOO");
         User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
         Admin support = (Admin) authentication.getPrincipal();
 
@@ -101,7 +106,7 @@ public class ChatService {
         }
 
         PersistedChatMessage message = new PersistedChatMessage(messageRequest.getContent(), false);
-
+        message.setSentAt(new Date());
         message = messageRepository.save(message);
         conversation.addMessage(message);
         conversation = conversationRepository.save(conversation);
@@ -122,7 +127,7 @@ public class ChatService {
                 .orElseThrow(ConversationNotFoundException::new);
 
         PersistedChatMessage message = new PersistedChatMessage(messageRequest.getContent(), true);
-        
+        message.setSentAt(new Date());
         
         message = messageRepository.save(message);
         conversation.addMessage(message);
@@ -189,7 +194,7 @@ public class ChatService {
     }
 
     @Scheduled(cron = "0 */5 * * * *")
-    private void archiveInactiveConversations() {
+    public void archiveInactiveConversations() {
         Instant limit = Instant.now().minus(1, ChronoUnit.DAYS);
         List<ChatConversation> inactiveConversations = conversationRepository.findByLastMessageSentAtBeforeAndIsArchivedIsFalse(Date.from(limit));
 

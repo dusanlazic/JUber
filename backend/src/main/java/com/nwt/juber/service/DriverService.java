@@ -17,6 +17,7 @@ import com.nwt.juber.repository.RideRepository;
 import com.nwt.juber.repository.RideReviewRepository;
 import com.nwt.juber.util.MappingUtils;
 import kotlin.NotImplementedError;
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -30,6 +31,7 @@ import java.util.UUID;
 import static com.nwt.juber.util.MappingUtils.getStartAndEndPlaceNames;
 
 @Service
+@Transactional
 public class DriverService {
 
     @Autowired
@@ -61,6 +63,10 @@ public class DriverService {
         dto.setPlaces(rideToSim.map(Ride::getPlaces).orElse(null));
         dto.setStatus(rideToSim.map(Ride::getRideStatus).orElse(null));
         dto.setRideId(rideToSim.map(Ride::getId).orElse(null));
+		if (dto.getPlaces() != null) {
+			Hibernate.initialize(dto.getPlaces());
+			dto.getPlaces().forEach(p -> Hibernate.initialize(p.getRoutes()));
+		}
         return dto;
     }
 

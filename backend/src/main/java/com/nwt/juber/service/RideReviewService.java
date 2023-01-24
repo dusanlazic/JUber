@@ -22,7 +22,10 @@ import com.nwt.juber.model.Role;
 import com.nwt.juber.model.User;
 import com.nwt.juber.repository.RideReviewRepository;
 
+import javax.transaction.Transactional;
+
 @Service
+@Transactional
 public class RideReviewService {
 
 	@Autowired

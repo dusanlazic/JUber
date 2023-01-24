@@ -25,6 +25,8 @@ export class UnathorizedSidebarComponent implements OnInit {
 
 	private rideRequest: RideRequest = new RideRequest();
 	price: number = 0;
+	totalDuration: number = 0
+	totalDistance: number = 0
 	
 	constructor(
 		private mapService: MapService, 
@@ -115,6 +117,8 @@ export class UnathorizedSidebarComponent implements OnInit {
 		if(vehicleType !== undefined && vehicleType !== null){
 			sumPrice += vehicleType.price;
 		}
+		let duration = 0;
+		let distance = 0;
 
 		if(this.ride) {
 			
@@ -122,10 +126,18 @@ export class UnathorizedSidebarComponent implements OnInit {
 			this.ride.places.forEach(place => {
 				let selected = place.routes.filter(route => route.selected).at(0)
 				totalDistance += selected?.distance ? selected.distance : 0;
+				duration += selected?.duration ? selected.duration : 0;
+				distance += selected?.distance ? selected.distance : 0;
 			});
 			sumPrice += Math.ceil(totalDistance / 1000 * 120);
 		}
+		this.totalDistance = distance;
+		this.totalDuration = duration;
 		this.price = sumPrice
+	}
+
+	public ceil(num: number) : number {
+		return Math.ceil(num)
 	}
 
 

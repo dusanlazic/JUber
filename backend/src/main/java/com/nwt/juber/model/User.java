@@ -17,7 +17,7 @@ import java.util.*;
 @Table(name = "USERS")
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 @NoArgsConstructor
-public class User implements OAuth2User, UserDetails {
+public abstract class User implements OAuth2User, UserDetails {
 
     @Id
     @Column(columnDefinition = "uuid")

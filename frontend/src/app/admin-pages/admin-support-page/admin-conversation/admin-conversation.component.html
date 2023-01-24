@@ -6,7 +6,7 @@
         src="{{URL_BASE}}{{conversation.userImageUrl}}" (error)="authService.imageUrlResolver($event, conversation.userFullName)">
     </figure>
     <div class="is-message-preview">
-        <p>
+        <p class="mb-0 mt-4">
         <span class="has-text-weight-bold">{{conversation.userFullName}}</span>
         <span class="has-text-grey is-pulled-right is-size-7">{{conversation.date |  date:'shortTime'}}</span>
         </p>

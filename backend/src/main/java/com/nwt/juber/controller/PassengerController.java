@@ -1,8 +1,9 @@
 package com.nwt.juber.controller;
 
 import com.nwt.juber.dto.PersonDTO;
-import com.nwt.juber.dto.response.DriverInfoResponse;
 import com.nwt.juber.dto.response.PastRidesResponse;
+import com.nwt.juber.dto.response.UserBasicInfoResponse;
+import com.nwt.juber.service.PassengerService;
 import com.nwt.juber.service.RideService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -11,9 +12,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.nwt.juber.dto.response.UserBasicInfoResponse;
-import com.nwt.juber.service.PassengerService;
 
 import java.util.List;
 import java.util.UUID;

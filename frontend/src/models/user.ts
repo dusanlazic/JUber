@@ -31,3 +31,7 @@ export interface AccountInfo extends UserBasicInfo{
     city: string,
     phoneNumber: string,
 }
+
+export interface PersonDTO extends AccountInfo {
+    id: string;
+}

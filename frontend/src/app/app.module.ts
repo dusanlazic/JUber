@@ -92,6 +92,8 @@ import { DriverRegistrationComponent } from './admin-pages/driver-registration/d
 import { PastRidesTableComponent } from './shared/tables/past-rides-table/past-rides-table.component';
 import { DriverInfoComponent } from './admin-pages/driver-info/driver-info.component';
 import { ReviewsTableComponent } from './shared/tables/reviews-table/reviews-table.component';
+import { PassengerInfoComponent } from './admin-pages/passenger-info/passenger-info.component';
+import { PassengerListComponent } from './admin-pages/passenger-list/passenger-list.component';
 
 @NgModule({
   declarations: [
@@ -164,7 +166,9 @@ import { ReviewsTableComponent } from './shared/tables/reviews-table/reviews-tab
     DriverRegistrationComponent,
     PastRidesTableComponent,
     DriverInfoComponent,
-    ReviewsTableComponent
+    ReviewsTableComponent,
+    PassengerInfoComponent,
+    PassengerListComponent,
   ],
   imports: [
     BrowserModule,

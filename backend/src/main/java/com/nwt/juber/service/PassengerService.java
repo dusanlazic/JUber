@@ -5,9 +5,12 @@ import com.nwt.juber.dto.response.UserBasicInfoResponse;
 import com.nwt.juber.exception.UserNotFoundException;
 import com.nwt.juber.model.Passenger;
 import com.nwt.juber.repository.PassengerRepository;
+import com.nwt.juber.util.MappingUtils;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -40,5 +43,9 @@ public class PassengerService {
 	public PersonDTO getPassengersInfo(UUID passengerId) {
 		Passenger passenger = passengerRepository.findById(passengerId).orElseThrow(UserNotFoundException::new);
 		return convertPersonToDTO(passenger);
+	}
+
+	public List<PersonDTO> findAll() {
+		return passengerRepository.findAll().stream().map(MappingUtils::convertPersonToDTO).toList();
 	}
 }

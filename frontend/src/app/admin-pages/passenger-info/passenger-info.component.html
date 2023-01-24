@@ -1,0 +1,34 @@
+<nav class="level mb-3">
+    <div class="level-left">
+      <div class="level-item">
+        <button class="button is-custom-back-button" [routerLink]="['/admin/passengers']">
+          <span class="iconify-inline is-size-2" data-icon="fluent:chevron-left-16-filled"></span>
+        </button>
+      </div>
+      <div class="level-item">
+        <figure class="image is-64x64">
+          <img class="is-rounded"
+            src="{{URL_BASE}}{{passengerInfo ? passengerInfo.imageUrl : ''}}" 
+            (error)="this.authService.imageUrlResolver($event, fullName())">
+        </figure>
+      </div>
+      <div class="level-item ml-2">
+        <div>
+          <p class="title is-family-secondary">{{ fullName() }} </p>
+          <p class="has-text-gray-light is-size-7">{{ passengerInfo ? passengerInfo.email : ''}}</p>
+          <p class="has-text-gray-light is-size-7">{{passengerInfo ? passengerInfo.phoneNumber: ''}}</p>
+        </div>
+      </div>
+    </div>
+    <div class="level-right pr-5">
+      <div class="level-item has-text-centered ml-5 is-hoverable">
+        <div>
+          <p class="heading mb-0">Number of rides</p>
+          <p class="is-size-3 is-family-secondary has-text-weight-bold">{{rides.length}}</p>
+        </div>
+      </div>
+    </div>
+  </nav>
+  <div class="is-custom-scrollable-container">
+    <app-past-rides-table [rides]="rides" (onRowClicked)="clickedRideRow($event)"></app-past-rides-table>
+  </div>

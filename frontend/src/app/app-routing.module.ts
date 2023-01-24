@@ -31,6 +31,8 @@ import { ChangeRequestsComponent } from './admin-pages/change-requests/change-re
 import { DriversListComponent } from './admin-pages/drivers-list/drivers-list.component';
 import { DriverRegistrationComponent } from './admin-pages/driver-registration/driver-registration.component';
 import { DriverInfoComponent } from './admin-pages/driver-info/driver-info.component';
+import { PassengerListComponent } from './admin-pages/passenger-list/passenger-list.component';
+import { PassengerInfoComponent } from './admin-pages/passenger-info/passenger-info.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginPageComponent, canActivate: [], data: {  }, },
@@ -71,7 +73,9 @@ const routes: Routes = [
      { path: 'change-requests', component: ChangeRequestsComponent },
      { path: 'drivers', component: DriversListComponent },
      { path: 'drivers/:driverId', component: DriverInfoComponent },
-     { path: 'new-driver', component: DriverRegistrationComponent}
+     { path: 'new-driver', component: DriverRegistrationComponent},
+     { path: 'passengers', component: PassengerListComponent },
+     { path: 'passengers/:passengerId', component: PassengerInfoComponent }
     ]
   },
   { path: 'admin/support', component: AdminSupportPageComponent, 

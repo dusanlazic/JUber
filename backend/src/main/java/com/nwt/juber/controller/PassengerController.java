@@ -27,7 +27,7 @@ public class PassengerController {
 	private RideService rideService;
 
 	@GetMapping("/basicInfo/{email}")
-	private UserBasicInfoResponse getBasicInfo(@PathVariable String email) {
+	public UserBasicInfoResponse getBasicInfo(@PathVariable String email) {
 		return passengerService.getBasicInfo(email);
 	}
 

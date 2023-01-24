@@ -1,3 +1,5 @@
+import { UserBasicInfo } from "./user";
+
 export enum DriverStatus {
     ACTIVE="ACTIVE",
 	INACTIVE="INACTIVE",
@@ -22,4 +24,18 @@ export interface DriverRegistrationRequest {
     babyFriendly: boolean;
     petFriendly: boolean;
     capacity: number;
+}
+
+export interface DriverInfo {
+    profile: PersonInfo;
+    status: DriverStatus;
+}
+
+export interface PersonInfo {
+    firstName: string;
+    lastName: string;
+    email: string;
+    imageUrl: string;
+    city: string;
+    phoneNumber: string;
 }

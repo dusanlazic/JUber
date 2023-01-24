@@ -18,7 +18,7 @@
         <div class="navigation" >
             <a href="/profile" *ngIf="loggedUser">
                 <figure class="image is-48x48" *ngIf="loggedUser?.imageUrl">
-                    <img class="is-rounded" src="{{URL_BASE}}{{loggedUser.imageUrl}}" (error)="this.authService.imageUrlResolver($event, loggedUser.name)">>
+                    <img class="is-rounded" src="{{URL_BASE}}{{loggedUser.imageUrl}}" (error)="this.authService.imageUrlResolver($event, loggedUser.name)">
                 </figure>
                 <figure class="image is-48x48" *ngIf="!loggedUser?.imageUrl">
                     <img class="is-rounded" src="{{DEFAULT_PROFILE_PHOTO}}" (error)="this.authService.imageUrlResolver($event, loggedUser.name)">

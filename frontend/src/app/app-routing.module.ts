@@ -30,9 +30,10 @@ import { BlockedUsersComponent } from './admin-pages/blocked-users/blocked-users
 import { ChangeRequestsComponent } from './admin-pages/change-requests/change-requests.component';
 import { DriversListComponent } from './admin-pages/drivers-list/drivers-list.component';
 import { DriverRegistrationComponent } from './admin-pages/driver-registration/driver-registration.component';
+import { DriverInfoComponent } from './admin-pages/driver-info/driver-info.component';
 
 const routes: Routes = [
-  { path: 'login', component: LoginPageComponent, canActivate: [LoggedGuard], data: {  }, },
+  { path: 'login', component: LoginPageComponent, canActivate: [], data: {  }, },
   { path: 'map', component: MapComponent },
   { path: 'oauth2/redirect-login', component: Oauth2RedirectHandlerComponent},
   { path: 'oauth2/redirect-register', component: Oauth2RegisterRedirectHandlerComponent},
@@ -69,6 +70,7 @@ const routes: Routes = [
      { path: 'blocked-users', component: BlockedUsersComponent },
      { path: 'change-requests', component: ChangeRequestsComponent },
      { path: 'drivers', component: DriversListComponent },
+     { path: 'drivers/:driverId', component: DriverInfoComponent },
      { path: 'new-driver', component: DriverRegistrationComponent}
     ]
   },

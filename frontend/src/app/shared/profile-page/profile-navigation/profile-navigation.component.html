@@ -36,6 +36,13 @@
   </div>
 
   <div 
+      class="navigation-item {{ selected===SelectionOptions.REPORTS ? 'is-selected' : ''}}"
+      (click)="navigate(SelectionOptions.REPORTS)"> 
+    <span class="iconify-inline is-size-5" data-icon="fluent:chart-multiple-20-regular"></span>
+    Reports
+  </div>
+
+  <div 
       class="navigation-item {{ selected===SelectionOptions.SUPPORT ? 'is-selected' : ''}}"
       (click)="navigate(SelectionOptions.SUPPORT)">    
     <span class="iconify-inline is-size-5" data-icon="fluent:chat-help-24-regular"></span>

@@ -8283,3 +8283,36 @@ table.is-custom-table tbody tr {
     flex-direction: row; }
     .is-message.is-received .content {
       background-color: whitesmoke; }
+
+.is-status {
+  padding-left: 10px;
+  padding-right: 10px;
+  border-radius: 9999px; }
+
+.is-status.active {
+  background-color: #48c78e;
+  color: white; }
+
+.is-status.driving {
+  background-color: #3e8ed0;
+  color: white; }
+
+.is-status.inactive {
+  background-color: #b5b5b5;
+  color: white; }
+
+.is-status.overtime {
+  background-color: #f14668;
+  color: white; }
+
+.is-custom-back-button {
+  color: #b5b5b5;
+  border: none;
+  padding: 0; }
+  .is-custom-back-button:hover {
+    color: #7a7a7a; }
+
+.level-item.is-hoverable {
+  cursor: pointer; }
+  .level-item.is-hoverable:hover {
+    color: grey; }

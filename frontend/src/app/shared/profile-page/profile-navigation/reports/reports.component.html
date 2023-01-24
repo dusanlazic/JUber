@@ -1,0 +1,45 @@
+<div class="columns mb-5">
+  <div class="column m-0 p-0">
+    <p class="title is-family-secondary">
+      Reports
+    </p>
+  </div>
+  <div class="column m-0 p-0" style="height: 36px;">
+    <div class="field is-horizontal">
+      <div class="field-body">
+        <div class="field">
+          <p class="control">
+            <input class="input" type="date">
+          </p>
+        </div>
+        <div class="field">
+          <p class="control">
+            <input class="input" type="date">
+          </p>
+        </div>
+        <button class="button is-outlined is-success">
+          Show
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="columns" style="width: 956px;">
+  <div class="column is-9">
+    <canvas id="ReportChart" style="height: 460px;">{{ this.chart }}</canvas>
+  </div>
+  <div class="column">
+    <p class="heading mb-0">Total rides taken</p>
+    <p class="is-family-secondary is-size-4 has-text-weight-bold mb-2">{{ this.data.sums.rides }}</p>
+    <p class="heading mb-0">Daily average</p>
+    <p class="is-family-secondary is-size-4 has-text-weight-bold mb-6">{{ round(this.data.averages.rides) }}</p>
+    <p class="heading mb-0">Total distance traveled (km)</p>
+    <p class="is-family-secondary is-size-4 has-text-weight-bold mb-2">{{ round(this.data.sums.distance) }}</p>
+    <p class="heading mb-0">Daily average</p>
+    <p class="is-family-secondary is-size-4 has-text-weight-bold mb-6">{{ round(this.data.averages.distance) }}</p>
+    <p class="heading mb-0">Total spent (RSD)</p>
+    <p class="is-family-secondary is-size-4 has-text-weight-bold mb-2">{{ round(this.data.sums.fare) }}</p>
+    <p class="heading mb-0">Daily average</p>
+    <p class="is-family-secondary is-size-4 has-text-weight-bold">{{ round(this.data.averages.fare) }}</p>
+  </div>
+</div>

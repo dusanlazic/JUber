@@ -9,6 +9,7 @@ enum SelectionOptions {
   ADMIN_CHANGE_REQUESTS='/admin/change-requests',
   ADMIN_DRIVERS_LIST='/admin/drivers',
   ADMIN_NEW_DRIVER='/admin/new-driver',
+  REPORTS='/admin/reports',
 }
 
 @Component({

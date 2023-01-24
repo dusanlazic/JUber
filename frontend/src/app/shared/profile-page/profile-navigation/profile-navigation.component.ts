@@ -10,6 +10,7 @@ enum SelectionOptions {
   BALANCE='/profile/balance',
   SAVED_ROUTES='/profile/saved-routes',
   PAST_RIDES='/profile/past-rides',
+  REPORTS='/profile/reports',
   SUPPORT='/profile/support',
 }
 

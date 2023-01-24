@@ -5,7 +5,6 @@ import com.nwt.juber.dto.request.PasswordChangeRequest;
 import com.nwt.juber.dto.request.ProfileInfoChangeRequest;
 import com.nwt.juber.dto.response.PhotoUploadResponse;
 import com.nwt.juber.dto.response.ProfileInfoResponse;
-import com.nwt.juber.model.Passenger;
 import com.nwt.juber.model.User;
 import com.nwt.juber.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;

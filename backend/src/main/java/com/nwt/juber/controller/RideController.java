@@ -2,24 +2,21 @@ package com.nwt.juber.controller;
 
 import com.nwt.juber.api.ResponseOk;
 import com.nwt.juber.dto.RideDTO;
-import com.nwt.juber.dto.response.SavedRouteResponse;
+import com.nwt.juber.dto.response.report.ReportResponse;
 import com.nwt.juber.model.Passenger;
 import com.nwt.juber.service.RideService;
 
-import java.util.HashMap;
-
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 import javax.validation.Valid;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -29,11 +26,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.naming.InsufficientResourcesException;
 import java.util.UUID;
-import com.nwt.juber.api.ResponseOk;
+
 import com.nwt.juber.dto.request.RideRequest;
 import com.nwt.juber.dto.response.PastRidesResponse;
 import com.nwt.juber.model.User;
-import com.nwt.juber.service.RideService;
 
 @RestController
 @RequestMapping(value = "ride")
@@ -133,6 +129,14 @@ public class RideController {
     public List<RideDTO> getSavedRoutes(Authentication authentication) {
         Passenger passenger = (Passenger) authentication.getPrincipal();
         return rideService.getSavedRoutes(passenger);
+    }
+
+    @GetMapping(value = "/report")
+    @PreAuthorize("hasAnyRole('PASSENGER', 'DRIVER', 'ADMIN')")
+    public ReportResponse generateReport(@RequestParam("startDate") @DateTimeFormat(pattern="yyyy-MM-dd") Date startDate,
+                                         @RequestParam("endDate") @DateTimeFormat(pattern="yyyy-MM-dd") Date endDate,
+                                         Authentication authentication) {
+        return rideService.generateReport(startDate, endDate, authentication);
     }
 
 }

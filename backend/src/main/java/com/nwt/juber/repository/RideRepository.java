@@ -7,6 +7,8 @@ import com.nwt.juber.model.RideStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -31,4 +33,26 @@ public interface RideRepository extends JpaRepository<Ride, UUID> {
 
     @Query("select r from Ride r where r.driver = :driver and r.rideStatus = 5")
     List<Ride> getPastRidesForDriver(Driver driver);
+
+    @Query("select r from Ride r where :passenger member of r.passengers and r.rideStatus = 5 and r.endTime between :startTime and :endTime")
+    List<Ride> getRidesForPassengerBetweenTimes(Passenger passenger, LocalDateTime startTime, LocalDateTime endTime);
+
+    default List<Ride> getRidesForPassengerAtDate(Passenger passenger, LocalDate date) {
+        return getRidesForPassengerBetweenTimes(passenger, date.atStartOfDay(), date.plusDays(1).atStartOfDay());
+    }
+
+    @Query("select r from Ride r where r.driver = :driver and r.rideStatus = 5 and r.endTime between :startTime and :endTime")
+    List<Ride> getRidesForDriverBetweenTimes(Driver driver, LocalDateTime startTime, LocalDateTime endTime);
+
+    default List<Ride> getRidesForDriverAtDate(Driver driver, LocalDate date) {
+        return getRidesForDriverBetweenTimes(driver, date.atStartOfDay(), date.plusDays(1).atStartOfDay());
+    }
+
+    @Query("select r from Ride r where r.rideStatus = 5 and r.endTime between :startTime and :endTime")
+    List<Ride> getRidesBetweenTimes(LocalDateTime startTime, LocalDateTime endTime);
+
+    default List<Ride> getRidesAtDate(LocalDate date) {
+        return getRidesBetweenTimes(date.atStartOfDay(), date.plusDays(1).atStartOfDay());
+    }
+
 }

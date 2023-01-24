@@ -131,12 +131,4 @@ public class RideController {
         return rideService.getSavedRoutes(passenger);
     }
 
-    @GetMapping(value = "/report")
-    @PreAuthorize("hasAnyRole('PASSENGER', 'DRIVER', 'ADMIN')")
-    public ReportResponse generateReport(@RequestParam("startDate") @DateTimeFormat(pattern="yyyy-MM-dd") Date startDate,
-                                         @RequestParam("endDate") @DateTimeFormat(pattern="yyyy-MM-dd") Date endDate,
-                                         Authentication authentication) {
-        return rideService.generateReport(startDate, endDate, authentication);
-    }
-
 }

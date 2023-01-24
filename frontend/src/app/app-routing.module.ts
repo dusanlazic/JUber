@@ -30,6 +30,7 @@ import { BlockedUsersComponent } from './admin-pages/blocked-users/blocked-users
 import { ChangeRequestsComponent } from './admin-pages/change-requests/change-requests.component';
 import { DriversListComponent } from './admin-pages/drivers-list/drivers-list.component';
 import { DriverRegistrationComponent } from './admin-pages/driver-registration/driver-registration.component';
+import { ReportsComponent } from './shared/profile-page/profile-navigation/reports/reports.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginPageComponent, canActivate: [LoggedGuard], data: {  }, },
@@ -62,6 +63,7 @@ const routes: Routes = [
       { path: 'saved-routes', component: SavedRoutesComponent },
       { path: 'past-rides', component: PastRidesComponent },
       { path: 'support', component: SupportComponent, canActivate: [AuthGuard, RoleGuard],  data: { expectedRoles: [Roles.DRIVER, Roles.PASSENGER ]} },
+      { path: 'reports', component: ReportsComponent },
     ]
   },
   { path: 'admin', component: NavigationPageTemplateComponent, canActivate: [AuthGuard, RoleGuard], data: { expectedRoles: [Roles.ADMIN ]}, 
@@ -69,7 +71,8 @@ const routes: Routes = [
      { path: 'blocked-users', component: BlockedUsersComponent },
      { path: 'change-requests', component: ChangeRequestsComponent },
      { path: 'drivers', component: DriversListComponent },
-     { path: 'new-driver', component: DriverRegistrationComponent}
+     { path: 'new-driver', component: DriverRegistrationComponent},
+     { path: 'reports', component: ReportsComponent },
     ]
   },
   { path: 'admin/support', component: AdminSupportPageComponent, 

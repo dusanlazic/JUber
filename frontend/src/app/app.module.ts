@@ -89,6 +89,7 @@ import { RideReviewsComponent } from './shared/ride-details/ride-reviews/ride-re
 import { RideReviewComponent } from './shared/ride-details/ride-reviews/ride-review/ride-review.component';
 import { AddReviewDialogComponent } from './shared/ride-details/ride-reviews/add-review-dialog/add-review-dialog.component';
 import { DriverRegistrationComponent } from './admin-pages/driver-registration/driver-registration.component';
+import { ReportsComponent } from './shared/profile-page/profile-navigation/reports/reports.component';
 
 @NgModule({
   declarations: [
@@ -147,6 +148,7 @@ import { DriverRegistrationComponent } from './admin-pages/driver-registration/d
     DriversListComponent,
     SupportComponent,
     SupportMessageComponent,
+    ReportsComponent,
 
     AdminConversationComponent,
     AdminSupportPageComponent,
@@ -196,7 +198,8 @@ import { DriverRegistrationComponent } from './admin-pages/driver-registration/d
     ChangeRequestsComponent,
     BlockedUsersComponent,
     SupportComponent,
-    SupportMessageComponent
+    SupportMessageComponent,
+    ReportsComponent
   ],
   providers: [RideSocketShareService, RideWebSocketAPI,
               NotificationWebsocketshareService, NotificationWebSocketAPI, 

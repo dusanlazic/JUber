@@ -24,7 +24,6 @@ export class HomeComponent implements OnInit {
   loggedUser: LoggedUser | undefined;
   ride: Ride | undefined;
   URL_BASE: string = environment.API_BASE_URL;
-  DEFAULT_PROFILE_PHOTO: string = environment.DEFAULT_PROFILE_PHOTO;
   sub: Subscription | undefined;
 
   constructor(

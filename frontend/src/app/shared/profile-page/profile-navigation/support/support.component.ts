@@ -78,10 +78,13 @@ export class SupportComponent implements OnInit {
     const newMessage: ChatMessage = {content: this.newMessage.value, sentAt: new Date(), isFromSupport: false}
     this.messages.push(newMessage);
     this.messages = [...this.messages];
+
+    let messageContent = this.newMessage.value;
+    this.newMessage.setValue('');
     
-    this.supportService.sendMessageAsUser({content: this.newMessage.value}).subscribe({
+    this.supportService.sendMessageAsUser({content: messageContent}).subscribe({
       next: (res: any) => {
-        this.newMessage.setValue('')
+        
         console.log(res)
       },
       error: (res: HttpErrorResponse) => {

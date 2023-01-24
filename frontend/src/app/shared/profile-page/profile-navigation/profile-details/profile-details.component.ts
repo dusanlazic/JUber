@@ -6,6 +6,7 @@ import { PersonalInfo } from 'src/models/auth';
 import { PhotoUploadResponse } from 'src/models/responses';
 import { AccountInfo, LoggedUser } from 'src/models/user';
 import { AccountService } from 'src/services/account/account.service';
+import { AuthService } from 'src/services/auth/auth.service';
 import { ValidationConstants } from 'src/services/util/custom-validators';
 import { Toastr } from 'src/services/util/toastr.service';
 
@@ -22,8 +23,6 @@ export class ProfileDetailsComponent implements OnInit {
   updateProfileForm!: FormGroup;
   accountInfo: AccountInfo;
   URL_BASE: string = environment.API_BASE_URL
-  DEFAULT_PROFILE_PHOTO: string = environment.DEFAULT_PROFILE_PHOTO
-  Dusan: string = "https://lh3.googleusercontent.com/a/ALm5wu3tpc3XnB9w8EMqNHAODc0uL23tqydVlUCLYqEF6Q=s96-c"
 
   constructor(
     private builder: FormBuilder,

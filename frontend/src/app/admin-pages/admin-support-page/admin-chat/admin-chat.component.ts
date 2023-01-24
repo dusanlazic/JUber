@@ -90,10 +90,13 @@ export class AdminChatComponent implements OnInit {
     this.messages.push(newMessage);
     this.messages = [...this.messages];
 
+    let messageContent = this.newMessage.value;
+    this.newMessage.setValue('');
+
     // send to BE
-    this.supportService.sendMessageAsSupport(this.userId, {content: this.newMessage.value}).subscribe({
+    this.supportService.sendMessageAsSupport(this.userId, {content: messageContent}).subscribe({
       next: (res: any) => {
-        this.newMessage.setValue('')
+        
         console.log(res)
       },
       error: (res: HttpErrorResponse) => {

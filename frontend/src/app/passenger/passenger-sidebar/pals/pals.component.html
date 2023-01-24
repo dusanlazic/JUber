@@ -7,7 +7,7 @@
             <img class="is-rounded" src="{{URL_BASE}}{{logged.imageUrl}}" (error)="this.authService.imageUrlResolver($event, logged.name)">
           </figure>
           <figure class="image is-48x48" *ngIf="!logged?.imageUrl">
-            <img class="is-rounded" src="{{DEFAULT_PROFILE_PHOTO}}" (error)="this.authService.imageUrlResolver($event, logged.name)">
+            <img class="is-rounded" src="" (error)="this.authService.imageUrlResolver($event, logged.name)">
           </figure>
 
           <div *ngFor="let pal of passengers; let i= index;">

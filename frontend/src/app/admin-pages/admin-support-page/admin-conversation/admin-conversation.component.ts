@@ -15,7 +15,6 @@ export class AdminConversationComponent implements OnInit {
   @Output() openChatEvent = new EventEmitter<ChatConversationResponse>();
 
   URL_BASE: string = environment.API_BASE_URL;
-  DEFAULT_PROFILE_PHOTO: string = environment.DEFAULT_PROFILE_PHOTO
   
   constructor(public authService: AuthService) {
   }

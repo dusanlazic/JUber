@@ -8,10 +8,34 @@ $family-secondary: "Titillium Web", serif
 .column.is-sidebar
     display:flex
     flex-direction:column
+    max-width: 480px !important
+    max-height: 100vh
+    overflow-y: scroll
     justify-content:space-between
     box-shadow: 1px 1px 25px #0000002f
     z-index: 1
 
+.is-custom-navigation-icon
+    margin-right: 10px
+    margin-top: 5px
+    cursor: pointer
+    width: 40px
+    height: 40px
+    text-align: center
+    padding-top: 8px
+    border-radius: 9999px
+    &:hover
+        background-color: hsla(0, 0, 0, 0.1)
+    .badge
+        box-shadow: none
+        background-color: #f14668
+        font-size: 14px
+        line-height: 14px
+        height: 18px
+        width: 18px
+        padding: 0
+        text-align: center
+        font-weight: bold
 
 .is-custom-at-bottom 
     margin-top: auto
@@ -25,8 +49,6 @@ $family-secondary: "Titillium Web", serif
     display: flex
     flex-direction: row-reverse
     padding-top: 10px
-    padding-right: 15px
+    padding-right: 22px
     align-items: center
-    
-.navigation
     z-index: 500

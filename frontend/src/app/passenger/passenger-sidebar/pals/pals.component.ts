@@ -18,7 +18,6 @@ export class PalsComponent implements OnInit {
   passengers: IPal[];
   colors: string[]
   URL_BASE: string = environment.API_BASE_URL;
-  DEFAULT_PROFILE_PHOTO: string = environment.DEFAULT_PROFILE_PHOTO;
   logged!: LoggedUser;
 
   constructor(

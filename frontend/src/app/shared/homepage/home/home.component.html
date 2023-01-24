@@ -17,22 +17,26 @@
     <div>
         <div class="navigation" >
             <a href="/profile" *ngIf="loggedUser">
-                <figure class="image is-48x48" *ngIf="loggedUser?.imageUrl">
-                    <img class="is-rounded" src="{{URL_BASE}}{{loggedUser.imageUrl}}" (error)="this.authService.imageUrlResolver($event, loggedUser.name)">>
+                <figure class="image is-32x32 is-clickable ml-2" *ngIf="loggedUser?.imageUrl">
+                    <img class="is-rounded" src="{{URL_BASE}}{{loggedUser.imageUrl}}" (error)="this.authService.imageUrlResolver($event, loggedUser.name)">
                 </figure>
-                <figure class="image is-48x48" *ngIf="!loggedUser?.imageUrl">
-                    <img class="is-rounded" src="{{DEFAULT_PROFILE_PHOTO}}" (error)="this.authService.imageUrlResolver($event, loggedUser.name)">
+                <figure class="image is-32x32 is-clickable ml-2" *ngIf="!loggedUser?.imageUrl">
+                    <img class="is-rounded" src="" (error)="this.authService.imageUrlResolver($event, loggedUser.name)">
                 </figure>
             </a>
             <app-notification *ngIf="loggedUser"></app-notification>
             <div class="is-relative is-custom-navigation-icon" *ngIf="loggedUser && loggedUser.role === 'ROLE_PASSENGER'" [routerLink]="['profile/saved-routes']">
-                <span class="iconify is-size-3 mt-3" data-icon="material-symbols:bookmark"></span>
-                
+                <span class="iconify is-size-4" data-icon="material-symbols:bookmark"></span>
             </div>
-            <!-- <button class="button is-rounded mr-2">Profile<span class="iconify ml-2" data-icon="ic:baseline-person"></span></button>
-            <button class="button is-rounded mr-1">Support<span class="iconify ml-2" data-icon="ic:baseline-contact-support"></span></button> -->
-            <button *ngIf="loggedUser" class="button is-rounded mr-1" (click)="logout()">Logout<span class="iconify ml-2" data-icon="material-symbols:logout"></span></button>
-            <button *ngIf="!loggedUser" class="button is-rounded mr-1" [routerLink]="['/login']">Login<span class="iconify ml-2" data-icon="material-symbols:login"></span></button>
+
+            <div *ngIf="loggedUser" class="is-relative is-custom-navigation-icon" (click)="logout()">
+                <span class="iconify is-size-4" data-icon="material-symbols:logout"></span>
+            </div>
+
+            <div *ngIf="!loggedUser" class="is-relative is-custom-navigation-icon" [routerLink]="['/login']">
+                <span class="iconify is-size-4" data-icon="material-symbols:login"></span>
+            </div>
+
             <active-status *ngIf="loggedUser && loggedUser.role == 'ROLE_DRIVER'" ></active-status>
         </div>
     </div>

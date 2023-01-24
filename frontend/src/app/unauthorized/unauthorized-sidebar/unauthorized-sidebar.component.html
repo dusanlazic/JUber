@@ -1,15 +1,24 @@
 <div *ngIf="router.url === '/home'">
-  <h1 class="is-gray is-size-2 mt-3 mb-7">Ride price calculator</h1>
   <app-places></app-places>
   <app-additional></app-additional>
 
-  <div class="is-custom-at-bottom has-text-right mt-6">
+  <div class="has-text-centered mt-5">
     <p class="has-text-grey">
+      <span class="iconify-inline" data-icon="fluent:clock-32-regular"></span> Estimated time
+    </p>
+    <p class="is-size-3 is-family-secondary mb-3">
+      <b>WIP</b> min
+    </p>
+    <p class="has-text-grey mt-5">
       <span class="iconify-inline" data-icon="ic:baseline-attach-money"></span> Total cost
     </p>
     <p class="is-size-3 is-family-secondary mb-3">
       <b>{{price}}</b> RSD
     </p>
+    <button class="button is-success is-medium is-rounded is-fullwidth mt-5" [routerLink]="['/login']">
+      Customize your ride<span class="iconify is-size-4 ml-2" data-icon="fluent:arrow-right-12-filled"></span>
+    </button>
+    <p class="mt-4 has-text-grey">Join <b>JUber</b> to order a ride tailored to your needs.</p>
   </div>
 
   <div *ngIf="isEditing">

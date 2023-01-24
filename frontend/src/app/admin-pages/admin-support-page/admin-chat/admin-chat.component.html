@@ -5,7 +5,7 @@
   </figure>
   <p class="title is-family-secondary is-size-4 ml-2">{{conversation.userFullName}}</p>
 </div>
-<div class="is-custom-scrollable-container is-chat-container">
+<div class="is-custom-scrollable-container is-chat-container" #autoScroll [scrollTop]="autoScroll.scrollHeight">
   <div  *ngFor="let message of messages" >
     <app-support-message [message]="message.content" [isSent]="message.isFromSupport"></app-support-message>
   </div>

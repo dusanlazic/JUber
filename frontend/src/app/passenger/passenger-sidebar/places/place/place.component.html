@@ -12,18 +12,18 @@
       <p class="is-size-5 has-text-weight-bold has-text-black">{{place?.name}}</p>
       
     </div>
-    <div class="column is-4 has-custom-swap-button">
-      <button class="button is-custom-swap is-up" [disabled]="index === 0" (click)="swapUp()">
+    <div class="column is-5 has-custom-swap-button">
+      <button class="button is-custom-swap is-up ml-1" [disabled]="index === 0" (click)="swapUp()">
         <span class="icon">
           <span class="iconify is-size-4" data-icon="fluent:arrow-up-12-filled"></span>
         </span>
       </button>
-      <button class="button is-custom-swap is-down" (click)="swapDown()">
+      <button class="button is-custom-swap is-down ml-1" (click)="swapDown()">
         <span class="icon">
           <span class="iconify is-size-4" data-icon="fluent:arrow-down-12-filled"></span>
         </span>
       </button>
-      <button class="button" (click)="editPlace()">
+      <button class="button ml-1" (click)="editPlace()">
         <span class="icon">
           <span class="iconify is-size-4" data-icon="ic:baseline-edit"></span>
         </span>

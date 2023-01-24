@@ -18,13 +18,6 @@
 </div>
 
 <div class="control is-custom-car-type-picker mt-5">
-    <div class="button is-custom-radio">
-        <input type="radio" id="car-any" name="car-type" [checked]="true" (change)="onVehicleChange(null)"/>
-        <label for="car-any">
-            <span class="iconify is-size-2" data-icon="mdi:car-side"></span>
-            <p>Any</p>
-        </label>
-    </div>
     <div class="button is-custom-radio" *ngFor="let type of vehicleTypes">
         <input type="radio" id="car-{{type.name.toLowerCase()}}" name="car-type" (change)="onVehicleChange(type)"/>
         <label for="car-{{type.name.toLowerCase()}}">

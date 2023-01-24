@@ -89,8 +89,9 @@ import { RideReviewsComponent } from './shared/ride-details/ride-reviews/ride-re
 import { RideReviewComponent } from './shared/ride-details/ride-reviews/ride-review/ride-review.component';
 import { AddReviewDialogComponent } from './shared/ride-details/ride-reviews/add-review-dialog/add-review-dialog.component';
 import { DriverRegistrationComponent } from './admin-pages/driver-registration/driver-registration.component';
-import { PastRidesTableComponent } from './shared/past-rides-table/past-rides-table.component';
+import { PastRidesTableComponent } from './shared/tables/past-rides-table/past-rides-table.component';
 import { DriverInfoComponent } from './admin-pages/driver-info/driver-info.component';
+import { ReviewsTableComponent } from './shared/tables/reviews-table/reviews-table.component';
 
 @NgModule({
   declarations: [
@@ -162,7 +163,8 @@ import { DriverInfoComponent } from './admin-pages/driver-info/driver-info.compo
     AddReviewDialogComponent,
     DriverRegistrationComponent,
     PastRidesTableComponent,
-    DriverInfoComponent
+    DriverInfoComponent,
+    ReviewsTableComponent
   ],
   imports: [
     BrowserModule,

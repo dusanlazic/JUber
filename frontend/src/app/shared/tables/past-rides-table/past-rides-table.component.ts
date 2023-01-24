@@ -2,7 +2,7 @@ import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { Component, OnInit, Input, Output, EventEmitter, ViewChild, OnChanges } from '@angular/core';
 import { MatSort, Sort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { PastRidesResponse } from '../profile-page/profile-navigation/past-rides/past-rides.component';
+import { PastRidesResponse } from '../../profile-page/profile-navigation/past-rides/past-rides.component';
 
 @Component({
   selector: 'app-past-rides-table',

@@ -11,7 +11,9 @@ import org.springframework.data.jpa.repository.Query;
 import com.nwt.juber.model.notification.NotificationResponse;
 import com.nwt.juber.model.notification.NotificationStatus;
 import com.nwt.juber.model.notification.PersistedNotification;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public interface NotificationRepository extends JpaRepository<PersistedNotification, UUID> {
 
     List<PersistedNotification> findByStatusAndCreatedBefore(NotificationStatus status, Date date);

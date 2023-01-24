@@ -12,7 +12,9 @@ import org.springframework.data.jpa.repository.Query;
 import com.nwt.juber.model.Driver;
 import com.nwt.juber.model.DriverStatus;
 import com.nwt.juber.model.Ride;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public interface DriverRepository extends JpaRepository<Driver, UUID> {
 
     @Query(value = "select d from Driver d where not exists (select r from Ride r where r.driver = d and r.rideStatus = 1 or r.rideStatus = 2)")

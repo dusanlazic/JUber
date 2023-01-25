@@ -7999,9 +7999,8 @@ a.has-text-danger-dark:hover, a.has-text-danger-dark:focus {
   padding-right: 40px; }
   .notification-item:hover {
     background-color: #f5f5f5 !important; }
-
-.notification-item.is-unread {
-  background-color: #fffaeb; }
+  .notification-item .is-unread {
+    background-color: #fffaeb; }
 
 .custom-add-pals-dialog {
   position: absolute;

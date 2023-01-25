@@ -1,0 +1,33 @@
+<table mat-table [dataSource]="dataSource" matSort  (matSortChange)="announceSortChange($event)"
+    class="table is-fullwidth is-hoverable is-custom-table">
+    <ng-container matColumnDef="reviewerFullName">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by reviewerFullName">
+        Passenger
+      </th>
+      <td mat-cell *matCellDef="let element"> {{element.reviewerFullName}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="comment">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by comment">
+        Comment
+      </th>
+      <td mat-cell *matCellDef="let element"> {{element.comment}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="driverRating">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by driver rating">
+        Driver rating
+      </th>
+      <td mat-cell *matCellDef="let element"> {{element.driverRating}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="vehicleRating" class="custom-container">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by vehicle rating">
+        Vehicle rating
+      </th>
+      <td mat-cell *matCellDef="let element"> {{element.vehicleRating}} </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="clickedRow(row)"></tr>
+</table>

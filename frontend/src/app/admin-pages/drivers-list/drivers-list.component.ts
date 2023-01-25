@@ -3,6 +3,7 @@ import {MatSort, Sort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
 import {LiveAnnouncer} from '@angular/cdk/a11y';
 import { DriverService } from 'src/services/driver/driver.service';
+import { Router } from '@angular/router';
 
 export interface DriverStatusResponse {
 	driverId: string,
@@ -25,6 +26,7 @@ export class DriversListComponent implements  OnInit {
   constructor(
     private _liveAnnouncer: LiveAnnouncer,
     private driverService: DriverService,
+    private router: Router
   ) {}
 
   @ViewChild(MatSort)
@@ -56,7 +58,6 @@ export class DriversListComponent implements  OnInit {
   }
 
   clickedRow(row: DriverStatusResponse) : void{
-    console.log(row)
-    //this.router.navigate([`/ridePreview/${row.id}`])
+    this.router.navigate([`/admin/drivers/${row.driverId}`])
   }
 }

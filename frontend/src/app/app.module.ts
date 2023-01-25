@@ -89,7 +89,14 @@ import { RideReviewsComponent } from './shared/ride-details/ride-reviews/ride-re
 import { RideReviewComponent } from './shared/ride-details/ride-reviews/ride-review/ride-review.component';
 import { AddReviewDialogComponent } from './shared/ride-details/ride-reviews/add-review-dialog/add-review-dialog.component';
 import { DriverRegistrationComponent } from './admin-pages/driver-registration/driver-registration.component';
+
 import { ReportsComponent } from './shared/profile-page/profile-navigation/reports/reports.component';
+
+import { PastRidesTableComponent } from './shared/tables/past-rides-table/past-rides-table.component';
+import { DriverInfoComponent } from './admin-pages/driver-info/driver-info.component';
+import { ReviewsTableComponent } from './shared/tables/reviews-table/reviews-table.component';
+import { PassengerInfoComponent } from './admin-pages/passenger-info/passenger-info.component';
+import { PassengerListComponent } from './admin-pages/passenger-list/passenger-list.component';
 
 @NgModule({
   declarations: [
@@ -160,7 +167,12 @@ import { ReportsComponent } from './shared/profile-page/profile-navigation/repor
     RideReviewsComponent,
     RideReviewComponent,
     AddReviewDialogComponent,
-    DriverRegistrationComponent
+    DriverRegistrationComponent,
+    PastRidesTableComponent,
+    DriverInfoComponent,
+    ReviewsTableComponent,
+    PassengerInfoComponent,
+    PassengerListComponent,
   ],
   imports: [
     BrowserModule,
@@ -199,7 +211,8 @@ import { ReportsComponent } from './shared/profile-page/profile-navigation/repor
     BlockedUsersComponent,
     SupportComponent,
     SupportMessageComponent,
-    ReportsComponent
+    ReportsComponent,
+    PastRidesTableComponent
   ],
   providers: [RideSocketShareService, RideWebSocketAPI,
               NotificationWebsocketshareService, NotificationWebSocketAPI, 

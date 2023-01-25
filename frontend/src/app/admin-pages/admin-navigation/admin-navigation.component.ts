@@ -8,8 +8,8 @@ enum SelectionOptions {
   ADMIN_BLOCKED_USERS='/admin/blocked-users',
   ADMIN_CHANGE_REQUESTS='/admin/change-requests',
   ADMIN_DRIVERS_LIST='/admin/drivers',
-  ADMIN_NEW_DRIVER='/admin/new-driver',
   REPORTS='/admin/reports',
+  ADMIN_PASSENGERS_LIST='/admin/passengers',
 }
 
 @Component({
@@ -35,6 +35,15 @@ export class AdminNavigationComponent implements OnInit {
   }
   private getCurrentHref() : void{
     const href = this.router.url;
-    this.selected = href as SelectionOptions;
+    if(href.includes('driver')){
+      this.selected = SelectionOptions.ADMIN_DRIVERS_LIST
+    }
+    else if(href.includes('passenger')){
+      this.selected = SelectionOptions.ADMIN_PASSENGERS_LIST
+    }
+    else{
+      this.selected = href as SelectionOptions;
+    }
+    
   }
 }

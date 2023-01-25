@@ -6,12 +6,16 @@
     Support
 </div>
 <div
-  class="navigation-item {{ 
-        (selected===SelectionOptions.ADMIN_DRIVERS_LIST || selected===SelectionOptions.ADMIN_NEW_DRIVER)  ? 
-        'is-selected' : ''}}"
+  class="navigation-item {{ selected===SelectionOptions.ADMIN_DRIVERS_LIST ? 'is-selected' : ''}}"
   (click)="navigate(SelectionOptions.ADMIN_DRIVERS_LIST)">
   <span class="iconify-inline is-size-5" data-icon="fluent:people-list-24-regular"></span>
   Drivers
+</div>
+<div
+  class="navigation-item {{ selected===SelectionOptions.ADMIN_PASSENGERS_LIST ? 'is-selected' : ''}}"
+  (click)="navigate(SelectionOptions.ADMIN_PASSENGERS_LIST)">
+  <span class="iconify-inline is-size-5" data-icon="fluent:people-list-24-regular"></span>
+  Passengers
 </div>
 <div 
   class="navigation-item {{ selected===SelectionOptions.ADMIN_BLOCKED_USERS ? 'is-selected' : ''}}"

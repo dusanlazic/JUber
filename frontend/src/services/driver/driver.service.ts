@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { PastRidesResponse } from 'src/app/shared/profile-page/profile-navigation/past-rides/past-rides.component';
 import { environment } from 'src/environments/environment';
-import { DriverRegistrationRequest } from 'src/models/driver';
+import { DriverInfo, DriverRegistrationRequest } from 'src/models/driver';
+import { RideReview } from 'src/models/rideReview';
 import { HttpRequestService } from '../util/http-request.service';
 
 @Injectable({
@@ -28,19 +30,19 @@ export class DriverService {
     return this.httpRequestService.get(url) as Observable<any>;
   }
 
-  getDriversInfo(driverId: string): Observable<any> {
+  getDriversInfo(driverId: string): Observable<DriverInfo> {
     const url = environment.API_BASE_URL + `/accounts/drivers/${driverId}/info`;
-    return this.httpRequestService.get(url) as Observable<any>;
+    return this.httpRequestService.get(url) as Observable<DriverInfo>;
   }
 
-  getDriversPastRides(driverId: string): Observable<any> {
+  getDriversPastRides(driverId: string): Observable<Array<PastRidesResponse>> {
     const url = environment.API_BASE_URL + `/accounts/drivers/${driverId}/rides`;
-    return this.httpRequestService.get(url) as Observable<any>;
+    return this.httpRequestService.get(url) as Observable<Array<PastRidesResponse>>;
   }
 
-  getDriversReviews(driverId: string): Observable<any> {
+  getDriversReviews(driverId: string): Observable<Array<RideReview>> {
     const url = environment.API_BASE_URL + `/accounts/drivers/${driverId}/reviews`;
-    return this.httpRequestService.get(url) as Observable<any>;
+    return this.httpRequestService.get(url) as Observable<Array<RideReview>>;
   }
 
   registerDriver(request: DriverRegistrationRequest){

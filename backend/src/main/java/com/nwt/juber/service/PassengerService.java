@@ -1,18 +1,22 @@
 package com.nwt.juber.service;
 
+import static com.nwt.juber.util.MappingUtils.convertPersonToDTO;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
+import javax.transaction.Transactional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.nwt.juber.dto.PersonDTO;
 import com.nwt.juber.dto.response.UserBasicInfoResponse;
 import com.nwt.juber.exception.UserNotFoundException;
 import com.nwt.juber.model.Passenger;
 import com.nwt.juber.repository.PassengerRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import javax.transaction.Transactional;
-import java.util.Optional;
-import java.util.UUID;
-
-import static com.nwt.juber.util.MappingUtils.convertPersonToDTO;
+import com.nwt.juber.util.MappingUtils;
 
 @Service
 @Transactional
@@ -42,5 +46,9 @@ public class PassengerService {
 	public PersonDTO getPassengersInfo(UUID passengerId) {
 		Passenger passenger = passengerRepository.findById(passengerId).orElseThrow(UserNotFoundException::new);
 		return convertPersonToDTO(passenger);
+	}
+
+	public List<PersonDTO> findAll() {
+		return passengerRepository.findAll().stream().map(MappingUtils::convertPersonToDTO).toList();
 	}
 }

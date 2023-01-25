@@ -17,6 +17,7 @@ export const DELETE_PLACE: string = "DELETE_PLACE"
 export const SWAP_PLACE_UP: string = "SWAP_PLACE_UP"
 export const SWAP_PLACE_DOWN: string = "SWAP_PLACE_DOWN"
 export const SET_RIDE: string = "SET_RIDE"
+export const OPTIMIZE_ROUTES: string = "OPTIMIZE_ROUTES"
 
 
 export const SetRideAction = createAction(
@@ -24,6 +25,9 @@ export const SetRideAction = createAction(
 	props<{ride: Ride}>()
 )
 
+export const OptimizeRoutesAction = createAction(
+	OPTIMIZE_ROUTES,
+)
 
 export const SwapPlaceUpAction = createAction(
 	SWAP_PLACE_UP,

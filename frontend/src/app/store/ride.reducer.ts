@@ -17,6 +17,26 @@ const initialState : AppState = {
 
 const reducer = createReducer(
 	initialState,
+
+	on(RideAction.OptimizeRoutesAction, (state, action) => {
+		let ride = _.cloneDeep(state.ride);
+		ride.places.forEach(place => { 
+			if (place.routes && place.routes.length > 0 && place.routes.at(0) !== undefined) {
+				place.routes.forEach(route => { route.selected = false; })
+				place.routes.at(0)!.selected = true;
+				place.option = place.routes.at(0)!.name;
+			}
+		});
+
+		return {
+		 ...state,
+		 ride: {
+			 ...ride
+		 }
+		}
+	 }),
+
+
 	on(RideAction.SetRideAction, (state, action) => {
 		return {
 		 ...state,

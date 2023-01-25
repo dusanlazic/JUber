@@ -51,4 +51,8 @@ public class PassengerService {
 	public List<PersonDTO> findAll() {
 		return passengerRepository.findAll().stream().map(MappingUtils::convertPersonToDTO).toList();
 	}
+
+	public Optional<Passenger> findById(UUID id) {
+		return passengerRepository.findById(id);
+	}
 }

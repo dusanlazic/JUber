@@ -211,5 +211,9 @@ public class DriverService {
 						review.getComment()
 				)).toList();
 	}
+
+	public Optional<Driver> findById(UUID id) {
+		return driverRepository.findById(id);
+	}
 }
 

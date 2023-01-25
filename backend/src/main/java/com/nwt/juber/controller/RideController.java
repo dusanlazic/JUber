@@ -7,6 +7,7 @@ import com.nwt.juber.exception.InsufficientFundsException;
 import com.nwt.juber.exception.UserNotFoundException;
 import com.nwt.juber.model.Driver;
 import com.nwt.juber.model.Passenger;
+import com.nwt.juber.model.Ride;
 import com.nwt.juber.service.DriverService;
 import com.nwt.juber.service.PassengerService;
 import com.nwt.juber.service.RideService;
@@ -63,6 +64,7 @@ public class RideController {
         return new ResponseOk("ok");
     }
 
+
     @PutMapping("/accept/{id}")
     @PreAuthorize("hasAnyRole('PASSENGER', 'DRIVER')")
     public ResponseOk acceptRide(@PathVariable("id") UUID rideId, Authentication authentication) throws InsufficientFundsException {
@@ -74,6 +76,15 @@ public class RideController {
             Driver driver = driverService.findById(user.getId()).orElseThrow(() -> new UserNotFoundException("No driver found!"));
             rideService.acceptRideDriver(driver, rideId);
         }
+        return new ResponseOk("ok");
+    }
+
+    @PutMapping("/panic/{id}")
+    @PreAuthorize("hasAnyRole('PASSENGER')")
+    public ResponseOk panicRide(@PathVariable("id") UUID rideId, Authentication authentication) {
+        Passenger passenger = passengerService.findById(((User) authentication.getPrincipal()).getId()).orElseThrow();
+        Ride ride = rideService.findRideById(rideId).orElseThrow(() -> new RuntimeException("No ride found!"));
+        rideService.panicRide(ride, passenger);
         return new ResponseOk("ok");
     }
 

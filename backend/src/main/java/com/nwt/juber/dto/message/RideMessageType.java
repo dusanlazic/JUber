@@ -6,5 +6,6 @@ public enum RideMessageType {
     RIDE_FAILED_LATE,
     DRIVER_ABANDONED,
     RIDE_FINISHED,
-    SCHEDULED_START
+    SCHEDULED_START,
+    DRIVER_ARRIVED
 }

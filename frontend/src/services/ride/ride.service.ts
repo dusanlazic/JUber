@@ -9,6 +9,7 @@ import { HttpRequestService } from '../util/http-request.service';
 })
 export class RideService {
 
+
   constructor(private httpRequestService: HttpRequestService) {}
 
   sendRideRequest(rideRequest: RideRequest): Observable<any> {
@@ -27,6 +28,27 @@ export class RideService {
   declineRide(rideId: string): Observable<any> {
     const url = environment.API_BASE_URL + `/ride/decline/${rideId}`;
     return this.httpRequestService.put(url, null) as Observable<any>;
+  }
+
+  startRide(rideId: string): Observable<any> {
+    const url = environment.API_BASE_URL + `/simulation/start-ride/${rideId}`;
+    return this.httpRequestService.put(url, null) as Observable<any>;
+  }
+
+  abandonRide(rideId: string, reason: string): Observable<any> {
+    const url = environment.API_BASE_URL + `/ride/abandon/${rideId}`;
+    const body = JSON.stringify({reason: reason});
+    return this.httpRequestService.put(url, body) as Observable<any>;
+  }
+
+  panic(rideId: string) {
+    const url = environment.API_BASE_URL + `/ride/panic/${rideId}`;
+    return this.httpRequestService.put(url, {}) as Observable<any>;
+  }
+
+  endRide(rideId: string): Observable<any> {
+    const url = environment.API_BASE_URL + `/simulation/end-ride/${rideId}`;
+    return this.httpRequestService.put(url, {}) as Observable<any>;
   }
 
   getPastRides(): Observable<any> {

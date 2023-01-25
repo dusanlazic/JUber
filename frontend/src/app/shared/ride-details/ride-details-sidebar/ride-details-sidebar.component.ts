@@ -24,8 +24,6 @@ export class RideDetailsSidebarComponent implements OnInit, OnChanges {
   loggedUser!: LoggedUser;
   rideInProgress: boolean = true;
   isFavourite: number = -1;
-  abandon: boolean = false;
-  reason: string = '';
   URL_BASE: string = environment.API_BASE_URL;
 
   constructor(public authService: AuthService,
@@ -45,16 +43,8 @@ export class RideDetailsSidebarComponent implements OnInit, OnChanges {
     }
   }
 
-  toggleAbandonRideReason() {
-    this.abandon = !this.abandon;
-  }
 
-  abandonRide() {    
-    this.httpService.put(environment.API_BASE_URL + '/ride/abandon/' + this.ride?.id, this.reason).subscribe(response => {
-      console.log(response);
-      window.location.reload();
-    });
-  }
+
 
   checkFavourite() {
     this.httpService.get(environment.API_BASE_URL + '/ride/is-favourite/' + this.ride?.id).subscribe(response => {
@@ -105,13 +95,7 @@ export class RideDetailsSidebarComponent implements OnInit, OnChanges {
     })
   }
 
-  endRide() {
-    if(!this.ride) return;
-    this.httpService.put(environment.API_BASE_URL + '/simulation/end-ride/' + this.ride.id, {}).subscribe(response => {
-      console.log(response);
-      window.location.reload();
-    })
-  }
+  
 
 
 

@@ -4,25 +4,27 @@
       Reports
     </p>
   </div>
-  <div class="column m-0 p-0" style="height: 36px;">
-    <div class="field is-horizontal">
-      <div class="field-body">
-        <div class="field">
-          <p class="control">
-            <input class="input" type="date">
-          </p>
+  <form>
+    <div class="column m-0 p-0" style="height: 36px;">
+      <div class="field is-horizontal">
+        <div class="field-body">
+          <div class="field">
+            <p class="control">
+              <input class="input" type="date" [formControl]="startDateControl">
+            </p>
+          </div>
+          <div class="field">
+            <p class="control">
+              <input class="input" type="date" [formControl]="endDateControl">
+            </p>
+          </div>
+          <button class="button is-outlined is-success" (click)="showReport()">
+            Show
+          </button>
         </div>
-        <div class="field">
-          <p class="control">
-            <input class="input" type="date">
-          </p>
-        </div>
-        <button class="button is-outlined is-success">
-          Show
-        </button>
       </div>
     </div>
-  </div>
+  </form>
 </div>
 <div class="columns" style="width: 956px;">
   <div class="column is-9">
@@ -37,7 +39,8 @@
     <p class="is-family-secondary is-size-4 has-text-weight-bold mb-2">{{ round(this.data.sums.distance) }}</p>
     <p class="heading mb-0">Daily average</p>
     <p class="is-family-secondary is-size-4 has-text-weight-bold mb-6">{{ round(this.data.averages.distance) }}</p>
-    <p class="heading mb-0">Total spent (RSD)</p>
+    <p *ngIf="loggedRole === 'ROLE_ADMIN' || loggedRole === 'ROLE_DRIVER'" class="heading mb-0">Total earned (RSD)</p>
+    <p *ngIf="loggedRole === 'ROLE_PASSENGER'" class="heading mb-0">Total spent (RSD)</p>
     <p class="is-family-secondary is-size-4 has-text-weight-bold mb-2">{{ round(this.data.sums.fare) }}</p>
     <p class="heading mb-0">Daily average</p>
     <p class="is-family-secondary is-size-4 has-text-weight-bold">{{ round(this.data.averages.fare) }}</p>

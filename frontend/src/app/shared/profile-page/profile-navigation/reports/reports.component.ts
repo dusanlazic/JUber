@@ -3,6 +3,9 @@ import { Component, OnInit, EventEmitter, Output } from '@angular/core';
 import { ReportResponse } from 'src/models/reports';
 import { ReportService } from 'src/services/reports/report.service';
 import { Chart, registerables } from 'chart.js';
+import { FormControl } from '@angular/forms';
+import { AuthService } from 'src/services/auth/auth.service';
+import { LoggedUser, Roles } from 'src/models/user';
 
 Chart.register(...registerables);
 
@@ -16,8 +19,14 @@ export class ReportsComponent implements OnInit {
   data: ReportResponse;
   chart: any;
 
+  startDateControl: FormControl;
+  endDateControl: FormControl;
+
+  loggedRole: string;
+
   constructor(
     private reportsService: ReportService,
+    private authService: AuthService,
   ) {
     this.data = {
       days: [],
@@ -32,10 +41,28 @@ export class ReportsComponent implements OnInit {
         fare: 0
       },
     }
+
+    this.startDateControl = new FormControl("2023-06-01");
+    this.endDateControl = new FormControl( "2023-06-30");
+    this.loggedRole =''
+
   }
 
   ngOnInit() {
-    this.reportsService.getReport("2023-06-01", "2023-06-30").subscribe({
+    this.getLoggedRole();
+    this.showReport();
+  }
+
+  private getLoggedRole(){
+    this.authService.getCurrentUser().subscribe({
+      next: (user: LoggedUser) => {
+        this.loggedRole = user.role;
+      }
+    })
+  }
+
+  showReport(){
+    this.reportsService.getReport(this.startDateControl.value, this.endDateControl.value).subscribe({
       next: (res: ReportResponse) => {
         this.data = res;
         this.createChart();
@@ -43,7 +70,8 @@ export class ReportsComponent implements OnInit {
     })
   }
 
-  createChart() : void {
+  private createChart() : void {
+    this.chart?.destroy()
     this.chart = new Chart("ReportChart", {
       type: 'bar',
       data: {

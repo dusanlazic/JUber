@@ -3,7 +3,12 @@ package com.nwt.juber.controller;
 import com.nwt.juber.api.ResponseOk;
 import com.nwt.juber.dto.RideDTO;
 import com.nwt.juber.dto.response.report.ReportResponse;
+import com.nwt.juber.exception.InsufficientFundsException;
+import com.nwt.juber.exception.UserNotFoundException;
+import com.nwt.juber.model.Driver;
 import com.nwt.juber.model.Passenger;
+import com.nwt.juber.service.DriverService;
+import com.nwt.juber.service.PassengerService;
 import com.nwt.juber.service.RideService;
 
 import java.util.*;
@@ -40,6 +45,12 @@ public class RideController {
     @Autowired
     RideService rideService;
 
+    @Autowired
+    PassengerService passengerService;
+
+    @Autowired
+    DriverService driverService;
+
     @PutMapping("/start/{id}")
     public ResponseOk startRide(@PathVariable("id") UUID rideId) {
         rideService.startRide(rideId);
@@ -54,15 +65,29 @@ public class RideController {
 
     @PutMapping("/accept/{id}")
     @PreAuthorize("hasAnyRole('PASSENGER', 'DRIVER')")
-    public ResponseOk acceptRide(@PathVariable("id") UUID rideId, Authentication authentication) throws InsufficientResourcesException {
-        rideService.acceptRide(rideId, authentication);
+    public ResponseOk acceptRide(@PathVariable("id") UUID rideId, Authentication authentication) throws InsufficientFundsException {
+        User user = (User) authentication.getPrincipal();
+        Optional<Passenger> passenger = passengerService.findById(user.getId());
+        if (passenger.isPresent()) {
+            rideService.acceptRidePassenger(passenger.get(), rideId);
+        } else {
+            Driver driver = driverService.findById(user.getId()).orElseThrow(() -> new UserNotFoundException("No driver found!"));
+            rideService.acceptRideDriver(driver, rideId);
+        }
         return new ResponseOk("ok");
     }
 
     @PutMapping("/decline/{id}")
     @PreAuthorize("hasAnyRole('PASSENGER', 'DRIVER')")
     public ResponseOk declineRide(@PathVariable("id") UUID rideId, Authentication authentication) throws InsufficientResourcesException {
-        rideService.declineRide(rideId, authentication);
+        User user = (User) authentication.getPrincipal();
+        Optional<Passenger> passenger = passengerService.findById(user.getId());
+        if(passenger.isPresent()) {
+            rideService.declineRidePassenger(passenger.get(), rideId);
+        } else {
+            Driver driver = driverService.findById(user.getId()).orElseThrow(() -> new UserNotFoundException("No driver found!"));
+            rideService.declineRideDriver(driver, rideId);
+        }
         return new ResponseOk("ok");
     }
 
@@ -76,14 +101,16 @@ public class RideController {
     @PreAuthorize("hasAnyRole('PASSENGER')")
     public ResponseOk toggleFavouriteRide(@PathVariable("id") UUID rideId, Authentication authentication) {
         System.out.println("Toggling favourite...");
-        rideService.toggleFavourite(rideId, authentication);
+        Passenger passenger = passengerService.findById(((User) authentication.getPrincipal()).getId()).orElseThrow();
+        rideService.toggleFavourite(rideId, passenger);
         return new ResponseOk("ok");
     }
 
     @GetMapping("is-favourite/{id}")
     @PreAuthorize("hasAnyRole('PASSENGER')")
     public CheckFavouriteResponse checkFavouriteRide(@PathVariable("id") UUID rideId, Authentication authentication) {
-        return new CheckFavouriteResponse(rideService.checkIfFavourite(rideId, authentication));
+        Passenger passenger = passengerService.findById(((User) authentication.getPrincipal()).getId()).orElseThrow();
+        return new CheckFavouriteResponse(rideService.checkIfFavourite(rideId, passenger));
     }
 
     @Data
@@ -103,16 +130,23 @@ public class RideController {
 	@PreAuthorize("hasAnyRole('PASSENGER')")
 	public ResponseOk createRideRequest(@Valid @RequestBody RideRequest rideRequest, Authentication authentication) {
 		System.out.println(rideRequest.toString());
-		// TODO: rideService.createRideRequest(rideRequest);
-        rideService.createRideRequest(rideRequest, authentication);
+        User user = (User) authentication.getPrincipal();
+        Passenger passenger = passengerService.findById(user.getId()).orElseThrow(() -> new RuntimeException("No passenger found!"));
+        rideService.createRideRequest(rideRequest, passenger);
         return new ResponseOk("ok");
 	}
 
 
     @PutMapping("/abandon/{id}")
-    @PreAuthorize("hasAnyRole('DRIVER')")
-    public ResponseOk abandonRide(@PathVariable("id") UUID rideId, @RequestBody String reason, Authentication authentication) {
-        rideService.abandonRide(rideId, reason, authentication);
+    @PreAuthorize("hasAnyRole('DRIVER', 'PASSENGER')")
+    public ResponseOk abandonRide(@PathVariable("id") UUID rideId, @RequestBody(required = false) String reason, Authentication authentication) {
+        Optional<Driver> driver = driverService.findById(((User) authentication.getPrincipal()).getId());
+        if (driver.isPresent()) {
+            rideService.abandonRideDriver(rideId, reason, driver.get());
+        } else {
+            Passenger passenger = passengerService.findById(((User) authentication.getPrincipal()).getId()).orElseThrow(() -> new UserNotFoundException("No such user found!"));
+            rideService.abandonRidePassenger(rideId, reason, passenger);
+        }
         return new ResponseOk("ok");
     }
 

@@ -23,11 +23,21 @@ public class Ride {
 
     private Double fare;
 
+    private Boolean babyFriendlyRequested;
+
+    private Boolean petFriendlyRequested;
+
+    @ManyToOne
+    private VehicleType vehicleTypeRequested;
+
     @ManyToMany
     private List<Passenger> passengers;
 
     @ElementCollection
     private List<PassengerStatus> passengersReady;
+
+    @ManyToMany
+    private List<Driver> blacklisted;
 
     @ManyToOne
     private Driver driver;

@@ -34,6 +34,12 @@
 		</div>
 	</div>
 
+	<div *ngIf="ride.rideStatus == 'WAITING_FOR_PAYMENT' && loggedUser.role == 'ROLE_PASSENGER'" style="display: flex;">
+		<div class="mt-4 mb-4">
+			<button class="button is-warning is-light" (click)="abandonRide()">Abandon ride.</button>
+		</div>
+	</div>
+
 	<div *ngIf="this.loggedUser.role==='ROLE_DRIVER' && this.abandon">
 		<textarea class="textarea" placeholder="e.g. Hello world" [(ngModel)]="this.reason"></textarea>
 		<div class="mt-3 mb-4">

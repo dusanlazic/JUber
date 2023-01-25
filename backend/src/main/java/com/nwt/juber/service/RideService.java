@@ -107,9 +107,7 @@ public class RideService {
         }
     }
 
-    public void createRideRequest(RideRequest rideRequest, Authentication authentication) {
-        User user = (User) authentication.getPrincipal();
-        Passenger passenger = passengerRepository.findById(user.getId()).orElseThrow(() -> new RuntimeException("No passenger found!"));
+    public void createRideRequest(RideRequest rideRequest, Passenger passenger) {
         Ride ride = new Ride();
         List<Passenger> pass = new ArrayList<>();
         pass.add(passenger);
@@ -131,6 +129,9 @@ public class RideService {
         ride.setDistance(rideRequest.getRide().getDistance());
         ride.getPlaces().forEach(place -> routeRepository.saveAll(place.getRoutes()));
         ride.getPlaces().forEach(place -> place.setId(UUID.randomUUID()));
+        ride.setBabyFriendlyRequested(rideRequest.getAdditionalRequests().isBabyFriendly());
+        ride.setPetFriendlyRequested(rideRequest.getAdditionalRequests().isPetFriendly());
+        ride.setVehicleTypeRequested(rideRequest.getAdditionalRequests().getVehicleType());
         placeRepository.saveAll(ride.getPlaces());
         System.out.println(ride);
         rideRepository.save(ride);
@@ -279,8 +280,13 @@ public class RideService {
 
     }
 
-    public void acceptRidePassenger(Passenger passenger, UUID rideId) {
+    public void acceptRidePassenger(Passenger passenger, UUID rideId) throws InsufficientFundsException {
         Ride ride = rideRepository.findById(rideId).orElseThrow(() -> new EndRideException("No ride with id: " + rideId));
+
+        if (ride.getRideStatus() != RideStatus.WAITING_FOR_PAYMENT) {
+           throw new EndRideException("Ride is not waiting for payment!");
+        }
+
         BigDecimal fare = BigDecimal.valueOf(ride.getFare() / ride.getPassengers().size());
 
         if (passenger.getBalance().compareTo(fare) < 0) {
@@ -298,17 +304,6 @@ public class RideService {
             ride.setRideStatus(RideStatus.WAIT);
             rideRepository.save(ride);
             assignSuitableDriverWhenNeeded(ride);
-        }
-    }
-
-    public void acceptRide(UUID rideId, Authentication authentication) {
-        User user = (User) authentication.getPrincipal();
-        Optional<Passenger> passenger = passengerRepository.findById(user.getId());
-        if(passenger.isPresent()) {
-            acceptRidePassenger(passenger.get(), rideId);
-        } else {
-            Driver driver = driverRepository.findById(user.getId()).orElseThrow(() -> new RuntimeException("No driver found!"));
-            acceptRideDriver(driver, rideId);
         }
     }
 
@@ -337,6 +332,7 @@ public class RideService {
     private Driver findClosestAvailableDriver(Ride ride) {
         // Could possibly have status of SCHEDULED but no WAIT, ACCEPTED, IN PROGRESS
         List<Driver> drivers = driverRepository.findAvailableDrivers(ride);
+        drivers = filterDriverByAdditional(ride, drivers);
         double startLat = ride.getPlaces().get(0).getLatitude();
         double startLon = ride.getPlaces().get(0).getLongitude();
         return drivers
@@ -363,11 +359,36 @@ public class RideService {
 
     private Driver findFastestUnavailable(Ride ride) {
         List<DriverRideDTO> drivers = driverRepository.findUnavailableDriversWithNoFutureRides(ride);
+        drivers = filterDriverRidesByAdditional(ride, drivers);
         DriverRideDTO minDriverRide = drivers
                                     .stream()
                                     .min(Comparator.comparing(x -> compareDriverEstimatedTimes(x, ride)))
                                     .orElse(null);
         return minDriverRide != null ? minDriverRide.getDriver() : null;
+    }
+
+    private List<DriverRideDTO> filterDriverRidesByAdditional(Ride ride, List<DriverRideDTO> driverRide) {
+        return driverRide.stream().filter(driverRideDTO -> driverAdditionalFilter(ride, driverRideDTO.getDriver())).toList();
+    }
+
+    private List<Driver> filterDriverByAdditional(Ride ride, List<Driver> drivers) {
+        return drivers.stream().filter(driver -> driverAdditionalFilter(ride, driver)).toList();
+    }
+
+    private Boolean driverAdditionalFilter(Ride ride, Driver driver) {
+        if (ride.getBabyFriendlyRequested() && !driver.getVehicle().getBabyFriendly()) {
+            return false;
+        }
+        if (ride.getPetFriendlyRequested() && !driver.getVehicle().getPetFriendly()) {
+            return false;
+        }
+        if (driver.getVehicle().getCapacity() < ride.getPassengers().size()) {
+            return false;
+        }
+        if (driver.getBlocked()) {
+            return false;
+        }
+        return driver.getVehicle().getVehicleType().equals(ride.getVehicleTypeRequested());
     }
 
     private double compareDriverEstimatedTimes(DriverRideDTO driverRideDTO, Ride ride) {
@@ -381,7 +402,6 @@ public class RideService {
             double driverLon = driverRideDTO.getDriver().getVehicle().getLongitude();
             double startLat = ride.getPlaces().get(0).getLatitude();
             double startLon = ride.getPlaces().get(0).getLongitude();
-
             double toStart = timeEstimator.estimateTime(driverLat, driverLon, startLat, startLon);
             double toFinish = estimatedTime;
             return toStart + toFinish;
@@ -392,7 +412,7 @@ public class RideService {
     private void subtractFundsForRide(Ride ride) {
         double fare = ride.getFare() / ride.getPassengers().size();
         ride.getPassengers()
-                .forEach(x -> x.setBalance(x.getBalance().subtract(BigDecimal.valueOf(fare))));
+            .forEach(x -> x.setBalance(x.getBalance().subtract(BigDecimal.valueOf(fare))));
     }
 
     public void declineRidePassenger(Passenger passenger, UUID rideId) {
@@ -400,7 +420,6 @@ public class RideService {
         int passengerPosition = ride.getPassengers().indexOf(passenger);
         ride.getPassengersReady().set(passengerPosition, PassengerStatus.Declined);
         ride.setRideStatus(RideStatus.DENIED);
-        // notify the rest!
         sendRideMessageToPassengers(ride, RideMessageType.PAL_UPDATE_STATUS);
         rideRepository.save(ride);
     }
@@ -409,20 +428,11 @@ public class RideService {
     public void declineRideDriver(Driver driver, UUID rideId) {
         Ride ride = rideRepository.findById(rideId).orElseThrow(() -> new EndRideException("No ride with id: " + rideId));
         ride.setRideStatus(RideStatus.DENIED);
+        ride.getBlacklisted().add(driver);
         rideRepository.save(ride);
         assignSuitableDriver(ride);
     }
 
-    public void declineRide(UUID rideId, Authentication authentication) {
-        User user = (User) authentication.getPrincipal();
-        Optional<Passenger> passenger = passengerRepository.findById(user.getId());
-        if(passenger.isPresent()) {
-            declineRidePassenger(passenger.get(), rideId);
-        } else {
-            Driver driver = driverRepository.findById(user.getId()).orElseThrow(() -> new RuntimeException("No driver found!"));
-            declineRideDriver(driver, rideId);
-        }
-    }
 
     @Transactional(Transactional.TxType.REQUIRED)
     public RideDTO getActiveRide(Authentication authentication) {
@@ -449,8 +459,7 @@ public class RideService {
         return convertRideToDTO(ride);
     }
 
-    public void toggleFavourite(UUID rideId, Authentication authentication) {
-        Passenger passenger = passengerRepository.findById(((User) authentication.getPrincipal()).getId()).orElseThrow();
+    public void toggleFavourite(UUID rideId, Passenger passenger) {
         Ride ride = rideRepository.findById(rideId).orElseThrow();
         if (!ride.getPassengers().contains(passenger)) {
             throw new RuntimeException("You are not allowed to toggle favourite for this ride!");
@@ -463,8 +472,7 @@ public class RideService {
         passengerRepository.save(passenger);
     }
 
-    public boolean checkIfFavourite(UUID rideId, Authentication authentication) {
-        Passenger passenger = passengerRepository.findById(((User) authentication.getPrincipal()).getId()).orElseThrow();
+    public boolean checkIfFavourite(UUID rideId, Passenger passenger) {
         Ride ride = rideRepository.findById(rideId).orElseThrow();
         if (!ride.getPassengers().contains(passenger)) {
             throw new RuntimeException("You are not allowed to toggle favourite for this ride!");
@@ -472,9 +480,23 @@ public class RideService {
         return passenger.getFavouriteRoutes().contains(ride);
     }
 
-	public void abandonRide(UUID rideId, String reason, Authentication authentication) {
+    public void abandonRidePassenger(UUID rideId, String reason, Passenger passenger) {
         Ride ride = rideRepository.findById(rideId).orElseThrow();
-        Driver driver = driverRepository.findById(((User) authentication.getPrincipal()).getId()).orElseThrow();
+        if (!ride.getPassengers().contains(passenger)) {
+            throw new RuntimeException("You are not allowed to abandon this ride!");
+        }
+        ride.setRideStatus(RideStatus.DENIED);
+        rideRepository.save(ride);
+        RideCancellation rideCancellation = new RideCancellation();
+        rideCancellation.setId(UUID.randomUUID());
+        rideCancellation.setRide(ride);
+        rideCancellation.setReason(reason);
+        rideCancellationRepository.save(rideCancellation);
+        sendRideMessageToPassengers(ride, RideMessageType.PAL_UPDATE_STATUS);
+    }
+
+	public void abandonRideDriver(UUID rideId, String reason, Driver driver) {
+        Ride ride = rideRepository.findById(rideId).orElseThrow();
         if (!ride.getDriver().getId().equals(driver.getId())) {
             throw new RuntimeException("You are not allowed to abandon this ride!");
         }

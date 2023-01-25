@@ -77,6 +77,9 @@ public class RideService {
     @Autowired
     private RideCancellationRepository rideCancellationRepository;
 
+    @Autowired
+    private MailingService mailingService;
+
     public void startRide(UUID rideId) {
         Ride ride = rideRepository.findById(rideId).orElseThrow(() -> new StartRideException("No ride with id: " + rideId));
         if (ride.getRideStatus() != RideStatus.ACCEPTED) {
@@ -85,6 +88,7 @@ public class RideService {
         ride.setRideStatus(RideStatus.IN_PROGRESS);
         ride.setStartTime(LocalDateTime.now());
         rideRepository.save(ride);
+        sendRideMessageToPassengers(ride, RideMessageType.DRIVER_ARRIVED);
     }
 
     public void endRide(UUID rideId) {
@@ -98,6 +102,11 @@ public class RideService {
         rideRepository.save(ride);
         // check if future should be accepted
         findAndAcceptScheduledRide(ride.getDriver());
+    }
+
+
+    public Optional<Ride> findRideById(UUID rideId) {
+        return rideRepository.findById(rideId);
     }
 
     private void findAndAcceptScheduledRide(Driver driver) {
@@ -453,8 +462,10 @@ public class RideService {
     public RideDTO getRide(UUID rideId, Authentication authentication) {
         Ride ride = rideRepository.findById(rideId).orElseThrow(() -> new RuntimeException("No ride found!"));
         User user = (User) authentication.getPrincipal();
-        if (!ride.getDriver().getId().equals(user.getId()) && ride.getPassengers().stream().map(Person::getId).noneMatch(x -> x.equals(user.getId()))) {
-            throw new RuntimeException("You are not allowed to see this ride!");
+        if (user.getRole() != Role.ROLE_ADMIN) {
+            if (!ride.getDriver().getId().equals(user.getId()) && ride.getPassengers().stream().map(Person::getId).noneMatch(x -> x.equals(user.getId()))) {
+                throw new RuntimeException("You are not allowed to see this ride!");
+            }
         }
         return convertRideToDTO(ride);
     }
@@ -483,6 +494,9 @@ public class RideService {
     public void abandonRidePassenger(UUID rideId, String reason, Passenger passenger) {
         Ride ride = rideRepository.findById(rideId).orElseThrow();
         if (!ride.getPassengers().contains(passenger)) {
+            throw new RuntimeException("You are not allowed to abandon this ride!");
+        }
+        if (ride.getRideStatus() != RideStatus.WAITING_FOR_PAYMENT) {
             throw new RuntimeException("You are not allowed to abandon this ride!");
         }
         ride.setRideStatus(RideStatus.DENIED);
@@ -541,5 +555,14 @@ public class RideService {
     public RideDTO getById(UUID rideId) {
         Ride ride = rideRepository.getRideById(rideId);
         return convertRideToDTO(ride);
+    }
+
+    public void panicRide(Ride ride, Passenger user) {
+        if (!ride.getPassengers().contains(user) || ride.getRideStatus() != RideStatus.IN_PROGRESS) {
+            throw new RuntimeException("You are not allowed to panic this ride!");
+        }
+        ride.setRideStatus(RideStatus.DENIED);
+        rideRepository.save(ride);
+        mailingService.sendPanicRideMail(ride, user);
     }
 }

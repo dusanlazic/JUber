@@ -11,10 +11,7 @@ import com.nwt.juber.dto.response.report.Averages;
 import com.nwt.juber.dto.response.report.DailyData;
 import com.nwt.juber.dto.response.report.ReportResponse;
 import com.nwt.juber.dto.response.report.Sums;
-import com.nwt.juber.exception.EndRideException;
-import com.nwt.juber.exception.InsufficientFundsException;
-import com.nwt.juber.exception.StartRideException;
-import com.nwt.juber.exception.UserNotFoundException;
+import com.nwt.juber.exception.*;
 import com.nwt.juber.model.*;
 import com.nwt.juber.model.notification.*;
 import com.nwt.juber.repository.*;
@@ -116,7 +113,7 @@ public class RideService {
         }
     }
 
-    public void createRideRequest(RideRequest rideRequest, Passenger passenger) {
+    public void createRideRequest(RideRequest rideRequest, Passenger passenger) throws DriverNotFoundException {
         Ride ride = new Ride();
         List<Passenger> pass = new ArrayList<>();
         pass.add(passenger);
@@ -141,6 +138,7 @@ public class RideService {
         ride.setBabyFriendlyRequested(rideRequest.getAdditionalRequests().isBabyFriendly());
         ride.setPetFriendlyRequested(rideRequest.getAdditionalRequests().isPetFriendly());
         ride.setVehicleTypeRequested(rideRequest.getAdditionalRequests().getVehicleType());
+        ride.setBlacklisted(new ArrayList<>());
         placeRepository.saveAll(ride.getPlaces());
         System.out.println(ride);
         rideRepository.save(ride);
@@ -156,7 +154,7 @@ public class RideService {
 
     }
 
-    private void assignSuitableDriverWhenNeeded(Ride ride) {
+    private void assignSuitableDriverWhenNeeded(Ride ride) throws DriverNotFoundException {
         if (ride.getScheduledTime() != null) {
             if(ride.getScheduledTime().isAfter(LocalDateTime.now())) {
                 assignSuitableDriver(ride);
@@ -241,14 +239,14 @@ public class RideService {
             ride.setRideStatus(RideStatus.SCHEDULED);
             taskScheduling.scheduling(() -> startScheduledRide(ride.getId()), ride.getScheduledTime());
             notifyForScheduledRide(ride);
-            startReminderCycle(ride);
+            startReminderCycle(ride, 2);
         } else {
             Ride activeRide = rideRepository.getActiveRideForDriver(driver.getId());
             if(activeRide.getRideStatus().equals(RideStatus.ACCEPTED) || activeRide.getRideStatus().equals(RideStatus.IN_PROGRESS)) {
                 ride.setStartTime(LocalDateTime.now().plusSeconds(activeRide.getDuration()));
                 ride.setRideStatus(RideStatus.SCHEDULED);
                 notifyForScheduledRide(ride);
-                startReminderCycle(ride);
+                startReminderCycle(ride, 2);
             } else {
                 ride.setRideStatus(RideStatus.ACCEPTED);
             }
@@ -258,8 +256,8 @@ public class RideService {
         sendRideMessageToPassengers(ride, RideMessageType.DRIVER_FOUND);
     }
 
-    private void startReminderCycle(Ride ride) {
-        taskScheduling.scheduling(() -> sendReminders(ride.getId(), ride.getPlaces().get(0).getName()), LocalDateTime.now().plusMinutes(2));
+    private void startReminderCycle(Ride ride, int minutes) {
+        taskScheduling.scheduling(() -> sendReminders(ride.getId(), ride.getPlaces().get(0).getName()), LocalDateTime.now().plusMinutes(minutes));
     }
 
     public void notifyForScheduledRide(Ride ride) {
@@ -285,11 +283,10 @@ public class RideService {
         notification.setStartTime(ride.getScheduledTime());
         notification.setStartingLocation(startingLocation);
         notificationService.send(notification, ride.getDriver());
-        taskScheduling.scheduling(() -> sendReminders(ride.getId(), startingLocation), LocalDateTime.now().plusMinutes(2));
-
+        startReminderCycle(ride, 3);
     }
 
-    public void acceptRidePassenger(Passenger passenger, UUID rideId) throws InsufficientFundsException {
+    public void acceptRidePassenger(Passenger passenger, UUID rideId) throws InsufficientFundsException, DriverNotFoundException {
         Ride ride = rideRepository.findById(rideId).orElseThrow(() -> new EndRideException("No ride with id: " + rideId));
 
         if (ride.getRideStatus() != RideStatus.WAITING_FOR_PAYMENT) {
@@ -316,19 +313,30 @@ public class RideService {
         }
     }
 
-    private void assignSuitableDriver(Ride ride) {
+    private void assignSuitableDriver(Ride ride) throws DriverNotFoundException {
         System.out.println("Assigning suitable driver at: " + LocalDateTime.now());
         Driver driver = findSuitableDriver(ride);
         if (driver == null) {
             ride.setRideStatus(RideStatus.DENIED);
             rideRepository.save(ride);
-            throw new RuntimeException("No driver found!");
+            sendRideMessageToPassengers(ride, RideMessageType.DRIVER_CANCELLED_OR_NOT_FOUND);
+            throw new DriverNotFoundException();
         }
         ride.setDriver(driver);
         ride.setRideStatus(RideStatus.WAIT);
+
+        NewRideAssignedNotification notification = new NewRideAssignedNotification();
+        notification.setId(UUID.randomUUID());
+        notification.setRide(ride);
+        notification.setCreated(new Date());
+        notification.setStatus(NotificationStatus.UNREAD);
+        notification.setReceiver(driver);
+        notificationService.send(notification, driver);
+
         RideMessage rideMessage = new RideMessage();
         rideMessage.setRide(convertRideToDTO(ride));
         rideMessage.setType(RideMessageType.DRIVER_FOUND);
+
         messagingTemplate.convertAndSendToUser(ride.getDriver().getUsername(), "/queue/ride", rideMessage);
         rideRepository.save(ride);
     }
@@ -397,6 +405,9 @@ public class RideService {
         if (driver.getBlocked()) {
             return false;
         }
+        if (ride.getBlacklisted() != null && ride.getBlacklisted().contains(driver)) {
+            return false;
+        }
         return driver.getVehicle().getVehicleType().equals(ride.getVehicleTypeRequested());
     }
 
@@ -434,7 +445,7 @@ public class RideService {
     }
 
 
-    public void declineRideDriver(Driver driver, UUID rideId) {
+    public void declineRideDriver(Driver driver, UUID rideId) throws DriverNotFoundException {
         Ride ride = rideRepository.findById(rideId).orElseThrow(() -> new EndRideException("No ride with id: " + rideId));
         ride.setRideStatus(RideStatus.DENIED);
         ride.getBlacklisted().add(driver);

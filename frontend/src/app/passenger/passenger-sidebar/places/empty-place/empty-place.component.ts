@@ -10,6 +10,7 @@ import { Place, Route } from 'src/models/ride';
 import { MapService } from 'src/services/map/map.service';
 import { NominatimService } from 'src/services/map/nominatim.service';
 import { RoutingService } from 'src/services/map/routing.service';
+import { Toastr } from 'src/services/util/toastr.service';
 
 @Component({
   selector: 'app-empty-place',
@@ -29,6 +30,7 @@ export class EmptyPlaceComponent implements OnInit {
   	constructor(private map: MapService,
 				private routingService: RoutingService,
 				private nominatimService: NominatimService,
+				private toastr: Toastr,
 				private store: Store<{state: AppState}>) { }
 
   	ngOnInit(): void {
@@ -39,25 +41,34 @@ export class EmptyPlaceComponent implements OnInit {
 
 	async fillPlace() {
 		if(!this.changedName) return;
-		this.place = await this.map.createPlaceByName(this.name);
+		this.map.createPlaceByName(this.name)
+				.then(res => {
+					this.dispatchActions(res);
+					return Promise.resolve();
+				})
+				.catch(err => {
+					this.toastr.error("Could not find place. Make sure it is in Novi Sad!")
+					return Promise.reject(err);
+				});
+	}
+
+	dispatchActions(res: Place) {
+		this.place = res;
 		this.changedName = false;
+		if(this.state?.previewPlace) {
+			this.store.dispatch(AddPreviewToPlacesAction())
+			this.store.dispatch(RemovePreviewAction())
+		} else {
+			this.store.dispatch(AddPlaceAction({place: this.place}))
+		}
+		this.store.dispatch(StopEditingAction())
+		this.change.emit({confirmed: true, name: this.name})
 	}
 
 	confirm() {
-		this.fillPlace().then(res => {
-			// set in store
-			if(this.state?.previewPlace) {
-				this.store.dispatch(AddPreviewToPlacesAction())
-				this.store.dispatch(RemovePreviewAction())
-			} else {
-				this.store.dispatch(AddPlaceAction({place: this.place}))
-			}
-			this.store.dispatch(StopEditingAction())
-			
-		}).catch(err => {
+		this.fillPlace().catch(err => {
 			console.log(err);
 		})
-		this.change.emit({confirmed: true, name: this.name})
   	}
 
 	cancel() {

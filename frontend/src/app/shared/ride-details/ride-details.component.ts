@@ -101,6 +101,8 @@ export class RideDetailsComponent implements OnInit, OnDestroy {
         this.driverUpdateStatus(data);
       } else if(data.type === 'RIDE_FAILED_LATE') {
         this.rideFailedLate(data, 'RIDE_FAILED_LATE');
+      } else if(data.type === 'DRIVER_CANCELLED_OR_NOT_FOUND') {
+        this.driverFailed();
       }
     });
   }
@@ -130,6 +132,10 @@ export class RideDetailsComponent implements OnInit, OnDestroy {
       this.router.navigate(['/home']);
       window.location.reload();
     }, 5000);
+  }
+
+  driverFailed() {
+    this.toastrService.error("The ride has failed because a suitable driver was not found!");
   }
 
 

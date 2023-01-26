@@ -1,0 +1,16 @@
+version: v1.0
+name: Code Quality Assessment
+agent:
+  machine:
+    type: e1-standard-2
+    os_image: ubuntu2004
+blocks:
+  - name: SonarSource
+    task:
+    	secrets:
+      	- name: sonar-token
+      jobs:
+        - name: Run assessment
+          commands:
+            - checkout
+          	- mvn verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=ubre-team_app

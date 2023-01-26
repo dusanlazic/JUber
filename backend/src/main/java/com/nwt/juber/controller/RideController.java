@@ -3,6 +3,7 @@ package com.nwt.juber.controller;
 import com.nwt.juber.api.ResponseOk;
 import com.nwt.juber.dto.RideDTO;
 import com.nwt.juber.dto.response.report.ReportResponse;
+import com.nwt.juber.exception.DriverNotFoundException;
 import com.nwt.juber.exception.InsufficientFundsException;
 import com.nwt.juber.exception.UserNotFoundException;
 import com.nwt.juber.model.Driver;
@@ -67,7 +68,7 @@ public class RideController {
 
     @PutMapping("/accept/{id}")
     @PreAuthorize("hasAnyRole('PASSENGER', 'DRIVER')")
-    public ResponseOk acceptRide(@PathVariable("id") UUID rideId, Authentication authentication) throws InsufficientFundsException {
+    public ResponseOk acceptRide(@PathVariable("id") UUID rideId, Authentication authentication) throws InsufficientFundsException, DriverNotFoundException {
         User user = (User) authentication.getPrincipal();
         Optional<Passenger> passenger = passengerService.findById(user.getId());
         if (passenger.isPresent()) {
@@ -90,7 +91,7 @@ public class RideController {
 
     @PutMapping("/decline/{id}")
     @PreAuthorize("hasAnyRole('PASSENGER', 'DRIVER')")
-    public ResponseOk declineRide(@PathVariable("id") UUID rideId, Authentication authentication) throws InsufficientResourcesException {
+    public ResponseOk declineRide(@PathVariable("id") UUID rideId, Authentication authentication) throws InsufficientResourcesException, DriverNotFoundException {
         User user = (User) authentication.getPrincipal();
         Optional<Passenger> passenger = passengerService.findById(user.getId());
         if(passenger.isPresent()) {
@@ -139,7 +140,7 @@ public class RideController {
     
     @PostMapping("/rideRequest")
 	@PreAuthorize("hasAnyRole('PASSENGER')")
-	public ResponseOk createRideRequest(@Valid @RequestBody RideRequest rideRequest, Authentication authentication) {
+	public ResponseOk createRideRequest(@Valid @RequestBody RideRequest rideRequest, Authentication authentication) throws DriverNotFoundException {
 		System.out.println(rideRequest.toString());
         User user = (User) authentication.getPrincipal();
         Passenger passenger = passengerService.findById(user.getId()).orElseThrow(() -> new RuntimeException("No passenger found!"));

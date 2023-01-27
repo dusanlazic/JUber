@@ -23,8 +23,6 @@ import java.io.IOException;
 @EnableConfigurationProperties(AppProperties.class)
 public class JuberApplication {
 
-	@Autowired
-	TimeEstimator timeEstimator;
 
 	public static void main(String[] args) {
 		SpringApplication.run(JuberApplication.class, args);
@@ -35,14 +33,6 @@ public class JuberApplication {
 		return args -> {
 			storageService.init();
 		};
-	}
-
-	@PostConstruct
-	public void init() throws IOException {
-		// 45.24233695159381, 19.843704724580878
-		// 45.26072683505999, 19.846246988642296
-		int secs = timeEstimator.estimateTime(45.24233695159381,19.843704724580878,45.26072683505999,19.846246988642296);
-		System.out.println(secs);
 	}
 
 }

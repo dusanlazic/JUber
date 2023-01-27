@@ -3,10 +3,10 @@
     <section class="hero is-fullheight is-unscrollable">
     <div class="columns mt-0">
         <div class="column is-3 is-sidebar pl-6 pr-5" style="z-index: 100000000;">
-    	    <p *ngIf="!ride" class="title is-size-3 has-text-grey is-family-secondary">No ride available...</p>
+    	    <p *ngIf="!ride" class="title is-size-3 has-text-grey is-family-secondary mt-5">No ride available...</p>
             <app-ride-details-sidebar *ngIf="loggedUser && ride" [ride]="ride"></app-ride-details-sidebar>
         </div>
-        
+
         <div class="column m-0 p-0 is-map">
             <app-ride-details-map *ngIf="loggedUser" width="100%" height="100%" [ride]="ride"></app-ride-details-map>
         </div>
@@ -15,14 +15,18 @@
     </section>
     <div>
         <div class="navigation">
-            <figure class="image is-48x48" [routerLink]="['/profile']">
-                <img class="is-rounded" src="{{URL_BASE}}{{ loggedUser.imageUrl }}" (error)="this.authService.imageUrlResolver($event, loggedUser.name)">
-            </figure>
+            <a href="/profile" *ngIf="loggedUser">
+                <figure class="image is-32x32 is-clickable ml-2">
+                    <img class="is-rounded" src="{{URL_BASE}}{{loggedUser.imageUrl}}" (error)="this.authService.imageUrlResolver($event, loggedUser.name)">
+                </figure>
+            </a>
             <app-notification></app-notification>
-            <!-- <button class="button is-rounded mr-2">Profile<span class="iconify ml-2" data-icon="ic:baseline-person"></span></button>
-            <button class="button is-rounded mr-1">Support<span class="iconify ml-2" data-icon="ic:baseline-contact-support"></span></button> -->
-            <button class="button is-rounded mr-1" (click)="logout()">Logout<span class="iconify ml-2" data-icon="material-symbols:logout"></span></button>
+
             <active-status *ngIf="loggedUser && loggedUser.role == 'ROLE_DRIVER'" ></active-status>
+
+            <div *ngIf="loggedUser" class="is-relative is-custom-navigation-icon" (click)="logout()">
+                <span class="iconify is-size-4" data-icon="material-symbols:logout"></span>
+            </div>
         </div>
     </div>
 </div>

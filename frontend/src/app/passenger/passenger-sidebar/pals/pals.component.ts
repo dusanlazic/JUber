@@ -16,16 +16,14 @@ export class PalsComponent implements OnInit {
 
   isAddPalOpen: boolean = false;
   passengers: IPal[];
-  colors: string[]
   URL_BASE: string = environment.API_BASE_URL;
   logged!: LoggedUser;
 
   constructor(
-    private store: Store<{rideRequest: IRideRequest}>, 
+    private store: Store<{rideRequest: IRideRequest}>,
     private toastr: Toastr,
     public authService: AuthService
-  ) { 
-    this.colors = new Array<string>();
+  ) {
     this.passengers = new Array<IPal>();
   }
 
@@ -49,14 +47,13 @@ export class PalsComponent implements OnInit {
       const newPal: IPal = event.newPal as IPal;
 
       if(this.isAddValid(newPal)){
-        this.colors.push(this.getRandomColor())
         this.store.dispatch(AddPalAction({addedPal: newPal}))
       }
       else{
         this.toastr.error("This pal is already added")
         return
       }
-      
+
     }
     this.toggleModal();
   }
@@ -64,19 +61,12 @@ export class PalsComponent implements OnInit {
   removePal(index: number) : void {
     const removePal = this.passengers.at(index) as IPal;
     this.store.dispatch(DeletePalAction({removePal: removePal}))
-    this.colors.splice(index, 1)
   }
 
   toggleModal() : void{
     this.isAddPalOpen = !this.isAddPalOpen
   }
 
-
-  private getRandomColor() {
-    var color = Math.floor(0x1000000 * Math.random()).toString(16);
-    return '#' + ('000000' + color).slice(-6);
-  }
-  
   private isAddValid(newPal: IPal) : boolean {
     const result = this.passengers.filter(pal => pal.email === newPal.email);
     return result.length == 0

@@ -1,10 +1,10 @@
 <div *ngIf="ride && loggedUser" class="mt-5">
 	<p class="title is-size-3 has-text-grey is-family-secondary">Ride details
-		<span (click)="toggleFavourite()" *ngIf="loggedUser.role === 'ROLE_PASSENGER' && isFavourite === 0" class="has-tooltip-right" data-tooltip="Add route to favourites">
-			<span class="iconify is-size-4 ml-3 is-vcentered" data-icon="material-symbols:bookmark-outline"></span> 
+		<span (click)="toggleFavourite()" *ngIf="loggedUser.role === 'ROLE_PASSENGER' && isFavourite === 0" class="has-tooltip-right is-clickable" data-tooltip="Add route to favourites">
+			<span class="iconify-inline is-size-3 ml-3" data-icon="material-symbols:bookmark-outline"></span> 
 		</span>
-		<span (click)="toggleFavourite()" *ngIf="loggedUser.role === 'ROLE_PASSENGER' && isFavourite === 1" class="has-tooltip-right" data-tooltip="Remove route from favourites">
-			<span class="iconify is-size-4 ml-3 is-vcentered" data-icon="material-symbols:bookmark"></span> 
+		<span (click)="toggleFavourite()" *ngIf="loggedUser.role === 'ROLE_PASSENGER' && isFavourite === 1" class="has-tooltip-right is-clickable" data-tooltip="Remove route from favourites">
+			<span class="iconify-inline is-size-3 ml-3" data-icon="material-symbols:bookmark"></span> 
 		</span>
 	</p>
 

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { PastRidesResponse } from 'src/app/shared/profile-page/profile-navigation/past-rides/past-rides.component';
+import { PastRidesResponse } from 'src/app/profile/profile-navigation/past-rides/past-rides.component';
 import { environment } from 'src/environments/environment';
 import { DriverInfo, DriverRegistrationRequest } from 'src/models/driver';
 import { RideReview } from 'src/models/rideReview';

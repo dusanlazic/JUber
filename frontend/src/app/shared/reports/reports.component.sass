@@ -1,0 +1,41 @@
+
+@import "../../../../node_modules/bulma/bulma.sass"
+@import url('https://fonts.googleapis.com/css2?family=Titillium+Web:wght@400;600;700&display=swap')
+
+.columns
+    margin: 0px
+    .column.is-navigation-sidebar
+        display: flex
+        flex-direction: column
+        height: 600px
+        border-top-left-radius: 6px
+        border-bottom-left-radius: 6px
+        border-right: 1px solid $grey-lighter
+        padding-left: 0px
+        padding-top: 0px
+        .navigation-item
+            margin-left: 0px
+            padding-left: 10px
+            height: 60px
+            line-height: 60px
+            font-weight: bold
+            border-left: 3px solid transparent
+            &:hover
+                border-left: 3px solid $grey-lighter
+                cursor: pointer
+            &.is-selected
+                border-left: 3px solid $success
+            &.is-first
+                border-top-left-radius: 6px
+            .iconify-inline
+                margin-right: 8px
+        .is-user-info
+            display: flex
+            flex-direction: row
+            align-items: center
+            margin-left: 0px
+            padding-left: 10px
+            margin-top: auto
+    .column.is-content
+        padding-left: 25px
+        padding-top: 25px

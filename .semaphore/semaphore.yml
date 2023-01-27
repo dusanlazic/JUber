@@ -15,5 +15,4 @@ blocks:
             - checkout
             - cd backend
             - sem-version java 17
-            - mvn sonar:sonar -Pcoverage
             - 'mvn verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=ubre-team_app'

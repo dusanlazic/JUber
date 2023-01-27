@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Place } from 'src/models/ride';
-import { MapService } from 'src/services/map/map.service';
+import { MapService } from '../../services/map/map.service';
 
 @Component({
   selector: 'app-ride-details-place',

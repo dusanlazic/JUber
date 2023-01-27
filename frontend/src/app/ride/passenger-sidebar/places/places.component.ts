@@ -3,7 +3,7 @@ import { Store } from '@ngrx/store';
 import { AddPlaceAction, OptimizeRoutesAction } from 'src/app/store/ride.actions';
 import { AppState } from 'src/app/store/ride.reducer';
 import { Place, Ride } from 'src/models/ride';
-import { MapService } from 'src/services/map/map.service';
+import { MapService } from '../../services/map/map.service';
 
 @Component({
   selector: 'app-places',

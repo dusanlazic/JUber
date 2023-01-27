@@ -8,7 +8,7 @@ import { Place, Route } from 'src/models/ride';
 import { NominatimService } from './nominatim.service';
 import { RoutingService } from './routing.service';
 import { IPoint } from 'src/app/store/ride';
-import { Toastr } from '../util/toastr.service';
+import { Toastr } from 'src/services/util/toastr.service';
 
 @Injectable({
 	providedIn: 'root'
@@ -39,17 +39,6 @@ export class MapService {
 		"#277DA1",
 	]
 
-	//
-	private _mapPreview = new BehaviorSubject<string>('');
-
-	mapPreview$(): Observable<any> {
-		return this._mapPreview.asObservable();
-	}
-
-	setPreviewLocation(location: string): void {
-		this._mapPreview.next(location);
-	}
-	
 	//
 	private _editing = new BehaviorSubject<number>(-1);
 

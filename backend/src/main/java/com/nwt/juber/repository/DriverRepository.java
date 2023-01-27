@@ -17,18 +17,13 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface DriverRepository extends JpaRepository<Driver, UUID> {
 
-    @Query(value = "select d from Driver d where not exists (select r from Ride r where r.driver = d and r.rideStatus = 1 or r.rideStatus = 2)")
-    public List<Driver> findAllWithNoRides();
-
-    @Query(value = "select d from Driver d where not exists (select r from Ride r where r.driver = d and r.rideStatus = 1)")
-    public List<Driver> findAllWithNoFutureRides();
 
     @Query(value = "select r from Ride r where r.driver.email = :username and (r.rideStatus = 1 or r.rideStatus = 2 or r.rideStatus = 3) order by r.rideStatus desc")
     public Optional<Ride> findRideForSimulation(String username);
 
 	List<Driver> findByStatus(DriverStatus status);
 
-    Optional<Driver> findByEmail(String username);
+    Optional<Driver> findByEmail(String email);
 
     @Query(value = "select new com.nwt.juber.dto.message.PersonLocationMessage(d.email, d.vehicle.latitude, d.vehicle.longitude) from Driver d where d.status = 'ACTIVE'")
     List<PersonLocationMessage> findAllLocations();

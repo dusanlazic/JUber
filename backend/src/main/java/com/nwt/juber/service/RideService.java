@@ -1,22 +1,16 @@
 package com.nwt.juber.service;
 
 import com.nwt.juber.dto.DriverRideDTO;
-import com.nwt.juber.dto.PersonDTO;
 import com.nwt.juber.dto.RideDTO;
 import com.nwt.juber.dto.message.RideMessage;
 import com.nwt.juber.dto.message.RideMessageType;
 import com.nwt.juber.dto.request.RideRequest;
 import com.nwt.juber.dto.response.PastRidesResponse;
-import com.nwt.juber.dto.response.report.Averages;
-import com.nwt.juber.dto.response.report.DailyData;
-import com.nwt.juber.dto.response.report.ReportResponse;
-import com.nwt.juber.dto.response.report.Sums;
 import com.nwt.juber.exception.*;
 import com.nwt.juber.model.*;
 import com.nwt.juber.model.notification.*;
 import com.nwt.juber.repository.*;
 import com.nwt.juber.util.MappingUtils;
-import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.Authentication;
@@ -27,8 +21,6 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 
@@ -187,7 +179,7 @@ public class RideService {
         }
     }
 
-    private void sendRideMessageToPassengers(Ride ride, RideMessageType type) {
+    public void sendRideMessageToPassengers(Ride ride, RideMessageType type) {
         RideMessage rideMessage = new RideMessage();
         rideMessage.setRide(convertRideToDTO(ride));
         rideMessage.setType(type);
@@ -346,7 +338,7 @@ public class RideService {
         return closestAvailable != null ? closestAvailable : findFastestUnavailable(ride);
     }
 
-    private Driver findClosestAvailableDriver(Ride ride) {
+    public Driver findClosestAvailableDriver(Ride ride) {
         // Could possibly have status of SCHEDULED but no WAIT, ACCEPTED, IN PROGRESS
         List<Driver> drivers = driverRepository.findAvailableDrivers(ride);
         drivers = filterDriverByAdditional(ride, drivers);
@@ -374,12 +366,12 @@ public class RideService {
         return earthRadius * c;
     }
 
-    private Driver findFastestUnavailable(Ride ride) {
+    Driver findFastestUnavailable(Ride ride) {
         List<DriverRideDTO> drivers = driverRepository.findUnavailableDriversWithNoFutureRides(ride);
         drivers = filterDriverRidesByAdditional(ride, drivers);
         DriverRideDTO minDriverRide = drivers
                                     .stream()
-                                    .min(Comparator.comparing(x -> compareDriverEstimatedTimes(x, ride)))
+                                    .min(Comparator.comparing(x -> computeUnavailableDriverPriorityForNewRide(x, ride, LocalDateTime.now())))
                                     .orElse(null);
         return minDriverRide != null ? minDriverRide.getDriver() : null;
     }
@@ -393,10 +385,10 @@ public class RideService {
     }
 
     private Boolean driverAdditionalFilter(Ride ride, Driver driver) {
-        if (ride.getBabyFriendlyRequested() && !driver.getVehicle().getBabyFriendly()) {
+        if (ride.getBabyFriendlyRequested() != null && ride.getBabyFriendlyRequested() && !driver.getVehicle().getBabyFriendly()) {
             return false;
         }
-        if (ride.getPetFriendlyRequested() && !driver.getVehicle().getPetFriendly()) {
+        if (ride.getPetFriendlyRequested() != null && ride.getPetFriendlyRequested() && !driver.getVehicle().getPetFriendly()) {
             return false;
         }
         if (driver.getVehicle().getCapacity() < ride.getPassengers().size()) {
@@ -411,25 +403,22 @@ public class RideService {
         return driver.getVehicle().getVehicleType().equals(ride.getVehicleTypeRequested());
     }
 
-    private double compareDriverEstimatedTimes(DriverRideDTO driverRideDTO, Ride ride) {
-        Integer estimatedTime = ride.getDuration();
-        if (ride.getStartTime() != null) {
-            double secondsFromStart = ChronoUnit.SECONDS.between(LocalTime.now(), ride.getStartTime());
-            double secondsEstimated = estimatedTime;
-            return secondsEstimated - secondsFromStart;
-        } else {
-            double driverLat = driverRideDTO.getDriver().getVehicle().getLatitude();
-            double driverLon = driverRideDTO.getDriver().getVehicle().getLongitude();
-            double startLat = ride.getPlaces().get(0).getLatitude();
-            double startLon = ride.getPlaces().get(0).getLongitude();
-            double toStart = timeEstimator.estimateTime(driverLat, driverLon, startLat, startLon);
-            double toFinish = estimatedTime;
-            return toStart + toFinish;
-        }
+    double computeUnavailableDriverPriorityForNewRide(DriverRideDTO driverRideDTO, Ride ride, LocalDateTime now) {
+        List<Place> places = driverRideDTO.getRide().getPlaces();
+        double driverLat = places.get(places.size() - 1).getLatitude();
+        double driverLon = places.get(places.size() - 1).getLongitude();
 
+        double startLat = ride.getPlaces().get(0).getLatitude();
+        double startLon = ride.getPlaces().get(0).getLongitude();
+
+        double toArriveAtNewRide = timeEstimator.estimateTime(driverLat, driverLon, startLat, startLon);
+
+        LocalDateTime finishTime = driverRideDTO.getRide().getStartTime().plusSeconds(driverRideDTO.getRide().getDuration());
+        double toFinishCurrentRide = ChronoUnit.SECONDS.between(now, finishTime);
+        return toArriveAtNewRide + toFinishCurrentRide;
     }
 
-    private void subtractFundsForRide(Ride ride) {
+    public void subtractFundsForRide(Ride ride) {
         double fare = ride.getFare() / ride.getPassengers().size();
         ride.getPassengers()
             .forEach(x -> x.setBalance(x.getBalance().subtract(BigDecimal.valueOf(fare))));

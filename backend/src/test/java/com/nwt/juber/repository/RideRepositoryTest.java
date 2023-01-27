@@ -1,5 +1,6 @@
 package com.nwt.juber.repository;
 
+import com.nwt.juber.model.Driver;
 import com.nwt.juber.model.Passenger;
 import com.nwt.juber.model.Ride;
 import com.nwt.juber.model.RideStatus;
@@ -9,9 +10,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.test.context.ActiveProfiles;
 
 import javax.persistence.EntityManager;
@@ -36,11 +39,14 @@ public class RideRepositoryTest {
 	@Autowired
 	private PassengerRepository passengerRepository;
 
+	@Autowired
+	private DriverRepository driverRepository;
+
 
 	@Autowired
 	EntityManager entityManager;
 
-	@ParameterizedTest
+	@ParameterizedTest(name = "Updating status to {0}")
 	@MethodSource(value = "rideStatusProvider")
 	@DisplayName("Test updating staus of ride")
 	public void Ride_changes_status(RideStatus status) {
@@ -57,12 +63,11 @@ public class RideRepositoryTest {
 		return Arrays.asList(RideStatus.values());
 	}
 
-	@ParameterizedTest
+	@ParameterizedTest(name = "Finding valid active ride for driver {0}")
 	@MethodSource("activeRideDriverProvider")
 	@DisplayName("Test getting active ride for driver")
 	public void Driver_has_valid_active_ride(UUID driverId, UUID rideId) {
 		Ride ride = rideRepository.getActiveRideForDriver(driverId);
-		System.out.println(ride);
 		assertEquals(rideId, ride.getId());
 		RideStatus status = ride.getRideStatus();
 		assert ride.getRideStatus() == RideStatus.ACCEPTED || ride.getRideStatus() == RideStatus.IN_PROGRESS || ride.getRideStatus() == RideStatus.WAIT;
@@ -86,13 +91,12 @@ public class RideRepositoryTest {
 		);
 	}
 
-	@ParameterizedTest
+	@ParameterizedTest(name = "Getting active ride for passenger {0}")
 	@MethodSource("activeRidePassengerProvider")
 	@DisplayName("Test getting active ride for passenger")
 	public void Passenger_has_valid_active_ride(UUID passengerId, UUID rideId) {
 		Passenger passenger = passengerRepository.findById(passengerId).get();
 		Ride ride = rideRepository.getActiveRideForPassenger(passenger);
-		System.out.println(ride);
 		assertEquals(rideId, ride.getId());
 		assert ride.getRideStatus() == RideStatus.ACCEPTED || ride.getRideStatus() == RideStatus.IN_PROGRESS;
 		assert ride.getPassengers().stream().anyMatch(p -> p.getId().equals(passengerId));
@@ -107,22 +111,53 @@ public class RideRepositoryTest {
 
 	static List<Arguments> activeRidePassengerProvider() {
 		return List.of(
-				arguments(Constants.DRIVER_ZDRAVKO_ID, "3afa6238-862b-417b-9a88-fbf2bc90c09d"), // zdravko has only one active ride
-				arguments(Constants.DRIVER_MARKO_ID, "2ac4bc01-6326-418f-a3f9-4244e3922439"), // marko has two on wait, gets the first one
-				arguments(Constants.DRIVER_NIKOLA_ID, "060443d3-abc6-458c-9f76-92e3de51a713") // nikola has one active and one scheduled, should return active
+				arguments(Constants.PASSENGER_MILE_ID, "3afa6238-862b-417b-9a88-fbf2bc90c09d"), // mile rides with zdravko
+				arguments(Constants.PASSENGER_PETAR_ID, "2ac4bc01-6326-418f-a3f9-4244e3922439"), // petar rides with marko
+				arguments(Constants.PASSENGER_DRAGAN_ID, "060443d3-abc6-458c-9f76-92e3de51a713") // dragan with nikola
 		);
 	}
 
 
-	@Test
+	@ParameterizedTest(name = "Finidng ride {0}")
+	@ValueSource(strings = {"3afa6238-862b-417b-9a88-fbf2bc90c09d", "2ac4bc01-6326-418f-a3f9-4244e3922439", "060443d3-abc6-458c-9f76-92e3de51a713"})
 	@DisplayName("Test getting ride by id")
-	public void Ride_is_valid(String rideId) {
+	public void Finding_ride(String rideId) {
 		UUID id = UUID.fromString(rideId);
 		Ride ride = rideRepository.findById(id).get();
 		assertEquals(id, ride.getId());
-		assertEquals(RideStatus.ACCEPTED, ride.getRideStatus());
-		assertEquals(2, ride.getPassengers().size());
 	}
+
+	@ParameterizedTest(name = "Getting scheduled ride for driver {0}")
+	@MethodSource("scheduledRideDriverProvider")
+	@DisplayName("Test getting scheduled ride for driver")
+	public void Driver_has_valid_scheduled_ride(UUID driverId, UUID rideId, int total) {
+		Driver driver = driverRepository.findById(driverId).get();
+		Ride ride = rideRepository.getScheduledRideForDriver(driver);
+		if (total == 0) {
+			assert ride == null;
+			return;
+		}
+		assertEquals(rideId, ride.getId());
+		assert ride.getRideStatus() == RideStatus.SCHEDULED;
+		assert ride.getDriver().getId().equals(driverId);
+		assert ride.getEndTime() == null;
+		for(Ride r : rideRepository.findAll()) {
+			if (r.getDriver().getId().equals(driverId) && !r.getId().equals(rideId)) {
+				assert r.getRideStatus().ordinal() < RideStatus.SCHEDULED.ordinal();
+			}
+		}
+	}
+
+	static List<Arguments> scheduledRideDriverProvider() {
+		return List.of(
+				arguments(Constants.DRIVER_ZDRAVKO_ID, "3afa6238-862b-417b-9a88-fbf2bc90c09d", 0),
+				arguments(Constants.DRIVER_MARKO_ID, "2ac4bc01-6326-418f-a3f9-4244e3922439", 0),
+				arguments(Constants.DRIVER_NIKOLA_ID, "7a1255b3-e69d-40f5-990d-bdfbe60e8258", 1)
+		);
+	}
+
+
+
 
 
 

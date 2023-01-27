@@ -24,8 +24,6 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-@PreAuthorize("permitAll()")
-@Transactional
 public class HealthController {
 
     @Autowired

@@ -28,7 +28,7 @@ spring:
   sql:
     init:
       mode: always
-      data-locations: data-test.sql
+      data-locations: classpath:data-test.sql
   jackson:
     serialization:
       FAIL_ON_EMPTY_BEANS: 'false'

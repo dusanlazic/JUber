@@ -31,8 +31,21 @@
                 <span class="iconify is-size-4" data-icon="material-symbols:logout"></span>
             </div>
 
-            <div *ngIf="!loggedUser" class="is-relative is-custom-navigation-icon" [routerLink]="['/login']">
-                <span class="iconify is-size-4" data-icon="material-symbols:login"></span>
+            <div *ngIf="!loggedUser" class="box is-custom-login-box">
+                <p class="title is-size-4">Welcome back</p>
+                <p class="subtitle is-size-6">Login to continue</p>
+                <a href="{{FACEBOOK_AUTH_URL}}" class="button is-fullwidth is-rounded">
+                <span class="iconify is-size-5" data-icon="logos:google-icon"></span>
+                Continue with Google
+                </a>
+                <a href="{{GOOGLE_AUTH_URL}}" class="button is-fullwidth mt-2 is-rounded">
+                <span class="iconify is-size-5" data-icon="logos:facebook"></span>
+                Continue with Facebook
+                </a>
+                <a class="button is-fullwidth mt-2 is-rounded" [routerLink]="['/login']">
+                <span class="iconify is-size-5" data-icon="ic:outline-mail"></span>
+                Continue with Email
+                </a>
             </div>
 
             <active-status *ngIf="loggedUser && loggedUser.role == 'ROLE_DRIVER'" ></active-status>

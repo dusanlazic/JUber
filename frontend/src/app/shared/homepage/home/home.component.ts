@@ -25,6 +25,8 @@ export class HomeComponent implements OnInit {
   ride: Ride | undefined;
   URL_BASE: string = environment.API_BASE_URL;
   sub: Subscription | undefined;
+  GOOGLE_AUTH_URL= environment.GOOGLE_AUTH_URL_LOGIN;
+  FACEBOOK_AUTH_URL= environment.FACEBOOK_AUTH_URL_LOGIN;
 
   constructor(
     public authService: AuthService,

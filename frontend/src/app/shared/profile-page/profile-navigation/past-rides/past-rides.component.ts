@@ -38,6 +38,6 @@ export class PastRidesComponent implements  OnInit {
   }
 
   clickedRow(row: PastRidesResponse) : void{
-    this.router.navigate([`/ridePreview/${row.id}`])
+    this.router.navigate([`/ride/${row.id}`])
   }
 }

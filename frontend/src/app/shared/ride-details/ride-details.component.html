@@ -20,7 +20,12 @@
                     <img class="is-rounded" src="{{URL_BASE}}{{loggedUser.imageUrl}}" (error)="this.authService.imageUrlResolver($event, loggedUser.name)">
                 </figure>
             </a>
+
             <app-notification></app-notification>
+
+            <div class="is-relative is-custom-navigation-icon" *ngIf="loggedUser && loggedUser.role === 'ROLE_PASSENGER'" [routerLink]="['/profile/saved-routes']">
+                <span class="iconify is-size-4" data-icon="material-symbols:bookmark"></span>
+            </div>
 
             <active-status *ngIf="loggedUser && loggedUser.role == 'ROLE_DRIVER'" ></active-status>
 

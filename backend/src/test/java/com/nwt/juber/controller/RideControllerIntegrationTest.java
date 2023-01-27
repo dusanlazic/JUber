@@ -3,8 +3,10 @@ package com.nwt.juber.controller;
 import com.nwt.juber.dto.RideDTO;
 import com.nwt.juber.dto.request.LoginRequest;
 import com.nwt.juber.dto.response.TokenResponse;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import com.nwt.juber.model.Ride;
+import com.nwt.juber.repository.RideRepository;
+import org.aspectj.lang.annotation.Before;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,40 +15,61 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.test.context.support.WithUserDetails;
+import org.springframework.http.*;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.jdbc.Sql;
+import org.springframework.web.client.RestTemplate;
 
-import java.util.List;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@PropertySource("classpath:application-test.yml")
-@Profile("test")
+@ActiveProfiles("test")
 public class RideControllerIntegrationTest {
 
 	@Autowired
 	private TestRestTemplate restTemplate;
 
+	@Autowired
+	private RideRepository rideRepository;
+
 	private final String passengerUsername = "petar.petrovic@gmail.com";
 	private final String passengerPassword = "cascaded";
 
+	private String passengerToken;
+
+	HttpHeaders passengerHeaders = new HttpHeaders();
+
 	@Test
+	public void health() {
+		login();
+		HttpEntity<String> entity = new HttpEntity<>(passengerHeaders);
+		ResponseEntity<String> responseEntity = restTemplate.exchange("/health", HttpMethod.GET,  entity,String.class);
+		System.out.println(responseEntity.getBody());
+		System.out.println(responseEntity);
+	}
+
+	@ParameterizedTest
+	@ValueSource(strings = {"8107614c-04d9-480d-8a59-e1999d9e7bfc"})
+	public void Ride_with_id(String id) {
+		login();
+		Ride ride = rideRepository.findById(UUID.fromString(id)).get();
+		System.out.println(ride.getId());
+		HttpEntity<String> entity = new HttpEntity<>(passengerHeaders);
+		ResponseEntity<RideDTO> responseEntity = restTemplate.exchange("/ride/" + id, HttpMethod.GET,  entity,RideDTO.class);
+		assert responseEntity.getBody() != null;
+		assert responseEntity.getStatusCode() == HttpStatus.OK;
+		assert responseEntity.getBody().getId().toString().equals(id);
+
+	}
+
 	public void login() {
 		LoginRequest request = new LoginRequest();
 		request.setEmail(passengerUsername);
 		request.setPassword(passengerPassword);
 		ResponseEntity<TokenResponse> token = restTemplate
 				.exchange("/auth/login", HttpMethod.POST, new HttpEntity<>(request), TokenResponse.class);
-		System.out.println(token);
-		System.out.println(token.getStatusCode());
-		System.out.println(token.getStatusCodeValue());
-		System.out.println(token.getBody());
+		passengerToken = token.getBody().getAccessToken();
+		passengerHeaders.setBearerAuth(passengerToken);
 	}
 }

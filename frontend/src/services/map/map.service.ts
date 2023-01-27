@@ -8,6 +8,7 @@ import { Place, Route } from 'src/models/ride';
 import { NominatimService } from './nominatim.service';
 import { RoutingService } from './routing.service';
 import { IPoint } from 'src/app/store/ride';
+import { Toastr } from '../util/toastr.service';
 
 @Injectable({
 	providedIn: 'root'
@@ -18,6 +19,7 @@ export class MapService {
 
 	constructor(private routingService: RoutingService,
 		private nominatimService: NominatimService,
+		private toastr : Toastr,
 		private store: Store<{state: AppState}>) { 
 			this.store.select('state').subscribe(state => {
 				this.state = state;
@@ -61,12 +63,19 @@ export class MapService {
 
 	//
 
+	balans_lat = 45.25232843778114
+	balans_lon = 19.8375130497505
+
 	async createPlaceByName(name: string, ind = -1): Promise<any> {
 		let place = new Place();
 		place.name = name;
 		place.editing = true;
 		place.id = ind == -1 ? this.state!.ride.places.length : ind;
 		let geoLoc = (await firstValueFrom(this.nominatimService.addressLookup(name)))[0];
+		if(this.getDistanceFromLatLonInKm(geoLoc.lat, geoLoc.lon, this.balans_lat, this.balans_lon) > 5) {
+			this.toastr.error("Nije moguće dodati lokaciju koja je udaljena više od 5km od Balans palacinkarnice.");
+			return Promise.reject();
+		}
 		place.point = new Point(geoLoc.lat, geoLoc.lon);
 		let lastPlace;
 		if(ind === -1 && lastPlace === undefined) {  
@@ -84,6 +93,24 @@ export class MapService {
 		}
 		place.routes = routes;
 		return place;
+	}
+
+	getDistanceFromLatLonInKm(lat1: number, lon1: number, lat2: number, lon2: number) {
+		var R = 6371;
+		var dLat = this.deg2rad(lat2-lat1);
+		var dLon = this.deg2rad(lon2-lon1); 
+		var a = 
+		  Math.sin(dLat/2) * Math.sin(dLat/2) +
+		  Math.cos(this.deg2rad(lat1)) * Math.cos(this.deg2rad(lat2)) * 
+		  Math.sin(dLon/2) * Math.sin(dLon/2)
+		  ; 
+		var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+		var d = R * c;
+		return d;
+	}
+	  
+	deg2rad(deg: number) {
+		return deg * (Math.PI/180)
 	}
 
 	cosineDistanceBetweenPoints(pointA: IPoint, pointB: IPoint) {

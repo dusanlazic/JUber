@@ -2,6 +2,7 @@ package com.nwt.juber.service;
 
 import com.nwt.juber.config.AppProperties;
 import com.nwt.juber.model.Passenger;
+import com.nwt.juber.model.Ride;
 import com.nwt.juber.model.User;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +49,12 @@ public class MailingService {
         String content = renderTemplate("recover.html", "token", token);
 
         sendMail(user.getEmail(), "Reset your Ubre password", content);
+    }
+
+    @Async
+    public void sendPanicRideMail(Ride ride, User user) {
+        String content = renderTemplate("panic.html", "email", user.getEmail(), "id", ride.getId().toString());
+        sendMail("ubreteam2023@gmail.com", "Panic ride", content);
     }
 
     private void sendMail(String to, String subject, String body) {
@@ -97,4 +104,6 @@ public class MailingService {
 
         return message;
     }
+
+
 }

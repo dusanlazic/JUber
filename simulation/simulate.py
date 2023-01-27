@@ -94,13 +94,20 @@ class Driver(HostInterface):
 
 	def generate_random_coordinates(self):
 		self.random_coordinates = []
-		random_vector_angle = np.random.random() * 2 * np.pi
-		magnitude = 5e-3
-		random_goal_lat = self.latitude + np.sin(random_vector_angle) * magnitude
-		random_goal_lon = self.longitude + np.cos(random_vector_angle) * magnitude
+		balans_lat, balans_lon = 45.25232843778114, 19.8375130497505
+		while True:
+			random_vector_angle = np.random.random() * 2 * np.pi
+			magnitude = 5e-3
+			random_goal_lat = self.latitude + np.sin(random_vector_angle) * magnitude
+			random_goal_lon = self.longitude + np.cos(random_vector_angle) * magnitude
+			if self.distance(random_goal_lat, random_goal_lon, balans_lat, balans_lon) < 5:
+				break
 		print(f'MOVING TO RANDOM COORDINATES .  .  . => {self.latitude} {self.longitude} {random_goal_lat}, {random_goal_lon}')
 		self.random_coordinates.extend(self.get_route(self.longitude, self.latitude, random_goal_lon, random_goal_lat))
 		self.random_visiting
+
+	def distance(self, start_lat, start_lon, end_lat, end_lon):
+		return geopy.distance.distance((start_lat, start_lon), (end_lat, end_lon)).km
 
 	
 	def move_randomly(self):

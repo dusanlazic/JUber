@@ -5,6 +5,7 @@ import com.nwt.juber.model.Passenger;
 import com.nwt.juber.model.Ride;
 import com.nwt.juber.model.RideStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -17,6 +18,7 @@ import java.util.UUID;
 public interface RideRepository extends JpaRepository<Ride, UUID> {
 
     @Query("update Ride r set r.rideStatus = :status where r.id = :rideId")
+    @Modifying
     void setRideStatus(UUID rideId, RideStatus status);
 
     @Query(value = "select * from Ride r where r.DRIVER_ID = ?1 and " +

@@ -10,6 +10,7 @@ import { Router } from '@angular/router'
 import * as _ from 'lodash';
 import { decode, encode } from "@googlemaps/polyline-codec";
 import { IPoint } from 'src/app/store/ride';
+import { Toastr } from 'src/services/util/toastr.service';
 
 @Component({
 	selector: 'passenger-sidebar',
@@ -33,6 +34,7 @@ export class PassengerSidebarComponent implements OnInit {
 		private rideService: RideService,
 		private store: Store<{state: AppState}>,
 		private rideRequestStore: Store<{rideRequest: IRideRequest}>,
+		private toastr: Toastr,
 		public router: Router
 	) {
 		this.store.select('state').subscribe(state => {
@@ -104,6 +106,7 @@ export class PassengerSidebarComponent implements OnInit {
 				this.router.navigate(['/ride'])
 			},
 			error: (e) => {
+				this.toastr.error(e.error.message)
 				console.log(e)
 			}
 		})

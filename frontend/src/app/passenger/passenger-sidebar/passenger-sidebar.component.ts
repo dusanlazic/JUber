@@ -28,9 +28,9 @@ export class PassengerSidebarComponent implements OnInit {
 	price: number = 0;
 	totalDuration: number = 0
 	totalDistance: number = 0
-	
+
 	constructor(
-		private mapService: MapService, 
+		private mapService: MapService,
 		private rideService: RideService,
 		private store: Store<{state: AppState}>,
 		private rideRequestStore: Store<{rideRequest: IRideRequest}>,
@@ -40,7 +40,7 @@ export class PassengerSidebarComponent implements OnInit {
 		this.store.select('state').subscribe(state => {
 			this.ride = state.ride
 			this.calculatePrice();
-		}) 
+		})
 
 		this.rideRequestStore.select('rideRequest').subscribe(state => {
 			this.rideRequest = state
@@ -57,7 +57,7 @@ export class PassengerSidebarComponent implements OnInit {
 
 	ngOnInit(): void {
 		this.mapService.editing$().subscribe(placeInd => {
-			
+
 			if(placeInd === -1) return;
 			if(placeInd === -2) this.isEditing = false;
 
@@ -99,7 +99,7 @@ export class PassengerSidebarComponent implements OnInit {
 		rideRequest.ride.duration = totalDuration;
 		rideRequest.ride.distance = totalDistance;
 		console.log(this.rideRequest)
-		
+
 		this.rideService.sendRideRequest(rideRequest).subscribe({
 			next: () => {
 				console.log("request sent")
@@ -110,7 +110,7 @@ export class PassengerSidebarComponent implements OnInit {
 				console.log(e)
 			}
 		})
-		
+
 	}
 
 
@@ -123,7 +123,7 @@ export class PassengerSidebarComponent implements OnInit {
 		let distance: number = 0;
 		let duration: number = 0;
 		if(this.ride) {
-			
+
 			this.ride.places.forEach(place => {
 				let selected = place.routes.filter(route => route.selected).at(0)
 				distance += selected?.distance ? selected.distance : 0;
@@ -151,5 +151,12 @@ export class PassengerSidebarComponent implements OnInit {
 		return coords;
 	}
 
+	public ceil(num: number) : number {
+		return Math.ceil(num)
+	}
+
+	public toFixed(num: number): string {
+		return num.toFixed(1)
+	}
 
 }

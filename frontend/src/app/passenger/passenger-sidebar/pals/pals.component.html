@@ -11,21 +11,12 @@
           </figure>
 
           <div *ngFor="let pal of passengers; let i= index;">
-            <div *ngIf="pal.imageUrl">
-              <figure class="image is-48x48" (click)="removePal(i)">
-                <img class="is-rounded" src="{{URL_BASE}}{{pal.imageUrl}}" (error)="this.authService.imageUrlResolver($event, pal.firstName + ' ' + pal.lastName)">
-              </figure>
-            </div>
-
-            <div *ngIf="!pal.imageUrl">
-              <div class="circle-initial" [ngStyle]="{'background-color': colors.at(i)}"  style="color: white"  (click)="removePal(i)">
-                {{ pal.firstName?.charAt(0) }} {{  pal.lastName?.charAt(0)}}
-                <span class="icon">
-                  <span class="iconify is-size-1" data-icon="fluent:delete-12-regular"></span>
-                </span>
-              </div>
-            </div>
-
+            <figure class="image is-48x48 circle-initial" (click)="removePal(i)">
+              <img class="is-rounded" src="{{URL_BASE}}{{pal.imageUrl}}" (error)="this.authService.imageUrlResolver($event, pal.firstName + ' ' + pal.lastName)">
+              <span class="icon">
+                <span class="iconify is-size-1" data-icon="fluent:delete-12-regular"></span>
+              </span>
+            </figure>
           </div>
         </div>
 
@@ -39,6 +30,5 @@
       </div>
     </div>
   </div>
-  
+
   <app-add-pals-dialog *ngIf="isAddPalOpen" (addPalEvent)="addPal($event)"></app-add-pals-dialog>
-  

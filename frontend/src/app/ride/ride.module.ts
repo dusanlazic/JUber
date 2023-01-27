@@ -27,6 +27,9 @@ import { PlaceComponent } from './passenger-sidebar/places/place/place.component
 import { RideReviewsComponent } from './ride-details/ride-reviews/ride-reviews.component';
 import { AddReviewDialogComponent } from './ride-details/ride-reviews/add-review-dialog/add-review-dialog.component';
 import { SharesModule } from '../shared/shared.module';
+import { MapService } from './services/map/map.service';
+import { NominatimService } from './services/map/nominatim.service';
+import { RoutingService } from './services/map/routing.service';
 
 @NgModule({
   declarations: [
@@ -87,6 +90,8 @@ import { SharesModule } from '../shared/shared.module';
   ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA
+  ],
+  providers: [
   ]
 })
 export class RideModule { }

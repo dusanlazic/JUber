@@ -1,12 +1,12 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Place, Ride, Route } from 'src/models/ride';
-import { MapService } from 'src/services/map/map.service';
+import { MapService } from 'src/app/ride/services/map/map.service';
 import { OSRM, IOsrmWaypoint } from 'osrm-rest-client';
 import { decode, encode } from "@googlemaps/polyline-codec";
 import { AppState } from 'src/app/store/ride.reducer';
 import { Store } from '@ngrx/store';
 import { DeletePlaceAction, PreviewRouteSelectedAction, RemovePreviewAction, SetPreviewAction, StopEditingAction, UpdateEditedPlace, UpdateRoutes } from 'src/app/store/ride.actions';
-import { RoutingService } from 'src/services/map/routing.service';
+import { RoutingService } from 'src/app/ride/services/map/routing.service';
 import * as _ from 'lodash';
 
 
@@ -64,7 +64,7 @@ export class EditPlaceComponent implements OnInit {
 		this.place = await this.mapService.createPlaceByName(this.name, this.ind)
 		this.store.dispatch(UpdateEditedPlace({place: this.place!}))
 		if(this.nextPlace === undefined) return;
-		this.routingService.getRoutes([this.place!.point!, this.nextPlace!.point!]).then(x => {
+		this.routingService.getRoutes([this.place!.point!, this.nextPlace!.point!]).then((x: any) => {
 			this.store.dispatch(UpdateRoutes({place: this.nextPlace!, routes: x}))
 		})
 
@@ -106,7 +106,7 @@ export class EditPlaceComponent implements OnInit {
 		if(this.ind !== 0) {
 
 			if (this.nextPlace !== undefined) {
-				this.routingService.getRoutes([this.prevPlace!.point!, this.nextPlace!.point!]).then(x => {
+				this.routingService.getRoutes([this.prevPlace!.point!, this.nextPlace!.point!]).then((x: any) => {
 					this.store.dispatch(UpdateRoutes({place: this.nextPlace!, routes: x}))
 					deleteFromStore()
 				})

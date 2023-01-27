@@ -5,9 +5,9 @@ import { after } from 'lodash';
 import { MoveToPreviewAction, StopEditingAction, SwapPlaceDownAction, SwapPlaceUpAction } from 'src/app/store/ride.actions';
 import { AppState } from 'src/app/store/ride.reducer';
 import { Place, Route } from 'src/models/ride';
-import { MapService } from 'src/services/map/map.service';
-import { NominatimService } from 'src/services/map/nominatim.service';
-import { RoutingService } from 'src/services/map/routing.service';
+import { MapService } from 'src/app/ride/services/map/map.service';
+import { NominatimService } from 'src/app/ride/services/map/nominatim.service';
+import { RoutingService } from 'src/app/ride/services/map/routing.service';
 
 @Component({
 	selector: 'app-place',

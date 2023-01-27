@@ -4,7 +4,7 @@ import { AppState } from 'src/app/store/ride.reducer';
 import { IRideRequest } from 'src/app/store/rideRequest/rideRequest';
 import { Ride, Route } from 'src/models/ride';
 import { RideRequest } from 'src/models/rideRequest';
-import { MapService } from 'src/services/map/map.service';
+import { MapService } from '../services/map/map.service';
 import { RideService } from 'src/services/ride/ride.service';
 import { Router } from '@angular/router'
 import * as _ from 'lodash';
@@ -56,7 +56,7 @@ export class PassengerSidebarComponent implements OnInit {
 	}
 
 	ngOnInit(): void {
-		this.mapService.editing$().subscribe(placeInd => {
+		this.mapService.editing$().subscribe((placeInd: number) => {
 
 			if(placeInd === -1) return;
 			if(placeInd === -2) this.isEditing = false;

@@ -9,10 +9,13 @@ blocks:
     task:
       secrets:
         - name: sonar-token
+        - name: juber-env
       jobs:
         - name: Run assessment
           commands:
             - checkout
             - cd backend
             - sem-version java 17
+            - cache restore
             - 'mvn verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=ubre-team_app'
+            - cache store

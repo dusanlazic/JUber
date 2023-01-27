@@ -7,54 +7,16 @@
 			<span class="iconify is-size-4 ml-3 is-vcentered" data-icon="material-symbols:bookmark"></span> 
 		</span>
 	</p>
+
+
 	<p *ngIf="ride.rideStatus == 'DENIED'" class="title is-size-3 has-text-danger is-family-secondary">Ride failed/denied.</p>
 	<p *ngIf="ride.rideStatus == 'FINISHED'" class="title is-size-3 has-text-success is-family-secondary">Ride finished.</p>
+
+
+	<app-details-passenger-header *ngIf="ride && loggedUser.role == 'ROLE_PASSENGER'" [ride]="ride" [loggedUser]="loggedUser"></app-details-passenger-header>
+	<app-details-driver-header *ngIf="ride && loggedUser.role == 'ROLE_DRIVER'" [ride]="ride" [loggedUser]="loggedUser"></app-details-driver-header>
+
 	
-
-	<div *ngIf="ride.driver && ride.rideStatus == 'WAIT' && loggedUser.role == 'ROLE_DRIVER'">
-		<div class="column is-size-4 is-family-secondary">
-			Do you accept this ride?
-			<div class="mt-4">
-				<button class="button is-primary is-light" (click)="acceptRide()">Yes</button>
-				<button class="button is-danger is-light ml-3" (click)="declineRide()">No</button>
-			</div>
-		</div>
-	</div>
-
-	<div *ngIf="ride.driver && ride.rideStatus == 'ACCEPTED' && loggedUser.role == 'ROLE_DRIVER'" style="display: flex;">
-		<div class="column is-size-4 is-family-secondary p-0  mb-3">
-			<div class="mt-4">
-				<button class="button is-primary is-light" (click)="startRide()">Passengers got in!</button>
-			</div>
-		</div>
-		<div class="column is-size-4 is-family-secondary p-0  mb-3" *ngIf="!this.abandon">
-			<div class="mt-4">
-				<button class="button is-warning is-light" (click)="toggleAbandonRideReason()">Abandon ride.</button>
-			</div>
-		</div>
-	</div>
-
-	<div *ngIf="ride.rideStatus == 'WAITING_FOR_PAYMENT' && loggedUser.role == 'ROLE_PASSENGER'" style="display: flex;">
-		<div class="mt-4 mb-4">
-			<button class="button is-warning is-light" (click)="abandonRide()">Abandon ride.</button>
-		</div>
-	</div>
-
-	<div *ngIf="this.loggedUser.role==='ROLE_DRIVER' && this.abandon">
-		<textarea class="textarea" placeholder="e.g. Hello world" [(ngModel)]="this.reason"></textarea>
-		<div class="mt-3 mb-4">
-			<button class="button is-danger is-light" (click)="abandonRide()">Abandon ride</button>
-			<button class="button is-light is-light ml-3" (click)="toggleAbandonRideReason()">Cancel</button>
-		</div>
-	</div>
-
-	<div *ngIf="ride.driver && ride.rideStatus == 'IN_PROGRESS' && loggedUser.role == 'ROLE_DRIVER'">
-		<div class="column is-size-4 is-family-secondary p-0 mb-3">
-			<div class="p-0">
-				<button class="button is-primary is-light" (click)="endRide()">Ride is finished!</button>
-			</div>
-		</div>
-	</div>
 
 	<div class="is-size-4 mb-5" *ngIf="ride.scheduledTime && (ride.rideStatus==='WAIT' || ride.rideStatus==='WAITING_FOR_PAYMENT')">
 		<span class="iconify ml-2" data-icon="ic:round-access-alarm"></span> Scheduled for {{ride.scheduledTime | date:'shortTime'}}
@@ -84,7 +46,6 @@
 		</div>
 
 		
-		
 		<div class="is-custom-people-list mb-5">
             <p class="title is-size-5 mb-2 is-family-secondary">Passengers</p>
             <div class="person-item" *ngFor="let person of ride.passengers">
@@ -104,10 +65,12 @@
             </div>
 		</div>
 	</div>
+
 	<div class="mb-5">
 		<p class="title is-size-5 mb-2 is-family-secondary">Route</p>
 		<app-ride-details-place *ngFor="let place of ride.places; let i = index" [place]="place" [index]="i"></app-ride-details-place>
 	</div>
+
 	<div class="mb-5">
 		<p class="title is-size-5 mb-2 is-family-secondary">Cost</p>
 		<p class="is-size-4 mt-3">

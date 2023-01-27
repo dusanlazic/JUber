@@ -14,3 +14,29 @@
     
     
 </div>
+<div *ngIf="showOptimize" class="notification mt-4">
+    <div class="columns">
+      <div class="column is-1 pl-2 pt-5">
+        <span class="iconify is-size-4" data-icon="fluent:warning-16-regular"></span>
+      </div>
+      <div class="column">
+        <p>Some routes may be a bit slower. Do you want us to pick you the <b>fastest</b> route?</p>
+        <button class="button mt-3" (click)="optimize()">
+          <span class="icon mr-1">
+            <span class="iconify is-size-3" data-icon="fluent:top-speed-24-filled"></span>
+          </span>
+          Optimize routes
+        </button>
+      </div>
+    </div>
+</div>
+<div class="notification is-success is-light mt-4 is-hidden">
+    <div class="columns is-vcentered">
+      <div class="column is-1 pl-2">
+        <span class="iconify is-size-4" data-icon="fluent:checkmark-12-filled"></span>
+      </div>
+      <div class="column">
+        <p>Routes are optimized!</p>
+      </div>
+    </div>
+</div>

@@ -3,10 +3,12 @@ package com.nwt.juber.controller;
 import com.nwt.juber.api.ResponseOk;
 import com.nwt.juber.dto.RideDTO;
 import com.nwt.juber.dto.response.report.ReportResponse;
+import com.nwt.juber.exception.DriverNotFoundException;
 import com.nwt.juber.exception.InsufficientFundsException;
 import com.nwt.juber.exception.UserNotFoundException;
 import com.nwt.juber.model.Driver;
 import com.nwt.juber.model.Passenger;
+import com.nwt.juber.model.Ride;
 import com.nwt.juber.service.DriverService;
 import com.nwt.juber.service.PassengerService;
 import com.nwt.juber.service.RideService;
@@ -63,9 +65,10 @@ public class RideController {
         return new ResponseOk("ok");
     }
 
+
     @PutMapping("/accept/{id}")
     @PreAuthorize("hasAnyRole('PASSENGER', 'DRIVER')")
-    public ResponseOk acceptRide(@PathVariable("id") UUID rideId, Authentication authentication) throws InsufficientFundsException {
+    public ResponseOk acceptRide(@PathVariable("id") UUID rideId, Authentication authentication) throws InsufficientFundsException, DriverNotFoundException {
         User user = (User) authentication.getPrincipal();
         Optional<Passenger> passenger = passengerService.findById(user.getId());
         if (passenger.isPresent()) {
@@ -77,9 +80,18 @@ public class RideController {
         return new ResponseOk("ok");
     }
 
+    @PutMapping("/panic/{id}")
+    @PreAuthorize("hasAnyRole('PASSENGER')")
+    public ResponseOk panicRide(@PathVariable("id") UUID rideId, Authentication authentication) {
+        Passenger passenger = passengerService.findById(((User) authentication.getPrincipal()).getId()).orElseThrow();
+        Ride ride = rideService.findRideById(rideId).orElseThrow(() -> new RuntimeException("No ride found!"));
+        rideService.panicRide(ride, passenger);
+        return new ResponseOk("ok");
+    }
+
     @PutMapping("/decline/{id}")
     @PreAuthorize("hasAnyRole('PASSENGER', 'DRIVER')")
-    public ResponseOk declineRide(@PathVariable("id") UUID rideId, Authentication authentication) throws InsufficientResourcesException {
+    public ResponseOk declineRide(@PathVariable("id") UUID rideId, Authentication authentication) throws InsufficientResourcesException, DriverNotFoundException {
         User user = (User) authentication.getPrincipal();
         Optional<Passenger> passenger = passengerService.findById(user.getId());
         if(passenger.isPresent()) {
@@ -128,7 +140,7 @@ public class RideController {
     
     @PostMapping("/rideRequest")
 	@PreAuthorize("hasAnyRole('PASSENGER')")
-	public ResponseOk createRideRequest(@Valid @RequestBody RideRequest rideRequest, Authentication authentication) {
+	public ResponseOk createRideRequest(@Valid @RequestBody RideRequest rideRequest, Authentication authentication) throws DriverNotFoundException {
 		System.out.println(rideRequest.toString());
         User user = (User) authentication.getPrincipal();
         Passenger passenger = passengerService.findById(user.getId()).orElseThrow(() -> new RuntimeException("No passenger found!"));

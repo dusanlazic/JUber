@@ -1,0 +1,11 @@
+<div *ngIf="ride.rideStatus == 'WAITING_FOR_PAYMENT' && loggedUser.role == 'ROLE_PASSENGER'" style="display: flex;">
+	<div class="mt-4 mb-4">
+		<button class="button is-warning is-light" (click)="abandonRide()">Abandon ride.</button>
+	</div>
+</div>
+
+<div *ngIf="ride.rideStatus == 'IN_PROGRESS' && loggedUser.role == 'ROLE_PASSENGER'" style="display: flex;">
+	<div class="mt-4 mb-4">
+		<button class="button is-warning is-danger" (click)="panic()">Panic!</button>
+	</div>
+</div>

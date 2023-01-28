@@ -1,12 +1,12 @@
 import { HttpErrorResponse, HttpStatusCode } from '@angular/common/http';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { environment } from 'src/environments/environment';
 import { TokenResponse } from 'src/models/auth';
 import { ApiResponse } from 'src/models/responses';
 import { AuthService } from 'src/services/auth/auth.service';
 import { Toastr } from 'src/services/util/toastr.service';
-import { CookieService } from 'ngx-cookie-service';
 
 @Component({
   selector: 'app-login-page',
@@ -24,7 +24,7 @@ export class LoginPageComponent implements OnInit {
     private builder: FormBuilder,
     private toastr: Toastr,
     private authService: AuthService,
-    private cookieService: CookieService
+    private router: Router
   )
   { 
     this.createForm();
@@ -65,6 +65,10 @@ export class LoginPageComponent implements OnInit {
       this.toastr.error('Oops something went wrong ', e.message);
       console.log(e.message)
     }
+  }
+
+  continueAsAGuest(){
+    this.router.navigate(['/home'])
   }
 
   get email() { return this.loginForm.get('email'); }

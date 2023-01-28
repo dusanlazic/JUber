@@ -1,7 +1,6 @@
-import { HttpClient, HttpEvent, HttpHandler, HttpHeaders, HttpInterceptor, HttpRequest } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { LocalStorageService } from './local-storage.service';
 
 @Injectable({
     providedIn: 'root'
@@ -9,7 +8,7 @@ import { LocalStorageService } from './local-storage.service';
 
 export class HttpRequestService {
 
-    constructor(private httpClient: HttpClient, private localStorageService: LocalStorageService) {}
+    constructor(private httpClient: HttpClient) {}
 
     createHeaders(): HttpHeaders {
         const headers = new HttpHeaders({

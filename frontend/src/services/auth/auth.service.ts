@@ -1,8 +1,7 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { JwtHelperService } from "@auth0/angular-jwt";
-import { BehaviorSubject, Observable, ReplaySubject, Subject } from "rxjs";
+import { BehaviorSubject, Observable } from "rxjs";
 import { environment } from "src/environments/environment";
 import { LocalRegistrationRequest, LoginRequest, PasswordReset, PasswordResetLinkRequest, PersonalInfo, TokenResponse } from "src/models/auth";
 import { ApiResponse } from 'src/models/responses';
@@ -11,10 +10,6 @@ import { DriverService } from '../driver/driver.service';
 import { HttpRequestService } from "../util/http-request.service";
 import { LocalStorageService } from "../util/local-storage.service";
 import { CookieService } from 'ngx-cookie-service';
-import { NotificationWebSocketAPI } from '../notification/notification-socket.service';
-import { RideWebSocketAPI } from '../ride/ride-message.service';
-const jwtHelper = new JwtHelperService();
-
 
 
 @Injectable({

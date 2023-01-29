@@ -253,6 +253,6 @@ def main(args):
 
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser(description='')
-	parser.add_argument('-sleep', type=float, default=0.5, help='Sets sleep time between updates in seconds')
+	parser.add_argument('-sleep', type=float, default=0.3, help='Sets sleep time between updates in seconds')
 	args = parser.parse_args()
 	main(args)

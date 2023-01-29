@@ -39,9 +39,17 @@
 			</div>
 		  </div>
 		</div>
-		<div *ngIf="!ride.driver && loggedUser.role == 'ROLE_PASSENGER'" class="mb-5">
+
+		
+		<div *ngIf="!ride.driver && loggedUser.role == 'ROLE_PASSENGER' || ride.rideStatus == 'WAIT'" class="mb-5">
 			<div class="column">
 				No driver assigned for ride yet...
+			</div>
+		</div>
+
+		<div *ngIf="ride.driver && ride.rideStatus === 'ACCEPTED'" class="ml-0 p-0">
+			<div class="column is-family-secondary is-size-6 title p-0 mb-5" *ngIf="this.time !== undefined">
+				Arriving in: {{ this.time * 1000 | date:'H:mm:ss':'UTC'}}
 			</div>
 		</div>
 
@@ -65,6 +73,8 @@
             </div>
 		</div>
 	</div>
+
+	
 
 	<div class="mb-5">
 		<p class="title is-size-5 mb-2 is-family-secondary">Route</p>

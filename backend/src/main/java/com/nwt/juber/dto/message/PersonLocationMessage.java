@@ -6,9 +6,14 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 public class PersonLocationMessage {
     private String email;
     private Double latitude;
     private Double longitude;
+
+    public PersonLocationMessage(String email, Double latitude, Double longitude) {
+        this.email = email;
+        this.latitude = latitude;
+        this.longitude = longitude;
+    }
 }

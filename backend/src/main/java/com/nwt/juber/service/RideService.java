@@ -312,7 +312,6 @@ public class RideService {
             ride.setRideStatus(RideStatus.DENIED);
             rideRepository.save(ride);
             sendRideMessageToPassengers(ride, RideMessageType.DRIVER_CANCELLED_OR_NOT_FOUND);
-            throw new DriverNotFoundException();
         }
         ride.setDriver(driver);
         ride.setRideStatus(RideStatus.WAIT);
@@ -413,6 +412,8 @@ public class RideService {
 
         double toArriveAtNewRide = timeEstimator.estimateTime(driverLat, driverLon, startLat, startLon);
 
+        System.out.println("Computing unavailable priority");
+        System.out.println(driverRideDTO.getRide().getId() + " " + driverRideDTO.getRide().getDuration());
         LocalDateTime finishTime = driverRideDTO.getRide().getStartTime().plusSeconds(driverRideDTO.getRide().getDuration());
         double toFinishCurrentRide = ChronoUnit.SECONDS.between(now, finishTime);
         return toArriveAtNewRide + toFinishCurrentRide;

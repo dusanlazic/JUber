@@ -40,7 +40,7 @@ public interface DriverRepository extends JpaRepository<Driver, UUID> {
 
     @Query(value = "select new com.nwt.juber.dto.DriverRideDTO(d, r) from Driver d, Ride r where d.status = 'ACTIVE' and d.blocked = false and r.driver = d and" +
             "(select count(t) from Ride t where t.driver = d and t.rideStatus = 1 or t.rideStatus = 2) = 1 and " + // current rides
-            "(select count(t) from Ride t where t.driver = t and t.rideStatus = 6) = 0") // scheduled rides
+            "(select count(t) from Ride t where t.driver = t and t.rideStatus = 6) = 0 and r.rideStatus <> 5") // scheduled rides
     List<DriverRideDTO> findUnavailableDriversWithNoFutureRides(Ride ride);
 
 

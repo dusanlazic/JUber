@@ -5,6 +5,7 @@ import { AdminConversationWebSocketAPI } from 'src/services/support/admin/admin-
 import { SupportChatWebSocketAPI } from 'src/services/support/user/support-chat-socket.service';
 import { RideWebSocketAPI } from 'src/services/ride/ride-message.service';
 import { PaymentWebSocketAPI } from 'src/services/payment/payment-socket.service';
+import { LocationSocketService } from 'src/services/location-message/location-message.service';
 
 @Component({
   selector: 'app-root',
@@ -21,6 +22,7 @@ export class AppComponent {
     private paymentWebSocketAPI: PaymentWebSocketAPI,
     private adminSupportWebSocketAPI: AdminSupportWebSocketAPI,
     private adminConversationWebSocketAPI: AdminConversationWebSocketAPI,
+    private locationMessageWebSocketAPI: LocationSocketService
   ) {
 
   }

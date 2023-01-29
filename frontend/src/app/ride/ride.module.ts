@@ -30,6 +30,7 @@ import { SharesModule } from '../shared/shared.module';
 import { MapService } from './services/map/map.service';
 import { NominatimService } from './services/map/nominatim.service';
 import { RoutingService } from './services/map/routing.service';
+import { LocationSocketShareService } from 'src/services/location-message/locationshare.service';
 
 @NgModule({
   declarations: [
@@ -92,6 +93,7 @@ import { RoutingService } from './services/map/routing.service';
     CUSTOM_ELEMENTS_SCHEMA
   ],
   providers: [
+    LocationSocketShareService
   ]
 })
 export class RideModule { }

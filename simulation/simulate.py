@@ -8,7 +8,7 @@ import math
 import argparse
 from enum import Enum, auto
 from host_interface import HostInterface, BACKEND_URL
-
+import threading
 
 drivers = {}
 
@@ -44,6 +44,7 @@ class Driver(HostInterface):
 
 		self.start_idx = math.inf;
 		self.wait_for_entered = False
+		self.wait_for_ended = False
 
 	def _set_new_coordinates(self, curr, succ):
 		dist = self._distance(curr, succ) 
@@ -57,25 +58,28 @@ class Driver(HostInterface):
 
 
 	def update_coordinates(self):
+		
+		if self.wait_for_entered or self.wait_for_ended:
+			return
+
 		curr = self.latitude, self.longitude
 		succ = self.coordinates[self.visiting]
-		if self.wait_for_entered:
-			return
 
 		if self._check_visited(curr, succ):
 			self.visiting += 1
-			if self.visiting >= len(self.coordinates) - 1:
+			if self.visiting > len(self.coordinates) - 1:
 				self.places = None
 				self.state = DriverState.WAITING
 				self.coordinates = []
-				self.ride_status = RideStatus.WAIT
 				self.start_idx = math.inf
-				self.wait_for_entered = False
+				self.wait_for_ended = True
 				self._finish_log()
 				# self.send_end()
-			elif self.visiting >= self.start_idx and self.ride_status == RideStatus.ACCEPTED:
+			elif self.visiting > self.start_idx and self.ride_status == RideStatus.ACCEPTED:
 				self.wait_for_entered = True
 				# self.send_start()
+			else:
+				self.wait_for_entered = False
 		else:
 			self._set_new_coordinates(curr, succ)
 
@@ -101,6 +105,10 @@ class Driver(HostInterface):
 			random_goal_lat = self.latitude + np.sin(random_vector_angle) * magnitude
 			random_goal_lon = self.longitude + np.cos(random_vector_angle) * magnitude
 			if self.distance(random_goal_lat, random_goal_lon, balans_lat, balans_lon) < 5:
+				break
+			else:
+				random_goal_lat = balans_lat
+				random_goal_lon = balans_lon
 				break
 		print(f'MOVING TO RANDOM COORDINATES .  .  . => {self.latitude} {self.longitude} {random_goal_lat}, {random_goal_lon}')
 		self.random_coordinates.extend(self.get_route(self.longitude, self.latitude, random_goal_lon, random_goal_lat))
@@ -147,8 +155,10 @@ class Driver(HostInterface):
 			return
 
 		if self.ride_status == RideStatus.IN_PROGRESS and self.wait_for_entered:
-			print("Wait for entered is false, resuming ride")
 			self.wait_for_entered = False
+		
+		if self.ride_status == RideStatus.ACCEPTED and self.wait_for_ended:
+			self.wait_for_ended = False
 
 		if self.places is None or len(self.places) == 0:
 			return
@@ -183,7 +193,7 @@ class Driver(HostInterface):
 
 
 	def __repr__(self):
-		return f'Driver({self.username=}, {self.longitude=}, {self.latitude=}, {self.state=}, {self.ride_status=}, places: {len(self.places) if self.places else None})'
+		return f'Driver({self.username}, {self.state.name}, {self.ride_status.name}, places: {len(self.places) if self.places else None})'
 
 
 def get_drivers():
@@ -192,8 +202,6 @@ def get_drivers():
 	data = r.json()
 	for info in data:
 		print(data)
-		if info['username'] != 'zdravko.zdravkovic@gmail.com':
-			continue
 		driver = Driver(**info)
 		drivers[driver.username] = driver
 		if driver.places is None:
@@ -210,34 +218,37 @@ def update_drivers():
 	r = requests.get(f'{BACKEND_URL}/simulation/drivers')
 
 	data = r.json()
+	i = 0
 	for info in data:
-		if info['username'] != 'zdravko.zdravkovic@gmail.com':
-			continue
 		if 'places' in info:
 			status = info['status']
 			if info['rideId'] != drivers[info['username']].ride_id:
 				driver = Driver(**info)
 				drivers[info['username']] = driver	
-				print()
 			else:
 				drivers[info['username']].places = info['places']
 				drivers[info['username']].ride_status = RideStatus.WAIT if status is None else RideStatus[status]
+
+		i += 1
 	try:
 		for driver in drivers.values():
+			print("DRIVER HERE: ", driver)
 			driver.update()
+
 	except Exception as e:
 		print(e)
 
 def loop(sleep):
-	# while True:
-	# 	update_drivers()
-	# 	time.sleep(sleep)
+	while True:
+		update_drivers()
+		time.sleep(sleep)
+		# return
 	pass
 
 
 def main(args):
 	get_drivers()
-	# loop(args.sleep)
+	loop(args.sleep)
 
 
 if __name__ == '__main__':

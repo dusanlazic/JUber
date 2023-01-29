@@ -22,13 +22,17 @@ import { environment } from 'src/environments/environment';
 import { LoggedUser } from 'src/models/user';
 import { AuthService } from 'src/services/auth/auth.service';
 import { ActivatedRoute } from '@angular/router';
+import { LocationSocketShareService } from 'src/services/location-message/locationshare.service';
 
 @Component({
   selector: 'app-ride-details-map',
   templateUrl: './ride-details-map.component.html',
   styleUrls: ['./ride-details-map.component.sass'],
 })
-export class RideDetailsMapComponent implements AfterViewInit, OnDestroy, OnInit {
+export class RideDetailsMapComponent implements AfterViewInit, OnDestroy {
+
+  private subscription: Subscription | undefined;
+
   constructor(
     private mapService: MapService,
     private httpService: HttpRequestService,
@@ -36,17 +40,19 @@ export class RideDetailsMapComponent implements AfterViewInit, OnDestroy, OnInit
     private authService: AuthService,
     private store: Store<{ state: AppState }>,
     public route: ActivatedRoute,
-    private el: ElementRef
+    private el: ElementRef,
+    private locationShareService: LocationSocketShareService
   ) {
     this.authService.getCurrentUser().subscribe({
       next: (user) => {
-        console.log(user);
         this.loggedUser = user;
       },
       error: (e: any) => {
         console.log(e);
       },
     });
+
+    
   }
 
   private map!: L.Map;
@@ -85,7 +91,29 @@ export class RideDetailsMapComponent implements AfterViewInit, OnDestroy, OnInit
   ngOnChanges(changes: SimpleChanges) {
     if(this.ride) {
       this.drawRide(this.ride);
+      this.getAndDrawDrivers();
+
+      if (this.loggedUser.role == 'ROLE_PASSENGER' && this.ride?.rideStatus == 'IN_PROGRESS' || this.ride?.rideStatus == 'ACCEPTED'){
+        this.subscription = this.locationShareService.getNewValue().subscribe((data) => {
+          let ret = JSON.parse(data)
+          if (this.ride?.driver && ret.email === this.ride?.driver.email) {
+            this.drawDriver(ret)
+          }
+        });
+      }
     }
+    else {
+      if (this.loggedUser.role == 'ROLE_DRIVER') {
+        this.subscription = this.locationShareService.getNewValue().subscribe((data) => {
+          let ret = JSON.parse(data)
+          if (ret.email === this.loggedUser.email) {
+            this.drawDriver(ret)
+          }
+        });
+        return;
+      }
+    }
+    
   }
 
   private initMap(): void {
@@ -109,24 +137,16 @@ export class RideDetailsMapComponent implements AfterViewInit, OnDestroy, OnInit
 
   timer!: NodeJS.Timer;
 
-  ngOnInit() {
-  }
-
   ngAfterViewInit(): void {
     this.initMap();
     this.container = this.el.nativeElement.querySelector('#details-map');
-    this.timer = setInterval(() => {
-      this.getAndDrawDrivers();
-    }, 500);
-    if(this.ride) {
-      this.drawRide(this.ride);
-    }
+    this.getAndDrawDrivers();
   }
 
   ngOnDestroy(): void {
     this.map.remove();
     this.map.off()
-    clearInterval(this.timer);
+    this.subscription?.unsubscribe();
     this.container!.parentNode!.removeChild(this.container);
   }
 
@@ -248,12 +268,17 @@ export class RideDetailsMapComponent implements AfterViewInit, OnDestroy, OnInit
 
   driverMarkers: L.Marker[] = [];
 
-  drawDriver(data: any) {
+  drawDriver(data: { latitude: number; longitude: number; email: string}) {
+    
+    if(data.email !== this.ride?.driver?.email && this.loggedUser.role !== 'ROLE_DRIVER') 
+      return;
+
     for (let driverMaker of this.driverMarkers) {
       this.map.removeLayer(driverMaker);
     }
 
     let driver = data;
+    
     let marker = L.marker([driver.latitude, driver.longitude], {
       icon: this.driverIcon,
     }).addTo(this.map);

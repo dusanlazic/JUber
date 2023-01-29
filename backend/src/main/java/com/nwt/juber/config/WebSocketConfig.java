@@ -33,13 +33,13 @@ public class WebSocketConfig extends AbstractSecurityWebSocketMessageBrokerConfi
         messages
                 .nullDestMatcher().authenticated()
                 .simpSubscribeDestMatchers("/user/queue/errors").permitAll()
+                .simpSubscribeDestMatchers("/topic/locations").permitAll()
                 .simpDestMatchers("/app/**").authenticated()
                 .simpSubscribeDestMatchers("/user/**").authenticated()
                 .simpSubscribeDestMatchers("/user/queue/balance").hasAnyRole("PASSENGER", "DRIVER")
                 .simpSubscribeDestMatchers("/user/queue/support/chat").hasAnyRole("PASSENGER", "DRIVER")
                 .simpSubscribeDestMatchers("/user/queue/support/admin/**").hasRole("ADMIN")
                 .simpSubscribeDestMatchers("/user/queue/ride").hasAnyRole("PASSENGER", "DRIVER")
-                .simpSubscribeDestMatchers("/user/queue/locations").hasAnyRole("PASSENGER", "DRIVER")
                 .simpSubscribeDestMatchers("/user/queue/notifications").authenticated()
                 .anyMessage().denyAll();
     }

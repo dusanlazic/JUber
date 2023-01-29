@@ -19,6 +19,7 @@ import com.nwt.juber.util.MappingUtils;
 import kotlin.NotImplementedError;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -45,6 +46,9 @@ public class DriverService {
 
     @Autowired
 	private DriverShiftService driverShiftService;
+
+	@Autowired
+	private SimpMessagingTemplate messagingTemplate;
 
     public List<SimulationInfo> getSimulationInfo() {
         List<Driver> drivers = driverRepository.findAll();
@@ -75,6 +79,9 @@ public class DriverService {
         driver.getVehicle().setLongitude(longitude);
         driver.getVehicle().setLatitude(latitude);
         driverRepository.save(driver);
+		if (!driver.getBlocked() && driver.getStatus().equals(DriverStatus.ACTIVE)) {
+			messagingTemplate.convertAndSend("/topic/locations", new PersonLocationMessage(username, latitude, longitude));
+		}
     }
     
     public Driver findSuitableDriver(Ride ride, AdditionalRideRequests additionalRequsets) {

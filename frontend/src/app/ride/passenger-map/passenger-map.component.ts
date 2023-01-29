@@ -11,6 +11,17 @@ import { State, StateObservable, Store } from '@ngrx/store';
 import { AppState } from 'src/app/store/ride.reducer';
 import { PreviewRouteSelectedAction } from 'src/app/store/ride.actions';
 import { environment } from 'src/environments/environment';
+import { LocationSocketService } from 'src/services/location-message/location-message.service';
+import { LocationSocketShareService } from 'src/services/location-message/locationshare.service';
+
+
+interface DriverLocation {
+	email: string;
+	latitude: number;
+	longitude: number;
+}
+
+
 
 @Component({
   selector: 'passenger-map',
@@ -64,8 +75,12 @@ export class PassengerMapComponent implements AfterViewInit, OnDestroy {
   	constructor(private mapService: MapService, 
 			  private httpService: HttpRequestService, 
 			  private nominatimService: NominatimService,
-			  private store: Store<{state: AppState}>) {
+			  private store: Store<{state: AppState}>,
+			  private locationShareService: LocationSocketShareService) {
    }
+
+
+   subscription: Subscription | undefined;
 
 	ngAfterViewInit(): void {
 		this.initMap();
@@ -80,7 +95,12 @@ export class PassengerMapComponent implements AfterViewInit, OnDestroy {
 			}
 			this.drawRide(state.ride)
 		});
-		this.interval = setInterval(() => { this.getAndDrawDrivers() }, 500);
+
+		this.getAndDrawDrivers();
+		
+		this.subscription = this.locationShareService.getNewValue().subscribe((data) => {
+			this.drawDriver(JSON.parse(data))
+		});
 	}
 
 	ngOnDestroy(): void {
@@ -191,19 +211,32 @@ export class PassengerMapComponent implements AfterViewInit, OnDestroy {
 	});
 
 
-	driverMarkers: L.Marker[] = [];
-	drawDrivers(data: any) {
+	driverMarkers: Map<string, L.Marker> = new Map<string, L.Marker>();
 
-		for (let driverMaker of this.driverMarkers) {
+	drawDrivers(data: DriverLocation[]) {
+		for (let [driverLocation, driverMaker] of this.driverMarkers) {
 			this.map.removeLayer(driverMaker);
 		}
 
 		for(let driver of data) {
 			let marker  = L.marker([driver.latitude, driver.longitude], {icon: this.driverIcon}).addTo(this.map);
 			marker.bindPopup(driver.email);
-			this.driverMarkers.push(marker);
+			this.driverMarkers.set(driver.email, marker);
 		}
 		
+	}
+
+	drawDriver(driver: DriverLocation) {
+		let marker = this.driverMarkers.get(driver.email);
+		if(marker) {
+			this.map.removeLayer(marker);
+			let newMarker  = L.marker([driver.latitude, driver.longitude], {icon: this.driverIcon}).addTo(this.map);
+			this.driverMarkers.set(driver.email, newMarker);
+		} else {
+			let marker  = L.marker([driver.latitude, driver.longitude], {icon: this.driverIcon}).addTo(this.map);
+			marker.bindPopup(driver.email);
+			this.driverMarkers.set(driver.email, marker);
+		}
 	}
 
 }

@@ -261,7 +261,7 @@ export class RideDetailsMapComponent implements AfterViewInit, OnDestroy {
 
   driverIcon = L.icon({
     iconUrl: '/assets/images/driver-pin.png',
-
+    iconAnchor: [34, 34], // point of the icon which will correspond to marker's location
     iconSize: [38, 38], // size of the icon
     popupAnchor: [-3, -3], // point from which the popup should open relative to the iconAnchor
   });

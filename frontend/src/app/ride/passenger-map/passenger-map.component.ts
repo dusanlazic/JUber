@@ -15,7 +15,7 @@ import { LocationSocketService } from 'src/services/location-message/location-me
 import { LocationSocketShareService } from 'src/services/location-message/locationshare.service';
 
 
-interface DriverLocation {
+export interface DriverLocation {
 	email: string;
 	latitude: number;
 	longitude: number;

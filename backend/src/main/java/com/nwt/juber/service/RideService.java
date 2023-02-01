@@ -98,21 +98,40 @@ public class RideService {
         return rideRepository.findById(rideId);
     }
 
+    // should accept ride if it is scheduled and scheduled time is before now
     private void findAndAcceptScheduledRide(Driver driver) {
         Ride ride = rideRepository.getScheduledRideForDriver(driver);
-        if (ride != null) {
+        if (ride != null && ride.getScheduledTime().isBefore(LocalDateTime.now())) {
             startScheduledRide(ride.getId());
         }
     }
 
+    public void checkFunds(Passenger passenger, Ride ride) {
+        int numOfPeople = ride.getPassengers() != null ? ride.getPassengers().size() + 1 : 1;
+        if (passenger.getBalance().doubleValue() < ride.getFare() / numOfPeople) {
+            throw new InsufficientFundsException("Not enough money!");
+        }
+    }
+
+    // if there is one passenger, find driver
+    // if more, wait for everyone to accept
     public void createRideRequest(RideRequest rideRequest, Passenger passenger) throws DriverNotFoundException {
+        if(rideRepository.getActiveRideForPassenger(passenger) != null) {
+            throw new UserAlreadyInRideException("You already have a ride!");
+        }
+        System.out.println(passenger.getEmail() + " " + passenger.getBalance());
+        checkFunds(passenger, rideRequest.getRide());
         Ride ride = new Ride();
         List<Passenger> pass = new ArrayList<>();
         pass.add(passenger);
         List<PassengerStatus> ready = new ArrayList<>();
         ready.add(PassengerStatus.Ready);
         for (String email: rideRequest.getPassengerEmails()) {
-            passengerRepository.findByEmail(email).ifPresent(pass::add);
+            Passenger pal = passengerRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException("No passenger with email: " + email));
+            if(rideRepository.getActiveRideForPassenger(pal) != null) {
+                throw new UserAlreadyInRideException("Passenger already in ride");
+            }
+            pass.add(pal);
             ready.add(PassengerStatus.Waiting);
         }
         ride.setPassengers(pass);
@@ -146,6 +165,7 @@ public class RideService {
 
     }
 
+    // if someone accept scheduled ride that is in the past, fail it
     private void assignSuitableDriverWhenNeeded(Ride ride) throws DriverNotFoundException {
         if (ride.getScheduledTime() != null) {
             if(ride.getScheduledTime().isAfter(LocalDateTime.now())) {
@@ -162,6 +182,7 @@ public class RideService {
         }
     }
 
+    // start scheduled if no active
     private void startScheduledRide(UUID rideId) {
         Ride ride = rideRepository.findById(rideId).get();
         Driver driver = ride.getDriver();
@@ -210,7 +231,7 @@ public class RideService {
 
     private void sendRideInvitation(Ride ride, String email, Passenger inviter) {
         System.out.println("Sending invitation to: " + email);
-        Passenger passenger = passengerRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("No pal found!"));
+        Passenger passenger = passengerRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException("No pal found!"));
         RideInvitationNotification notification = new RideInvitationNotification();
         notification.setId(UUID.randomUUID());
         notification.setInviter(inviter);
@@ -224,6 +245,8 @@ public class RideService {
         passengerRepository.save(passenger);
     }
 
+    // if ride scheduled, set schedule task
+    // else accept ride and set status
     public void acceptRideDriver(Driver driver, UUID rideId) {
         Ride ride = rideRepository.findById(rideId).orElseThrow(() -> new EndRideException("No ride with id: " + rideId));
         ride.setDriver(driver);
@@ -305,14 +328,21 @@ public class RideService {
         }
     }
 
-    private void assignSuitableDriver(Ride ride) throws DriverNotFoundException {
+    @Transactional
+    public void assignSuitableDriver(Ride ride, Boolean... noErr) throws DriverNotFoundException {
         System.out.println("Assigning suitable driver at: " + LocalDateTime.now());
         Driver driver = findSuitableDriver(ride);
         if (driver == null) {
             ride.setRideStatus(RideStatus.DENIED);
             rideRepository.save(ride);
             sendRideMessageToPassengers(ride, RideMessageType.DRIVER_CANCELLED_OR_NOT_FOUND);
+            if (noErr.length == 0) {
+                throw new DriverNotFoundException("No driver found!");
+            } else {
+                return;
+            }
         }
+        System.out.println("Found driver: " + driver.getEmail());
         ride.setDriver(driver);
         ride.setRideStatus(RideStatus.WAIT);
 
@@ -329,6 +359,10 @@ public class RideService {
         rideMessage.setType(RideMessageType.DRIVER_FOUND);
 
         messagingTemplate.convertAndSendToUser(ride.getDriver().getUsername(), "/queue/ride", rideMessage);
+        driver.setVersion(driver.getVersion() + 1);
+        System.out.println(driver.getVersion());
+        System.out.println(LocalDateTime.now());
+        driverRepository.save(driver);
         rideRepository.save(ride);
     }
 
@@ -366,7 +400,7 @@ public class RideService {
     }
 
     Driver findFastestUnavailable(Ride ride) {
-        List<DriverRideDTO> drivers = driverRepository.findUnavailableDriversWithNoFutureRides(ride);
+        List<DriverRideDTO> drivers = driverRepository.findUnavailableDriversWithNoFutureRides();
         drivers = filterDriverRidesByAdditional(ride, drivers);
         DriverRideDTO minDriverRide = drivers
                                     .stream()
@@ -412,9 +446,19 @@ public class RideService {
 
         double toArriveAtNewRide = timeEstimator.estimateTime(driverLat, driverLon, startLat, startLon);
 
-        System.out.println("Computing unavailable priority");
-        System.out.println(driverRideDTO.getRide().getId() + " " + driverRideDTO.getRide().getDuration());
-        LocalDateTime finishTime = driverRideDTO.getRide().getStartTime().plusSeconds(driverRideDTO.getRide().getDuration());
+        LocalDateTime finishTime;
+
+        if (driverRideDTO.getRide().getStartTime() == null) {
+            double currLat = driverRideDTO.getRide().getPlaces().get(0).getLatitude();
+            double currLon = driverRideDTO.getRide().getPlaces().get(0).getLatitude();
+            int secondsToStartCurr = timeEstimator.estimateTime(driverLat, driverLon, currLat, currLon);
+            LocalDateTime startCurrent = now.plusSeconds(secondsToStartCurr);
+            finishTime = startCurrent.plusSeconds(driverRideDTO.getRide().getDuration());
+        } else {
+            finishTime = driverRideDTO.getRide().getStartTime().plusSeconds(driverRideDTO.getRide().getDuration());
+        }
+
+
         double toFinishCurrentRide = ChronoUnit.SECONDS.between(now, finishTime);
         return toArriveAtNewRide + toFinishCurrentRide;
     }
@@ -440,7 +484,7 @@ public class RideService {
         ride.setRideStatus(RideStatus.DENIED);
         ride.getBlacklisted().add(driver);
         rideRepository.save(ride);
-        assignSuitableDriver(ride);
+        assignSuitableDriver(ride, true);
     }
 
 

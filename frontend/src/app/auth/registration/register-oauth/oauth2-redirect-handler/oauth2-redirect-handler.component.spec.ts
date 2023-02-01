@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { Oauth2RedirectHandlerComponent } from './oauth2-redirect-handler.component';
+import { Oauth2RegisterRedirectHandlerComponent } from './oauth2-redirect-handler.component';
 
-describe('Oauth2RedirectHandlerComponent', () => {
-  let component: Oauth2RedirectHandlerComponent;
-  let fixture: ComponentFixture<Oauth2RedirectHandlerComponent>;
+describe('Oauth2RegisterRedirectHandlerComponent', () => {
+  let component: Oauth2RegisterRedirectHandlerComponent;
+  let fixture: ComponentFixture<Oauth2RegisterRedirectHandlerComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ Oauth2RedirectHandlerComponent ]
+      declarations: [ Oauth2RegisterRedirectHandlerComponent ]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(Oauth2RedirectHandlerComponent);
+    fixture = TestBed.createComponent(Oauth2RegisterRedirectHandlerComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

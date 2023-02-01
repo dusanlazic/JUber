@@ -3,6 +3,7 @@ package com.nwt.juber.api;
 import com.nwt.juber.exception.*;
 import io.jsonwebtoken.JwtException;
 import org.springframework.http.HttpStatus;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -107,4 +108,29 @@ public class ControllerAdvisor {
     public ResponseError handleUserAlreadyBlockedException(UserAlreadyBlockedException e) {
         return new ResponseError(HttpStatus.CONFLICT, "User is already blocked.");
     }
+
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ExceptionHandler(UserAlreadyInRideException.class)
+    public ResponseError handleUserAlreadyInRideException(UserAlreadyInRideException e) {
+        return new ResponseError(HttpStatus.CONFLICT, "User is already in ride.");
+    }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(DriverNotFoundException.class)
+    public ResponseError handleDriverNotFoundException(DriverNotFoundException e) {
+        return new ResponseError(HttpStatus.NOT_FOUND, "Driver not found.");
+    }
+
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ExceptionHandler(ObjectOptimisticLockingFailureException.class)
+    public ResponseError handleObjectOptimisticLockingFailureException(ObjectOptimisticLockingFailureException e) {
+        return new ResponseError(HttpStatus.CONFLICT, "Confilct. Try again later!");
+    }
+
+    @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
+    @ExceptionHandler(InsufficientFundsException.class)
+    public ResponseError handleInsufficientFundsException(InsufficientFundsException e) {
+        return new ResponseError(HttpStatus.NOT_ACCEPTABLE, "Insufficient funds.");
+    }
+
 }

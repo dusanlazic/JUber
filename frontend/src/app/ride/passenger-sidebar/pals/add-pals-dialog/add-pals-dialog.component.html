@@ -3,7 +3,7 @@
       <form class="form-container" [formGroup]="palForm" autocomplete="false" validate> 
         <div class="field">
           <p class="control has-icons-left">
-            <input class="input" type="email" placeholder="Email*" formControlName="email">
+            <input class="input" type="email" id="add-pal-email-input" placeholder="Email*" formControlName="email">
             <span class="icon is-left">
               <span class="iconify is-size-5" data-icon="ic:outline-email"></span>
             </span>
@@ -24,7 +24,7 @@
             </button>
           </p>
           <p class="control">
-            <button class="button is-success" (click)="add()" type="submit" [disabled]="palForm.invalid">
+            <button class="button is-success" id="add-pal-confirm-button" (click)="add()" type="submit" [disabled]="palForm.invalid">
               Add
               <span class="icon ml-1">
                 <span class="iconify is-size-5" data-icon="fluent:add-12-filled"></span>

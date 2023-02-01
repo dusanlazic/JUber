@@ -12,4 +12,10 @@ import lombok.NoArgsConstructor;
 public class DriverRideDTO {
     private Driver driver;
     private Ride ride;
+    int testnum;
+
+    public DriverRideDTO(Driver driver, Ride ride) {
+        this.driver = driver;
+        this.ride = ride;
+    }
 }

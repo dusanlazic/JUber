@@ -271,7 +271,7 @@ public class RideServiceTest {
 		DriverRideDTO driverRideDTO2 = new DriverRideDTO(driver2, ride2);
 		List<DriverRideDTO> drivers = Arrays.asList(driverRideDTO1, driverRideDTO2);
 
-		when(driverRepository.findUnavailableDriversWithNoFutureRides(ride)).thenReturn(drivers);
+		when(driverRepository.findUnavailableDriversWithNoFutureRides()).thenReturn(drivers);
 		when(timeEstimator.estimateTime(eq(place1.getLatitude()), eq(place1.getLongitude()),
 													anyDouble(), anyDouble())).thenReturn(estimation1);
 

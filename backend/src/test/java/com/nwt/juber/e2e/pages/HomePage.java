@@ -1,5 +1,7 @@
 package com.nwt.juber.e2e.pages;
 
+import com.nwt.juber.e2e.BasePage;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
@@ -10,8 +12,9 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 
-public class HomePage {
+public class HomePage extends BasePage {
 
 	@FindBy(xpath = "//button[contains(text(), 'Add')]")
 	WebElement addPlaceButton;
@@ -61,9 +64,20 @@ public class HomePage {
 	@FindBy(xpath = "//*[contains(@class, 'toast-error')]")
 	WebElement toastError;
 
+	@FindBy(id = "notification-bell-icon")
+	WebElement notificationBellIcon;
+
+
+	@FindBy(xpath = "//app-ride-invite")
+	List<WebElement> rideInvite;
+
+	@FindBy(xpath = "//app-notification-item")
+	List<WebElement> notificationItems;
+
 	WebDriver webDriver;
 
-	public HomePage(WebDriver webDriver) {
+	public HomePage(WebDriver webDriver, int index) {
+		this.index = index;
 		webDriver.navigate().to("http://localhost:3000/home");
 		this.webDriver = webDriver;
 		PageFactory.initElements(webDriver, this);
@@ -78,6 +92,7 @@ public class HomePage {
 		this.addressInput.sendKeys(address);
 		new WebDriverWait(webDriver, Duration.of(3, ChronoUnit.SECONDS));
 		this.savePlaceButton.click();
+		this.log(webDriver);
 	}
 
 	public void selectHatchback() {
@@ -87,6 +102,7 @@ public class HomePage {
 				.moveToElement(this.carHatchback)
 				.moveByOffset(10, 10)
 				.click().perform();
+		this.log(webDriver);
 	}
 
 	public void selectLimousine() {
@@ -105,24 +121,28 @@ public class HomePage {
 				.moveToElement(this.carEstate)
 				.moveByOffset(10, 10)
 				.click().perform();
+		this.log(webDriver);
 	}
 
 	public void setHours(String hours) {
 		(new WebDriverWait(webDriver, Duration.of(10, ChronoUnit.SECONDS)))
 				.until(ExpectedConditions.visibilityOf(this.scheduleHours));
 		this.scheduleHours.sendKeys(hours);
+		this.log(webDriver);
 	}
 
 	public void setMinutes(String minutes) {
 		(new WebDriverWait(webDriver, Duration.of(10, ChronoUnit.SECONDS)))
 				.until(ExpectedConditions.visibilityOf(this.scheduleMinutes));
 		this.scheduleMinutes.sendKeys(minutes);
+		this.log(webDriver);
 	}
 
 	public void orderRide() {
 		(new WebDriverWait(webDriver, Duration.of(10, ChronoUnit.SECONDS)))
 				.until(ExpectedConditions.visibilityOf(this.continueToPaymentButton));
 		this.continueToPaymentButton.click();
+		this.log(webDriver);
 	}
 
 	public void addPal(String email) {
@@ -135,11 +155,13 @@ public class HomePage {
 		(new WebDriverWait(webDriver, Duration.of(10, ChronoUnit.SECONDS)))
 				.until(ExpectedConditions.elementToBeClickable(this.addPalEmailInput));
 		this.addPalConfirmButton.click();
+		this.log(webDriver);
 	}
 
 	public String waitToastError() {
 		(new WebDriverWait(webDriver, Duration.of(10, ChronoUnit.SECONDS)))
 				.until(ExpectedConditions.visibilityOf(this.toastError));
+		this.log(webDriver);
 		return this.toastError.getText();
 	}
 
@@ -151,6 +173,22 @@ public class HomePage {
 		} catch (Exception e) {
 			return null;
 		}
+	}
+
+	public void openNotifications() {
+		(new WebDriverWait(webDriver, Duration.of(10, ChronoUnit.SECONDS)))
+				.until(ExpectedConditions.visibilityOf(this.notificationBellIcon));
+		this.notificationBellIcon.click();
+		this.log(webDriver);
+
+	}
+
+	public void acceptFirstRideInvitation() {
+		this.openNotifications();
+		(new WebDriverWait(webDriver, Duration.of(10, ChronoUnit.SECONDS)))
+				.until(ExpectedConditions.visibilityOfAllElements(this.rideInvite));
+		this.rideInvite.get(0).findElement(By.xpath("//button[contains(text(), 'Accept')]")).click();
+		this.log(webDriver);
 	}
 
 

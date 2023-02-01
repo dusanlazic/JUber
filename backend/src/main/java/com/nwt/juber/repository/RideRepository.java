@@ -38,7 +38,6 @@ public interface RideRepository extends JpaRepository<Ride, UUID> {
     @Query("select r from Ride r where r.driver = :driver and r.rideStatus = 5")
     List<Ride> getPastRidesForDriver(Driver driver);
 
-
     @Query("select r from Ride r where :passenger member of r.passengers and r.rideStatus = 5 and r.endTime between :startTime and :endTime")
     List<Ride> getRidesForPassengerBetweenTimes(Passenger passenger, LocalDateTime startTime, LocalDateTime endTime);
 

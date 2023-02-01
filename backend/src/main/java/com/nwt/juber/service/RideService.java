@@ -98,22 +98,23 @@ public class RideService {
         return rideRepository.findById(rideId);
     }
 
+    // should accept ride if it is scheduled and scheduled time is before now
     private void findAndAcceptScheduledRide(Driver driver) {
         Ride ride = rideRepository.getScheduledRideForDriver(driver);
-        if (ride != null) {
+        if (ride != null && ride.getScheduledTime().isBefore(LocalDateTime.now())) {
             startScheduledRide(ride.getId());
         }
     }
 
     public void checkFunds(Passenger passenger, Ride ride) {
-        int numOfPeople = ride.getPassengers() != null ? ride.getPassengers().size() : 1;
-        System.out.println("Num of people: " + numOfPeople);
-        System.out.println("Price: " + ride.getFare());
+        int numOfPeople = ride.getPassengers() != null ? ride.getPassengers().size() + 1 : 1;
         if (passenger.getBalance().doubleValue() < ride.getFare() / numOfPeople) {
             throw new InsufficientFundsException("Not enough money!");
         }
     }
 
+    // if there is one passenger, find driver
+    // if more, wait for everyone to accept
     public void createRideRequest(RideRequest rideRequest, Passenger passenger) throws DriverNotFoundException {
         if(rideRepository.getActiveRideForPassenger(passenger) != null) {
             throw new UserAlreadyInRideException("You already have a ride!");
@@ -164,6 +165,7 @@ public class RideService {
 
     }
 
+    // if someone accept scheduled ride that is in the past, fail it
     private void assignSuitableDriverWhenNeeded(Ride ride) throws DriverNotFoundException {
         if (ride.getScheduledTime() != null) {
             if(ride.getScheduledTime().isAfter(LocalDateTime.now())) {
@@ -180,6 +182,7 @@ public class RideService {
         }
     }
 
+    // start scheduled if no active
     private void startScheduledRide(UUID rideId) {
         Ride ride = rideRepository.findById(rideId).get();
         Driver driver = ride.getDriver();
@@ -228,7 +231,7 @@ public class RideService {
 
     private void sendRideInvitation(Ride ride, String email, Passenger inviter) {
         System.out.println("Sending invitation to: " + email);
-        Passenger passenger = passengerRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("No pal found!"));
+        Passenger passenger = passengerRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException("No pal found!"));
         RideInvitationNotification notification = new RideInvitationNotification();
         notification.setId(UUID.randomUUID());
         notification.setInviter(inviter);
@@ -242,6 +245,8 @@ public class RideService {
         passengerRepository.save(passenger);
     }
 
+    // if ride scheduled, set schedule task
+    // else accept ride and set status
     public void acceptRideDriver(Driver driver, UUID rideId) {
         Ride ride = rideRepository.findById(rideId).orElseThrow(() -> new EndRideException("No ride with id: " + rideId));
         ride.setDriver(driver);

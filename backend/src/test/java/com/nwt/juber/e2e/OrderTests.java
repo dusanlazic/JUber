@@ -76,7 +76,6 @@ public class OrderTests {
 		WebDriver window1 = windows.get(1);
 		WebDriver window2 = windows.get(0);
 
-
 		LoginPage loginPage1 = new LoginPage(window1);
 		loginPage1.enterUsername("andrej.andrejevic@gmail.com");
 		loginPage1.enterPassword("cascaded");
@@ -105,7 +104,7 @@ public class OrderTests {
 
 	@Test
 	@Rollback
-	public void Order_is_successful2() {
+	public void Order_fails_because_pal_is_busy() {
 		createDrivers(2);
 		WebDriver window1 = windows.get(1);
 		WebDriver window2 = windows.get(0);
@@ -124,7 +123,7 @@ public class OrderTests {
 		HomePage homePage1 = new HomePage(window1);
 		homePage1.addPlace("Dr Ivana Ribara 13");
 		homePage1.addPlace("Baranjska 5");
-//		homePage1.addPal("mile.miletic@gmail.com");
+		homePage1.addPal("mile.miletic@gmail.com");
 		homePage1.selectHatchback();
 		homePage1.orderRide();
 

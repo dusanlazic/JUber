@@ -28,10 +28,10 @@ public class HomePage {
 	@FindBy(xpath = "//label[contains(@for, 'car-hatchback')]")
 	WebElement carHatchback;
 
-	@FindBy(id = "car-estate")
+	@FindBy(xpath = "//label[contains(@for, 'car-estate')]")
 	WebElement carEstate;
 
-	@FindBy(id = "car-limousine")
+	@FindBy(xpath = "//label[contains(@for, 'car-limousine')]")
 	WebElement carLimousine;
 
 	@FindBy(id = "baby-friendly")
@@ -58,6 +58,8 @@ public class HomePage {
 	@FindBy(id = "add-pal-confirm-button")
 	WebElement addPalConfirmButton;
 
+	@FindBy(xpath = "//*[contains(@class, 'toast-error')]")
+	WebElement toastError;
 
 	WebDriver webDriver;
 
@@ -83,6 +85,24 @@ public class HomePage {
 				.until(ExpectedConditions.elementToBeClickable(this.carHatchback));
 		new Actions(webDriver)
 				.moveToElement(this.carHatchback)
+				.moveByOffset(10, 10)
+				.click().perform();
+	}
+
+	public void selectLimousine() {
+		(new WebDriverWait(webDriver, Duration.of(10, ChronoUnit.SECONDS)))
+				.until(ExpectedConditions.elementToBeClickable(this.carLimousine));
+		new Actions(webDriver)
+				.moveToElement(this.carLimousine)
+				.moveByOffset(10, 10)
+				.click().perform();
+	}
+
+	public void selectEstate() {
+		(new WebDriverWait(webDriver, Duration.of(10, ChronoUnit.SECONDS)))
+				.until(ExpectedConditions.elementToBeClickable(this.carEstate));
+		new Actions(webDriver)
+				.moveToElement(this.carEstate)
 				.moveByOffset(10, 10)
 				.click().perform();
 	}
@@ -116,6 +136,13 @@ public class HomePage {
 				.until(ExpectedConditions.elementToBeClickable(this.addPalEmailInput));
 		this.addPalConfirmButton.click();
 	}
+
+	public String waitToastError() {
+		(new WebDriverWait(webDriver, Duration.of(10, ChronoUnit.SECONDS)))
+				.until(ExpectedConditions.visibilityOf(this.toastError));
+		return this.toastError.getText();
+	}
+
 
 
 }

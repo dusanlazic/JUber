@@ -107,4 +107,10 @@ public class ControllerAdvisor {
     public ResponseError handleUserAlreadyBlockedException(UserAlreadyBlockedException e) {
         return new ResponseError(HttpStatus.CONFLICT, "User is already blocked.");
     }
+
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ExceptionHandler(UserAlreadyInRideException.class)
+    public ResponseError handleUserAlreadyInRideException(UserAlreadyInRideException e) {
+        return new ResponseError(HttpStatus.CONFLICT, "User is already in ride.");
+    }
 }

@@ -106,13 +106,20 @@ public class RideService {
     }
 
     public void createRideRequest(RideRequest rideRequest, Passenger passenger) throws DriverNotFoundException {
+        if(rideRepository.getActiveRideForPassenger(passenger) != null) {
+            throw new UserAlreadyInRideException("You already have a ride!");
+        }
         Ride ride = new Ride();
         List<Passenger> pass = new ArrayList<>();
         pass.add(passenger);
         List<PassengerStatus> ready = new ArrayList<>();
         ready.add(PassengerStatus.Ready);
         for (String email: rideRequest.getPassengerEmails()) {
-            passengerRepository.findByEmail(email).ifPresent(pass::add);
+            Passenger pal = passengerRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException("No passenger with email: " + email));
+            if(rideRepository.getActiveRideForPassenger(pal) != null) {
+                throw new UserAlreadyInRideException("Passenger already in ride");
+            }
+            pass.add(pal);
             ready.add(PassengerStatus.Waiting);
         }
         ride.setPassengers(pass);
@@ -367,7 +374,7 @@ public class RideService {
     }
 
     Driver findFastestUnavailable(Ride ride) {
-        List<DriverRideDTO> drivers = driverRepository.findUnavailableDriversWithNoFutureRides(ride);
+        List<DriverRideDTO> drivers = driverRepository.findUnavailableDriversWithNoFutureRides();
         drivers = filterDriverRidesByAdditional(ride, drivers);
         DriverRideDTO minDriverRide = drivers
                                     .stream()
@@ -413,7 +420,19 @@ public class RideService {
 
         double toArriveAtNewRide = timeEstimator.estimateTime(driverLat, driverLon, startLat, startLon);
 
-        LocalDateTime finishTime = driverRideDTO.getRide().getStartTime().plusSeconds(driverRideDTO.getRide().getDuration());
+        LocalDateTime finishTime;
+
+        if (driverRideDTO.getRide().getStartTime() == null) {
+            double currLat = driverRideDTO.getRide().getPlaces().get(0).getLatitude();
+            double currLon = driverRideDTO.getRide().getPlaces().get(0).getLatitude();
+            int secondsToStartCurr = timeEstimator.estimateTime(driverLat, driverLon, currLat, currLon);
+            LocalDateTime startCurrent = now.plusSeconds(secondsToStartCurr);
+            finishTime = startCurrent.plusSeconds(driverRideDTO.getRide().getDuration());
+        } else {
+            finishTime = driverRideDTO.getRide().getStartTime().plusSeconds(driverRideDTO.getRide().getDuration());
+        }
+
+
         double toFinishCurrentRide = ChronoUnit.SECONDS.between(now, finishTime);
         return toArriveAtNewRide + toFinishCurrentRide;
     }

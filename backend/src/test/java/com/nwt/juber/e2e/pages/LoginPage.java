@@ -5,6 +5,11 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
 
 public class LoginPage {
 
@@ -35,6 +40,8 @@ public class LoginPage {
 	}
 
 	public void login() {
+		(new WebDriverWait(webDriver, Duration.of(10, ChronoUnit.SECONDS)))
+				.until(ExpectedConditions.elementToBeClickable(this.loginButton));
 		this.loginButton.click();
 	}
 }

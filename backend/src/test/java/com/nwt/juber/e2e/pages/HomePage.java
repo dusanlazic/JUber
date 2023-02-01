@@ -143,6 +143,16 @@ public class HomePage {
 		return this.toastError.getText();
 	}
 
+	public String optionalWaitForToastError() {
+		try {
+			(new WebDriverWait(webDriver, Duration.of(5, ChronoUnit.SECONDS)))
+					.until(ExpectedConditions.visibilityOf(this.toastError));
+			return this.toastError.getText();
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
 
 
 }

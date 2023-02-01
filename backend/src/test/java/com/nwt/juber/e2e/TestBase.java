@@ -15,21 +15,24 @@ public class TestBase {
 
 	List<WebDriver> windows = new ArrayList<>();
 
-	public WebDriver openDriver(int number) {
+	public WebDriver openDriver(int number, String name) {
 		WebDriver driver;
 		System.setProperty("webdriver.chrome.driver", "chromedriver");
 		ChromeOptions options = new ChromeOptions();
 		options.addArguments("--no-sandbox");
-		options.addArguments("--user-data-dir=/tmp/tmp" + number);
+		options.addArguments("--disk-cache-size=0");
+//		options.addArguments("--incognito");
+		options.addArguments("--user-data-dir=./tmp/tmp-" + name);
 		driver = new ChromeDriver(options);
 		driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
 		driver.manage().window().maximize();
 		return driver;
 	}
 
-	public void createDrivers(int number) {
+	public void createDrivers(int number, List<String> users) {
+		assert number == users.size();
 		for (int i = 0; i < number; i++) {
-			WebDriver driver = openDriver(i);
+			WebDriver driver = openDriver(i, users.get(i));
 			windows.add(driver);
 		}
 	}

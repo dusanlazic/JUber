@@ -105,10 +105,21 @@ public class RideService {
         }
     }
 
+    public void checkFunds(Passenger passenger, Ride ride) {
+        int numOfPeople = ride.getPassengers() != null ? ride.getPassengers().size() : 1;
+        System.out.println("Num of people: " + numOfPeople);
+        System.out.println("Price: " + ride.getFare());
+        if (passenger.getBalance().doubleValue() < ride.getFare() / numOfPeople) {
+            throw new InsufficientFundsException("Not enough money!");
+        }
+    }
+
     public void createRideRequest(RideRequest rideRequest, Passenger passenger) throws DriverNotFoundException {
         if(rideRepository.getActiveRideForPassenger(passenger) != null) {
             throw new UserAlreadyInRideException("You already have a ride!");
         }
+        System.out.println(passenger.getEmail() + " " + passenger.getBalance());
+        checkFunds(passenger, rideRequest.getRide());
         Ride ride = new Ride();
         List<Passenger> pass = new ArrayList<>();
         pass.add(passenger);
@@ -312,7 +323,8 @@ public class RideService {
         }
     }
 
-    private void assignSuitableDriver(Ride ride, Boolean... noErr) throws DriverNotFoundException {
+    @Transactional
+    public void assignSuitableDriver(Ride ride, Boolean... noErr) throws DriverNotFoundException {
         System.out.println("Assigning suitable driver at: " + LocalDateTime.now());
         Driver driver = findSuitableDriver(ride);
         if (driver == null) {
@@ -325,6 +337,7 @@ public class RideService {
                 return;
             }
         }
+        System.out.println("Found driver: " + driver.getEmail());
         ride.setDriver(driver);
         ride.setRideStatus(RideStatus.WAIT);
 
@@ -341,6 +354,10 @@ public class RideService {
         rideMessage.setType(RideMessageType.DRIVER_FOUND);
 
         messagingTemplate.convertAndSendToUser(ride.getDriver().getUsername(), "/queue/ride", rideMessage);
+        driver.setVersion(driver.getVersion() + 1);
+        System.out.println(driver.getVersion());
+        System.out.println(LocalDateTime.now());
+        driverRepository.save(driver);
         rideRepository.save(ride);
     }
 

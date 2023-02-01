@@ -3,15 +3,16 @@ package com.nwt.juber.util;
 import com.nimbusds.jose.util.Pair;
 import com.nwt.juber.dto.PersonDTO;
 import com.nwt.juber.dto.RideDTO;
+import com.nwt.juber.dto.request.AdditionalRideRequests;
+import com.nwt.juber.dto.request.RideRequest;
+import com.nwt.juber.dto.request.ride.*;
 import com.nwt.juber.dto.response.PastRidesResponse;
-import com.nwt.juber.model.Person;
-import com.nwt.juber.model.Ride;
+import com.nwt.juber.model.*;
 import org.hibernate.Hibernate;
 
 import javax.transaction.Transactional;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
 
 @Transactional
 public class MappingUtils {
@@ -77,5 +78,59 @@ public class MappingUtils {
         }
 
         return Pair.of(startPlaceName, endPlaceName);
+    }
+
+    public static RideRequest convertRideRequestDTOtoEntity(RideRequestDTO rideRequest) {
+        return new RideRequest(
+                mapRideDTOtoEntity(rideRequest.getRide()),
+                mapAdditionalRideRequestsDTOtoEntity(rideRequest.getAdditionalRequests()),
+                rideRequest.getScheduleTime(),
+                rideRequest.getPassengerEmails()
+        );
+    }
+
+    private static VehicleType mapVehicleDTOtoEntity(VehicleTypeDTO dto) {
+        return new VehicleType(
+                dto.getId(),
+                dto.getName(),
+                dto.getPrice()
+        );
+    }
+
+    private static AdditionalRideRequests mapAdditionalRideRequestsDTOtoEntity(AdditionalRideRequestsDTO dto) {
+        return new AdditionalRideRequests(
+                dto.isBabyFriendly(),
+                dto.isPetFriendly(),
+                mapVehicleDTOtoEntity(dto.getVehicleType())
+        );
+    }
+
+    private static Route mapRouteDTOtoEntity(RouteDTO dto) {
+        return new Route(
+                dto.getName(),
+                dto.getDistance(),
+                dto.getDuration(),
+                dto.getCoordinatesEncoded(),
+                dto.getSelected()
+        );
+    }
+
+    private static Place mapPlaceDTOtoEntity(PlaceDTO dto) {
+        return new Place(
+                dto.getName(),
+                dto.getOption(),
+                dto.getRoutes().stream().map(MappingUtils::mapRouteDTOtoEntity).toList(),
+                dto.getLatitude(),
+                dto.getLongitude()
+        );
+    }
+
+    private static Ride mapRideDTOtoEntity(com.nwt.juber.dto.request.ride.RideDTO dto) {
+        return new Ride(
+                dto.getPlaces().stream().map(MappingUtils::mapPlaceDTOtoEntity).toList(),
+                dto.getFare(),
+                dto.getDuration(),
+                dto.getDistance()
+        );
     }
 }

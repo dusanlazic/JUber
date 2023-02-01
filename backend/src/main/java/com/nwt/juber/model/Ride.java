@@ -1,5 +1,6 @@
 package com.nwt.juber.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -11,6 +12,7 @@ import java.util.UUID;
 @Entity
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class Ride {
 
     @Id
@@ -60,4 +62,10 @@ public class Ride {
     @Column(name = "DISTANCE")
     private Double distance;
 
+    public Ride(List<Place> places, Double fare, Integer duration, Double distance) {
+        this.places = places;
+        this.fare = fare;
+        this.duration = duration;
+        this.distance = distance;
+    }
 }

@@ -2,42 +2,32 @@ package com.nwt.juber.controller;
 
 import com.nwt.juber.api.ResponseOk;
 import com.nwt.juber.dto.RideDTO;
-import com.nwt.juber.dto.response.report.ReportResponse;
+import com.nwt.juber.dto.request.ride.RideRequestDTO;
+import com.nwt.juber.dto.response.PastRidesResponse;
 import com.nwt.juber.exception.DriverNotFoundException;
 import com.nwt.juber.exception.InsufficientFundsException;
 import com.nwt.juber.exception.UserNotFoundException;
 import com.nwt.juber.model.Driver;
 import com.nwt.juber.model.Passenger;
 import com.nwt.juber.model.Ride;
+import com.nwt.juber.model.User;
 import com.nwt.juber.service.DriverService;
 import com.nwt.juber.service.PassengerService;
 import com.nwt.juber.service.RideService;
-
-import java.util.*;
-
-import javax.transaction.Transactional;
-import javax.validation.Valid;
-
+import com.nwt.juber.util.MappingUtils;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 import javax.naming.InsufficientResourcesException;
+import javax.transaction.Transactional;
+import javax.validation.Valid;
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
-
-import com.nwt.juber.dto.request.RideRequest;
-import com.nwt.juber.dto.response.PastRidesResponse;
-import com.nwt.juber.model.User;
 
 @RestController
 @RequestMapping(value = "ride")
@@ -140,11 +130,10 @@ public class RideController {
     
     @PostMapping("/rideRequest")
 	@PreAuthorize("hasAnyRole('PASSENGER')")
-	public ResponseOk createRideRequest(@Valid @RequestBody RideRequest rideRequest, Authentication authentication) throws DriverNotFoundException {
-		System.out.println(rideRequest.toString());
+	public ResponseOk createRideRequest(@Valid @RequestBody RideRequestDTO rideRequest, Authentication authentication) throws DriverNotFoundException {
         User user = (User) authentication.getPrincipal();
         Passenger passenger = passengerService.findById(user.getId()).orElseThrow(() -> new RuntimeException("No passenger found!"));
-        rideService.createRideRequest(rideRequest, passenger);
+        rideService.createRideRequest(MappingUtils.convertRideRequestDTOtoEntity(rideRequest), passenger);
         return new ResponseOk("ok");
 	}
 

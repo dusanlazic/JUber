@@ -1,6 +1,7 @@
 package com.nwt.juber.model;
 
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -10,6 +11,7 @@ import java.util.UUID;
 @Entity
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class Route {
 
     @Id
@@ -26,4 +28,11 @@ public class Route {
 
     private Boolean selected;
 
+    public Route(String name, Double distance, Double duration, String coordinatesEncoded, Boolean selected) {
+        this.name = name;
+        this.distance = distance;
+        this.duration = duration;
+        this.coordinatesEncoded = coordinatesEncoded;
+        this.selected = selected;
+    }
 }

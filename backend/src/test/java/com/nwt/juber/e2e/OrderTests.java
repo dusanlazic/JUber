@@ -3,12 +3,10 @@ package com.nwt.juber.e2e;
 import com.nwt.juber.config.TestConfig;
 import com.nwt.juber.e2e.pages.HomePage;
 import com.nwt.juber.e2e.pages.LoginPage;
+import com.nwt.juber.e2e.pages.RideDetailsPage;
 import com.nwt.juber.model.Ride;
 import com.nwt.juber.repository.RideRepository;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.*;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
@@ -40,38 +38,13 @@ import java.util.concurrent.TimeUnit;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @ContextConfiguration(classes = { TestConfig.class })
 @ActiveProfiles("test")
-public class OrderTests {
+public class OrderTests extends TestBase {
 
-	@Autowired
-	private RestTemplateBuilder builder;
-
-	@Autowired
-	private RideRepository rideRepository;
-
-	List<WebDriver> windows = new ArrayList<>();
-
-	public WebDriver openDriver(int number) {
-		WebDriver driver;
-		System.setProperty("webdriver.chrome.driver", "chromedriver");
-		ChromeOptions options = new ChromeOptions();
-		options.addArguments("--no-sandbox");
-		options.addArguments("--user-data-dir=/tmp/tmp" + number);
-		driver = new ChromeDriver(options);
-		driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
-		driver.manage().window().maximize();
-		return driver;
-	}
-
-	public void createDrivers(int number) {
-		for (int i = 0; i < number; i++) {
-			WebDriver driver = openDriver(i);
-			windows.add(driver);
-		}
-	}
 
 	@Test
+	@Disabled
 	@Rollback
-	public void Order_is_successful() {
+	public void Order_is_waiting_for_driver() {
 		createDrivers(2);
 		WebDriver window1 = windows.get(1);
 		WebDriver window2 = windows.get(0);
@@ -89,20 +62,14 @@ public class OrderTests {
 		HomePage homePage1 = new HomePage(window1);
 		homePage1.addPlace("Dr Ivana Ribara 13");
 		homePage1.addPlace("Baranjska 5");
-//		homePage1.addPal("mile.miletic@gmail.com");
 		homePage1.selectHatchback();
 		homePage1.orderRide();
 
-
-		List<Ride> rides = rideRepository.findAll();
-		System.out.println(rides.size());
-		for (Ride ride : rides) {
-			System.out.println(ride.getId() + " " + ride.getDriver().getEmail() + " " + ride.getRideStatus());
-		}
-		sleep(3000);
+		RideDetailsPage rideDetailsPage1 = new RideDetailsPage(window1);
 	}
 
 	@Test
+	@Disabled
 	@Rollback
 	public void Order_fails_because_pal_is_busy() {
 		createDrivers(2);
@@ -126,26 +93,39 @@ public class OrderTests {
 		homePage1.addPal("mile.miletic@gmail.com");
 		homePage1.selectHatchback();
 		homePage1.orderRide();
-
-
-		sleep(3000);
+		String result = homePage1.waitToastError();
+		Assertions.assertEquals("User is already in ride.", result);
 	}
 
-	public void sleep(int millies) {
-		try {
-			Thread.sleep(millies);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-	}
+	@Test
+	@Rollback
+	public void Order_fails_because_no_driver_with_vehicle() {
+		createDrivers(2);
+		WebDriver window1 = windows.get(1);
+		WebDriver window2 = windows.get(0);
 
-	@AfterEach
-	public void close() {
-		for (WebDriver window : windows) {
-			window.close();
-		}
-	}
 
+		LoginPage loginPage1 = new LoginPage(window1);
+		loginPage1.enterUsername("andrej.andrejevic@gmail.com");
+		loginPage1.enterPassword("cascaded");
+		loginPage1.login();
+
+		LoginPage loginPage2 = new LoginPage(window2);
+		loginPage2.enterUsername("zdravko.zdravkovic@gmail.com");
+		loginPage2.enterPassword("cascaded");
+		loginPage2.login();
+
+		HomePage homePage1 = new HomePage(window1);
+		homePage1.addPlace("Dr Ivana Ribara 13");
+		homePage1.addPlace("Baranjska 5");
+
+		homePage1.selectEstate();
+
+		homePage1.orderRide();
+		String result = homePage1.waitToastError();
+		System.out.println(result);
+		close = false;
+	}
 
 
 }

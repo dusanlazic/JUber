@@ -113,4 +113,10 @@ public class ControllerAdvisor {
     public ResponseError handleUserAlreadyInRideException(UserAlreadyInRideException e) {
         return new ResponseError(HttpStatus.CONFLICT, "User is already in ride.");
     }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(DriverNotFoundException.class)
+    public ResponseError handleDriverNotFoundException(DriverNotFoundException e) {
+        return new ResponseError(HttpStatus.NOT_FOUND, "Driver not found.");
+    }
 }

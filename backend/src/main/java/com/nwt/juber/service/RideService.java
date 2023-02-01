@@ -312,14 +312,18 @@ public class RideService {
         }
     }
 
-    private void assignSuitableDriver(Ride ride) throws DriverNotFoundException {
+    private void assignSuitableDriver(Ride ride, Boolean... noErr) throws DriverNotFoundException {
         System.out.println("Assigning suitable driver at: " + LocalDateTime.now());
         Driver driver = findSuitableDriver(ride);
         if (driver == null) {
             ride.setRideStatus(RideStatus.DENIED);
             rideRepository.save(ride);
             sendRideMessageToPassengers(ride, RideMessageType.DRIVER_CANCELLED_OR_NOT_FOUND);
-            throw new DriverNotFoundException();
+            if (noErr.length == 0) {
+                throw new DriverNotFoundException("No driver found!");
+            } else {
+                return;
+            }
         }
         ride.setDriver(driver);
         ride.setRideStatus(RideStatus.WAIT);
@@ -458,7 +462,7 @@ public class RideService {
         ride.setRideStatus(RideStatus.DENIED);
         ride.getBlacklisted().add(driver);
         rideRepository.save(ride);
-        assignSuitableDriver(ride);
+        assignSuitableDriver(ride, true);
     }
 
 

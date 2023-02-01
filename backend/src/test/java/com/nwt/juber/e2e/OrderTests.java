@@ -8,6 +8,7 @@ import com.nwt.juber.repository.RideRepository;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
@@ -20,9 +21,13 @@ import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWeb
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
+
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -31,6 +36,8 @@ import java.util.concurrent.TimeUnit;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @AutoConfigureTestDatabase
 @AutoConfigureDataJpa
+@Transactional
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @ContextConfiguration(classes = { TestConfig.class })
 @ActiveProfiles("test")
 public class OrderTests {
@@ -63,6 +70,7 @@ public class OrderTests {
 	}
 
 	@Test
+	@Rollback
 	public void Order_is_successful() {
 		createDrivers(2);
 		WebDriver window1 = windows.get(1);
@@ -72,7 +80,6 @@ public class OrderTests {
 		LoginPage loginPage1 = new LoginPage(window1);
 		loginPage1.enterUsername("andrej.andrejevic@gmail.com");
 		loginPage1.enterPassword("cascaded");
-		sleep(2000);
 		loginPage1.login();
 
 		LoginPage loginPage2 = new LoginPage(window2);
@@ -93,7 +100,36 @@ public class OrderTests {
 		for (Ride ride : rides) {
 			System.out.println(ride.getId() + " " + ride.getDriver().getEmail() + " " + ride.getRideStatus());
 		}
-		sleep(10000);
+		sleep(3000);
+	}
+
+	@Test
+	@Rollback
+	public void Order_is_successful2() {
+		createDrivers(2);
+		WebDriver window1 = windows.get(1);
+		WebDriver window2 = windows.get(0);
+
+
+		LoginPage loginPage1 = new LoginPage(window1);
+		loginPage1.enterUsername("andrej.andrejevic@gmail.com");
+		loginPage1.enterPassword("cascaded");
+		loginPage1.login();
+
+		LoginPage loginPage2 = new LoginPage(window2);
+		loginPage2.enterUsername("zdravko.zdravkovic@gmail.com");
+		loginPage2.enterPassword("cascaded");
+		loginPage2.login();
+
+		HomePage homePage1 = new HomePage(window1);
+		homePage1.addPlace("Dr Ivana Ribara 13");
+		homePage1.addPlace("Baranjska 5");
+//		homePage1.addPal("mile.miletic@gmail.com");
+		homePage1.selectHatchback();
+		homePage1.orderRide();
+
+
+		sleep(3000);
 	}
 
 	public void sleep(int millies) {
@@ -104,17 +140,12 @@ public class OrderTests {
 		}
 	}
 
-//	@AfterEach
-//	public void close() {
-//		try {
-//			Thread.sleep(5000);
-//		} catch (InterruptedException e) {
-//			e.printStackTrace();
-//		}
-//		for (WebDriver window : windows) {
-//			window.close();
-//		}
-//	}
+	@AfterEach
+	public void close() {
+		for (WebDriver window : windows) {
+			window.close();
+		}
+	}
 
 
 

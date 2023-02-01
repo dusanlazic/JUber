@@ -9,8 +9,8 @@
 	</p>
 
 
-	<p *ngIf="ride.rideStatus == 'DENIED'" class="title is-size-3 has-text-danger is-family-secondary">Ride failed/denied.</p>
-	<p *ngIf="ride.rideStatus == 'FINISHED'" class="title is-size-3 has-text-success is-family-secondary">Ride finished.</p>
+	<p *ngIf="ride.rideStatus == 'DENIED'" class="title is-size-3 has-text-danger is-family-secondary" id="ride-status-failed">Ride failed/denied.</p>
+	<p *ngIf="ride.rideStatus == 'FINISHED'" class="title is-size-3 has-text-success is-family-secondary" id="ride-status-finished">Ride finished.</p>
 
 
 	<app-details-passenger-header *ngIf="ride && loggedUser.role == 'ROLE_PASSENGER'" [ride]="ride" [loggedUser]="loggedUser"></app-details-passenger-header>
@@ -35,14 +35,12 @@
 				</figure>
 			</div>
 			<div class="column">
-			  <p><strong>{{ride.driver.firstName + " " + ride.driver.lastName}}</strong></p>
+			  <p id="driver-full-name"><strong>{{ride.driver.firstName + " " + ride.driver.lastName}}</strong></p>
 			</div>
 		  </div>
 		</div>
-
-		
-		<div *ngIf="!ride.driver && loggedUser.role == 'ROLE_PASSENGER' || ride.rideStatus == 'WAIT'" class="mb-5">
-			<div class="column">
+		<div *ngIf="!ride.driver && loggedUser.role == 'ROLE_PASSENGER'" class="mb-5">
+			<div class="column" id="no-driver-yet">
 				No driver assigned for ride yet...
 			</div>
 		</div>

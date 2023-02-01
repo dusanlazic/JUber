@@ -57,6 +57,10 @@ public abstract class User implements OAuth2User, UserDetails {
     @UpdateTimestamp
     private Date modified;
 
+    @Version
+    @Column(columnDefinition="integer default 0")
+    private Integer version;
+
     @Transient
     private Map<String, Object> attributes;
 

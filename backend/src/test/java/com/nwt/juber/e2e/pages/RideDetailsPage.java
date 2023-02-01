@@ -24,6 +24,9 @@ public class RideDetailsPage {
 	@FindBy(id = "no-driver-yet")
 	WebElement noDriverYet;
 
+	@FindBy(xpath = "//app-ride-details")
+	WebElement header;
+
 	WebDriver webDriver;
 	public RideDetailsPage(WebDriver webDriver) {
 		this.webDriver = webDriver;
@@ -39,6 +42,27 @@ public class RideDetailsPage {
 	public void waitNoDriverYet() {
 		new WebDriverWait(webDriver, Duration.of(10, ChronoUnit.SECONDS))
 				.until(ExpectedConditions.visibilityOf(noDriverYet));
+	}
+
+	public boolean optionalNoDriverYet() {
+		try {
+			new WebDriverWait(webDriver, Duration.of(5, ChronoUnit.SECONDS))
+					.until(ExpectedConditions.visibilityOf(noDriverYet));
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
+
+	public boolean optionalHeader() {
+		try {
+			new WebDriverWait(webDriver, Duration.of(3, ChronoUnit.SECONDS))
+					.until(ExpectedConditions.visibilityOf(header));
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
 	}
 
 }

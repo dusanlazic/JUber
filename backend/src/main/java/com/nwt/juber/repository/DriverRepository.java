@@ -7,12 +7,17 @@ import java.util.UUID;
 import com.nwt.juber.dto.DriverRideDTO;
 import com.nwt.juber.dto.message.PersonLocationMessage;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
 
 import com.nwt.juber.model.Driver;
 import com.nwt.juber.model.DriverStatus;
 import com.nwt.juber.model.Ride;
+import org.springframework.data.jpa.repository.QueryHints;
 import org.springframework.stereotype.Repository;
+
+import javax.persistence.LockModeType;
+import javax.persistence.QueryHint;
 
 @Repository
 public interface DriverRepository extends JpaRepository<Driver, UUID> {

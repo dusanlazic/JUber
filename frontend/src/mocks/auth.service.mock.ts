@@ -1,54 +1,6 @@
 import { HttpStatusCode } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { overrides } from 'chart.js/dist/core/core.defaults';
-import { Observable } from 'rxjs';
 import { LoginRequest, TokenResponse } from 'src/models/auth';
-import { ApiResponse } from 'src/models/responses';
-import { AuthService } from 'src/services/auth/auth.service';
-
-@Injectable()
-export class AuthServiceMock extends AuthService {
-  
-    override login(loginRequest: LoginRequest): Observable<TokenResponse> {
-        if(mockValidLoginRequest===loginRequest){
-            return new Observable(observer => {
-                observer.next(mockTokenResponse);
-            });
-        }
-        else if(mockInvalidUserEmailLoginRequest===loginRequest){
-            return new Observable(observer => {
-                observer.error(mockInvalidEmailErrorResponse);
-            });
-        }
-        else if(mockInvalidPasswordLoginRequest===loginRequest){
-            return new Observable(observer => {
-                observer.error(mockInvalidPasswordErrorResponse);
-            });
-        }
-        return new Observable(observer => {
-            observer.error();
-        });
-        
-    }
-    override handleSuccessfulAuth(expiresAt: number) : void {
-        // this.localStorage.setTokenExpiration(expiresAt);
-
-        // this.getCurrentUser().subscribe({
-        //     next: (user: LoggedUser) => {
-        //         this.localStorage.set('role', user.role);
-        //         const redirectPath = this.roleBasedRedirectPath(user.role);
-        //         this.loggedUser = user;
-        //         this.onNewUserReceived(user);
-        //         this.router.navigate([redirectPath]);
-        //     },
-        //     error: (e: HttpErrorResponse) => {
-        //         console.log(e);
-        //         // this.router.navigate(['/']);
-        //     }
-        // })
-    }
-
-}
+import { AuthProvider, LoggedUser, Roles } from 'src/models/user';
 
 const mockTokenResponse: TokenResponse =  {
     accessToken: 'accessToken',
@@ -75,8 +27,6 @@ const mockInvalidEmailFormatLoginRequest: LoginRequest = {
     password: 'cascaded1'
 }
 
-
-
 const mockInvalidPasswordErrorResponse = { status: HttpStatusCode.Unauthorized, statusText: 'Unauthorized', 
         error: {status: HttpStatusCode.Unauthorized, message: "Invalid password"} };
 
@@ -84,6 +34,46 @@ const mockInvalidPasswordErrorResponse = { status: HttpStatusCode.Unauthorized, 
 const mockInvalidEmailErrorResponse = { status: HttpStatusCode.NotFound, statusText: 'Not Found', 
         error: {status: HttpStatusCode.Unauthorized, message: "User not found"} };
 
+
+const mockInvalidPasswordToastr = {
+    message: 'Make sure you have an activated account.', 
+    title: mockInvalidPasswordErrorResponse.error.message 
+}
+
+const mockInvalidEmailToastr = {
+    message: 'Make sure you have an activated account.', 
+    title: mockInvalidEmailErrorResponse.error.message
+}
+
+
+const mockPassenger: LoggedUser = {
+    email: 'mile.miletic@gmail.com', 
+    id: '92348c29-e3cb-4c8f-ad5c-f31bf14db84d',
+    imageUrl: '',
+    name: 'Mile Miletic',
+    provider: AuthProvider.local,
+    role: Roles.PASSENGER
+}
+const mockDriver: LoggedUser = {
+    email: 'zdravko.zdravkovic@gmail.com', 
+    id: '909dccc3-4f61-4237-b3a2-6e674edd8d52',
+    imageUrl: '',
+    name: 'Zdravko Zdravkovic',
+    provider: AuthProvider.local,
+    role: Roles.DRIVER
+}
+const mockAdmin: LoggedUser = {
+    email: 'admin@juber.com', 
+    id: 'e3661c31-d1a4-47ab-94b6-1c6500dccf24',
+    imageUrl: '',
+    name: 'JUber Admin',
+    provider: AuthProvider.local,
+    role: Roles.ADMIN
+}
+
 export { mockTokenResponse, mockValidLoginRequest, 
         mockInvalidPasswordLoginRequest, mockInvalidUserEmailLoginRequest, mockInvalidEmailFormatLoginRequest, 
-        mockInvalidPasswordErrorResponse, mockInvalidEmailErrorResponse };
+        mockInvalidPasswordErrorResponse, mockInvalidEmailErrorResponse,
+        mockInvalidPasswordToastr, mockInvalidEmailToastr,
+        mockPassenger, mockDriver, mockAdmin
+     };

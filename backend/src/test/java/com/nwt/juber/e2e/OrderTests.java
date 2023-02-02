@@ -24,6 +24,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AdviceMode;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.test.annotation.DirtiesContext;
@@ -46,8 +47,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @AutoConfigureDataJpa
 @Transactional
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-@ContextConfiguration(classes = { TestConfig.class })
-@EnableAspectJAutoProxy
 @ActiveProfiles("test")
 public class OrderTests extends TestBase {
 
@@ -55,8 +54,10 @@ public class OrderTests extends TestBase {
 	@Autowired
 	private PassengerRepository passengerRepository;
 
+	@Autowired
+	ApplicationContext applicationContext;
+
 	@Test
-	@Disabled
 	@Rollback
 	public void Order_is_waiting_for_driver() {
 		BasePage.testName = "Order_is_waiting_for_driver";
@@ -65,12 +66,12 @@ public class OrderTests extends TestBase {
 		WebDriver window1 = windows.get(1);
 		WebDriver window2 = windows.get(0);
 
-		LoginPage loginPage1 = new LoginPage(window1, 0);
+		LoginPage loginPage1 = applicationContext.getBean(LoginPage.class, window1, 0);
 		loginPage1.enterUsername(users.get(0));
 		loginPage1.enterPassword("cascaded");
 		loginPage1.login();
 
-		LoginPage loginPage2 = new LoginPage(window2, 1);
+		LoginPage loginPage2 = applicationContext.getBean(LoginPage.class, window2, 1);
 		loginPage2.enterUsername(users.get(1));
 		loginPage2.enterPassword("cascaded");
 		loginPage2.login();
@@ -85,7 +86,6 @@ public class OrderTests extends TestBase {
 	}
 
 	@Test
-	@Disabled
 	@Rollback
 	public void Order_fails_because_pal_is_busy() {
 		BasePage.testName = "Order_fails_because_pal_is_busy";
@@ -96,17 +96,17 @@ public class OrderTests extends TestBase {
 		WebDriver window2 = windows.get(0);
 
 
-		LoginPage loginPage1 = new LoginPage(window1, 0);
+		LoginPage loginPage1 = applicationContext.getBean(LoginPage.class, window1, 0);
 		loginPage1.enterUsername(users.get(0));
 		loginPage1.enterPassword("cascaded");
 		loginPage1.login();
 
-		LoginPage loginPage2 = new LoginPage(window2, 1);
+		LoginPage loginPage2 = applicationContext.getBean(LoginPage.class, window2, 1);
 		loginPage2.enterUsername(users.get(1));
 		loginPage2.enterPassword("cascaded");
 		loginPage2.login();
 
-		HomePage homePage1 = new HomePage(window1, 0);
+		HomePage homePage1 = applicationContext.getBean(HomePage.class, window1, 0);
 		homePage1.addPlace("Dr Ivana Ribara 13");
 		homePage1.addPlace("Baranjska 5");
 		homePage1.addPal("mile.miletic@gmail.com");
@@ -117,7 +117,6 @@ public class OrderTests extends TestBase {
 	}
 
 	@Test
-	@Disabled
 	@Rollback
 	public void Order_fails_because_no_driver_with_vehicle() {
 		BasePage.testName = "Order_fails_because_no_driver_with_vehicle";
@@ -128,17 +127,17 @@ public class OrderTests extends TestBase {
 		WebDriver window2 = windows.get(0);
 
 
-		LoginPage loginPage1 = new LoginPage(window1, 0);
+		LoginPage loginPage1 = applicationContext.getBean(LoginPage.class, window1, 0);
 		loginPage1.enterUsername(users.get(0));
 		loginPage1.enterPassword("cascaded");
 		loginPage1.login();
 
-		LoginPage loginPage2 = new LoginPage(window2, 1);
+		LoginPage loginPage2 = applicationContext.getBean(LoginPage.class, window2, 1);
 		loginPage2.enterUsername(users.get(1));
 		loginPage2.enterPassword("cascaded");
 		loginPage2.login();
 
-		HomePage homePage1 = new HomePage(window1, 0);
+		HomePage homePage1 = applicationContext.getBean(HomePage.class, window1, 0);
 		homePage1.addPlace("Dr Ivana Ribara 13");
 		homePage1.addPlace("Baranjska 5");
 
@@ -147,11 +146,9 @@ public class OrderTests extends TestBase {
 		homePage1.orderRide();
 		String result = homePage1.waitToastError();
 		System.out.println(result);
-		close = false;
 	}
 
 	@Test
-	@Disabled
 	@Rollback
 	public void Order_at_the_same_time_one_fails() {
 		BasePage.testName = "Order_at_the_same_time_one_fails";
@@ -162,28 +159,28 @@ public class OrderTests extends TestBase {
 		WebDriver window3 = windows.get(2);
 
 
-		LoginPage loginPage1 = new LoginPage(window1, 0);
+		LoginPage loginPage1 = applicationContext.getBean(LoginPage.class, window1, 0);
 		loginPage1.enterUsername(users.get(0));
 		loginPage1.enterPassword("cascaded");
 		loginPage1.login();
 
-		LoginPage loginPage2 = new LoginPage(window2, 1);
+		LoginPage loginPage2 = applicationContext.getBean(LoginPage.class, window2, 1);
 		loginPage2.enterUsername(users.get(1));
 		loginPage2.enterPassword("cascaded");
 		loginPage2.login();
 
-		LoginPage loginPage3 = new LoginPage(window3, 2);
+		LoginPage loginPage3 = applicationContext.getBean(LoginPage.class, window3, 2);
 		loginPage3.enterUsername(users.get(2));
 		loginPage3.enterPassword("cascaded");
 		loginPage3.login();
 
 
-		HomePage homePage1 = new HomePage(window1, 0);
+		HomePage homePage1 = applicationContext.getBean(HomePage.class, window1, 0);
 		homePage1.addPlace("Dr Ivana Ribara 13");
 		homePage1.addPlace("Baranjska 5");
 		homePage1.selectHatchback();
 
-		HomePage homePage2 = new HomePage(window2, 1);
+		HomePage homePage2 = applicationContext.getBean(HomePage.class, window2, 1);
 		homePage2.addPlace("Dr Ivana Ribara 13");
 		homePage2.addPlace("Baranjska 5");
 		homePage2.selectHatchback();
@@ -202,7 +199,6 @@ public class OrderTests extends TestBase {
 
 
 	@Test
-	@Disabled
 	@Rollback
 	public void Order_fails_no_funds() {
 		BasePage.testName = "Order_fails_no_funds";
@@ -211,17 +207,17 @@ public class OrderTests extends TestBase {
 		WebDriver window1 = windows.get(0);
 		WebDriver window2 = windows.get(1);
 
-		LoginPage loginPage1 = new LoginPage(window1, 0);
+		LoginPage loginPage1 = applicationContext.getBean(LoginPage.class, window1, 0);
 		loginPage1.enterUsername(users.get(0));
 		loginPage1.enterPassword("cascaded");
 		loginPage1.login();
 
-		LoginPage loginPage2 = new LoginPage(window2, 1);
+		LoginPage loginPage2 = applicationContext.getBean(LoginPage.class, window2, 1);
 		loginPage2.enterUsername(users.get(1));
 		loginPage2.enterPassword("cascaded");
 		loginPage2.login();
 
-		HomePage homePage1 = new HomePage(window2, 1);
+		HomePage homePage1 = applicationContext.getBean(HomePage.class, window2, 1);
 		homePage1.addPlace("Dr Ivana Ribara 13");
 		homePage1.addPlace("Baranjska 5");
 		homePage1.selectHatchback();
@@ -243,29 +239,29 @@ public class OrderTests extends TestBase {
 		WebDriver window2 = windows.get(1);
 		WebDriver window3 = windows.get(2);
 
-		LoginPage loginPage1 = new LoginPage(window1, 0);
+		LoginPage loginPage1 = applicationContext.getBean(LoginPage.class, window1, 0);
 		loginPage1.enterUsername(users.get(0));
 		loginPage1.enterPassword("cascaded");
 		loginPage1.login();
 
-		LoginPage loginPage2 = new LoginPage(window2, 1);
+		LoginPage loginPage2 = applicationContext.getBean(LoginPage.class, window2, 1);
 		loginPage2.enterUsername(users.get(1));
 		loginPage2.enterPassword("cascaded");
 		loginPage2.login();
 
-		LoginPage loginPage3 = new LoginPage(window3, 2);
+		LoginPage loginPage3 = applicationContext.getBean(LoginPage.class, window3, 2);
 		loginPage3.enterUsername(users.get(2));
 		loginPage3.enterPassword("cascaded");
 		loginPage3.login();
 
-		HomePage homePage1 = new HomePage(window1, 0);
+		HomePage homePage1 = applicationContext.getBean(HomePage.class, window1, 0);
 		homePage1.addPlace("Dr Ivana Ribara 13");
 		homePage1.addPlace("Baranjska 5");
 		homePage1.addPal(users.get(1));
 		homePage1.selectHatchback();
 		homePage1.orderRide();
 
-		HomePage homePage2 = new HomePage(window2, 1);
+		HomePage homePage2 = applicationContext.getBean(HomePage.class, window2, 1);
 		homePage2.acceptFirstRideInvitation();
 		homePage2.waitToastError();
 	}
@@ -281,32 +277,37 @@ public class OrderTests extends TestBase {
 		WebDriver window2 = windows.get(1);
 		WebDriver window3 = windows.get(2);
 
-		LoginPage loginPage1 = new LoginPage(window1, 0);
+		LoginPage loginPage1 = applicationContext.getBean(LoginPage.class, window1, 0);
 		loginPage1.enterUsername(users.get(0));
 		loginPage1.enterPassword("cascaded");
 		loginPage1.login();
 
-		LoginPage loginPage2 = new LoginPage(window2, 1);
+		System.out.println(window1.getCurrentUrl());
+
+		LoginPage loginPage2 = applicationContext.getBean(LoginPage.class, window2, 1);
 		loginPage2.enterUsername(users.get(1));
 		loginPage2.enterPassword("cascaded");
 		loginPage2.login();
 
-		LoginPage loginPage3 = new LoginPage(window3, 2);
+		LoginPage loginPage3 = applicationContext.getBean(LoginPage.class, window3, 2);
 		loginPage3.enterUsername(users.get(2));
 		loginPage3.enterPassword("cascaded");
 		loginPage3.login();
 
-		HomePage homePage1 = new HomePage(window1, 0);
+		HomePage homePage1 = applicationContext.getBean(HomePage.class, window1, 0);
 		homePage1.addPlace("Dr Ivana Ribara 13");
 		homePage1.addPlace("Baranjska 5");
 		homePage1.addPal(users.get(1));
 		homePage1.selectHatchback();
 		homePage1.orderRide();
 
+		sleep(1000);
 		HomePage homePage2 = new HomePage(window2, 1);
 		homePage2.acceptFirstRideInvitation();
 		RideDetailsPage rideDetailsPage = new RideDetailsPage(window2);
 		boolean accepted = rideDetailsPage.optionalHeader();
 		assert accepted;
+//		close = false;
 	}
+
 }

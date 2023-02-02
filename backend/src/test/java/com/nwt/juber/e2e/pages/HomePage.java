@@ -1,6 +1,8 @@
 package com.nwt.juber.e2e.pages;
 
 import com.nwt.juber.e2e.BasePage;
+import com.nwt.juber.e2e.logging.LogSelenium;
+import lombok.extern.java.Log;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -9,11 +11,16 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
+@Component
+@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class HomePage extends BasePage {
 
 	@FindBy(xpath = "//button[contains(text(), 'Add')]")
@@ -74,12 +81,17 @@ public class HomePage extends BasePage {
 	@FindBy(xpath = "//app-notification-item")
 	List<WebElement> notificationItems;
 
-	WebDriver webDriver;
+	public WebDriver webDriver;
+
+	public HomePage() {
+
+	}
 
 	public HomePage(WebDriver webDriver, int index) {
+		System.out.println("Creating home page");
 		this.index = index;
-		webDriver.navigate().to("http://localhost:3000/home");
 		this.webDriver = webDriver;
+		webDriver.navigate().to("http://localhost:3000/home");
 		PageFactory.initElements(webDriver, this);
 	}
 
@@ -92,17 +104,18 @@ public class HomePage extends BasePage {
 		this.addressInput.sendKeys(address);
 		new WebDriverWait(webDriver, Duration.of(3, ChronoUnit.SECONDS));
 		this.savePlaceButton.click();
-		this.log(webDriver);
+		(new WebDriverWait(webDriver, Duration.of(10, ChronoUnit.SECONDS)))
+				.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//p[contains(text(), '"+address+"')]")));
 	}
 
 	public void selectHatchback() {
+		(new WebDriverWait(webDriver, Duration.of(5, ChronoUnit.SECONDS)))
+				.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[contains(text(), 'Baby friendly')]")));
+
 		(new WebDriverWait(webDriver, Duration.of(10, ChronoUnit.SECONDS)))
 				.until(ExpectedConditions.elementToBeClickable(this.carHatchback));
 		new Actions(webDriver)
-				.moveToElement(this.carHatchback)
-				.moveByOffset(10, 10)
-				.click().perform();
-		this.log(webDriver);
+				.moveToElement(this.carHatchback, 5, 5).click().perform();
 	}
 
 	public void selectLimousine() {
@@ -121,28 +134,34 @@ public class HomePage extends BasePage {
 				.moveToElement(this.carEstate)
 				.moveByOffset(10, 10)
 				.click().perform();
-		this.log(webDriver);
 	}
 
 	public void setHours(String hours) {
 		(new WebDriverWait(webDriver, Duration.of(10, ChronoUnit.SECONDS)))
 				.until(ExpectedConditions.visibilityOf(this.scheduleHours));
 		this.scheduleHours.sendKeys(hours);
-		this.log(webDriver);
 	}
 
 	public void setMinutes(String minutes) {
 		(new WebDriverWait(webDriver, Duration.of(10, ChronoUnit.SECONDS)))
 				.until(ExpectedConditions.visibilityOf(this.scheduleMinutes));
 		this.scheduleMinutes.sendKeys(minutes);
-		this.log(webDriver);
 	}
 
 	public void orderRide() {
+
+		(new WebDriverWait(webDriver, Duration.of(10, ChronoUnit.SECONDS)))
+				.until(ExpectedConditions.not(ExpectedConditions.textToBe(By.id("calculated-distance"), "0 km")));
+
+		(new WebDriverWait(webDriver, Duration.of(10, ChronoUnit.SECONDS)))
+				.until(ExpectedConditions.not(ExpectedConditions.textToBe(By.id("calculated-time"), "0 min")));
+
+		System.out.println(webDriver.findElement(By.id("calculated-distance")).getText());
+		System.out.println(webDriver.findElement(By.id("calculated-time")).getText());
+
 		(new WebDriverWait(webDriver, Duration.of(10, ChronoUnit.SECONDS)))
 				.until(ExpectedConditions.visibilityOf(this.continueToPaymentButton));
 		this.continueToPaymentButton.click();
-		this.log(webDriver);
 	}
 
 	public void addPal(String email) {
@@ -155,13 +174,11 @@ public class HomePage extends BasePage {
 		(new WebDriverWait(webDriver, Duration.of(10, ChronoUnit.SECONDS)))
 				.until(ExpectedConditions.elementToBeClickable(this.addPalEmailInput));
 		this.addPalConfirmButton.click();
-		this.log(webDriver);
 	}
 
 	public String waitToastError() {
 		(new WebDriverWait(webDriver, Duration.of(10, ChronoUnit.SECONDS)))
 				.until(ExpectedConditions.visibilityOf(this.toastError));
-		this.log(webDriver);
 		return this.toastError.getText();
 	}
 
@@ -188,7 +205,6 @@ public class HomePage extends BasePage {
 		(new WebDriverWait(webDriver, Duration.of(10, ChronoUnit.SECONDS)))
 				.until(ExpectedConditions.visibilityOfAllElements(this.rideInvite));
 		this.rideInvite.get(0).findElement(By.xpath("//button[contains(text(), 'Accept')]")).click();
-		this.log(webDriver);
 	}
 
 

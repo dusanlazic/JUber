@@ -21,7 +21,7 @@ public class TestBase {
 		ChromeOptions options = new ChromeOptions();
 		options.addArguments("--no-sandbox");
 		options.addArguments("--disk-cache-size=0");
-//		options.addArguments("--incognito");
+//		options.addArguments("--headless");
 		options.addArguments("--user-data-dir=./tmp/tmp-" + name);
 		driver = new ChromeDriver(options);
 		driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
@@ -42,6 +42,7 @@ public class TestBase {
 		for (WebDriver window : windows) {
 			window.close();
 		}
+		windows.clear();
 	}
 
 	public void sleep(int millies) {

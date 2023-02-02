@@ -7,11 +7,11 @@
   <div class="is-custom-at-bottom has-text-centered mt-5">
     <p class="has-text-grey">
       <span class="iconify-inline" data-icon="fluent:arrow-fit-20-filled"></span> Total distance
-      <span class="has-text-weight-bold">{{toFixed(totalDistance / 1000)}} km</span>
+      <span class="has-text-weight-bold" id="calculated-distance">{{toFixed(totalDistance / 1000)}} km</span>
     </p>
     <p class="has-text-grey">
       <span class="iconify-inline" data-icon="fluent:clock-32-regular"></span> Estimated time
-      <span class="has-text-weight-bold">{{ceil(totalDuration / 60)}} min</span>
+      <span class="has-text-weight-bold" id="calculated-time">{{ceil(totalDuration / 60)}} min</span>
     </p>
     <p class="has-text-grey">
       <span class="iconify-inline" data-icon="ic:baseline-attach-money"></span> Total cost

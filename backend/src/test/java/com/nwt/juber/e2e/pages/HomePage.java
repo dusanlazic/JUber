@@ -207,6 +207,20 @@ public class HomePage extends BasePage {
 		this.rideInvite.get(0).findElement(By.xpath("//button[contains(text(), 'Accept')]")).click();
 	}
 
+	public void declineFirstRideInvitation() {
+		this.openNotifications();
+		(new WebDriverWait(webDriver, Duration.of(10, ChronoUnit.SECONDS)))
+				.until(ExpectedConditions.visibilityOfAllElements(this.rideInvite));
+		this.rideInvite.get(0).findElement(By.xpath("//button[contains(text(), 'Decline')]")).click();
+	}
+
+	public void setScheduledTime(String hours, String minutes) {
+		(new WebDriverWait(webDriver, Duration.of(10, ChronoUnit.SECONDS)))
+				.until(ExpectedConditions.visibilityOf(this.scheduleHours));
+		this.scheduleHours.sendKeys(hours);
+		this.scheduleMinutes.sendKeys(minutes);
+	}
+
 
 
 }

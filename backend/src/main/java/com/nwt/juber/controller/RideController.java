@@ -44,13 +44,16 @@ public class RideController {
     DriverService driverService;
 
     @PutMapping("/start/{id}")
+    @PreAuthorize("hasRole('DRIVER')")
     public ResponseOk startRide(@PathVariable("id") UUID rideId) {
         rideService.startRide(rideId);
         return new ResponseOk("ok");
     }
 
     @PutMapping("/end/{id}")
-    public ResponseOk endRide(@PathVariable("id") UUID rideId) {
+    @PreAuthorize("hasRole('DRIVER')")
+    public ResponseOk endRide(@PathVariable("id") UUID rideId, Authentication authentication) {
+        Driver driver = driverService.findById(((User) authentication.getPrincipal()).getId()).orElseThrow(UserNotFoundException::new);
         rideService.endRide(rideId);
         return new ResponseOk("ok");
     }

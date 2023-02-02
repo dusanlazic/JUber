@@ -324,6 +324,7 @@ public class RideService {
         if (ride.getPassengersReady().stream().allMatch(x -> x == PassengerStatus.Ready)) {
             ride.setRideStatus(RideStatus.WAIT);
             rideRepository.save(ride);
+            System.out.println("All are ready!");
             assignSuitableDriverWhenNeeded(ride);
         }
     }
@@ -333,6 +334,7 @@ public class RideService {
         System.out.println("Assigning suitable driver at: " + LocalDateTime.now());
         Driver driver = findSuitableDriver(ride);
         if (driver == null) {
+            System.out.println("No driver found!");
             ride.setRideStatus(RideStatus.DENIED);
             rideRepository.save(ride);
             sendRideMessageToPassengers(ride, RideMessageType.DRIVER_CANCELLED_OR_NOT_FOUND);
@@ -481,8 +483,8 @@ public class RideService {
 
     public void declineRideDriver(Driver driver, UUID rideId) throws DriverNotFoundException {
         Ride ride = rideRepository.findById(rideId).orElseThrow(() -> new EndRideException("No ride with id: " + rideId));
-        ride.setRideStatus(RideStatus.DENIED);
         ride.getBlacklisted().add(driver);
+        System.out.println("ALO ODBIO JE VOZAC");
         rideRepository.save(ride);
         assignSuitableDriver(ride, true);
     }
@@ -604,7 +606,7 @@ public class RideService {
 
     public void panicRide(Ride ride, Passenger user) {
         if (!ride.getPassengers().contains(user) || ride.getRideStatus() != RideStatus.IN_PROGRESS) {
-            throw new RuntimeException("You are not allowed to panic this ride!");
+            throw new EndRideException("You are not allowed to panic this ride!");
         }
         ride.setRideStatus(RideStatus.DENIED);
         rideRepository.save(ride);

@@ -133,4 +133,17 @@ public class ControllerAdvisor {
         return new ResponseError(HttpStatus.NOT_ACCEPTABLE, "Insufficient funds.");
     }
 
+    @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
+    @ExceptionHandler(EndRideException.class)
+    public ResponseError handleEndRideException(EndRideException e) {
+        return new ResponseError(HttpStatus.NOT_ACCEPTABLE, "Error while ending ride.");
+    }
+
+
+    @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
+    @ExceptionHandler(StartRideException.class)
+    public ResponseError handleStartRideException(StartRideException e) {
+        return new ResponseError(HttpStatus.NOT_ACCEPTABLE, "Error while starting ride.");
+    }
+
 }

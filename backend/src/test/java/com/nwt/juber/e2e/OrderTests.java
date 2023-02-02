@@ -1,43 +1,23 @@
 package com.nwt.juber.e2e;
 
-import com.fasterxml.jackson.databind.ser.Serializers;
-import com.nwt.juber.config.TestConfig;
-import com.nwt.juber.dto.notification.RideInvitation;
 import com.nwt.juber.e2e.pages.HomePage;
 import com.nwt.juber.e2e.pages.LoginPage;
 import com.nwt.juber.e2e.pages.RideDetailsPage;
-import com.nwt.juber.model.Passenger;
-import com.nwt.juber.model.Ride;
 import com.nwt.juber.repository.PassengerRepository;
-import com.nwt.juber.repository.RideRepository;
 import org.junit.jupiter.api.*;
-import org.openqa.selenium.By;
-import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
-import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.AdviceMode;
-import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.TestPropertySource;
 
 import javax.transaction.Transactional;
-import java.math.BigDecimal;
-import java.util.ArrayList;
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -47,12 +27,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @AutoConfigureDataJpa
 @Transactional
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @ActiveProfiles("test")
 public class OrderTests extends TestBase {
 
-
-	@Autowired
-	private PassengerRepository passengerRepository;
 
 	@Autowired
 	ApplicationContext applicationContext;
@@ -228,7 +206,6 @@ public class OrderTests extends TestBase {
 
 
 	@Test
-	@Disabled
 	@Rollback
 	public void Pal_has_insufficient_funds() {
 		BasePage.testName = "Pal_has_insufficient_funds";
@@ -267,6 +244,7 @@ public class OrderTests extends TestBase {
 	}
 
 	@Test
+	@Order(1)
 	@Rollback
 	public void Pal_accepts_ride() {
 		BasePage.testName = "Pal_accepts_ride";
@@ -301,13 +279,212 @@ public class OrderTests extends TestBase {
 		homePage1.selectHatchback();
 		homePage1.orderRide();
 
-		sleep(1000);
-		HomePage homePage2 = new HomePage(window2, 1);
+		sleep(2000);
+		HomePage homePage2 = applicationContext.getBean(HomePage.class, window2, 1);
 		homePage2.acceptFirstRideInvitation();
 		RideDetailsPage rideDetailsPage = new RideDetailsPage(window2);
 		boolean accepted = rideDetailsPage.optionalHeader();
 		assert accepted;
 //		close = false;
 	}
+
+
+	@Test
+	@Rollback
+	public void Pal_declines_ride() {
+		BasePage.testName = "Pal_declines_ride";
+		List<String> users = List.of("branimir.branimirovic@gmail.com" ,"andrej.andrejevic@gmail.com", "zdravko.zdravkovic@gmail.com");
+		createDrivers(3, users);
+
+		WebDriver window1 = windows.get(0);
+		WebDriver window2 = windows.get(1);
+		WebDriver window3 = windows.get(2);
+
+		LoginPage loginPage1 = applicationContext.getBean(LoginPage.class, window1, 0);
+		loginPage1.enterUsername(users.get(0));
+		loginPage1.enterPassword("cascaded");
+		loginPage1.login();
+
+
+		LoginPage loginPage2 = applicationContext.getBean(LoginPage.class, window2, 1);
+		loginPage2.enterUsername(users.get(1));
+		loginPage2.enterPassword("cascaded");
+		loginPage2.login();
+
+		LoginPage loginPage3 = applicationContext.getBean(LoginPage.class, window3, 2);
+		loginPage3.enterUsername(users.get(2));
+		loginPage3.enterPassword("cascaded");
+		loginPage3.login();
+
+		HomePage homePage1 = applicationContext.getBean(HomePage.class, window1, 0);
+		homePage1.addPlace("Dr Ivana Ribara 13");
+		homePage1.addPlace("Baranjska 5");
+		homePage1.addPal(users.get(1));
+		homePage1.selectHatchback();
+		homePage1.orderRide();
+
+		sleep(2000);
+		HomePage homePage2 = new HomePage(window2, 1);
+		homePage2.declineFirstRideInvitation();
+		RideDetailsPage rideDetailsPage = new RideDetailsPage(window1);
+		rideDetailsPage.waitRideStatusFailed();
+//		close = false;
+	}
+
+	@Test
+	@Rollback
+	public void Driver_declines_ride_and_no_drivers_are_left() {
+		BasePage.testName = "Driver_declines_ride_and_no_drivers_are_left";
+		List<String> users = List.of("andrej.andrejevic@gmail.com", "zdravko.zdravkovic@gmail.com");
+
+		createDrivers(2, users);
+
+		WebDriver window1 = windows.get(0);
+		WebDriver window2 = windows.get(1);
+
+		LoginPage loginPage1 = applicationContext.getBean(LoginPage.class, window1, 0);
+		loginPage1.enterUsername(users.get(0));
+		loginPage1.enterPassword("cascaded");
+		loginPage1.login();
+
+		LoginPage loginPage2 = applicationContext.getBean(LoginPage.class, window2, 1);
+		loginPage2.enterUsername(users.get(1));
+		loginPage2.enterPassword("cascaded");
+		loginPage2.login();
+
+		HomePage homePage1 = applicationContext.getBean(HomePage.class, window1, 0);
+		homePage1.addPlace("Dr Ivana Ribara 13");
+		homePage1.addPlace("Baranjska 5");
+		homePage1.selectHatchback();
+		homePage1.orderRide();
+
+		RideDetailsPage rideDetailsPage = new RideDetailsPage(window2);
+		rideDetailsPage.declineRideDriver();
+
+		homePage1.waitToastError();
+	}
+
+	@Test
+	@Rollback
+	public void Driver_declines_ride_and_drivers_other_drivers_are_occupied() {
+		BasePage.testName = "Driver_declines_ride_and_drivers_are_left";
+		List<String> users = List.of("andrej.andrejevic@gmail.com", "zdravko.zdravkovic@gmail.com", "marko.markovic@gmail.com");
+
+		createDrivers(3, users);
+
+		WebDriver window1 = windows.get(0);
+		WebDriver window2 = windows.get(1);
+		WebDriver window3 = windows.get(2);
+
+		LoginPage loginPage1 = applicationContext.getBean(LoginPage.class, window1, 0);
+		loginPage1.enterUsername(users.get(0));
+		loginPage1.enterPassword("cascaded");
+		loginPage1.login();
+
+		LoginPage loginPage2 = applicationContext.getBean(LoginPage.class, window2, 1);
+		loginPage2.enterUsername(users.get(1));
+		loginPage2.enterPassword("cascaded");
+		loginPage2.login();
+
+		LoginPage loginPage3 = applicationContext.getBean(LoginPage.class, window3, 2);
+		loginPage3.enterUsername(users.get(2));
+		loginPage3.enterPassword("cascaded");
+		loginPage3.login();
+
+		HomePage homePage1 = applicationContext.getBean(HomePage.class, window1, 0);
+		homePage1.addPlace("Dr Ivana Ribara 13");
+		homePage1.addPlace("Baranjska 5");
+		homePage1.selectHatchback();
+		homePage1.orderRide();
+
+		RideDetailsPage rideDetailsPage = new RideDetailsPage(window2);
+		rideDetailsPage.declineRideDriver();
+
+		homePage1.waitToastError();
+
+	}
+
+
+	@Test
+	@Order(0)
+	@Rollback
+	public void Driver_declines_ride_and_ride_is_assigned_to_another_driver() {
+		BasePage.testName = "Driver_declines_ride_and_drivers_are_left";
+		List<String> users = List.of("andrej.andrejevic@gmail.com", "zdravko.zdravkovic@gmail.com", "dusan.dusanovic@gmail.com");
+
+		createDrivers(3, users);
+
+		WebDriver window1 = windows.get(0);
+		WebDriver window2 = windows.get(1);
+		WebDriver window3 = windows.get(2);
+
+		LoginPage loginPage1 = applicationContext.getBean(LoginPage.class, window1, 0);
+		loginPage1.enterUsername(users.get(0));
+		loginPage1.enterPassword("cascaded");
+		loginPage1.login();
+
+		LoginPage loginPage2 = applicationContext.getBean(LoginPage.class, window2, 1);
+		loginPage2.enterUsername(users.get(1));
+		loginPage2.enterPassword("cascaded");
+		loginPage2.login();
+
+		LoginPage loginPage3 = applicationContext.getBean(LoginPage.class, window3, 2);
+		loginPage3.enterUsername(users.get(2));
+		loginPage3.enterPassword("cascaded");
+		loginPage3.login();
+
+		HomePage homePage1 = applicationContext.getBean(HomePage.class, window1, 0);
+		homePage1.addPlace("Dr Ivana Ribara 13");
+		homePage1.addPlace("Baranjska 5");
+		homePage1.selectHatchback();
+		homePage1.orderRide();
+
+		RideDetailsPage rideDetailsPage = new RideDetailsPage(window2);
+		rideDetailsPage.declineRideDriver();
+
+		RideDetailsPage rideDetailsPage2 = new RideDetailsPage(window3);
+		rideDetailsPage2.waitForPassengerToAppear("Andrej Andrejevic");
+	}
+
+
+	@Test
+	@Rollback
+	public void Schedueld_ride_is_more_than_5_hours_from_now() {
+		BasePage.testName = "Schedueld_ride_is_more_than_5_hours_from_now";
+		List<String> users = List.of("andrej.andrejevic@gmail.com", "zdravko.zdravkovic@gmail.com");
+
+		createDrivers(2, users);
+
+		WebDriver window1 = windows.get(0);
+		WebDriver window2 = windows.get(1);
+
+		LoginPage loginPage1 = applicationContext.getBean(LoginPage.class, window1, 0);
+		loginPage1.enterUsername(users.get(0));
+		loginPage1.enterPassword("cascaded");
+		loginPage1.login();
+
+		LoginPage loginPage2 = applicationContext.getBean(LoginPage.class, window2, 1);
+		loginPage2.enterUsername(users.get(1));
+		loginPage2.enterPassword("cascaded");
+		loginPage2.login();
+
+		HomePage homePage1 = applicationContext.getBean(HomePage.class, window1, 0);
+		homePage1.addPlace("Dr Ivana Ribara 13");
+		homePage1.addPlace("Baranjska 5");
+		homePage1.selectHatchback();
+
+		LocalDateTime now = LocalDateTime.now();
+		LocalDateTime fiveHoursFromNow = now.plusHours(5).plusMinutes(2);
+		String hours = String.valueOf(fiveHoursFromNow.getHour());
+		String minutes = String.valueOf(fiveHoursFromNow.getMinute());
+		System.out.println("SADA JE VREME");
+		System.out.println(hours + " " + minutes);
+		homePage1.setScheduledTime(hours, minutes);
+
+		homePage1.orderRide();
+		String toastMessage = homePage1.waitToastError();
+		assertEquals("Field validation failed.", toastMessage);
+	}
+
 
 }

@@ -63,8 +63,18 @@ public class DriverService {
         dto.setUsername(driver.getUsername());
         dto.setLongitude(driver.getVehicle().getLongitude());
         dto.setLatitude(driver.getVehicle().getLatitude());
-        Optional<Ride> rideToSim = driverRepository.findRideForSimulation(driver.getId());
-        dto.setPlaces(rideToSim.map(Ride::getPlaces).orElse(null));
+        List<Ride> rideToSimList = driverRepository.findRideForSimulation(driver.getUsername());
+		Optional<Ride> rideToSim = Optional.empty();
+
+		if(rideToSimList.size() == 1) {
+			rideToSim = Optional.of(rideToSimList.get(0));
+		} else if(rideToSimList.size() > 1) {
+			rideToSim = rideToSimList
+					.stream()
+					.max(Comparator.comparing(Ride::getRideStatus));
+		}
+
+		dto.setPlaces(rideToSim.map(Ride::getPlaces).orElse(null));
         dto.setStatus(rideToSim.map(Ride::getRideStatus).orElse(null));
         dto.setRideId(rideToSim.map(Ride::getId).orElse(null));
 		if (dto.getPlaces() != null) {

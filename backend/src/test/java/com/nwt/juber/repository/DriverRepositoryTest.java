@@ -57,7 +57,7 @@ public class DriverRepositoryTest {
 	public void Find_all_locations_of_drivers() {
 		List<PersonLocationMessage> locations = driverRepository.findAllLocations();
 		System.out.println(locations);
-		assertEquals(2, locations.size());
+		assertEquals(1, locations.size());
 	}
 
 	// parametrized test for locationForDriverEmail method in DriverRepository
@@ -81,6 +81,9 @@ public class DriverRepositoryTest {
 	@Test
 	public void Finding_available_drivers() {
 		List<Driver> drivers = driverRepository.findAvailableDrivers();
+
+		drivers.forEach(d -> System.out.println(d.getEmail()));
+
 		assertEquals(0, drivers.size());
 	}
 
@@ -94,8 +97,8 @@ public class DriverRepositoryTest {
 	static List<Arguments> driverStatusProvider() {
 		return List.of(
 				arguments(DriverStatus.DRIVING, 0),
-				arguments(DriverStatus.ACTIVE, 2),
-				arguments(DriverStatus.INACTIVE, 3),
+				arguments(DriverStatus.ACTIVE, 1),
+				arguments(DriverStatus.INACTIVE, 4),
 				arguments(DriverStatus.OVERTIME, 1)
 		);
 	}

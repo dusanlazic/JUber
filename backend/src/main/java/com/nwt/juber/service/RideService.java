@@ -119,7 +119,6 @@ public class RideService {
         if(rideRepository.getActiveRideForPassenger(passenger) != null) {
             throw new UserAlreadyInRideException("You already have a ride!");
         }
-        System.out.println(passenger.getEmail() + " " + passenger.getBalance());
         checkFunds(passenger, rideRequest.getRide());
         Ride ride = new Ride();
         List<Passenger> pass = new ArrayList<>();
@@ -375,7 +374,7 @@ public class RideService {
 
     public Driver findClosestAvailableDriver(Ride ride) {
         // Could possibly have status of SCHEDULED but no WAIT, ACCEPTED, IN PROGRESS
-        List<Driver> drivers = driverRepository.findAvailableDrivers(ride);
+        List<Driver> drivers = driverRepository.findAvailableDrivers();
         drivers = filterDriverByAdditional(ride, drivers);
         double startLat = ride.getPlaces().get(0).getLatitude();
         double startLon = ride.getPlaces().get(0).getLongitude();
@@ -506,9 +505,8 @@ public class RideService {
         return ride == null? null : convertRideToDTO(ride);
     }
 
-    public RideDTO getRide(UUID rideId, Authentication authentication) {
+    public RideDTO getRide(UUID rideId, User user) {
         Ride ride = rideRepository.findById(rideId).orElseThrow(() -> new RuntimeException("No ride found!"));
-        User user = (User) authentication.getPrincipal();
         if (user.getRole() != Role.ROLE_ADMIN) {
             if (!ride.getDriver().getId().equals(user.getId()) && ride.getPassengers().stream().map(Person::getId).noneMatch(x -> x.equals(user.getId()))) {
                 throw new RuntimeException("You are not allowed to see this ride!");

@@ -113,17 +113,9 @@ public class RideService {
         }
     }
 
-    public void checkScheduledTime(RideRequest request) {
-        LocalDateTime time = parseScheduledTime(request.getScheduleTime());
-
-        if (request.getScheduleTime() != null && time == null)
-            throw new RideRequestForbiddenException("Field validation failed.");
-
-        if (time != null && time.isAfter(LocalDateTime.now().plusHours(5).plusMinutes(1)))
+    public void checkScheduledTime(LocalDateTime scheduledTime) {
+        if (scheduledTime != null && scheduledTime.isAfter(LocalDateTime.now().plusHours(5).plusMinutes(1)))
             throw new RideRequestForbiddenException("Scheduled time is after 5 hours from now!");
-
-        else if (time == null)
-            request.setScheduleTime(null);
     }
 
     // if there is one passenger, find driver
@@ -133,7 +125,8 @@ public class RideService {
             throw new UserAlreadyInRideException("You already have a ride!");
         }
         checkFunds(passenger, rideRequest.getRide());
-        checkScheduledTime(rideRequest);
+        LocalDateTime parsedScheduledTime = parseScheduledTime(rideRequest.getScheduleTime());
+        checkScheduledTime(parsedScheduledTime);
         Ride ride = new Ride();
         List<Passenger> pass = new ArrayList<>();
         pass.add(passenger);
@@ -152,7 +145,7 @@ public class RideService {
         ride.setRideStatus(RideStatus.WAITING_FOR_PAYMENT);
         ride.setStartTime(rideRequest.getRide().getStartTime());
         ride.setEndTime(rideRequest.getRide().getEndTime());
-        ride.setScheduledTime(parseScheduledTime(rideRequest.getScheduleTime()));
+        ride.setScheduledTime(parsedScheduledTime);
         ride.setPlaces(rideRequest.getRide().getPlaces());
         ride.setFare(rideRequest.getRide().getFare());
         ride.setDuration(rideRequest.getRide().getDuration());
@@ -223,23 +216,17 @@ public class RideService {
     }
 
     private LocalDateTime parseScheduledTime(String scheduledTime) {
-        LocalTime parsedTime;
-
-        if (scheduledTime == null || scheduledTime.isEmpty() || scheduledTime.isBlank()) {
+        if (scheduledTime == null || scheduledTime.isEmpty() || scheduledTime.isBlank())
             return null;
-        }
 
         try {
-            parsedTime = LocalTime.parse(scheduledTime);
+            LocalTime parsedTime = LocalTime.parse(scheduledTime);
+            if (parsedTime.isBefore(LocalTime.now()))
+                return parsedTime.atDate(LocalDate.now().plusDays(1));
+            return parsedTime.atDate(LocalDate.now());
         } catch (Exception e) {
             return null;
         }
-
-        LocalDateTime parsedDateTime = parsedTime.atDate(LocalDate.now());
-        if (parsedDateTime.isBefore(LocalDateTime.now())) {
-            parsedDateTime = parsedDateTime.plusDays(1);
-        }
-        return parsedDateTime;
     }
 
     private void sendRideInvitation(Ride ride, String email, Passenger inviter) {

@@ -23,8 +23,9 @@ import javax.persistence.QueryHint;
 public interface DriverRepository extends JpaRepository<Driver, UUID> {
 
 
-    @Query(value = "select r from Ride r where r.driver.email = :username and (r.rideStatus = 1 or r.rideStatus = 2 or r.rideStatus = 3) order by r.rideStatus desc")
-    public Optional<Ride> findRideForSimulation(String username);
+    @Query(value = "select * from Ride r where r.DRIVER_ID = ?1 and " +
+            "(r.RIDE_STATUS = 1 or r.RIDE_STATUS = 2 or r.RIDE_STATUS = 3) order by r.RIDE_STATUS desc limit 1", nativeQuery = true)
+    public Optional<Ride> findRideForSimulation(UUID id);
 
 	List<Driver> findByStatus(DriverStatus status);
 

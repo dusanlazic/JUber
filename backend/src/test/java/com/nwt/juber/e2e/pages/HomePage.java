@@ -21,6 +21,7 @@ import java.util.List;
 
 @Component
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+@LogSelenium
 public class HomePage extends BasePage {
 
 	@FindBy(xpath = "//button[contains(text(), 'Add')]")

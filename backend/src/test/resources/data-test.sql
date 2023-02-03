@@ -9,7 +9,7 @@ CREATE CONSTANT PASSENGER_PETAR_ID VALUE '6aebc916-dd04-4674-a4f2-99edec0a1811';
 CREATE CONSTANT PASSENGER_DRAGAN_ID VALUE '336bc999-8285-4cc2-9d9a-007e535566a6';
 CREATE CONSTANT PASSENGER_BRANIMIR_ID VALUE '0dca6adc-dc37-453e-ab42-083ca865f7fc';
 CREATE CONSTANT PASSENGER_DZAMAL_ID VALUE ' 0bc98102-919e-43ef-8ead-048ac34a9736';
-
+CREATE CONSTANT PASSENGER_EMAIL_NOT_VERIFIED_ID VALUE 'd0613295-9257-494b-b128-ecd8f166e54c';
 
 create constant RIDE_1 value '8107614c-04d9-480d-8a59-e1999d9e7bfc';
 create constant RIDE_2 value '46ab4aff-d171-4447-a05c-204a29d0fde1';
@@ -50,9 +50,8 @@ INSERT INTO PASSENGER (ID, EMAIL, EMAIL_VERIFIED, IMAGE_URL, NAME, PASSWORD, PRO
 (PASSENGER_PETAR_ID, 'petar.petrovic@gmail.com', TRUE, NULL, 'Petar Petrovic', '$2a$10$Qg.gpYTtZiVMJ6Fs9QbQA.BtCx4106oSj92X.A/Gv7iAEKQXAg.gy', 'local', NULL, 'ROLE_PASSENGER','Novi Sad', 'Petar', 'Petrovic', '+38164047952', '10000', FALSE, ''),
 (PASSENGER_DRAGAN_ID, 'dragan.draganovic@gmail.com', TRUE, NULL, 'Dragan Draganović', '$2a$10$Qg.gpYTtZiVMJ6Fs9QbQA.BtCx4106oSj92X.A/Gv7iAEKQXAg.gy', 'local', NULL, 'ROLE_PASSENGER','Novi Sad', 'Dragan', 'Draganović', '+38164047959', '10000', TRUE, 'Neće da veže pojas'),
 (PASSENGER_BRANIMIR_ID, 'branimir.branimirovic@gmail.com', TRUE, NULL, 'Branimir Branimirovic', '$2a$10$Qg.gpYTtZiVMJ6Fs9QbQA.BtCx4106oSj92X.A/Gv7iAEKQXAg.gy', 'local', NULL, 'ROLE_PASSENGER','Novi Sad', 'Branimir', 'Branimirovic', '+38164047952', '10000', FALSE, ''),
-(PASSENGER_DZAMAL_ID, 'dzamal.malik@gmail.com', TRUE, NULL, 'Dzamal Malik', '$2a$10$Qg.gpYTtZiVMJ6Fs9QbQA.BtCx4106oSj92X.A/Gv7iAEKQXAg.gy', 'local', NULL, 'ROLE_PASSENGER','Novi Sad', 'Dzamal', 'Malik', '+38164047952', '1', FALSE, '');
-
-
+(PASSENGER_DZAMAL_ID, 'dzamal.malik@gmail.com', TRUE, NULL, 'Dzamal Malik', '$2a$10$Qg.gpYTtZiVMJ6Fs9QbQA.BtCx4106oSj92X.A/Gv7iAEKQXAg.gy', 'local', NULL, 'ROLE_PASSENGER','Novi Sad', 'Dzamal', 'Malik', '+38164047952', '1', FALSE, ''),
+(PASSENGER_EMAIL_NOT_VERIFIED_ID,  'neverifikovan@gmail.com', FALSE, NULL, 'Nisam Verifikovan', '$2a$10$Qg.gpYTtZiVMJ6Fs9QbQA.BtCx4106oSj92X.A/Gv7iAEKQXAg.gy', 'local', NULL, 'ROLE_PASSENGER','Novi Sad', 'Nisam', 'Verifikovan', '+38164047952', '1', FALSE, '');
 
 
 INSERT INTO RIDE (ID, FARE, DRIVER_ID, START_TIME, END_TIME, RIDE_STATUS, DISTANCE, ESTIMATED_TIME) VALUES

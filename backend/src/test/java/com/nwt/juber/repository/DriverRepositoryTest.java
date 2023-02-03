@@ -3,6 +3,7 @@ package com.nwt.juber.repository;
 
 import com.nwt.juber.dto.message.PersonLocationMessage;
 import com.nwt.juber.model.Driver;
+import com.nwt.juber.model.DriverStatus;
 import com.nwt.juber.service.FileStorageService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,6 +19,9 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
 import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 @DataJpaTest
 @ActiveProfiles("test")
@@ -54,7 +58,7 @@ public class DriverRepositoryTest {
 	public void Find_all_locations_of_drivers() {
 		List<PersonLocationMessage> locations = driverRepository.findAllLocations();
 		System.out.println(locations);
-		assert locations.size() == 0;
+		assertEquals(1, locations.size());
 	}
 
 	// parametrized test for locationForDriverEmail method in DriverRepository
@@ -69,9 +73,31 @@ public class DriverRepositoryTest {
 
 	static List<Arguments> locationForDriverEmailProvider() {
 		return List.of(
-				Arguments.of("zdravko.zdravkovic@gmail.com", 45.246, 19.8512),
-				Arguments.of("marko.markovic@gmail.com", 45.246, 19.8513),
-				Arguments.of("nikola.nikolic@gmail.com", 45.246, 19.8514)
+				arguments("zdravko.zdravkovic@gmail.com", 45.246, 19.8512),
+				arguments("marko.markovic@gmail.com", 45.246, 19.8513),
+				arguments("nikola.nikolic@gmail.com", 45.246, 19.8514)
+		);
+	}
+
+	@Test
+	public void Finding_available_drivers() {
+		List<Driver> drivers = driverRepository.findAvailableDrivers();
+		assertEquals(0, drivers.size());
+	}
+
+	@ParameterizedTest
+	@MethodSource("driverStatusProvider")
+	public void Finding_by_status(DriverStatus status, int count) {
+		List<Driver> drivers = driverRepository.findByStatus(status);
+		assertEquals(count, drivers.size());
+	}
+
+	static List<Arguments> driverStatusProvider() {
+		return List.of(
+				arguments(DriverStatus.DRIVING, 0),
+				arguments(DriverStatus.ACTIVE, 1),
+				arguments(DriverStatus.INACTIVE, 3),
+				arguments(DriverStatus.OVERTIME, 1)
 		);
 	}
 

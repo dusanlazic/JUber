@@ -99,7 +99,8 @@ public class RideController {
     @GetMapping("{id}")
     @PreAuthorize("hasAnyRole('PASSENGER', 'DRIVER', 'ADMIN')")
     public RideDTO getRide(@PathVariable("id") UUID rideId, Authentication authentication) {
-        return rideService.getRide(rideId, authentication);
+        User user = (User) authentication.getPrincipal();
+        return rideService.getRide(rideId, user);
     }
 
     @PutMapping("favourite/{id}")

@@ -19,6 +19,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.test.context.ActiveProfiles;
 
 import javax.persistence.EntityManager;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -167,9 +168,49 @@ public class RideRepositoryTest {
 		assert drivers.size() == 0;
 	}
 
+	@ParameterizedTest
+	@MethodSource("pastRidesPassengerProvider")
+	@DisplayName("Test finding past rides of a passenger")
+	public void Finding_past_rides_of_a_passenger(UUID passengerId, int count) {
+		Passenger passenger = passengerRepository.findById(passengerId).get();
+		List<Ride> rides = rideRepository.getPastRidesForPassenger(passenger);
+		assertEquals(count, rides.size());
+	}
 
+	static List<Arguments> pastRidesPassengerProvider() {
+		return List.of(
+				arguments(Constants.PASSENGER_MILE_ID, 2),
+				arguments(Constants.PASSENGER_PETAR_ID, 4),
+				arguments(Constants.PASSENGER_DRAGAN_ID, 2)
+		);
+	}
 
+	@ParameterizedTest(name = "Finding finished rides that ended between {0} and {1}")
+	@MethodSource("ridesBetweenTimesDateProvider")
+	public void Finding_rides_between_times(LocalDateTime startTime, LocalDateTime endTime, int count) {
+		List<Ride> rides = rideRepository.getRidesBetweenTimes(startTime, endTime);
+		assertEquals(count, rides.size());
+	}
 
+	static List<Arguments> ridesBetweenTimesDateProvider() {
+		return List.of(
+				arguments(
+						LocalDateTime.of(2023, 5, 22, 0, 0),
+						LocalDateTime.of(2023, 5, 25, 0, 0),
+						3
+				),
+				arguments(
+						LocalDateTime.of(2023, 5, 24, 0, 0),
+						LocalDateTime.of(2023, 5, 28, 0, 0),
+						4
+				),
+				arguments(
+						LocalDateTime.of(1970, 1, 1, 0, 0),
+						LocalDateTime.of(2028, 5, 25, 0, 0),
+						8
+				)
+		);
+	}
 
 
 

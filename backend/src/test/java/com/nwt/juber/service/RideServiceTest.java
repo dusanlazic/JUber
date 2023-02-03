@@ -1,13 +1,13 @@
 package com.nwt.juber.service;
 
 import com.nwt.juber.dto.DriverRideDTO;
-import com.nwt.juber.exception.EndRideException;
-import com.nwt.juber.exception.StartRideException;
+import com.nwt.juber.dto.RideDTO;
+import com.nwt.juber.dto.request.RideRequest;
+import com.nwt.juber.exception.*;
 import com.nwt.juber.model.*;
-import com.nwt.juber.repository.DriverRepository;
-import com.nwt.juber.repository.RideRepository;
-import com.nwt.juber.repository.VehicleTypeRepository;
+import com.nwt.juber.repository.*;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,6 +20,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -42,6 +43,24 @@ public class RideServiceTest {
 
 	@Mock
 	private SimpMessagingTemplate simpMessagingTemplate;
+
+	@Mock
+	private PassengerRepository passengerRepository;
+
+	@Mock
+	private RouteRepository routeRepository;
+
+	@Mock
+	private PlaceRepository placeRepository;
+
+	@Mock
+	private NotificationService notificationService;
+
+	@Mock
+	private TaskScheduling taskScheduling;
+
+	@Mock
+	private RideCancellationRepository rideCancellationRepository;
 
 	@InjectMocks
 	private RideService rideService;
@@ -208,7 +227,7 @@ public class RideServiceTest {
 		drivers.add(driver1);
 		drivers.add(driver2);
 
-		when(driverRepository.findAvailableDrivers(ride)).thenReturn(drivers);
+		when(driverRepository.findAvailableDrivers()).thenReturn(drivers);
 
 		// when
 		Driver closestDriver = rideService.findClosestAvailableDriver(ride);
@@ -397,4 +416,317 @@ public class RideServiceTest {
 		// when
 		assertThrows(EndRideException.class, () -> rideService.declineRidePassenger(passenger, rideId));
 	}
+
+	@Test
+	public void Decline_passenger_that_is_already_in_ride() {
+		// given
+		Passenger passenger = new Passenger();
+		Mockito.when(rideRepository.getActiveRideForPassenger(passenger)).thenReturn(new Ride());
+
+		// when
+		assertThrows(UserAlreadyInRideException.class, () ->
+				rideService.createRideRequest(new RideRequest(), new Passenger()));
+	}
+
+	@ParameterizedTest
+	@MethodSource("insufficientFundsProvider")
+	public void Decline_passenger_that_has_insufficient_funds(BigDecimal passengerFunds, double rideFare, int numOfPeople) {
+		// given
+		Passenger passenger = new Passenger();
+		passenger.setBalance(passengerFunds);
+		Ride ride = new Ride();
+		ride.setFare(rideFare);
+		ride.setPassengers(new ArrayList<>());
+		numOfPeople--;
+		while (numOfPeople > 0) {
+			ride.getPassengers().add(new Passenger());
+			numOfPeople--;
+		}
+		RideRequest rideRequest = new RideRequest();
+		rideRequest.setRide(ride);
+
+		// when
+		assertThrows(InsufficientFundsException.class, () ->
+				rideService.createRideRequest(rideRequest, passenger));
+	}
+
+	static List<Arguments> insufficientFundsProvider() {
+		return Arrays.asList(
+				Arguments.arguments(BigDecimal.ZERO, 100.0, 1),
+				Arguments.arguments(BigDecimal.valueOf(99), 100.0, 1),
+				Arguments.arguments(BigDecimal.valueOf(99), 500.0, 5),
+				Arguments.arguments(BigDecimal.valueOf(33), 100.0, 3)
+		);
+	}
+
+	@Test
+	@Disabled
+	public void Accept_single_passenger() throws DriverNotFoundException {
+		// given
+		RideRequest rideRequest = new RideRequest();
+		Passenger passenger = new Passenger();
+
+		Mockito.when(rideRepository.getActiveRideForPassenger(passenger)).thenReturn(null);
+		passenger.setBalance(BigDecimal.valueOf(10000));
+		Ride ride1 = new Ride();
+		ride1.setFare(100.0);
+		rideRequest.setRide(ride1);
+
+		Ride ride2 = new Ride();
+		rideRequest.setPassengerEmails(new ArrayList<>());
+
+		// when
+		rideService.createRideRequest(rideRequest, passenger);
+
+		// then
+		assertEquals(RideStatus.WAIT, rideRequest);
+	}
+
+	@Test
+	public void Set_schedule_task_if_ride_scheduled() {
+		// given
+		Driver driver = new Driver();
+		Ride ride = new Ride();
+		UUID rideId = UUID.randomUUID();
+		ride.setDriver(driver);
+		ride.setScheduledTime(LocalDateTime.now().plusHours(1));
+		ride.setPassengers(new ArrayList<>());
+		ride.setPlaces(new ArrayList<>());
+
+		Mockito.when(rideRepository.findById(rideId)).thenReturn(Optional.of(ride));
+
+		// when
+		rideService.acceptRideDriver(driver, rideId);
+
+		// then
+		assertEquals(RideStatus.SCHEDULED, ride.getRideStatus());
+	}
+
+	@Test
+	public void Accept_ride_if_ride_not_scheduled_and_active_ride_in_progress() {
+		// given
+		Driver driver = new Driver();
+		UUID driverId = UUID.randomUUID();
+		driver.setId(driverId);
+		Ride ride = new Ride();
+		UUID rideId = UUID.randomUUID();
+		ride.setDriver(driver);
+		ride.setPassengers(new ArrayList<>());
+		ride.setPlaces(new ArrayList<>());
+
+		Ride activeRide = new Ride();
+		activeRide.setRideStatus(RideStatus.ACCEPTED);
+		activeRide.setDuration(100);
+
+		Mockito.when(rideRepository.findById(rideId)).thenReturn(Optional.of(ride));
+		Mockito.when(rideRepository.getActiveRideForDriver(driverId)).thenReturn(activeRide);
+
+		// when
+		rideService.acceptRideDriver(driver, rideId);
+
+		// then
+		assertEquals(RideStatus.SCHEDULED, ride.getRideStatus());
+	}
+
+	@Test
+	public void Accept_ride_if_ride_not_scheduled() {
+		// given
+		Driver driver = new Driver();
+		UUID driverId = UUID.randomUUID();
+		driver.setId(driverId);
+		Ride ride = new Ride();
+		UUID rideId = UUID.randomUUID();
+		ride.setDriver(driver);
+		ride.setPassengers(new ArrayList<>());
+		ride.setPlaces(new ArrayList<>());
+
+		Ride activeRide = new Ride();
+		activeRide.setRideStatus(RideStatus.FINISHED);
+
+		Mockito.when(rideRepository.findById(rideId)).thenReturn(Optional.of(ride));
+		Mockito.when(rideRepository.getActiveRideForDriver(driverId)).thenReturn(activeRide);
+
+		// when
+		rideService.acceptRideDriver(driver, rideId);
+
+		// then
+		assertEquals(RideStatus.ACCEPTED, ride.getRideStatus());
+	}
+
+	@Test
+	public void Decline_ride_as_driver() throws DriverNotFoundException {
+		// given
+		Driver driver = new Driver();
+		Ride ride = new Ride();
+		initRide(ride);
+		UUID rideId = UUID.randomUUID();
+		ride.setId(rideId);
+		Place place1 = new Place();
+		place1.setLatitude(2.0);
+		place1.setLongitude(2.0);
+		ride.setPlaces(List.of(place1));
+		Mockito.when(rideRepository.findById(rideId)).thenReturn(Optional.of(ride));
+
+		// when
+		rideService.declineRideDriver(driver, rideId);
+
+		// then
+		verify(rideRepository, atLeastOnce()).save(ride);
+		assertTrue(ride.getBlacklisted().contains(driver));
+	}
+
+	@Test
+	public void Get_ride_as_authorized_passenger() {
+		// given
+		Driver driver = new Driver();
+		driver.setId(UUID.randomUUID());
+		driver.setRole(Role.ROLE_DRIVER);
+
+		Passenger passenger = new Passenger();
+		passenger.setId(UUID.randomUUID());
+		passenger.setRole(Role.ROLE_PASSENGER);
+
+		Ride ride = new Ride();
+		UUID rideId = UUID.randomUUID();
+		initRide(ride);
+		ride.setId(rideId);
+		ride.setDriver(driver);
+		ride.getPassengers().add(passenger);
+
+		Mockito.when(rideRepository.findById(rideId)).thenReturn(Optional.of(ride));
+
+		// when
+		RideDTO rideDTO = rideService.getRide(rideId, passenger);
+
+		// then
+		assertTrue(rideDTO.getPassengers().stream().anyMatch(o -> o.getId().equals(passenger.getId())));
+	}
+
+	@Test
+	public void Get_ride_as_authorized_driver() {
+		// given
+		Driver driver = new Driver();
+		driver.setId(UUID.randomUUID());
+		driver.setRole(Role.ROLE_DRIVER);
+
+		Passenger passenger = new Passenger();
+		passenger.setId(UUID.randomUUID());
+		passenger.setRole(Role.ROLE_PASSENGER);
+
+		Ride ride = new Ride();
+		UUID rideId = UUID.randomUUID();
+		initRide(ride);
+		ride.setId(rideId);
+		ride.setDriver(driver);
+		ride.getPassengers().add(passenger);
+
+		Mockito.when(rideRepository.findById(rideId)).thenReturn(Optional.of(ride));
+
+		// when
+		RideDTO rideDTO = rideService.getRide(rideId, driver);
+
+		// then
+		assertEquals(rideDTO.getDriver().getId(), driver.getId());
+	}
+
+	@Test
+	public void Get_ride_as_unauthorized_user() {
+		// given
+		Driver driver = new Driver();
+		driver.setId(UUID.randomUUID());
+		driver.setRole(Role.ROLE_DRIVER);
+
+		Passenger passenger = new Passenger();
+		passenger.setId(UUID.randomUUID());
+		passenger.setRole(Role.ROLE_PASSENGER);
+
+		Passenger unauthorizedPassenger = new Passenger();
+		unauthorizedPassenger.setId(UUID.randomUUID());
+		unauthorizedPassenger.setRole(Role.ROLE_PASSENGER);
+
+		Ride ride = new Ride();
+		UUID rideId = UUID.randomUUID();
+		initRide(ride);
+		ride.setId(rideId);
+		ride.setDriver(driver);
+		ride.getPassengers().add(passenger);
+
+		Mockito.when(rideRepository.findById(rideId)).thenReturn(Optional.of(ride));
+
+		// then
+		assertThrows(RuntimeException.class, () -> rideService.getRide(rideId, unauthorizedPassenger));
+	}
+
+	@Test
+	public void Get_ride_as_admin() {
+		// given
+		Driver driver = new Driver();
+		driver.setId(UUID.randomUUID());
+		driver.setRole(Role.ROLE_DRIVER);
+
+		Passenger passenger = new Passenger();
+		passenger.setId(UUID.randomUUID());
+		passenger.setRole(Role.ROLE_PASSENGER);
+
+		Admin admin = new Admin();
+		admin.setId(UUID.randomUUID());
+		admin.setRole(Role.ROLE_ADMIN);
+
+		Ride ride = new Ride();
+		UUID rideId = UUID.randomUUID();
+		initRide(ride);
+		ride.setId(rideId);
+		ride.setDriver(driver);
+		ride.getPassengers().add(passenger);
+
+		Mockito.when(rideRepository.findById(rideId)).thenReturn(Optional.of(ride));
+
+		// then
+		assertDoesNotThrow(() -> rideService.getRide(rideId, admin));
+	}
+
+	@Test
+	public void Abandon_ride_as_unauthorized_driver() {
+		// given
+		Driver driver = new Driver();
+		driver.setId(UUID.randomUUID());
+
+		Driver unauthorizedDriver = new Driver();
+		unauthorizedDriver.setId(UUID.randomUUID());
+
+		Ride ride = new Ride();
+		UUID rideId = UUID.randomUUID();
+		initRide(ride);
+		ride.setId(rideId);
+		ride.setDriver(driver);
+
+		Mockito.when(rideRepository.findById(rideId)).thenReturn(Optional.of(ride));
+
+		// when
+		assertThrows(RuntimeException.class, () -> rideService.abandonRideDriver(rideId, "Whatever", unauthorizedDriver));
+	}
+
+	@Test
+	public void Abandon_ride_as_driver() {
+		// given
+		Driver driver = new Driver();
+		UUID driverId = UUID.randomUUID();
+		driver.setId(driverId);
+
+		Ride ride = new Ride();
+		UUID rideId = UUID.randomUUID();
+		initRide(ride);
+		ride.setId(rideId);
+		ride.setDriver(driver);
+
+		Mockito.when(rideRepository.findById(rideId)).thenReturn(Optional.of(ride));
+
+		// when
+		rideService.abandonRideDriver(rideId, "Whatever", driver);
+
+		// then
+		assertEquals(RideStatus.DENIED, ride.getRideStatus());
+		verify(rideRepository).save(ride);
+	}
+
 }

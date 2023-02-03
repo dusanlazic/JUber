@@ -11,4 +11,9 @@ public class Constants {
 	public static final UUID PASSENGER_ANDREJ_ID = UUID.fromString( "6d34f2c5-32f1-47d9-9a8e-d4dd613b9cc1");
 	public static final UUID PASSENGER_PETAR_ID = UUID.fromString( "6aebc916-dd04-4674-a4f2-99edec0a1811");
 	public static final UUID PASSENGER_DRAGAN_ID = UUID.fromString( "336bc999-8285-4cc2-9d9a-007e535566a6");
+	
+	public static final UUID RIDE_3 = UUID.fromString("3afa6238-862b-417b-9a88-fbf2bc90c09d");
+	public static final UUID RIDE_6 = UUID.fromString("060443d3-abc6-458c-9f76-92e3de51a713");
+	public static final UUID RIDE_8 = UUID.fromString("eb3e2dfe-2373-4a2c-8f70-a12b375f49a0");
+
 }

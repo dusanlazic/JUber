@@ -185,6 +185,23 @@ public class RideRepositoryTest {
 		);
 	}
 
+	@ParameterizedTest
+	@MethodSource("pastRidesDriverProvider")
+	@DisplayName("Test finding past rides of a driver")
+	public void Finding_past_rides_of_a_driver(UUID driverId, int count) {
+		Driver driver = driverRepository.findById(driverId).get();
+		List<Ride> rides = rideRepository.getPastRidesForDriver(driver);
+		assertEquals(count, rides.size());
+	}
+
+	static List<Arguments> pastRidesDriverProvider() {
+		return List.of(
+				arguments(Constants.DRIVER_MARKO_ID, 0),
+				arguments(Constants.DRIVER_ZDRAVKO_ID, 2)
+		);
+	}
+
+	
 	@ParameterizedTest(name = "Finding finished rides that ended between {0} and {1}")
 	@MethodSource("ridesBetweenTimesDateProvider")
 	public void Finding_rides_between_times(LocalDateTime startTime, LocalDateTime endTime, int count) {

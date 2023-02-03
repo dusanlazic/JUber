@@ -196,7 +196,7 @@ public class RideService {
     }
 
     // start scheduled if no active
-    private void startScheduledRide(UUID rideId) {
+    public void startScheduledRide(UUID rideId) {
         Ride ride = rideRepository.findById(rideId).get();
         Driver driver = ride.getDriver();
         Ride activeRide = rideRepository.getActiveRideForDriver(driver.getId());
@@ -553,10 +553,10 @@ public class RideService {
     public void abandonRidePassenger(UUID rideId, String reason, Passenger passenger) {
         Ride ride = rideRepository.findById(rideId).orElseThrow();
         if (!ride.getPassengers().contains(passenger)) {
-            throw new RuntimeException("You are not allowed to abandon this ride!");
+            throw new AbandonRideException("You are not allowed to abandon this ride!");
         }
         if (ride.getRideStatus() != RideStatus.WAITING_FOR_PAYMENT) {
-            throw new RuntimeException("You are not allowed to abandon this ride!");
+            throw new AbandonRideException("You are not allowed to abandon this ride!");
         }
         ride.setRideStatus(RideStatus.DENIED);
         rideRepository.save(ride);
@@ -571,7 +571,7 @@ public class RideService {
 	public void abandonRideDriver(UUID rideId, String reason, Driver driver) {
         Ride ride = rideRepository.findById(rideId).orElseThrow();
         if (!ride.getDriver().getId().equals(driver.getId())) {
-            throw new RuntimeException("You are not allowed to abandon this ride!");
+            throw new AbandonRideException("You are not allowed to abandon this ride!");
         }
         ride.setRideStatus(RideStatus.DENIED);
         rideRepository.save(ride);

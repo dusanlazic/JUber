@@ -151,4 +151,16 @@ public class ControllerAdvisor {
     public ResponseError RideRequestForbiddenException(RideRequestForbiddenException e) {
         return new ResponseError(HttpStatus.NOT_ACCEPTABLE, e.getMessage());
     }
+    
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(DriverShiftNotFoundException.class)
+    public ResponseError driverShiftNotFoundException(DriverShiftNotFoundException e) {
+        return new ResponseError(HttpStatus.NOT_ACCEPTABLE, e.getMessage());
+    }
+    
+    @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
+    @ExceptionHandler(AbandonRideException.class)
+    public ResponseError abandonRideException(AbandonRideException e) {
+        return new ResponseError(HttpStatus.NOT_ACCEPTABLE, e.getMessage());
+    }
 }

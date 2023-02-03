@@ -35,17 +35,17 @@ public class SimulationController {
         return new ResponseOk("Success");
     }
 
-//    @PutMapping("/start-ride/{id}")
-//    public ResponseOk startRide(@PathVariable("id") UUID rideId) {
-//        rideService.startRide(rideId);
-//        return new ResponseOk("ok");
-//    }
-//
-//    @PutMapping("/end-ride/{id}")
-//    public ResponseOk endRide(@PathVariable("id") UUID rideId) {
-//        rideService.endRide(rideId);
-//        return new ResponseOk("ok");
-//    }
+    @PutMapping("/start-ride/{id}")
+    public ResponseOk startRide(@PathVariable("id") UUID rideId) {
+        rideService.startRide(rideId);
+        return new ResponseOk("ok");
+    }
+
+    @PutMapping("/end-ride/{id}")
+    public ResponseOk endRide(@PathVariable("id") UUID rideId) {
+        rideService.endRide(rideId);
+        return new ResponseOk("ok");
+    }
 
 
 

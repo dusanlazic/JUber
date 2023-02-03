@@ -39,11 +39,16 @@ export class EmptyPlaceComponent implements OnInit {
 		})
   	}
 
-	async fillPlace() {
+	async fillPlace(mode?: string) {
 		if(!this.changedName) return;
+		if(!this.name) return;
 		this.map.createPlaceByName(this.name)
 				.then(res => {
-					this.dispatchActions(res);
+					if(mode === 'preview') {
+						this.store.dispatch(SetPreviewAction({payload: res}))
+					} else {
+						this.dispatchActions(res);
+					}
 					return Promise.resolve();
 				})
 				.catch(err => {
@@ -78,9 +83,10 @@ export class EmptyPlaceComponent implements OnInit {
 	}
 
 	preview() {
-		this.fillPlace().then(res => {
+		this.fillPlace('preview').then((res: any) => {
 			// set in store
-			this.store.dispatch(SetPreviewAction({payload: this.place}))
+			if(!res) return;
+			alert('dispatched')
 		})
 	}
 

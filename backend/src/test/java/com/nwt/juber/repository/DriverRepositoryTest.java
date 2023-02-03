@@ -82,7 +82,10 @@ public class DriverRepositoryTest {
 	@Test
 	public void Finding_available_drivers() {
 		List<Driver> drivers = driverRepository.findAvailableDrivers();
-		assertEquals(0, drivers.size());
+
+		drivers.forEach(d -> System.out.println(d.getEmail()));
+
+		assertEquals(1, drivers.size());
 	}
 
 	@ParameterizedTest

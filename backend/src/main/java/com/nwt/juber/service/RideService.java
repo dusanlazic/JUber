@@ -113,6 +113,19 @@ public class RideService {
         }
     }
 
+    public void checkScheduledTime(RideRequest request) {
+        LocalDateTime time = parseScheduledTime(request.getScheduleTime());
+
+        if (request.getScheduleTime() != null && time == null)
+            throw new RideRequestForbiddenException("Field validation failed.");
+
+        if (time != null && time.isAfter(LocalDateTime.now().plusHours(5).plusMinutes(1)))
+            throw new RideRequestForbiddenException("Scheduled time is after 5 hours from now!");
+
+        else if (time == null)
+            request.setScheduleTime(null);
+    }
+
     // if there is one passenger, find driver
     // if more, wait for everyone to accept
     public void createRideRequest(RideRequest rideRequest, Passenger passenger) throws DriverNotFoundException {
@@ -120,6 +133,7 @@ public class RideService {
             throw new UserAlreadyInRideException("You already have a ride!");
         }
         checkFunds(passenger, rideRequest.getRide());
+        checkScheduledTime(rideRequest);
         Ride ride = new Ride();
         List<Passenger> pass = new ArrayList<>();
         pass.add(passenger);
@@ -211,7 +225,7 @@ public class RideService {
     private LocalDateTime parseScheduledTime(String scheduledTime) {
         LocalTime parsedTime;
 
-        if (scheduledTime.isEmpty() || scheduledTime.isBlank()) {
+        if (scheduledTime == null || scheduledTime.isEmpty() || scheduledTime.isBlank()) {
             return null;
         }
 

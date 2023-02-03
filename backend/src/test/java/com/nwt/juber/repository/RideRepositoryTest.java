@@ -77,7 +77,7 @@ public class RideRepositoryTest {
 //		assert ride.getStartTime() == null;
 		assert ride.getEndTime() == null;
 		for(Ride r : rideRepository.findAll()) {
-			if (r.getDriver().getId().equals(driverId) && !r.getId().equals(rideId)) {
+			if (r.getDriver() != null && r.getDriver().getId().equals(driverId) && !r.getId().equals(rideId)) {
 				if (r.getRideStatus().ordinal() <= RideStatus.IN_PROGRESS.ordinal()) {
 					assert r.getRideStatus().ordinal() <= status.ordinal();
 				}
@@ -144,7 +144,7 @@ public class RideRepositoryTest {
 		assert ride.getDriver().getId().equals(driverId);
 		assert ride.getEndTime() == null;
 		for(Ride r : rideRepository.findAll()) {
-			if (r.getDriver().getId().equals(driverId) && !r.getId().equals(rideId)) {
+			if (r.getDriver() != null && r.getDriver().getId().equals(driverId) && !r.getId().equals(rideId)) {
 				assert r.getRideStatus().ordinal() < RideStatus.SCHEDULED.ordinal();
 			}
 		}

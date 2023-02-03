@@ -1,10 +1,14 @@
 package com.nwt.juber.repository;
 
 
-import com.nwt.juber.dto.message.PersonLocationMessage;
-import com.nwt.juber.model.Driver;
-import com.nwt.juber.model.DriverStatus;
-import com.nwt.juber.service.FileStorageService;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -14,27 +18,22 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.security.core.parameters.P;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.util.List;
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.params.provider.Arguments.arguments;
+import com.nwt.juber.dto.DriverRideDTO;
+import com.nwt.juber.dto.message.PersonLocationMessage;
+import com.nwt.juber.model.Driver;
+import com.nwt.juber.model.DriverStatus;
+import com.nwt.juber.model.Ride;
+import com.nwt.juber.model.RideStatus;
+import com.nwt.juber.service.FileStorageService;
 
 @DataJpaTest
 @ActiveProfiles("test")
 public class DriverRepositoryTest {
 
-	@Autowired
-	private RideRepository rideRepository;
-
 	@MockBean
 	private FileStorageService fileStorageService;
-
-	@Autowired
-	private PassengerRepository passengerRepository;
 
 	@Autowired
 	private DriverRepository driverRepository;
@@ -58,7 +57,7 @@ public class DriverRepositoryTest {
 	public void Find_all_locations_of_drivers() {
 		List<PersonLocationMessage> locations = driverRepository.findAllLocations();
 		System.out.println(locations);
-		assertEquals(1, locations.size());
+		assertEquals(2, locations.size());
 	}
 
 	// parametrized test for locationForDriverEmail method in DriverRepository
@@ -95,10 +94,58 @@ public class DriverRepositoryTest {
 	static List<Arguments> driverStatusProvider() {
 		return List.of(
 				arguments(DriverStatus.DRIVING, 0),
-				arguments(DriverStatus.ACTIVE, 1),
+				arguments(DriverStatus.ACTIVE, 2),
 				arguments(DriverStatus.INACTIVE, 3),
 				arguments(DriverStatus.OVERTIME, 1)
 		);
 	}
-
+	
+	// has ride in status: WAIT, ACCEPTED or IN_PROGRESS
+	@ParameterizedTest(name = "Finding ride in status valid for simulation by driver email {0}")
+	@MethodSource("rideForSimulationProvider")
+	public void findRideForSimulation(String email, UUID rideId) {
+		Optional<Ride> ride = driverRepository.findRideForSimulation(email);
+		assert !ride.isEmpty();
+		assert ride.get().getId().equals(rideId);
+	}
+	
+	static List<Arguments> rideForSimulationProvider() {
+		return List.of(
+				arguments("zdravko.zdravkovic@gmail.com", Constants.RIDE_3),
+				arguments("nikola.nikolic@gmail.com", Constants.RIDE_6),
+				arguments("dusan.dusanovic@gmail.com", Constants.RIDE_8)
+				
+		);
+	}
+	
+	// does not have ride in status: WAIT, ACCEPTED or IN_PROGRESS
+	@ParameterizedTest(name = "Not finding ride in status valid for simulation by driver email {0}")
+	@ValueSource(strings = {"branko.brankovic@gmail.com"})
+	public void notFoundRideForSimulation(String email) {
+		Optional<Ride> ride = driverRepository.findRideForSimulation(email);
+		assert ride.isEmpty();
+	}
+	
+    @ParameterizedTest(name = "Finding unavailable drivers with no future rides")
+    @MethodSource("unavailableDriversWithNoFutureRidesProvider")
+	public void findUnavailableDriversWithNoFutureRides(List<String> drivers) {
+		List<DriverRideDTO> dtos = driverRepository.findUnavailableDriversWithNoFutureRides();
+		assertEquals(drivers.size(), dtos.size());
+		for (DriverRideDTO dto : dtos) {
+			assert drivers.contains(dto.getDriver().getEmail());
+			assert dto.getDriver().getStatus().equals(DriverStatus.ACTIVE);
+			assert dto.getRide().getRideStatus().equals(RideStatus.WAIT) || 
+				   dto.getRide().getRideStatus().equals(RideStatus.ACCEPTED) || 
+				   dto.getRide().getRideStatus().equals(RideStatus.IN_PROGRESS);
+			for (Ride ride : dto.getDriver().getRides()) {
+				assertFalse(ride.getRideStatus().equals(RideStatus.SCHEDULED));
+			}
+		}
+	}
+	
+	static List<Arguments> unavailableDriversWithNoFutureRidesProvider() {
+		return List.of( 
+				arguments(List.of( "active.unavailable@gmail.com"))
+		);
+	}
 }

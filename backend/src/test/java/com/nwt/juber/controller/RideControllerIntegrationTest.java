@@ -1,13 +1,18 @@
 package com.nwt.juber.controller;
 
 import com.nwt.juber.dto.RideDTO;
+import com.nwt.juber.dto.request.AdditionalRideRequests;
 import com.nwt.juber.dto.request.LoginRequest;
+import com.nwt.juber.dto.request.ride.*;
 import com.nwt.juber.dto.response.TokenResponse;
 import com.nwt.juber.model.Ride;
+import com.nwt.juber.model.VehicleType;
 import com.nwt.juber.repository.RideRepository;
 import org.aspectj.lang.annotation.Before;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -22,7 +27,15 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.web.client.RestTemplate;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -52,6 +65,15 @@ public class RideControllerIntegrationTest {
 				.exchange("/auth/login", HttpMethod.POST, new HttpEntity<>(request), TokenResponse.class);
 		token = tokenResp.getBody().getAccessToken();
 		headers.setBearerAuth(token);
+	}
+
+	public void activate(String driverEmail) {
+		login(driverEmail);
+
+		HttpEntity<String> entity = new HttpEntity<>(driverEmail, headers);
+		ResponseEntity<String> response = restTemplate.exchange("/accounts/drivers/activate", HttpMethod.PATCH, entity, String.class);
+
+		System.out.println(response.getBody());
 	}
 
 	@AfterEach
@@ -197,5 +219,115 @@ public class RideControllerIntegrationTest {
 		assert responseEntity.getStatusCode() == HttpStatus.OK;
 	}
 
+	@Test
+	public void Decline_ride_passenger() {
+		login("branimir.branimirovic@gmail.com");
+		HttpEntity<String> entity = new HttpEntity<>(headers);
+		String ride = "412748b0-454f-4cac-8ab6-1388f9eebc19";
+		ResponseEntity<String> responseEntity = restTemplate.exchange("/ride/decline/" + ride, HttpMethod.PUT, entity, String.class);
+		assert responseEntity.getBody() != null;
+		assert responseEntity.getStatusCode() == HttpStatus.OK;
+	}
+
+	@Test
+	public void Decline_ride_driver() {
+		login("zdravko.zdravkovic@gmail.com");
+		HttpEntity<String> entity = new HttpEntity<>(headers);
+		String ride = "412748b0-454f-4cac-8ab6-1388f9eebc19";
+		ResponseEntity<String> responseEntity = restTemplate.exchange("/ride/decline/" + ride, HttpMethod.PUT, entity, String.class);
+		assert responseEntity.getBody() != null;
+		assert responseEntity.getStatusCode() == HttpStatus.OK;
+	}
+
+	@ParameterizedTest
+	@MethodSource("rideRequestProvider")
+	public void Create_ride_request(RideRequestDTO requestDTO, HttpStatus status, String message) {
+		activate("branko.brankovic@gmail.com");
+		login("ivan.ivanovic@gmail.com");
+		HttpEntity<RideRequestDTO> entity = new HttpEntity<>(requestDTO, headers);
+		ResponseEntity<String> responseEntity = restTemplate.exchange("/ride/rideRequest", HttpMethod.POST, entity, String.class);
+
+		System.out.println(responseEntity.getBody());
+
+		assertTrue(responseEntity.hasBody());
+		assertEquals(status, responseEntity.getStatusCode());
+		if (!status.equals(HttpStatus.OK))
+			assertTrue(responseEntity.getBody().contains(message));
+	}
+
+	private static List<Arguments> rideRequestProvider() {
+		List<RouteDTO> routes_1 = List.of(
+				new RouteDTO(
+						"Route 1",
+						100.0,
+						200.0,
+						"test",
+						true
+				),
+				new RouteDTO(
+						"Route 2",
+						100.0,
+						200.0,
+						"test",
+						true
+				)
+		);
+
+		List<PlaceDTO> places_1 = List.of(
+				new PlaceDTO(
+						null,
+						"Place A",
+						"Test",
+						routes_1,
+						10.0,
+						10.0
+				),
+				new PlaceDTO(
+						null,
+						"Place B",
+						"Test",
+						routes_1,
+						10.0,
+						10.0
+				),
+				new PlaceDTO(
+						null,
+						"Place C",
+						"Test",
+						routes_1,
+						10.0,
+						10.0
+				)
+		);
+
+		com.nwt.juber.dto.request.ride.RideDTO ride_1 = new com.nwt.juber.dto.request.ride.RideDTO(
+				new ArrayList<>(),
+				places_1,
+				100.0,
+				200,
+				300.0
+		);
+
+		AdditionalRideRequestsDTO additionalRideRequests = new AdditionalRideRequestsDTO(
+				false,
+				false,
+				new VehicleTypeDTO(
+						UUID.fromString("920e64a8-50d7-42e0-90bd-714b48ab8e57"),
+						"Estate",
+						250.00
+				)
+		);
+
+		RideRequestDTO rideRequestDTO_1 = new RideRequestDTO(
+				ride_1,
+				additionalRideRequests,
+				"",
+				new ArrayList<>()
+		);
+
+		return List.of(
+			arguments(rideRequestDTO_1, HttpStatus.OK, "")
+		);
+	}
 
 }

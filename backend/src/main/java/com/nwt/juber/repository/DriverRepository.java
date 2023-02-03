@@ -40,7 +40,7 @@ public interface DriverRepository extends JpaRepository<Driver, UUID> {
     PersonLocationMessage locationForDriverId(UUID id);
 
     @Query(value = "select d from Driver d where d.status = 'ACTIVE' and d.blocked = FALSE and " +
-            "(select count(r) from Ride r where r.driver = d and r.rideStatus = 1 or r.rideStatus = 2 or r.rideStatus = 3) = 0") // current rides
+            "(select count(r) from Ride r where r.driver = d and (r.rideStatus = 1 or r.rideStatus = 2 or r.rideStatus = 3)) = 0") // current rides
     List<Driver> findAvailableDrivers();
 
     @Query(value = "select new com.nwt.juber.dto.DriverRideDTO(d, r) from Driver d join Ride r on r.driver = d where d.blocked = false and d.status = 'ACTIVE' and " +

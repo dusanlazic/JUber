@@ -52,7 +52,7 @@ export class LoginPageComponent implements OnInit {
     });
   }
 
-  private handleLoginError(e: ApiResponse) : void {
+  handleLoginError(e: ApiResponse) : void {
     // Invalid credentials
     if(e.status === HttpStatusCode.Unauthorized){
       this.toastr.error('Make sure you have an activated account.', e.message);

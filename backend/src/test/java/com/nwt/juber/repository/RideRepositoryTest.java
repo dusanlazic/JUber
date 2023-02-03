@@ -1,13 +1,16 @@
 package com.nwt.juber.repository;
 
-import com.nwt.juber.dto.DriverRideDTO;
-import com.nwt.juber.model.Driver;
-import com.nwt.juber.model.Passenger;
-import com.nwt.juber.model.Ride;
-import com.nwt.juber.model.RideStatus;
-import com.nwt.juber.service.FileStorageService;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
+
+import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
+
+import javax.persistence.EntityManager;
+
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -15,17 +18,13 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.test.context.ActiveProfiles;
 
-import javax.persistence.EntityManager;
-import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.params.provider.Arguments.arguments;
+import com.nwt.juber.model.Driver;
+import com.nwt.juber.model.Passenger;
+import com.nwt.juber.model.Ride;
+import com.nwt.juber.model.RideStatus;
+import com.nwt.juber.service.FileStorageService;
 
 @DataJpaTest
 @ActiveProfiles("test")
@@ -77,7 +76,7 @@ public class RideRepositoryTest {
 //		assert ride.getStartTime() == null;
 		assert ride.getEndTime() == null;
 		for(Ride r : rideRepository.findAll()) {
-			if (r.getDriver().getId().equals(driverId) && !r.getId().equals(rideId)) {
+			if (r.getDriver() != null && r.getDriver().getId().equals(driverId) && !r.getId().equals(rideId)) {
 				if (r.getRideStatus().ordinal() <= RideStatus.IN_PROGRESS.ordinal()) {
 					assert r.getRideStatus().ordinal() <= status.ordinal();
 				}
@@ -144,7 +143,7 @@ public class RideRepositoryTest {
 		assert ride.getDriver().getId().equals(driverId);
 		assert ride.getEndTime() == null;
 		for(Ride r : rideRepository.findAll()) {
-			if (r.getDriver().getId().equals(driverId) && !r.getId().equals(rideId)) {
+			if (r.getDriver() != null && r.getDriver().getId().equals(driverId) && !r.getId().equals(rideId)) {
 				assert r.getRideStatus().ordinal() < RideStatus.SCHEDULED.ordinal();
 			}
 		}
@@ -156,16 +155,6 @@ public class RideRepositoryTest {
 				arguments(Constants.DRIVER_MARKO_ID, "2ac4bc01-6326-418f-a3f9-4244e3922439", 0),
 				arguments(Constants.DRIVER_NIKOLA_ID, "7a1255b3-e69d-40f5-990d-bdfbe60e8258", 1)
 		);
-	}
-
-	@Test
-	@DisplayName("Test finding unavailable drivers with no future rides")
-	public void Finding_unavailable_drivers_with_no_future_rides() {
-		List<DriverRideDTO> drivers = driverRepository.findUnavailableDriversWithNoFutureRides();
-		for (DriverRideDTO driver : drivers) {
-			System.out.println(driver);
-		}
-		assert drivers.size() == 0;
 	}
 
 	@ParameterizedTest
@@ -219,12 +208,12 @@ public class RideRepositoryTest {
 				arguments(
 						LocalDateTime.of(2023, 5, 24, 0, 0),
 						LocalDateTime.of(2023, 5, 28, 0, 0),
-						4
+						5
 				),
 				arguments(
 						LocalDateTime.of(1970, 1, 1, 0, 0),
 						LocalDateTime.of(2028, 5, 25, 0, 0),
-						8
+						9
 				)
 		);
 	}

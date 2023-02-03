@@ -14,10 +14,12 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import com.nwt.juber.e2e.BasePage;
+import com.nwt.juber.e2e.logging.LogSelenium;
 import com.nwt.juber.e2e.logging.SkipLog;
 
 @Component
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+@LogSelenium
 public class LoginPage extends BasePage {
 
 

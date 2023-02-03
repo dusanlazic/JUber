@@ -474,7 +474,7 @@ public class OrderTests extends TestBase {
 		homePage1.selectHatchback();
 
 		LocalDateTime now = LocalDateTime.now();
-		LocalDateTime fiveHoursFromNow = now.plusHours(5).plusMinutes(2);
+		LocalDateTime fiveHoursFromNow = now.plusHours(5).plusMinutes(30);
 		String hours = String.valueOf(fiveHoursFromNow.getHour());
 		String minutes = String.valueOf(fiveHoursFromNow.getMinute());
 		System.out.println("SADA JE VREME");
@@ -483,7 +483,7 @@ public class OrderTests extends TestBase {
 
 		homePage1.orderRide();
 		String toastMessage = homePage1.waitToastError();
-		assertEquals("Field validation failed.", toastMessage);
+		assertEquals("Scheduled time is after 5 hours from now!", toastMessage);
 	}
 
 

@@ -4,6 +4,7 @@ import com.nwt.juber.e2e.BasePage;
 import com.nwt.juber.e2e.logging.LogSelenium;
 import lombok.extern.java.Log;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
@@ -218,8 +219,8 @@ public class HomePage extends BasePage {
 	public void setScheduledTime(String hours, String minutes) {
 		(new WebDriverWait(webDriver, Duration.of(10, ChronoUnit.SECONDS)))
 				.until(ExpectedConditions.visibilityOf(this.scheduleHours));
-		this.scheduleHours.sendKeys(hours);
-		this.scheduleMinutes.sendKeys(minutes);
+		this.scheduleHours.sendKeys(Keys.BACK_SPACE, Keys.BACK_SPACE, hours);
+		this.scheduleMinutes.sendKeys(Keys.BACK_SPACE, Keys.BACK_SPACE, minutes);
 	}
 
 

@@ -146,4 +146,9 @@ public class ControllerAdvisor {
         return new ResponseError(HttpStatus.NOT_ACCEPTABLE, "Error while starting ride.");
     }
 
+    @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
+    @ExceptionHandler(RideRequestForbiddenException.class)
+    public ResponseError RideRequestForbiddenException(RideRequestForbiddenException e) {
+        return new ResponseError(HttpStatus.NOT_ACCEPTABLE, e.getMessage());
+    }
 }

@@ -84,7 +84,7 @@ app:
     etherscanUrl: 'https://api-sepolia.etherscan.io/api'
     cryptocompareKey: ${CRYPTOCOMPARE_API_KEY}
     cryptocompareUrl: 'https://min-api.cryptocompare.com/data/price'
-    pendingTimeoutSeconds: 15 # Increase to 120
+    pendingTimeoutSeconds: 180
   uploads:
     uploadsLocation: 'uploads'
     servingEndpoint: 'uploads/'

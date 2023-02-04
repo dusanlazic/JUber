@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, OnInit, Input, ViewChild, ElementRef, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, ElementRef, Output, EventEmitter, OnChanges } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { environment } from 'src/environments/environment';
 import { ChatConversationResponse, ChatMessage, MsgFromUserMessage } from 'src/models/chat';
@@ -12,7 +12,7 @@ import { SupportService } from 'src/services/support/support.service';
   templateUrl: './admin-chat.component.html',
   styleUrls: ['./admin-chat.component.sass']
 })
-export class AdminChatComponent implements OnInit {
+export class AdminChatComponent implements OnInit, OnChanges {
   
   @Input()
   conversation!: ChatConversationResponse;

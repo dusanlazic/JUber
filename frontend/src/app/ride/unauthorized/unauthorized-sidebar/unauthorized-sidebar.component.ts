@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { AfterViewChecked, AfterViewInit, Component, Input, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { AppState } from 'src/app/store/ride.reducer';
 import { IRideRequest } from 'src/app/store/rideRequest/rideRequest';
@@ -16,7 +16,7 @@ import { IPoint } from 'src/app/store/ride';
 	templateUrl: './unauthorized-sidebar.component.html',
 	styleUrls: ['./unauthorized-sidebar.component.sass']
 })
-export class UnathorizedSidebarComponent implements OnInit {
+export class UnathorizedSidebarComponent implements OnInit, AfterViewInit {
 
 	ride: Ride | undefined;
 

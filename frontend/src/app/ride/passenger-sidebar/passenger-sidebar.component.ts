@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { AppState } from 'src/app/store/ride.reducer';
 import { IRideRequest } from 'src/app/store/rideRequest/rideRequest';
@@ -17,7 +17,7 @@ import { Toastr } from 'src/services/util/toastr.service';
 	templateUrl: './passenger-sidebar.component.html',
 	styleUrls: ['./passenger-sidebar.component.sass']
 })
-export class PassengerSidebarComponent implements OnInit {
+export class PassengerSidebarComponent implements OnInit, AfterViewInit {
 
 	ride: Ride | undefined;
 

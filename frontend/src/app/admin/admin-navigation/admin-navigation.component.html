@@ -1,7 +1,7 @@
 
-<div 
-  class="navigation-item {{ selected===SelectionOptions.ADMIN_SUPPORT ? 'is-selected' : ''}}"
-  (click)="navigate(SelectionOptions.ADMIN_SUPPORT)">    
+<div
+  class="navigation-item is-first {{ selected===SelectionOptions.ADMIN_SUPPORT ? 'is-selected' : ''}}"
+  (click)="navigate(SelectionOptions.ADMIN_SUPPORT)">
     <span class="iconify-inline is-size-5" data-icon="fluent:chat-help-24-regular"></span>
     Support
 </div>
@@ -17,7 +17,7 @@
   <span class="iconify-inline is-size-5" data-icon="fluent:people-list-24-regular"></span>
   Passengers
 </div>
-<div 
+<div
   class="navigation-item {{ selected===SelectionOptions.ADMIN_BLOCKED_USERS ? 'is-selected' : ''}}"
   (click)="navigate(SelectionOptions.ADMIN_BLOCKED_USERS)">
   <span class="iconify-inline is-size-5" data-icon="fluent:person-prohibited-24-regular"></span>
@@ -29,9 +29,9 @@
   <span class="iconify-inline is-size-5" data-icon="fluent:person-edit-24-regular"></span>
   Change requests
 </div>
-<div 
+<div
   class="navigation-item {{ selected===SelectionOptions.REPORTS ? 'is-selected' : ''}}"
-  (click)="navigate(SelectionOptions.REPORTS)"> 
+  (click)="navigate(SelectionOptions.REPORTS)">
   <span class="iconify-inline is-size-5" data-icon="fluent:chart-multiple-20-regular"></span>
   Reports
 </div>

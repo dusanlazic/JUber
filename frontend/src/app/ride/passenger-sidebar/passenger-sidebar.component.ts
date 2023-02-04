@@ -98,6 +98,7 @@ export class PassengerSidebarComponent implements OnInit {
 		rideRequest.ride.fare = this.price;
 		rideRequest.ride.duration = totalDuration;
 		rideRequest.ride.distance = totalDistance;
+		rideRequest.scheduleTime = this.formatScheduleTime(rideRequest.scheduleTime);
 		console.log(this.rideRequest)
 
 		this.rideService.sendRideRequest(rideRequest).subscribe({
@@ -149,6 +150,18 @@ export class PassengerSidebarComponent implements OnInit {
 		}
 
 		return coords;
+	}
+
+	private formatScheduleTime(time: string): string {
+		let tokens = time.split(":");
+
+		if (tokens[0].length === 1)
+			tokens[0] = "0" + tokens[0]
+
+		if (tokens[1].length === 1)
+			tokens[1] = "0" + tokens[0]
+
+		return tokens[0] + ":" + tokens[1];
 	}
 
 	public ceil(num: number) : number {

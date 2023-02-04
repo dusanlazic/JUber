@@ -27,7 +27,7 @@
                 <span class="iconify is-size-4" data-icon="material-symbols:bookmark"></span>
             </div>
 
-            <active-status *ngIf="loggedUser && loggedUser.role == 'ROLE_DRIVER'" ></active-status>
+            <active-status *ngIf="loggedUser && loggedUser.role === 'ROLE_DRIVER'" ></active-status>
 
             <div *ngIf="loggedUser" class="is-relative is-custom-navigation-icon" (click)="logout()">
                 <span class="iconify is-size-4" data-icon="material-symbols:logout"></span>

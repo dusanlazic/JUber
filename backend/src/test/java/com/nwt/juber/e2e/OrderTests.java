@@ -14,6 +14,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
@@ -474,7 +475,7 @@ public class OrderTests extends TestBase {
 		homePage1.selectHatchback();
 
 		LocalDateTime now = LocalDateTime.now();
-		LocalDateTime fiveHoursFromNow = now.plusHours(5).plusMinutes(30);
+		LocalDateTime fiveHoursFromNow = now.plusHours(11).plusMinutes(30);
 		String hours = String.valueOf(fiveHoursFromNow.getHour());
 		String minutes = String.valueOf(fiveHoursFromNow.getMinute());
 		System.out.println("SADA JE VREME");
@@ -483,7 +484,7 @@ public class OrderTests extends TestBase {
 
 		homePage1.orderRide();
 		String toastMessage = homePage1.waitToastError();
-		assertEquals("Scheduled time is after 5 hours from now!", toastMessage);
+		assertEquals("Time validation failed", toastMessage);
 	}
 
 

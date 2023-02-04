@@ -11,6 +11,7 @@ import com.nwt.juber.model.*;
 import com.nwt.juber.model.notification.*;
 import com.nwt.juber.repository.*;
 import com.nwt.juber.util.MappingUtils;
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.Authentication;
@@ -79,6 +80,7 @@ public class RideService {
         }
         ride.setRideStatus(RideStatus.IN_PROGRESS);
         ride.setStartTime(LocalDateTime.now());
+        paymentService.processPayment(ride);
         rideRepository.save(ride);
         sendRideMessageToPassengers(ride, RideMessageType.DRIVER_ARRIVED);
     }
@@ -189,12 +191,11 @@ public class RideService {
     }
 
     public void startScheduledRide(UUID rideId) {
-        Ride ride = rideRepository.findById(rideId).get();
+        Ride ride = rideRepository.getRideById(rideId);
         Driver driver = ride.getDriver();
         Ride activeRide = rideRepository.getActiveRideForDriver(driver.getId());
         if (activeRide == null) {
             ride.setRideStatus(RideStatus.ACCEPTED);
-            paymentService.processPayment(ride);
             rideRepository.save(ride);
             // notify them
             RideStatusUpdatedNotification notification = new RideStatusUpdatedNotification();
@@ -440,6 +441,10 @@ public class RideService {
 
     double computeUnavailableDriverPriorityForNewRide(DriverRideDTO driverRideDTO, Ride ride, LocalDateTime now) {
         List<Place> places = driverRideDTO.getRide().getPlaces();
+
+        System.out.println("Driver: " + driverRideDTO.getDriver().getEmail());
+        System.out.println("Ride: " + driverRideDTO.getRide().getId());
+
         double driverLat = places.get(places.size() - 1).getLatitude();
         double driverLon = places.get(places.size() - 1).getLongitude();
 

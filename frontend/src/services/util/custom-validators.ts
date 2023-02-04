@@ -33,7 +33,7 @@ export class CustomValidators {
       };
     }
 
-    private static Schedule5HoursValidate(hours: number, minutes: number) : boolean {
+    public static Schedule5HoursValidate(hours: number, minutes: number) : boolean {
       const currentDate = new Date(); 
     
       const maxDate = new Date(); 

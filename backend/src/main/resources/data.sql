@@ -21,15 +21,15 @@ INSERT INTO ADMIN(ID, EMAIL, EMAIL_VERIFIED, IMAGE_URL, NAME, PASSWORD, PROVIDER
 
 -- PASSWORD = 'cascaded'
 INSERT INTO PASSENGER (ID, EMAIL, EMAIL_VERIFIED, IMAGE_URL, NAME, PASSWORD, PROVIDER, PROVIDER_ID, ROLE, CITY, FIRST_NAME, LAST_NAME, PHONE_NUMBER, BALANCE, BLOCKED, NOTE) VALUES
-('92348c29-e3cb-4c8f-ad5c-f31bf14db84d', 'mile.miletic@gmail.com', TRUE, NULL, 'Mile Miletic', '$2a$10$Qg.gpYTtZiVMJ6Fs9QbQA.BtCx4106oSj92X.A/Gv7iAEKQXAg.gy', 'local', NULL, 'ROLE_PASSENGER','Novi Sad', 'Mile', 'Miletic', '+38164047952', '10000', FALSE, ''),
+('92348c29-e3cb-4c8f-ad5c-f31bf14db84d', 'pavleglusac@gmail.com', TRUE, NULL, 'Mile Miletic', '$2a$10$Qg.gpYTtZiVMJ6Fs9QbQA.BtCx4106oSj92X.A/Gv7iAEKQXAg.gy', 'local', NULL, 'ROLE_PASSENGER','Novi Sad', 'Mile', 'Miletic', '+38164047952', '10000', FALSE, ''),
 ('6d34f2c5-32f1-47d9-9a8e-d4dd613b9cc1', 'andrej.andrejevic@gmail.com', TRUE, NULL, 'Andrej Andrejevic', '$2a$10$Qg.gpYTtZiVMJ6Fs9QbQA.BtCx4106oSj92X.A/Gv7iAEKQXAg.gy', 'local', NULL, 'ROLE_PASSENGER','Novi Sad', 'Andrej', 'Andrejevic', '+38164047952', '10000', FALSE, ''),
 ('6aebc916-dd04-4674-a4f2-99edec0a1811', 'petar.petrovic@gmail.com', TRUE, NULL, 'Petar Petrovic', '$2a$10$Qg.gpYTtZiVMJ6Fs9QbQA.BtCx4106oSj92X.A/Gv7iAEKQXAg.gy', 'local', NULL, 'ROLE_PASSENGER','Novi Sad', 'Petar', 'Petrovic', '+38164047952', '10000', FALSE, ''),
 ('336bc999-8285-4cc2-9d9a-007e535566a6', 'dragan.draganovic@gmail.com', TRUE, NULL, 'Dragan Draganović', '$2a$10$Qg.gpYTtZiVMJ6Fs9QbQA.BtCx4106oSj92X.A/Gv7iAEKQXAg.gy', 'local', NULL, 'ROLE_PASSENGER','Novi Sad', 'Dragan', 'Draganović', '+38164047959', '10000', TRUE, 'Neće da veže pojas');
 
 
 INSERT INTO RIDE (ID, FARE, DRIVER_ID, START_TIME, END_TIME, RIDE_STATUS, DISTANCE) VALUES
-    ('8107614c-04d9-480d-8a59-e1999d9e7bfc', 2500.0, '909dccc3-4f61-4237-b3a2-6e674edd8d52', '2023-06-22 11:05:29.267235', '2023-06-23 11:25:29.267235', 5, 100),
-    ('46ab4aff-d171-4447-a05c-204a29d0fde1', 2600.0, '909dccc3-4f61-4237-b3a2-6e674edd8d52', '2023-06-23 10:05:29.267235', '2023-06-23 10:25:29.267235', 5, 200);
+('8107614c-04d9-480d-8a59-e1999d9e7bfc', 2500.0, '909dccc3-4f61-4237-b3a2-6e674edd8d52', '2023-06-22 11:05:29.267235', '2023-06-23 11:25:29.267235', 5, 100),
+('46ab4aff-d171-4447-a05c-204a29d0fde1', 2600.0, '909dccc3-4f61-4237-b3a2-6e674edd8d52', '2023-06-23 10:05:29.267235', '2023-06-23 10:25:29.267235', 5, 200);
 
 
 INSERT INTO PLACE (ID, NAME, OPTION, LATITUDE, LONGITUDE, RIDE_ID) VALUES

@@ -20,7 +20,7 @@
       ],
       "rules": {
         "@angular-eslint/directive-selector": [
-          "error",
+          "warning",
           {
             "type": "attribute",
             "prefix": "app",

@@ -103,6 +103,9 @@ public class RideServiceTest {
 	@Mock
 	private RideCancellationRepository rideCancellationRepository;
 
+	@Mock
+	private PaymentService processPaymentService;
+
 	@InjectMocks
 	private RideService rideService;
 
@@ -763,6 +766,7 @@ public class RideServiceTest {
 		ride.setScheduledTime(LocalDateTime.now().minusSeconds(3));;
 
 		Mockito.when(rideRepository.findById(rideId)).thenReturn(Optional.of(ride));
+		Mockito.when(rideRepository.getRideById(rideId)).thenReturn(ride);
 		Mockito.when(rideRepository.getActiveRideForDriver(driverId)).thenReturn(null);
 
 		// when

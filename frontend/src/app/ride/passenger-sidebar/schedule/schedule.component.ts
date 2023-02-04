@@ -40,36 +40,41 @@ export class ScheduleComponent implements OnInit {
 
 
   changeHours() : void {
-    if(!this.minutes?.value){
-      this.scheduleForm.get('minutes')?.setValue('00');
-    }
+    // if(!this.minutes?.value){
+    //   this.scheduleForm.get('minutes')?.setValue('00');
+    // }
 
-    if(this.hours?.value > 23){
-      this.scheduleForm.get('hours')?.setValue(23);
-    }
-    if(this.hours?.value < 0){
-      this.scheduleForm.get('hours')?.setValue(0);
-    }
-    if(this.scheduleForm.valid){
-      this.store.dispatch(UpdateScheduleTime({time: `${this.hours?.value}:${this.minutes?.value}`}))
-    }
+    // if(this.hours?.value > 23){
+    //   this.scheduleForm.get('hours')?.setValue(23);
+    // }
+    // if(this.hours?.value < 0){
+    //   this.scheduleForm.get('hours')?.setValue(0);
+    // }
+    // if(this.scheduleForm.valid){
+    //   this.store.dispatch(UpdateScheduleTime({time: `${this.hours?.value}:${this.minutes?.value}`}))
+    // }
+    this.store.dispatch(UpdateScheduleTime({time: `${this.hours?.value}:${this.minutes?.value}`}))
+
   }
 
   changeMinutes() : void {
-    if(!this.hours?.value){
-      this.scheduleForm.get('hours')?.setValue('00');
-    }
+    // if(!this.hours?.value){
+    //   this.scheduleForm.get('hours')?.setValue('00');
+    // }
 
-    if(this.minutes?.value > 59){
-      this.scheduleForm.get('minutes')?.setValue(59);
-    }
-    if(this.minutes?.value < 0){
-      this.scheduleForm.get('minutes')?.setValue(0);
-    }
+    // if(this.minutes?.value > 59){
+    //   this.scheduleForm.get('minutes')?.setValue(59);
+    // }
+    // if(this.minutes?.value < 0){
+    //   this.scheduleForm.get('minutes')?.setValue(0);
+    // }
 
-    if(this.scheduleForm.valid){
-      this.store.dispatch(UpdateScheduleTime({time: `${this.hours?.value}:${this.minutes?.value}`}))
-    }
+    // if(this.scheduleForm.valid){
+    //   this.store.dispatch(UpdateScheduleTime({time: `${this.hours?.value}:${this.minutes?.value}`}))
+    // }
+    this.store.dispatch(UpdateScheduleTime({time: `${this.hours?.value}:${this.minutes?.value}`}))
+
+
   }
 
   get hours() { return this.scheduleForm.get('hours'); }

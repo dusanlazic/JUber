@@ -11,6 +11,7 @@ import * as _ from 'lodash';
 import { decode, encode } from "@googlemaps/polyline-codec";
 import { IPoint } from 'src/app/store/ride';
 import { Toastr } from 'src/services/util/toastr.service';
+import { CustomValidators } from 'src/services/util/custom-validators';
 
 @Component({
 	selector: 'passenger-sidebar',
@@ -98,8 +99,10 @@ export class PassengerSidebarComponent implements OnInit, AfterViewInit {
 		rideRequest.ride.fare = this.price;
 		rideRequest.ride.duration = totalDuration;
 		rideRequest.ride.distance = totalDistance;
-		if (rideRequest.scheduleTime != "") {
-			rideRequest.scheduleTime = this.formatScheduleTime(rideRequest.scheduleTime);
+		rideRequest.scheduleTime = this.formatScheduleTime(rideRequest.scheduleTime);
+		if (rideRequest.scheduleTime === "null") {
+			this.toastr.error("Time validation failed");
+			return;
 		}
 		console.log(this.rideRequest)
 
@@ -155,14 +158,39 @@ export class PassengerSidebarComponent implements OnInit, AfterViewInit {
 	}
 
 	private formatScheduleTime(time: string): string {
+		if (!time || time === "null:null") {
+			return "";
+		}
+
 		let tokens = time.split(":");
 
+		console.log(tokens);
+
+		if (tokens[0] == "null" || tokens[1] == "null") {
+			return "null";
+		}
+		
 		if (tokens[0].length === 1) {
 			tokens[0] = "0" + tokens[0]
 		}
 
 		if (tokens[1].length === 1) {
-			tokens[1] = "0" + tokens[0]
+			tokens[1] = "0" + tokens[1]
+		}
+
+		let hours = parseInt(tokens[0]);
+		let minutes = parseInt(tokens[1]);
+
+		if (hours > 23 || hours < 0) {
+			return "null";
+		}
+
+		if (minutes > 59 || minutes < 0) {
+			return "null";
+		}
+		
+		if(!CustomValidators.Schedule5HoursValidate(hours, minutes)) {
+			return "null";
 		}
 
 		return tokens[0] + ":" + tokens[1];

@@ -1,6 +1,6 @@
 <div class="mt-5">
   <div class="has-text-grey mb-3">Need a ride for <b>later</b>?
-  <span [ngClass]="{'has-text-danger has-text-weight-bold' :
+  <span [ngClass]="{'' :
     ((hours?.dirty || hours?.touched) || (minutes?.dirty || minutes?.touched)) &&
     scheduleForm.errors?.['invalidSchedule']}">
       You can schedule it (up to 5h)</span>

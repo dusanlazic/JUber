@@ -21,10 +21,11 @@ public class TestBase {
 		ChromeOptions options = new ChromeOptions();
 		options.addArguments("--no-sandbox");
 		options.addArguments("--disk-cache-size=0");
-		//options.addArguments("--headless");
+		options.addArguments("--headless");
 		options.addArguments("--user-data-dir=./tmp/tmp-" + name);
 		driver = new ChromeDriver(options);
 		driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+		driver.manage().window().setSize(new org.openqa.selenium.Dimension(1920, 1080));
 		driver.manage().window().maximize();
 		return driver;
 	}

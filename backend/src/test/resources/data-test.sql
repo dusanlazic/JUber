@@ -57,7 +57,7 @@ INSERT INTO DRIVER (ID, EMAIL, EMAIL_VERIFIED, IMAGE_URL, NAME, PASSWORD, PROVID
 (DRIVER_BRANKO_ID, 'branko.brankovic@gmail.com', TRUE, NULL, 'Branko Brankovic', '$2a$10$Qg.gpYTtZiVMJ6Fs9QbQA.BtCx4106oSj92X.A/Gv7iAEKQXAg.gy', 'local', NULL, 'ROLE_DRIVER', 'Novi Sad', 'Branko', 'Brankovic', '+38165047953', 'INACTIVE', 'bb2da238-03e1-4f3c-b041-7242c7501ab3', FALSE),
 (DRIVER_NIKOLA_ID, 'nikola.nikolic@gmail.com', TRUE, NULL, 'Nikola Nikolic', '$2a$10$Qg.gpYTtZiVMJ6Fs9QbQA.BtCx4106oSj92X.A/Gv7iAEKQXAg.gy', 'local', NULL, 'ROLE_DRIVER', 'Novi Sad', 'Nikola', 'Nikolic', '+38164047952', 'OVERTIME', '6f513eca-b592-4e88-9cb4-ad9c14301ab2', FALSE),
 (DRIVER_DUSAN_ID, 'dusan.dusanovic@gmail.com', TRUE, NULL, 'Dusan Dusanovic', '$2a$10$Qg.gpYTtZiVMJ6Fs9QbQA.BtCx4106oSj92X.A/Gv7iAEKQXAg.gy', 'local', NULL, 'ROLE_DRIVER', 'Novi Sad', 'Dusan', 'Dusanovic', '+38164548952', 'INACTIVE', '0bd27920-8b09-4979-a1e5-3e9a72a2132b', FALSE),
-(DRIVER_ACTIVE_UNAVAILABLE_ID, 'active.unavailable@gmail.com', TRUE, NULL, 'Active Unavailable', '$2a$10$Qg.gpYTtZiVMJ6Fs9QbQA.BtCx4106oSj92X.A/Gv7iAEKQXAg.gy', 'local', NULL, 'ROLE_DRIVER', 'Novi Sad', 'Active', 'Unavailable', '+38164548952', 'ACTIVE', '0bd27920-8b09-4979-a1e5-3e9a72a2132b', FALSE),
+(DRIVER_ACTIVE_UNAVAILABLE_ID, 'active.unavailable@gmail.com', TRUE, NULL, 'Active Unavailable', '$2a$10$Qg.gpYTtZiVMJ6Fs9QbQA.BtCx4106oSj92X.A/Gv7iAEKQXAg.gy', 'local', NULL, 'ROLE_DRIVER', 'Novi Sad', 'Active', 'Unavailable', '+38164548952', 'INACTIVE', '0bd27920-8b09-4979-a1e5-3e9a72a2132b', FALSE),
 (DRIVER_GORAN_ID, 'goran.goranov@gmail.com', TRUE, NULL, 'Goran Goranov', '$2a$10$Qg.gpYTtZiVMJ6Fs9QbQA.BtCx4106oSj92X.A/Gv7iAEKQXAg.gy', 'local', NULL, 'ROLE_DRIVER', 'Novi Sad', 'Goran', 'Goranov', '+38164544952', 'INACTIVE', '8373d6bd-fc57-4298-a073-32fc92996451', FALSE);
 
 INSERT INTO ADMIN(ID, EMAIL, EMAIL_VERIFIED, IMAGE_URL, NAME, PASSWORD, PROVIDER, PROVIDER_ID, ROLE) VALUES
@@ -100,13 +100,31 @@ INSERT INTO RIDE (ID, FARE, DRIVER_ID, START_TIME, END_TIME, RIDE_STATUS, DISTAN
 INSERT INTO PLACE (ID, NAME, OPTION, LATITUDE, LONGITUDE, RIDE_ID) VALUES
 ('0ba05d41-6756-48a6-bd4b-ad768807f98c', 'Dr Ivana Ribara 13', '', 45.24237307826045, 19.84377035416157, RIDE_1 ),
 ('81a03927-95de-4a74-af13-956d0ccf77c6', 'Maksima Gorkog X', 'via Bulevar Oslobodjenja', 45.248859722424925, 19.84330204124692, RIDE_1),
-('e85e9639-4f01-4e92-a3ed-863d5de001d5', 'Dr Ivana Ribara 13', '', 45.24237307826045, 19.84377035416157, RIDE_8 ),
-('1b652814-ac9d-49f9-b504-1c82094347c2', 'Maksima Gorkog X', 'via Bulevar Oslobodjenja', 45.248859722424925, 19.84330204124692, RIDE_8),
-('6cde875d-73b7-4bf5-991f-cb04036de829', 'Dr Ivana Ribara 13', '', 45.24237307826045, 19.84377035416157, RIDE_3 ),
-('2cb388ea-54ab-4312-b960-19d6bef0bc5b', 'Maksima Gorkog X', 'via Bulevar Oslobodjenja', 45.248859722424925, 19.84330204124692, RIDE_3),
 
 ('0aecaffd-62da-43b5-8c62-80335f887f14', 'TEST Ivana Ribara 13', '', 45.24237307826045, 19.84377035416157, RIDE_2 ),
 ('64903e9a-abd3-4432-8c22-b81d28520784', 'TEST Maksima Gorkog X', 'via Bulevar Oslobodjenja', 45.248859722424925, 19.84330204124692, RIDE_2),
+
+('6cde875d-73b7-4bf5-991f-cb04036de829', 'Dr Ivana Ribara 13', '', 45.24237307826045, 19.84377035416157, RIDE_3 ),
+('2cb388ea-54ab-4312-b960-19d6bef0bc5b', 'Maksima Gorkog X', 'via Bulevar Oslobodjenja', 45.248859722424925, 19.84330204124692, RIDE_3),
+
+('b50c383b-372f-42ae-acc0-507ce782f719', 'Dr Ivana Ribara 13', '', 45.24237307826045, 19.84377035416157, RIDE_4 ),
+('2bcabad8-a66c-41f5-beed-00f764018e07', 'Maksima Gorkog X', 'via Bulevar Oslobodjenja', 45.248859722424925, 19.84330204124692, RIDE_4),
+
+('5dbf77ba-9c5e-4c06-b920-0ef23f9df2bf', 'Dr Ivana Ribara 13', '', 45.24237307826045, 19.84377035416157, RIDE_5 ),
+('77e3ebeb-13c3-4dc1-8faf-a68be6cce56e', 'Maksima Gorkog X', 'via Bulevar Oslobodjenja', 45.248859722424925, 19.84330204124692, RIDE_5),
+
+('94b5d062-ff53-4281-a558-5b1e20e82e77', 'Dr Ivana Ribara 13', '', 45.24237307826045, 19.84377035416157, RIDE_6 ),
+('42c6a2ca-8994-4ef0-bda8-b19e595f25c0', 'Maksima Gorkog X', 'via Bulevar Oslobodjenja', 45.248859722424925, 19.84330204124692, RIDE_6),
+
+('c362bf0e-a7c9-4125-8cb9-ffe567aeba45', 'Dr Ivana Ribara 13', '', 45.24237307826045, 19.84377035416157, RIDE_7 ),
+('fa344a12-3533-4c80-950c-7136b2e8ecdc', 'Maksima Gorkog X', 'via Bulevar Oslobodjenja', 45.248859722424925, 19.84330204124692, RIDE_7),
+
+('b0773086-f757-41ed-8fb4-3aed1e7a480d', 'Dr Ivana Ribara 13', '', 45.24237307826045, 19.84377035416157, RIDE_8 ),
+('958393db-1218-4be7-bfd5-52bb675e58f6', 'Maksima Gorkog X', 'via Bulevar Oslobodjenja', 45.248859722424925, 19.84330204124692, RIDE_8),
+
+('ff6bf513-5499-4b0b-bb1e-490b1fbcf088', 'Dr Ivana Ribara 13', '', 45.24237307826045, 19.84377035416157, RIDE_9 ),
+('68f697c8-f309-4eed-ada4-5b4124db7393', 'Maksima Gorkog X', 'via Bulevar Oslobodjenja', 45.248859722424925, 19.84330204124692, RIDE_9),
+
 ('fc708a83-3d9c-4dd7-945e-87db0f17bcec', 'TEST Ivana Ribara 13', '', 45.24237307826045, 19.84377035416157, RIDE_107),
 ('048b4516-4b5c-47d8-a23e-c260d73ea15c', 'TEST Maksima Gorkog X', 'via Bulevar Oslobodjenja', 45.248859722424925, 19.84330204124692, RIDE_107);
 

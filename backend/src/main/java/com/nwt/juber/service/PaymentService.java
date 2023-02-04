@@ -13,6 +13,7 @@ import com.nwt.juber.model.Passenger;
 import com.nwt.juber.model.Ride;
 import com.nwt.juber.repository.DepositAddressRepository;
 import com.nwt.juber.repository.UserRepository;
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -99,6 +100,7 @@ public class PaymentService {
         });
     }
 
+    @Transactional
     public void processPayment(Ride ride) {
         double fare = ride.getFare() / ride.getPassengers().size();
         ride.getPassengers().forEach(p -> p.setBalance(p.getBalance().subtract(BigDecimal.valueOf(fare))));

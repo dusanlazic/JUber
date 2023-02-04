@@ -6,10 +6,12 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.checkerframework.checker.units.qual.A;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -29,6 +31,8 @@ import com.nwt.juber.model.Ride;
 import com.nwt.juber.model.RideStatus;
 import com.nwt.juber.service.FileStorageService;
 
+import javax.persistence.EntityManager;
+
 @DataJpaTest
 @ActiveProfiles("test")
 public class DriverRepositoryTest {
@@ -38,6 +42,10 @@ public class DriverRepositoryTest {
 
 	@Autowired
 	private DriverRepository driverRepository;
+
+
+	@Autowired
+	private EntityManager entityManager;
 
 	@ParameterizedTest(name = "Finding driver by email {0}")
 	@ValueSource(strings = {"zdravko.zdravkovic@gmail.com", "nikola.nikolic@gmail.com"})
@@ -56,6 +64,9 @@ public class DriverRepositoryTest {
 	@Test
 	@DisplayName("Test finding all locations of drivers")
 	public void Find_all_locations_of_drivers() {
+		driverRepository.setDriverStatus(DriverStatus.ACTIVE, "active.unavailable@gmail.com");
+		entityManager.flush();
+		entityManager.clear();
 		List<PersonLocationMessage> locations = driverRepository.findAllLocations();
 		System.out.println(locations);
 		assertEquals(1, locations.size());
@@ -98,8 +109,8 @@ public class DriverRepositoryTest {
 	static List<Arguments> driverStatusProvider() {
 		return List.of(
 				arguments(DriverStatus.DRIVING, 0),
-				arguments(DriverStatus.ACTIVE, 1),
-				arguments(DriverStatus.INACTIVE, 5),
+				arguments(DriverStatus.ACTIVE, 0),
+				arguments(DriverStatus.INACTIVE, 6),
 				arguments(DriverStatus.OVERTIME, 1)
 		);
 	}
@@ -138,6 +149,11 @@ public class DriverRepositoryTest {
     @ParameterizedTest(name = "Finding unavailable drivers with no future rides")
     @MethodSource("unavailableDriversWithNoFutureRidesProvider")
 	public void findUnavailableDriversWithNoFutureRides(List<String> drivers) {
+
+		List<DriverStatus> statuses = drivers.stream().map(d -> driverRepository.findByEmail(d).get().getStatus()).toList();
+		drivers.forEach(d -> driverRepository.setDriverStatus(DriverStatus.ACTIVE, d));
+		entityManager.flush();
+		entityManager.clear();
 		List<DriverRideDTO> dtos = driverRepository.findUnavailableDriversWithNoFutureRides();
 		assertEquals(drivers.size(), dtos.size());
 		for (DriverRideDTO dto : dtos) {
@@ -149,6 +165,10 @@ public class DriverRepositoryTest {
 			for (Ride ride : dto.getDriver().getRides()) {
 				assertFalse(ride.getRideStatus().equals(RideStatus.SCHEDULED));
 			}
+		}
+
+		for (int i = 0; i < drivers.size(); i++) {
+			driverRepository.setDriverStatus(statuses.get(i), drivers.get(i));
 		}
 	}
 	

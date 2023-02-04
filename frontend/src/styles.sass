@@ -45,7 +45,7 @@ figure
 .column.is-sidebar
     display: flex
     flex-direction: column
-    max-width: 500px !important
+    max-width: 480px !important
     max-height: 100vh
     overflow-y: scroll
     justify-content: space-between
@@ -193,6 +193,21 @@ figure
     display: flex
     flex-wrap: nowrap
     overflow-x: auto
+
+.is-custom-exit-button
+    color: hsl(0, 0%, 71%)
+    position: fixed
+    left: 410px
+    top: 16px
+    cursor: pointer
+    width: 40px
+    height: 40px
+    text-align: center
+    padding-top: 8px
+    border-radius: 9999px
+    &:hover
+        color: hsl(0, 0%, 29%)
+        background-color: hsla(0, 0, 0, 0.1)
 
 input[type="number"]
     -moz-appearance: textfield

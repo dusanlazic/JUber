@@ -165,7 +165,7 @@ public class ChatService {
     }
 
     private String previewMessage(String content) {
-        return content.substring(0, Math.min(25, content.length() - 1));
+        return content.substring(0, Math.min(25, content.length()));
     }
 
     private void deliverMessage(PersistedChatMessage persistedMessage) {

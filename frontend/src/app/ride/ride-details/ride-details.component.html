@@ -3,6 +3,10 @@
     <section class="hero is-fullheight is-unscrollable">
     <div class="columns mt-0">
         <div class="column is-3 is-sidebar pl-6 pr-5" style="z-index: 100000000;">
+            <div *ngIf="!ride" class="is-custom-exit-button" [routerLink]="['/home']">
+                <span class="iconify is-size-4" data-icon="radix-icons:cross-1"></span>
+            </div>
+
     	    <p *ngIf="!ride" class="title is-size-3 has-text-grey is-family-secondary mt-5" id="ride-status-none">No ride available...</p>
             <app-ride-details-sidebar *ngIf="loggedUser && ride" [ride]="ride"></app-ride-details-sidebar>
         </div>

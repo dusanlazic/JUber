@@ -10,6 +10,7 @@ import com.nwt.juber.dto.response.etherscan.BalancesResponse;
 import com.nwt.juber.model.DepositAddress;
 import com.nwt.juber.model.DepositAddressStatus;
 import com.nwt.juber.model.Passenger;
+import com.nwt.juber.model.Ride;
 import com.nwt.juber.repository.DepositAddressRepository;
 import com.nwt.juber.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -96,6 +97,12 @@ public class PaymentService {
 
             notifyUserAboutProcessedDeposit(passenger, increase);
         });
+    }
+
+    public void processPayment(Ride ride) {
+        double fare = ride.getFare() / ride.getPassengers().size();
+        ride.getPassengers().forEach(p -> p.setBalance(p.getBalance().subtract(BigDecimal.valueOf(fare))));
+        userRepository.saveAll(ride.getPassengers());
     }
 
     private List<AccountBalancePair> fetchBalancesFromEtherscan(List<DepositAddress> pendingAddresses) {

@@ -36,9 +36,9 @@
     <p class="heading mb-0">Daily average</p>
     <p class="is-family-secondary is-size-4 has-text-weight-bold mb-6">{{ round(this.data.averages.rides) }}</p>
     <p class="heading mb-0">Total distance traveled (km)</p>
-    <p class="is-family-secondary is-size-4 has-text-weight-bold mb-2">{{ round(this.data.sums.distance) }}</p>
+    <p class="is-family-secondary is-size-4 has-text-weight-bold mb-2">{{ round(this.data.sums.distance / 1000) }}</p>
     <p class="heading mb-0">Daily average</p>
-    <p class="is-family-secondary is-size-4 has-text-weight-bold mb-6">{{ round(this.data.averages.distance) }}</p>
+    <p class="is-family-secondary is-size-4 has-text-weight-bold mb-6">{{ round(this.data.averages.distance / 1000) }}</p>
     <p *ngIf="loggedRole === 'ROLE_ADMIN' || loggedRole === 'ROLE_DRIVER'" class="heading mb-0">Total earned (RSD)</p>
     <p *ngIf="loggedRole === 'ROLE_PASSENGER'" class="heading mb-0">Total spent (RSD)</p>
     <p class="is-family-secondary is-size-4 has-text-weight-bold mb-2">{{ round(this.data.sums.fare) }}</p>

@@ -23,6 +23,7 @@ export class ReportsComponent implements OnInit {
   endDateControl: FormControl;
 
   loggedRole: string;
+  moneyLabel: string;
 
   constructor(
     private reportsService: ReportService,
@@ -42,10 +43,10 @@ export class ReportsComponent implements OnInit {
       },
     }
 
-    this.startDateControl = new FormControl("2023-06-01");
-    this.endDateControl = new FormControl( "2023-06-30");
+    this.startDateControl = new FormControl("2023-01-28");
+    this.endDateControl = new FormControl( "2023-02-04");
     this.loggedRole =''
-
+    this.moneyLabel = ''
   }
 
   ngOnInit() {
@@ -71,6 +72,12 @@ export class ReportsComponent implements OnInit {
   }
 
   private createChart() : void {
+    if (this.loggedRole === 'ROLE_PASSENGER') {
+      this.moneyLabel = 'Spendings (RSD)';
+    } else {
+      this.moneyLabel = 'Revenue (RSD)';
+    } 
+
     this.chart?.destroy()
     this.chart = new Chart("ReportChart", {
       type: 'bar',
@@ -84,7 +91,7 @@ export class ReportsComponent implements OnInit {
           yAxisID: 'yRides',
         },
         {
-          label: 'Spendings (RSD)',
+          label: this.moneyLabel,
           data: this.data.days.map(d => d.fare),
           borderWidth: 0,
           backgroundColor: "#c74848",
@@ -93,7 +100,7 @@ export class ReportsComponent implements OnInit {
         },
         {
           label: 'Distance (km)',
-          data: this.data.days.map(d => d.distance),
+          data: this.data.days.map(d => d.distance / 1000),
           borderWidth: 0,
           backgroundColor: "#4848c7",
           yAxisID: 'ySpendingDistance',

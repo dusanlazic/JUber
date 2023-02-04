@@ -69,6 +69,9 @@ public class RideService {
     @Autowired
     private MailingService mailingService;
 
+    @Autowired
+    private PaymentService paymentService;
+
     public void startRide(UUID rideId) {
         Ride ride = rideRepository.findById(rideId).orElseThrow(() -> new StartRideException("No ride with id: " + rideId));
         if (ride.getRideStatus() != RideStatus.ACCEPTED) {
@@ -118,8 +121,6 @@ public class RideService {
             throw new RideRequestForbiddenException("Scheduled time is after 5 hours from now!");
     }
 
-    // if there is one passenger, find driver
-    // if more, wait for everyone to accept
     public void createRideRequest(RideRequest rideRequest, Passenger passenger) throws DriverNotFoundException {
         if(rideRepository.getActiveRideForPassenger(passenger) != null) {
             throw new UserAlreadyInRideException("You already have a ride!");
@@ -171,7 +172,6 @@ public class RideService {
 
     }
 
-    // if someone accept scheduled ride that is in the past, fail it
     private void assignSuitableDriverWhenNeeded(Ride ride) throws DriverNotFoundException {
         if (ride.getScheduledTime() != null) {
             if(ride.getScheduledTime().isAfter(LocalDateTime.now())) {
@@ -188,13 +188,13 @@ public class RideService {
         }
     }
 
-    // start scheduled if no active
     public void startScheduledRide(UUID rideId) {
         Ride ride = rideRepository.findById(rideId).get();
         Driver driver = ride.getDriver();
         Ride activeRide = rideRepository.getActiveRideForDriver(driver.getId());
         if (activeRide == null) {
             ride.setRideStatus(RideStatus.ACCEPTED);
+            paymentService.processPayment(ride);
             rideRepository.save(ride);
             // notify them
             RideStatusUpdatedNotification notification = new RideStatusUpdatedNotification();
@@ -245,8 +245,6 @@ public class RideService {
         passengerRepository.save(passenger);
     }
 
-    // if ride scheduled, set schedule task
-    // else accept ride and set status
     public void acceptRideDriver(Driver driver, UUID rideId) {
         Ride ride = rideRepository.findById(rideId).orElseThrow(() -> new EndRideException("No ride with id: " + rideId));
         ride.setDriver(driver);
@@ -264,6 +262,7 @@ public class RideService {
                 startReminderCycle(ride, 2);
             } else {
                 ride.setRideStatus(RideStatus.ACCEPTED);
+                paymentService.processPayment(ride);
             }
         }
         rideRepository.save(ride);
@@ -464,12 +463,6 @@ public class RideService {
 
         double toFinishCurrentRide = ChronoUnit.SECONDS.between(now, finishTime);
         return toArriveAtNewRide + toFinishCurrentRide;
-    }
-
-    public void subtractFundsForRide(Ride ride) {
-        double fare = ride.getFare() / ride.getPassengers().size();
-        ride.getPassengers()
-            .forEach(x -> x.setBalance(x.getBalance().subtract(BigDecimal.valueOf(fare))));
     }
 
     public void declineRidePassenger(Passenger passenger, UUID rideId) {

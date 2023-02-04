@@ -236,7 +236,7 @@ public class RideControllerIntegrationTest {
 
 	@Test
 	public void Decline_ride_passenger() {
-		login("branimir.branimirovic@gmail.com");
+		login("jovan.jovanovic@gmail.com");
 		HttpEntity<String> entity = new HttpEntity<>(headers);
 		String ride = "412748b0-454f-4cac-8ab6-1388f9eebc19";
 		ResponseEntity<String> responseEntity = restTemplate.exchange("/ride/decline/" + ride, HttpMethod.PUT, entity, String.class);

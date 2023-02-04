@@ -3,6 +3,7 @@ package com.nwt.juber.repository;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 import java.util.List;
@@ -107,11 +108,16 @@ public class DriverRepositoryTest {
 	@ParameterizedTest(name = "Finding ride in status valid for simulation by driver email {0}")
 	@MethodSource("rideForSimulationProvider")
 	public void findRideForSimulation(String email, UUID rideId) {
-		Optional<Ride> ride = driverRepository.findRideForSimulation(email);
-		assert !ride.isEmpty();
-		assert ride.get().getId().equals(rideId);
+		List<Ride> rides = driverRepository.findRideForSimulation(email);
+		assert !rides.isEmpty();
+		for (Ride ride2 : rides) {
+			assertEquals(ride2.getId(), rideId);
+			assertTrue(ride2.getRideStatus().equals(RideStatus.WAIT) || 
+					ride2.getRideStatus().equals(RideStatus.ACCEPTED) || 
+					ride2.getRideStatus().equals(RideStatus.IN_PROGRESS));
+		}
 	}
-	
+
 	static List<Arguments> rideForSimulationProvider() {
 		return List.of(
 				arguments("zdravko.zdravkovic@gmail.com", Constants.RIDE_3),
@@ -125,7 +131,7 @@ public class DriverRepositoryTest {
 	@ParameterizedTest(name = "Not finding ride in status valid for simulation by driver email {0}")
 	@ValueSource(strings = {"branko.brankovic@gmail.com"})
 	public void notFoundRideForSimulation(String email) {
-		Optional<Ride> ride = driverRepository.findRideForSimulation(email);
+		List<Ride> ride = driverRepository.findRideForSimulation(email);
 		assert ride.isEmpty();
 	}
 	

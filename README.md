@@ -40,3 +40,14 @@ Profile password change
 Profile past rides
 ![Screenshot](components_images/profile-past-rides.png)
 
+Passenger support
+![Screenshot](components_images/passenger-support.png)
+
+Admin support
+![Screenshot](components_images/admin-support.png)
+
+Admin support
+![Screenshot](components_images/admin-driver-registration.png)
+
+The rest of admin's components are just some tables that were already shown before.
+

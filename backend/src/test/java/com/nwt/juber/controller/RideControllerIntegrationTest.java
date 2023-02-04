@@ -1,12 +1,18 @@
 package com.nwt.juber.controller;
 
+import com.nwt.juber.api.ResponseOk;
 import com.nwt.juber.dto.RideDTO;
 import com.nwt.juber.dto.request.AdditionalRideRequests;
 import com.nwt.juber.dto.request.LoginRequest;
 import com.nwt.juber.dto.request.ride.*;
 import com.nwt.juber.dto.response.TokenResponse;
+import com.nwt.juber.exception.UserNotFoundException;
+import com.nwt.juber.model.Driver;
+import com.nwt.juber.model.Passenger;
 import com.nwt.juber.model.Ride;
+import com.nwt.juber.model.User;
 import com.nwt.juber.model.VehicleType;
+import com.nwt.juber.repository.Constants;
 import com.nwt.juber.repository.RideRepository;
 import org.aspectj.lang.annotation.Before;
 import org.junit.jupiter.api.*;
@@ -22,15 +28,21 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.client.RestTemplate;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -107,7 +119,7 @@ public class RideControllerIntegrationTest {
 
 
 	@Test
-	public void Active_ride() {
+	public void Active_ride_passenger() {
 		login("petar.petrovic@gmail.com");
 
 		HttpEntity<String> entity = new HttpEntity<>(headers);
@@ -253,6 +265,50 @@ public class RideControllerIntegrationTest {
 		assertEquals(status, responseEntity.getStatusCode());
 		if (!status.equals(HttpStatus.OK))
 			assertTrue(responseEntity.getBody().contains(message));
+	}
+
+	@Test
+	public void get_active_ride_driver() {
+		login("zdravko.zdravkovic@gmail.com");
+		HttpEntity<String> entity = new HttpEntity<>(headers);		
+		ResponseEntity<RideDTO> responseEntity = restTemplate.exchange("/ride/active", HttpMethod.GET, entity, RideDTO.class);
+		assert responseEntity.getBody().getId().toString().equals(Constants.RIDE_3.toString());
+		assert responseEntity.getStatusCode() == HttpStatus.OK;
+	}
+	
+	@Test
+	public void abandon_ride_invalid_passenger_for_ride() {
+		login("petar.petrovic@gmail.com");
+		HttpEntity<String> entity = new HttpEntity<>(headers);		
+		ResponseEntity<String> responseEntity = restTemplate.exchange("/ride/abandon/"+ Constants.RIDE_3.toString(), HttpMethod.PUT, entity, String.class);
+		assert responseEntity.getBody().contains("You are not allowed to abandon this ride!");
+		assert responseEntity.getStatusCode() == HttpStatus.NOT_ACCEPTABLE;
+	}
+	@Test
+	public void abandon_ride_passenger() {
+		login("jovan.jovanovic@gmail.com");
+		HttpEntity<String> entity = new HttpEntity<>(headers);		
+		ResponseEntity<String> responseEntity = restTemplate.exchange("/ride/abandon/"+ Constants.RIDE_107.toString(), HttpMethod.PUT, entity, String.class);
+		assert responseEntity.getBody().contains("Ride abandoned");
+		assert responseEntity.getStatusCode() == HttpStatus.OK;
+	}
+	
+	@Test
+	public void abandon_ride_driver() {
+		login("zdravko.zdravkovic@gmail.com");
+		HttpEntity<String> entity = new HttpEntity<>(headers);		
+		ResponseEntity<String> responseEntity = restTemplate.exchange("/ride/abandon/"+ Constants.RIDE_3.toString(), HttpMethod.PUT, entity, String.class);
+		assert responseEntity.getBody().contains("Ride abandoned");
+		assert responseEntity.getStatusCode() == HttpStatus.OK;
+	}
+	
+	@Test
+	public void abandon_ride_invalid_driver_for_ride() {
+		login("zdravko.zdravkovic@gmail.com");
+		HttpEntity<String> entity = new HttpEntity<>(headers);		
+		ResponseEntity<String> responseEntity = restTemplate.exchange("/ride/abandon/"+ Constants.RIDE_8.toString(), HttpMethod.PUT, entity, String.class);
+		assert responseEntity.getBody().contains("You are not allowed to abandon this ride!");
+		assert responseEntity.getStatusCode() == HttpStatus.NOT_ACCEPTABLE;
 	}
 
 	private static List<Arguments> rideRequestProvider() {

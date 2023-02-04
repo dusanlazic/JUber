@@ -153,7 +153,7 @@ public class RideController {
             Passenger passenger = passengerService.findById(((User) authentication.getPrincipal()).getId()).orElseThrow(() -> new UserNotFoundException("No such user found!"));
             rideService.abandonRidePassenger(rideId, reason, passenger);
         }
-        return new ResponseOk("ok");
+        return new ResponseOk("Ride abandoned");
     }
 
 

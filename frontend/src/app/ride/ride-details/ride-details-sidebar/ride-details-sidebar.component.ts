@@ -2,7 +2,7 @@ import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/cor
 import { lowerFirst } from 'lodash';
 import { environment } from 'src/environments/environment';
 import { FullRide } from 'src/models/ride';
-import { LoggedUser } from 'src/models/user';
+import { LoggedUser, Roles } from 'src/models/user';
 import { AuthService } from 'src/services/auth/auth.service';
 import {  } from 'src/services/auth/auth.service';
 import { HttpRequestService } from 'src/services/util/http-request.service';
@@ -12,6 +12,7 @@ import { Observable, Subscription } from 'rxjs';
 import { Point } from 'src/models/map';
 import { LocationSocketShareService } from 'src/services/location-message/locationshare.service';
 import { DriverLocation } from '../../passenger-map/passenger-map.component';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -39,7 +40,8 @@ export class RideDetailsSidebarComponent implements OnInit, OnChanges {
   constructor(public authService: AuthService,
               private httpService: HttpRequestService,
               private routingService: RoutingService,
-              private driverLocationService: LocationSocketShareService
+              private driverLocationService: LocationSocketShareService,
+              private router: Router
               )
   {
 
@@ -148,8 +150,18 @@ export class RideDetailsSidebarComponent implements OnInit, OnChanges {
     })
   }
 
-  
+  home(): void{
+    if(this.loggedUser.role === Roles.PASSENGER){
+      this.router.navigate(['/home'])
+    }
+    else if(this.loggedUser.role === Roles.DRIVER){
+      this.router.navigate(['/ride'])
+    }
+  }
 
-
-
+  isHome(): boolean {
+    const href = this.router.url;
+    return (href === '/home' && this.loggedUser.role === Roles.PASSENGER) ||
+           (href === '/ride' && this.loggedUser.role === Roles.DRIVER)
+  }
 }

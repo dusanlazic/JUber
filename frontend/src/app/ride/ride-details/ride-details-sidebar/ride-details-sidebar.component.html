@@ -1,5 +1,5 @@
 <div *ngIf="ride && loggedUser" class="mt-5">
-	<div class="is-custom-exit-button" [routerLink]="['/home']">
+	<div *ngIf="!isHome()" class="is-custom-exit-button" (click)="home()">
 		<span class="iconify is-size-4" data-icon="radix-icons:cross-1"></span>
 	</div>
 	<p class="title is-size-3 has-text-grey is-family-secondary">Ride details

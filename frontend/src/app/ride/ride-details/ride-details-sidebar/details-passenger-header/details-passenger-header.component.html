@@ -6,6 +6,6 @@
 
 <div *ngIf="ride.rideStatus === 'IN_PROGRESS' && loggedUser.role === 'ROLE_PASSENGER'" style="display: flex;">
 	<div class="mt-4 mb-4">
-		<button class="button is-warning is-danger" (click)="panic()">Panic!</button>
+		<button class="button is-warning is-danger" id="panic-button" (click)="panic()">Panic!</button>
 	</div>
 </div>

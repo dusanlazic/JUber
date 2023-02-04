@@ -501,29 +501,6 @@ public class RideServiceTest {
 	}
 
 	@Test
-	@Disabled
-	public void Accept_single_passenger() throws DriverNotFoundException {
-		// given
-		RideRequest rideRequest = new RideRequest();
-		Passenger passenger = new Passenger();
-
-		Mockito.when(rideRepository.getActiveRideForPassenger(passenger)).thenReturn(null);
-		passenger.setBalance(BigDecimal.valueOf(10000));
-		Ride ride1 = new Ride();
-		ride1.setFare(100.0);
-		rideRequest.setRide(ride1);
-
-		Ride ride2 = new Ride();
-		rideRequest.setPassengerEmails(new ArrayList<>());
-
-		// when
-		rideService.createRideRequest(rideRequest, passenger);
-
-		// then
-		assertEquals(RideStatus.WAIT, rideRequest);
-	}
-
-	@Test
 	public void Set_schedule_task_if_ride_scheduled() {
 		// given
 		Driver driver = new Driver();

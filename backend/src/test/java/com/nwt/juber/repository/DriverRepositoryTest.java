@@ -99,7 +99,7 @@ public class DriverRepositoryTest {
 		return List.of(
 				arguments(DriverStatus.DRIVING, 0),
 				arguments(DriverStatus.ACTIVE, 1),
-				arguments(DriverStatus.INACTIVE, 4),
+				arguments(DriverStatus.INACTIVE, 5),
 				arguments(DriverStatus.OVERTIME, 1)
 		);
 	}

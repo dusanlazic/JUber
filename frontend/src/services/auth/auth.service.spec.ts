@@ -84,7 +84,6 @@ fdescribe('AuthService_LoginTest', () => {
   });
 
 
-
   it('should set logged passenger data on handleSuccessfulAuth call ', fakeAsync(() => {
     getCurrentUserSpy.and.returnValue(of(mockPassenger))
     
@@ -135,7 +134,7 @@ fdescribe('AuthService_LoginTest', () => {
   });
 
 
-  it('should call login with invalid password and return Unauthorized ErrorResponse', () => {
+  it('should call signup with invalid password and return Unauthorized ErrorResponse', () => {
     service.signup(mockInvalidSignupRequest).subscribe((res: any) => {
       expect(mockUserAlreadyExistsErrorResponse).toEqual(res)
     });

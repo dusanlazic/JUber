@@ -84,6 +84,7 @@ const mockStep1Inputs: AccountInfo = {
     password: 'cascaded',
     passwordConfirmation: 'cascaded'
   }
+  
   const mockStep2Inputs: PersonalInfo = {
     city: 'Novi Sad',
     firstName: 'Test',

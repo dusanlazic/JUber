@@ -33,30 +33,48 @@ fdescribe('RegisterStep1Component', () => {
 
   it('should have invalid form on init', () => {
     expect(component.registrationForm.valid).toBeFalsy();
+    fixture.detectChanges()
+    let button = fixture.debugElement.nativeElement.querySelector('button[type="submit"]');
+    expect(button.disabled).toBeTruthy();
   });
 
   it('email control should be invalid when empty', () => {
     let email = component.email!;
     email.setValue('');
     expect(email.valid).toBeFalsy();
+    fixture.detectChanges()
+    let button = fixture.debugElement.nativeElement.querySelector('button[type="submit"]');
+    expect(button.disabled).toBeTruthy();
   });
 
   it('password control should be invalid when empty', () => {
     let password = component.password!;
     password.setValue('');
     expect(password.valid).toBeFalsy();
+
+    fixture.detectChanges()
+    let button = fixture.debugElement.nativeElement.querySelector('button[type="submit"]');
+    expect(button.disabled).toBeTruthy();
   });
 
   it('passwordConfirmation control should be invalid when empty', () => {
     let passwordConfirmation = component.passwordConfirmation!;
     passwordConfirmation.setValue('');
     expect(passwordConfirmation.valid).toBeFalsy();
+
+    fixture.detectChanges()
+    let button = fixture.debugElement.nativeElement.querySelector('button[type="submit"]');
+    expect(button.disabled).toBeTruthy();
   });
 
   it('form should be invalid when password and passwordConfirmation don\'t match', () => {
     component.password!.setValue('password');
     component.passwordConfirmation!.setValue('differentPassword');
     expect(component.registrationForm.valid).toBeFalsy();
+
+    fixture.detectChanges()
+    let button = fixture.debugElement.nativeElement.querySelector('button[type="submit"]');
+    expect(button.disabled).toBeTruthy();
   });
 
   it('form should be valid when all controls are valid', () => {
@@ -64,12 +82,20 @@ fdescribe('RegisterStep1Component', () => {
     component.password!.setValue('password');
     component.passwordConfirmation!.setValue('password');
     expect(component.registrationForm.valid).toBeTruthy();
+
+    fixture.detectChanges()
+    let button = fixture.debugElement.nativeElement.querySelector('button[type="submit"]');
+    expect(button.disabled).toBeFalsy();
   });
 
   it('should emit nextStepEvent when nextStep is called and form is valid', () => {
     component.email!.setValue('test@test.com');
     component.password!.setValue('password');
     component.passwordConfirmation!.setValue('password');
+
+    fixture.detectChanges()
+    let button = fixture.debugElement.nativeElement.querySelector('button[type="submit"]');
+    expect(button.disabled).toBeFalsy();
 
     let emitted = false;
     component.nextStepEvent.subscribe((inputs) => {
@@ -83,7 +109,11 @@ fdescribe('RegisterStep1Component', () => {
 
     component.nextStep();
     expect(emitted).toBeTruthy();
+    
+
   });
+
+
 
 
 });

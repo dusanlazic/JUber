@@ -55,18 +55,24 @@ fdescribe('RegisterStep2Component', () => {
     let phoneNumber = component.phoneNumber!;
     phoneNumber.setValue('');
     expect(phoneNumber.valid).toBeFalsy();
+    let button = fixture.debugElement.nativeElement.querySelector('button[type="submit"]');
+    expect(button.disabled).toBeTruthy();
   });
 
   it('should be invalid when phone number is not in the valid format', () => {
     let phoneNumber = component.phoneNumber!;
     phoneNumber.setValue('12345');
     expect(phoneNumber.valid).toBeFalsy();
+    fixture.detectChanges();
+    let button = fixture.debugElement.nativeElement.querySelector('button[type="submit"]');
+    expect(button.disabled).toBeTruthy();
   });
 
   it('should be valid when phone number is in the valid format', () => {
     let phoneNumber = component.phoneNumber!;
     phoneNumber.setValue('+650001337');
     expect(phoneNumber.valid).toBeTruthy();
+    fixture.detectChanges();
   });
 
   it('should have valid form when all controls are valid', () => {
@@ -76,6 +82,9 @@ fdescribe('RegisterStep2Component', () => {
     component.phoneNumber?.setValue("+650001337");
 
     expect(component.registrationForm.valid).toBeTruthy();
+    fixture.detectChanges();
+    let button = fixture.debugElement.nativeElement.querySelector('button[type="submit"]');
+    expect(button.disabled).toBeFalsy();
   });
 
   it('should emit nextStepEvent when nextStep is called and form is valid', () => {
@@ -83,6 +92,11 @@ fdescribe('RegisterStep2Component', () => {
     component.lastName?.setValue("Peric")
     component.city?.setValue("Novi Sad");
     component.phoneNumber?.setValue("+650001337");
+    
+    fixture.detectChanges();
+
+    let button = fixture.debugElement.nativeElement.querySelector('button[type="submit"]');
+    expect(button.disabled).toBeFalsy();
 
     let emitted = false;
     component.nextStepEvent.subscribe((inputs) => {

@@ -80,7 +80,6 @@ public class RideService {
         }
         ride.setRideStatus(RideStatus.IN_PROGRESS);
         ride.setStartTime(LocalDateTime.now());
-        paymentService.processPayment(ride);
         rideRepository.save(ride);
         sendRideMessageToPassengers(ride, RideMessageType.DRIVER_ARRIVED);
     }

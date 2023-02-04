@@ -19,7 +19,7 @@ import com.nwt.juber.e2e.logging.SkipLog;
 
 @Component
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-@LogSelenium
+//@LogSelenium
 public class LoginPage extends BasePage {
 
 

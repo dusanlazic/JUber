@@ -1,4 +1,4 @@
-<div *ngIf="ride.driver && ride.rideStatus == 'WAIT' && loggedUser.role == 'ROLE_DRIVER'">
+<div *ngIf="ride.driver && ride.rideStatus === 'WAIT' && loggedUser.role === 'ROLE_DRIVER'">
 	<div class="notification is-light mt-4 mb-4">
 		<div class="column">
 			<p>Do you want to accept this ride?</p>
@@ -8,7 +8,7 @@
 	</div>
 </div>
 
-<div *ngIf="ride.driver && ride.rideStatus == 'ACCEPTED' && loggedUser.role == 'ROLE_DRIVER'" class="mb-5">
+<div *ngIf="ride.driver && ride.rideStatus === 'ACCEPTED' && loggedUser.role === 'ROLE_DRIVER'" class="mb-5">
 	<button class="button is-success" (click)="startRide()">Passengers got in!</button>
 	<button *ngIf="!this.abandon" class="button is-warning ml-4" (click)="toggleAbandonRideReason()">Abandon ride</button>
 </div>
@@ -22,7 +22,7 @@
 </div>
 
 
-<div *ngIf="ride.driver && ride.rideStatus == 'IN_PROGRESS' && loggedUser.role == 'ROLE_DRIVER'" class="mb-5">
+<div *ngIf="ride.driver && ride.rideStatus === 'IN_PROGRESS' && loggedUser.role === 'ROLE_DRIVER'" class="mb-5">
 	<div class="column is-size-4 is-family-secondary p-0 mb-3">
 		<div class="p-0">
 			<button class="button is-success" (click)="endRide()">Ride is finished!</button>

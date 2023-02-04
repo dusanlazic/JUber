@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { AddPalEvent, IPal, IRideRequest } from 'src/app/store/rideRequest/rideRequest';
 import { Store } from '@ngrx/store';
 import { AddPalAction, DeletePalAction } from 'src/app/store/rideRequest/rideRequest.actions';
@@ -12,7 +12,7 @@ import { LoggedUser } from 'src/models/user';
   templateUrl: './pals.component.html',
   styleUrls: ['./pals.component.sass']
 })
-export class PalsComponent implements OnInit {
+export class PalsComponent implements OnInit, AfterViewInit {
 
   isAddPalOpen: boolean = false;
   passengers: IPal[];

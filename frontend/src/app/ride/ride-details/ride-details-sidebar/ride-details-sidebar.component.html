@@ -9,12 +9,12 @@
 	</p>
 
 
-	<p *ngIf="ride.rideStatus == 'DENIED'" class="title is-size-3 has-text-danger is-family-secondary" id="ride-status-failed">Ride failed/denied.</p>
-	<p *ngIf="ride.rideStatus == 'FINISHED'" class="title is-size-3 has-text-success is-family-secondary" id="ride-status-finished">Ride finished.</p>
+	<p *ngIf="ride.rideStatus === 'DENIED'" class="title is-size-3 has-text-danger is-family-secondary" id="ride-status-failed">Ride failed/denied.</p>
+	<p *ngIf="ride.rideStatus === 'FINISHED'" class="title is-size-3 has-text-success is-family-secondary" id="ride-status-finished">Ride finished.</p>
 
 
-	<app-details-passenger-header *ngIf="ride && loggedUser.role == 'ROLE_PASSENGER'" [ride]="ride" [loggedUser]="loggedUser"></app-details-passenger-header>
-	<app-details-driver-header *ngIf="ride && loggedUser.role == 'ROLE_DRIVER'" [ride]="ride" [loggedUser]="loggedUser"></app-details-driver-header>
+	<app-details-passenger-header *ngIf="ride && loggedUser.role === 'ROLE_PASSENGER'" [ride]="ride" [loggedUser]="loggedUser"></app-details-passenger-header>
+	<app-details-driver-header *ngIf="ride && loggedUser.role === 'ROLE_DRIVER'" [ride]="ride" [loggedUser]="loggedUser"></app-details-driver-header>
 
 	
 
@@ -26,7 +26,7 @@
 	<div class="is-custom-people-list mb-3">
 		<p class="title is-size-5 mb-2 is-family-secondary">Driver</p>
 
-		<div class="person-item mb-5" *ngIf="ride.driver && ride.rideStatus != 'WAIT'">
+		<div class="person-item mb-5" *ngIf="ride.driver && ride.rideStatus !== 'WAIT'">
 		  <div class="columns is-vcentered">
 			<div class="column is-2 has-content-align-center">
 				<figure class="image is-48x48">
@@ -39,7 +39,7 @@
 			</div>
 		  </div>
 		</div>
-		<div *ngIf="!ride.driver && loggedUser.role == 'ROLE_PASSENGER'" class="mb-5">
+		<div *ngIf="!ride.driver && loggedUser.role === 'ROLE_PASSENGER'" class="mb-5">
 			<div class="column" id="no-driver-yet">
 				No driver assigned for ride yet...
 			</div>
@@ -100,7 +100,7 @@
 	</div>
 
 
-	<div *ngIf="ride.rideStatus == 'FINISHED'">
+	<div *ngIf="ride.rideStatus === 'FINISHED'">
 		<app-ride-reviews [rideId]="ride.id"></app-ride-reviews>
 	</div>
 

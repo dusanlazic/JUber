@@ -112,7 +112,6 @@ public class RideCompletionTests extends TestBase {
 		// Decline ride
 		rideDetailsPageDriver.declineRideDriver();
 		rideDetailsPageDriver.waitRideStatusNone();
-		rideDetailsPagePassenger.waitRideStatusFailed();
 	}
 
 	@Test

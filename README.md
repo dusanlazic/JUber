@@ -1,5 +1,5 @@
 
-# Ubre — Taxi service that will make you say "Ubre"
+# Ubre — Taxi service that will make you go "Ubre!"
 
 **Ubre** is an academic project made for "Advanced Web Technologies" and "Software construction and testing" courses at Faculty of Technical Sciences, University of Novi Sad.
 ## Authors

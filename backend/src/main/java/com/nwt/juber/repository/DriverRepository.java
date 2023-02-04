@@ -24,7 +24,7 @@ public interface DriverRepository extends JpaRepository<Driver, UUID> {
 
 
     @Query(value = "select r from Ride r where r.driver.email = :username and (r.rideStatus = 1 or r.rideStatus = 2 or r.rideStatus = 3) order by r.rideStatus desc")
-    public Optional<Ride> findRideForSimulation(String username);
+    public List<Ride> findRideForSimulation(String username);
 
 	List<Driver> findByStatus(DriverStatus status);
 

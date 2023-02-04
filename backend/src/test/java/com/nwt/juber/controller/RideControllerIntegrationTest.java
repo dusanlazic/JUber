@@ -39,6 +39,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.client.RestTemplate;
 
 import java.lang.reflect.Array;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -312,6 +315,34 @@ public class RideControllerIntegrationTest {
 	}
 
 	private static List<Arguments> rideRequestProvider() {
+		RideRequestDTO valid = createValidRideRequestDTO();
+
+		RideRequestDTO invalidTimestamp = createValidRideRequestDTO();
+		invalidTimestamp.setScheduleTime("0:20");
+
+		RideRequestDTO timestampAfterFiveHours = createValidRideRequestDTO();
+		timestampAfterFiveHours.setScheduleTime(LocalDateTime.now().plusHours(6).format(DateTimeFormatter.ofPattern("HH:mm")));
+
+		RideRequestDTO invalidEmail = createValidRideRequestDTO();
+		invalidEmail.setPassengerEmails(List.of("valid@gmail.com", "whatever@example.com", "this one is not valid"));
+
+		RideRequestDTO zeroDistance = createValidRideRequestDTO();
+		zeroDistance.getRide().setDistance(0.0);
+
+		RideRequestDTO negativeDistance = createValidRideRequestDTO();
+		negativeDistance.getRide().setDistance(-10.0);
+
+		return List.of(
+				arguments(valid, HttpStatus.OK, ""),
+				arguments(invalidTimestamp, HttpStatus.BAD_REQUEST, "Time must be in HH:MM 24-hour format."),
+				arguments(timestampAfterFiveHours, HttpStatus.NOT_ACCEPTABLE, "Scheduled time is after 5 hours from now!"),
+				arguments(invalidEmail, HttpStatus.BAD_REQUEST, "must be a well-formed email address"),
+				arguments(zeroDistance, HttpStatus.BAD_REQUEST, "must be greater than 0"),
+				arguments(negativeDistance, HttpStatus.BAD_REQUEST, "must be greater than 0")
+		);
+	}
+
+	private static RideRequestDTO createValidRideRequestDTO() {
 		List<RouteDTO> routes_1 = List.of(
 				new RouteDTO(
 						"Route 1",
@@ -356,7 +387,7 @@ public class RideControllerIntegrationTest {
 				)
 		);
 
-		com.nwt.juber.dto.request.ride.RideDTO ride_1 = new com.nwt.juber.dto.request.ride.RideDTO(
+		com.nwt.juber.dto.request.ride.RideDTO ride = new com.nwt.juber.dto.request.ride.RideDTO(
 				new ArrayList<>(),
 				places_1,
 				100.0,
@@ -374,15 +405,11 @@ public class RideControllerIntegrationTest {
 				)
 		);
 
-		RideRequestDTO rideRequestDTO_1 = new RideRequestDTO(
-				ride_1,
+		return new RideRequestDTO(
+				ride,
 				additionalRideRequests,
 				"",
 				new ArrayList<>()
-		);
-
-		return List.of(
-			arguments(rideRequestDTO_1, HttpStatus.OK, "")
 		);
 	}
 

@@ -16,7 +16,7 @@
     </section>
     <div>
         <div class="navigation">
-            <a href="/profile" *ngIf="loggedUser">
+            <a href="/profile" *ngIf="loggedUser" id="profile-button-home">
                 <figure class="image is-32x32 is-clickable ml-2">
                     <img class="is-rounded" src="{{URL_BASE}}{{loggedUser.imageUrl}}" (error)="this.authService.imageUrlResolver($event, loggedUser.name)">
                 </figure>

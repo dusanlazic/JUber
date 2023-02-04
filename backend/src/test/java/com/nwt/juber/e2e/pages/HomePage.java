@@ -76,6 +76,8 @@ public class HomePage extends BasePage {
 	@FindBy(id = "notification-bell-icon")
 	WebElement notificationBellIcon;
 
+	@FindBy(id = "profile-button-home")
+	WebElement profileButton;
 
 	@FindBy(xpath = "//app-ride-invite")
 	List<WebElement> rideInvite;
@@ -223,6 +225,10 @@ public class HomePage extends BasePage {
 		this.scheduleMinutes.sendKeys(Keys.BACK_SPACE, Keys.BACK_SPACE, minutes);
 	}
 
-
+	public void goToProfile() {
+		(new WebDriverWait(webDriver, Duration.of(10, ChronoUnit.SECONDS)))
+				.until(ExpectedConditions.elementToBeClickable(this.profileButton));
+		this.profileButton.click();
+	}
 
 }

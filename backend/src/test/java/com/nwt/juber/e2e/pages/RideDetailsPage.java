@@ -3,6 +3,7 @@ package com.nwt.juber.e2e.pages;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -35,6 +36,9 @@ public class RideDetailsPage {
 	@FindBy(xpath = "//*[contains(@class, 'toast-error')]")
 	WebElement toastError;
 
+	@FindBy(xpath = "//*[contains(@class, 'toast-success')]")
+	WebElement toastSuccess;
+
 	@FindBy(id="decline-ride-driver")
 	WebElement declineRideDriver;
 
@@ -61,6 +65,27 @@ public class RideDetailsPage {
 
 	@FindBy(xpath = "//*[contains(@class, 'person-full-name')]")
 	List<WebElement> passengers;
+
+	@FindBy(id="review-toggle-modal")
+	WebElement reviewToggleModal;
+
+	@FindBy(id="review-input-comment")
+	WebElement reviewInputComment;
+
+	@FindBy(id="review-input-driver-rating")
+	WebElement reviewInputDriverRating;
+
+	@FindBy(id="review-input-vehicle-rating")
+	WebElement reviewInputVehicleRating;
+
+	@FindBy(id="review-submit")
+	WebElement reviewSubmit;
+
+	@FindBy(id = "profile-button-ride-details")
+	WebElement profileButton;
+
+	@FindBy(xpath = "//p[@id='price-per-passenger']//b")
+	WebElement pricePerPassenger;
 
 	WebDriver webDriver;
 	public RideDetailsPage(WebDriver webDriver) {
@@ -104,6 +129,19 @@ public class RideDetailsPage {
 		(new WebDriverWait(webDriver, Duration.of(10, ChronoUnit.SECONDS)))
 				.until(ExpectedConditions.visibilityOf(this.toastError));
 		return this.toastError.getText();
+	}
+
+	public String waitToastSuccess() {
+		(new WebDriverWait(webDriver, Duration.of(10, ChronoUnit.SECONDS)))
+				.until(ExpectedConditions.visibilityOf(this.toastSuccess));
+		return this.toastSuccess.getText();
+	}
+
+	public void waitToastDisappear() {
+		(new WebDriverWait(webDriver, Duration.of(10, ChronoUnit.SECONDS)))
+				.until(ExpectedConditions.not(ExpectedConditions.visibilityOf(this.toastSuccess)));
+		(new WebDriverWait(webDriver, Duration.of(10, ChronoUnit.SECONDS)))
+				.until(ExpectedConditions.not(ExpectedConditions.visibilityOf(this.toastError)));
 	}
 
 	public void waitRideStatusFailed() {
@@ -180,5 +218,47 @@ public class RideDetailsPage {
 		(new WebDriverWait(webDriver, Duration.of(10, ChronoUnit.SECONDS)))
 				.until(ExpectedConditions.visibilityOf(this.panicButton));
 		panicButton.click();
+	}
+
+	public void leaveReview() {
+		(new WebDriverWait(webDriver, Duration.of(10, ChronoUnit.SECONDS)))
+				.until(ExpectedConditions.visibilityOf(this.reviewToggleModal));
+		reviewToggleModal.click();
+
+		String comment = "Ubre kako dobra vožnja";
+		(new WebDriverWait(webDriver, Duration.of(10, ChronoUnit.SECONDS)))
+				.until(ExpectedConditions.visibilityOf(this.reviewInputComment));
+		reviewInputComment.sendKeys(comment);
+
+		new Actions(webDriver)
+				.moveToElement(reviewInputDriverRating).moveByOffset(30, 3)
+				.click()
+				.moveToElement(reviewInputVehicleRating).moveByOffset(50, 3)
+				.click()
+				.perform();
+
+		(new WebDriverWait(webDriver, Duration.of(10, ChronoUnit.SECONDS)))
+				.until(ExpectedConditions.elementToBeClickable(this.reviewSubmit));
+		reviewSubmit.click();
+
+		(new WebDriverWait(webDriver, Duration.of(5, ChronoUnit.SECONDS)))
+				.until(ExpectedConditions.presenceOfElementLocated(By.xpath(String.format("//*[contains(text(), '%s')]", comment))));
+	}
+
+	public void goToProfile() {
+		(new WebDriverWait(webDriver, Duration.of(10, ChronoUnit.SECONDS)))
+				.until(ExpectedConditions.visibilityOf(this.toastSuccess));
+		(new WebDriverWait(webDriver, Duration.of(10, ChronoUnit.SECONDS)))
+				.until(ExpectedConditions.invisibilityOf(this.toastSuccess));
+		(new WebDriverWait(webDriver, Duration.of(10, ChronoUnit.SECONDS)))
+				.until(ExpectedConditions.elementToBeClickable(this.profileButton));
+
+		profileButton.click();
+	}
+
+	public String getPricePerPassenger() {
+		new WebDriverWait(webDriver, Duration.of(10, ChronoUnit.SECONDS))
+				.until(ExpectedConditions.visibilityOf(pricePerPassenger));
+		return pricePerPassenger.getText();
 	}
 }

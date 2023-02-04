@@ -4,7 +4,7 @@
         <app-ride-review [review]="review"></app-ride-review>
     </div>
     <div *ngIf="canLeaveReview">
-        <button class="button is-fullwidth is-warning has-text-weight-bold" (click)="toggleModal()">
+        <button class="button is-fullwidth is-warning has-text-weight-bold" (click)="toggleModal()" id="review-toggle-modal">
             Leave review
         </button>
         <p class="has-text-centered has-text-grey is-size-7 mt-2">You have <b>{{deadlineTxt}}</b> to leave a review.</p>

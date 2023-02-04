@@ -3,7 +3,7 @@
       <form class="form-container" [formGroup]="reviewForm" autocomplete="false" validate> 
         <div class="field">
           <p class="control has-icons-left">
-            <textarea class="input" type="text" placeholder="Comment*" formControlName="comment"></textarea>
+            <textarea class="input" type="text" placeholder="Comment*" formControlName="comment" id="review-input-comment"></textarea>
             <span class="icon is-left">
               <span class="iconify is-size-5" data-icon="ic:outline-insert-comment"></span>
             </span>
@@ -11,22 +11,22 @@
         </div>
         <div>
             Driver rating:
-            <igc-rating value="0" min="0" max="5" (igcChange)="changeDriverRating($event);" style="color: hsl(48, 100%, 67%); size: 20px;"></igc-rating>
+            <igc-rating value="0" min="0" max="5" (igcChange)="changeDriverRating($event);" style="color: hsl(48, 100%, 67%); size: 20px;" id="review-input-driver-rating"></igc-rating>
         </div>
 
         <div>
             Vehicle rating:
-            <igc-rating value="0" min="0" max="5" (igcChange)="changeVehicleRating($event);" style="color: hsl(48, 100%, 67%);"></igc-rating>
+            <igc-rating value="0" min="0" max="5" (igcChange)="changeVehicleRating($event);" style="color: hsl(48, 100%, 67%);" id="review-input-vehicle-rating"></igc-rating>
         </div>
 
         <div class="field mt-4 is-grouped is-grouped-right is">
           <p class="control">
-            <button class="button is-light" (click)="cancel()" type="button">
+            <button class="button is-light" (click)="cancel()" type="button" id="review-cancel">
               Cancel
             </button>
           </p>
           <p class="control">
-            <button class="button is-success" (click)="add()" type="submit" [disabled]="reviewForm.invalid">
+            <button class="button is-success" (click)="add()" type="submit" [disabled]="reviewForm.invalid" id="review-submit">
               Add
               <span class="icon ml-1">
                 <span class="iconify is-size-5" data-icon="fluent:add-12-filled"></span>

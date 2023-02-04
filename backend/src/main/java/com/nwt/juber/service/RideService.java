@@ -302,6 +302,7 @@ public class RideService {
     }
 
     public void acceptRidePassenger(Passenger passenger, UUID rideId) throws InsufficientFundsException, DriverNotFoundException {
+        System.out.println("Accepting ride: " + rideId);
         Ride ride = rideRepository.findById(rideId).orElseThrow(() -> new EndRideException("No ride with id: " + rideId));
 
         if (ride.getRideStatus() != RideStatus.WAITING_FOR_PAYMENT) {

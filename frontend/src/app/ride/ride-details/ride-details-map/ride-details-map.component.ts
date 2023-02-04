@@ -3,6 +3,7 @@ import {
   Component,
   ElementRef,
   Input,
+  OnChanges,
   OnDestroy,
   OnInit,
   SimpleChanges,
@@ -29,7 +30,7 @@ import { LocationSocketShareService } from 'src/services/location-message/locati
   templateUrl: './ride-details-map.component.html',
   styleUrls: ['./ride-details-map.component.sass'],
 })
-export class RideDetailsMapComponent implements AfterViewInit, OnDestroy {
+export class RideDetailsMapComponent implements AfterViewInit, OnDestroy, OnChanges {
 
   private subscription: Subscription | undefined;
 

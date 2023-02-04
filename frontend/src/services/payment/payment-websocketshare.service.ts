@@ -1,10 +1,10 @@
-import { Injectable } from "@angular/core";
+import { Injectable, OnDestroy } from "@angular/core";
 import { Observable, BehaviorSubject} from "rxjs";
 
 @Injectable({
   providedIn: 'root'
 })
-export class PaymentWebsocketshareService {
+export class PaymentWebsocketshareService implements OnDestroy {
 
   private blogDataSubject = new BehaviorSubject<any>('');
 

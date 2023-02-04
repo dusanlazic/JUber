@@ -3,12 +3,12 @@
     <section class="hero is-fullheight is-unscrollable">
     <div class="columns mt-0">
         <div class="column is-3 is-sidebar pl-6 pr-5" style="z-index: 100000000;">
-            <passenger-sidebar *ngIf="loggedUser && loggedUser?.role == 'ROLE_PASSENGER'"></passenger-sidebar>
+            <passenger-sidebar *ngIf="loggedUser && loggedUser?.role === 'ROLE_PASSENGER'"></passenger-sidebar>
             <unauthorized-sidebar *ngIf="!loggedUser"></unauthorized-sidebar>
         </div>
 
         <div class="column m-0 p-0 is-map">
-            <passenger-map *ngIf="loggedUser && loggedUser?.role == 'ROLE_PASSENGER'" width="100%" height="100%"></passenger-map>
+            <passenger-map *ngIf="loggedUser && loggedUser?.role === 'ROLE_PASSENGER'" width="100%" height="100%"></passenger-map>
             <unauthorized-map *ngIf="!loggedUser"></unauthorized-map>
         </div>
 
@@ -48,7 +48,7 @@
                 </a>
             </div>
 
-            <active-status *ngIf="loggedUser && loggedUser.role == 'ROLE_DRIVER'" ></active-status>
+            <active-status *ngIf="loggedUser && loggedUser.role === 'ROLE_DRIVER'" ></active-status>
         </div>
     </div>
 </div>

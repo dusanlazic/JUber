@@ -279,7 +279,7 @@ public class OrderTests extends TestBase {
 		homePage1.selectHatchback();
 		homePage1.orderRide();
 
-		sleep(2000);
+//		sleep(2000);
 		HomePage homePage2 = applicationContext.getBean(HomePage.class, window2, 1);
 		homePage2.acceptFirstRideInvitation();
 		RideDetailsPage rideDetailsPage = new RideDetailsPage(window2);

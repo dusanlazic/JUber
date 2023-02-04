@@ -128,7 +128,8 @@ public class RideController {
     @GetMapping("/active")
     @PreAuthorize(("hasAnyRole('DRIVER', 'PASSENGER')"))
     public RideDTO getActiveRide(Authentication authentication) {
-        RideDTO rideDTO = rideService.getActiveRide(authentication);
+    	User user = (User) authentication.getPrincipal();
+        RideDTO rideDTO = rideService.getActiveRide(user);
         return rideDTO;
     }
     

@@ -143,4 +143,19 @@ export class RideDetailsComponent implements OnInit, OnDestroy {
     this.authService.logout();
   }
 
+  home(): void{
+    if(this.loggedUser.role === Roles.PASSENGER){
+      this.router.navigate(['/home'])
+    }
+    else if(this.loggedUser.role === Roles.DRIVER){
+      this.router.navigate(['/ride'])
+    }
+  }
+
+  isHome(): boolean {
+    const href = this.router.url;
+    return (href === '/home' && this.loggedUser.role === Roles.PASSENGER) ||
+           (href === '/ride' && this.loggedUser.role === Roles.DRIVER)
+  }
+
 }

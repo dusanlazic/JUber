@@ -73,16 +73,16 @@ export class BlockedUsersComponent implements  OnInit {
   }
 
   blockUser(email: string) : void {
-    // this.accountManagementService.blockUser(email).subscribe({
-    //   next: (res: BlockedUserResponse) => {
-    //     this.dataSource.data.splice(0, 0, res);
-    //     this.dataSource.data = [...this.dataSource.data];
-    //     this.toastr.success(`User with the address "${email}" has been blocked.`, 'Success');
-    //   },
-    //   error: (res: HttpErrorResponse) => {
-    //     this.toastr.error(res.error.message, 'Error');
-    //   },
-    // })
+    this.accountManagementService.blockUser(email).subscribe({
+      next: (res: BlockedUserResponse) => {
+        this.dataSource.data.splice(0, 0, res);
+        this.dataSource.data = [...this.dataSource.data];
+        this.toastr.success(`User with the address "${email}" has been blocked.`, 'Success');
+      },
+      error: (res: HttpErrorResponse) => {
+        this.toastr.error(res.error.message, 'Error');
+      },
+    })
   }
 
   unblockUser(userId: string, fullName: string) : void {

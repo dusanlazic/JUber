@@ -18,9 +18,9 @@ export class AccountManagementService {
       return this.httpRequestService.get(url) as Observable<any>;
     }
 
-    blockUser(email: string) {//: Observable<BlockedUserResponse> {
-      // const url = environment.API_BASE_URL + `/accounts/blocked-users/${email}`;
-      // return this.httpRequestService.post(url, {}) as Observable<BlockedUserResponse>;
+    blockUser(email: string): Observable<any> {
+      const url = environment.API_BASE_URL + `/accounts/blocked-users/${email}`;
+      return this.httpRequestService.post(url, {}) as Observable<any>;
     }
 
     unblockUser(userId: string) : Observable<any> {

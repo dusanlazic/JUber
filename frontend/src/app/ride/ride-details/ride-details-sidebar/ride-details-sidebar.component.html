@@ -87,7 +87,7 @@
 		<p class="is-size-4 mt-3">
 		  <strong>{{ride.fare}}</strong> total
 		</p>
-		<p class="has-text-grey"><b>{{ride.fare / ride.passengers.length}}</b> per passenger</p>
+		<p class="has-text-grey" id="price-per-passenger"><b>{{ride.fare / ride.passengers.length}}</b> per passenger</p>
 	</div>
 
 	<div class="mb-5" *ngIf="!rideInProgress">

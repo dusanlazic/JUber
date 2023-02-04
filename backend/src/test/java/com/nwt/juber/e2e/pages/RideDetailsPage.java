@@ -23,6 +23,9 @@ public class RideDetailsPage {
 	@FindBy(id = "ride-status-finished")
 	WebElement rideStatusFinished;
 
+	@FindBy(id="ride-status-none")
+	WebElement rideStatusNone;
+
 	@FindBy(id = "no-driver-yet")
 	WebElement noDriverYet;
 
@@ -34,6 +37,27 @@ public class RideDetailsPage {
 
 	@FindBy(id="decline-ride-driver")
 	WebElement declineRideDriver;
+
+	@FindBy(id="accept-ride-driver")
+	WebElement acceptRideDriver;
+
+	@FindBy(id="passengers-got-in")
+	WebElement passengersGotIn;
+
+	@FindBy(id="abandon-ride-driver")
+	WebElement abandonRideDriver;
+
+	@FindBy(id="abandon-ride-driver-text")
+	WebElement abandonRideDriverText;
+
+	@FindBy(id="abandon-ride-driver-submit")
+	WebElement abandonRideDriverSubmit;
+
+	@FindBy(id="panic-button")
+	WebElement panicButton;
+
+	@FindBy(id="ride-finished-driver")
+	WebElement rideFinishedDriver;
 
 	@FindBy(xpath = "//*[contains(@class, 'person-full-name')]")
 	List<WebElement> passengers;
@@ -87,10 +111,52 @@ public class RideDetailsPage {
 				.until(ExpectedConditions.visibilityOf(this.rideStatusFailed));
 	}
 
+	public void waitRideStatusFinished() {
+		(new WebDriverWait(webDriver, Duration.of(10, ChronoUnit.SECONDS)))
+				.until(ExpectedConditions.visibilityOf(this.rideStatusFinished));
+	}
+
+	public void waitRideStatusNone() {
+		(new WebDriverWait(webDriver, Duration.of(10, ChronoUnit.SECONDS)))
+				.until(ExpectedConditions.visibilityOf(this.rideStatusNone));
+	}
+
 	public void declineRideDriver() {
 		(new WebDriverWait(webDriver, Duration.of(10, ChronoUnit.SECONDS)))
 				.until(ExpectedConditions.elementToBeClickable(this.declineRideDriver));
 		declineRideDriver.click();
+	}
+
+	public void acceptRideDriver() {
+		(new WebDriverWait(webDriver, Duration.of(10, ChronoUnit.SECONDS)))
+				.until(ExpectedConditions.elementToBeClickable(this.acceptRideDriver));
+		acceptRideDriver.click();
+	}
+
+	public void abandonRideDriver() {
+		(new WebDriverWait(webDriver, Duration.of(10, ChronoUnit.SECONDS)))
+				.until(ExpectedConditions.elementToBeClickable(this.abandonRideDriver));
+		abandonRideDriver.click();
+
+		(new WebDriverWait(webDriver, Duration.of(10, ChronoUnit.SECONDS)))
+				.until(ExpectedConditions.elementToBeClickable(this.abandonRideDriverText));
+		abandonRideDriverText.sendKeys("Ubre...");
+
+		(new WebDriverWait(webDriver, Duration.of(10, ChronoUnit.SECONDS)))
+				.until(ExpectedConditions.elementToBeClickable(this.abandonRideDriverSubmit));
+		abandonRideDriverSubmit.click();
+	}
+
+	public void passengersGotIn() {
+		(new WebDriverWait(webDriver, Duration.of(10, ChronoUnit.SECONDS)))
+				.until(ExpectedConditions.elementToBeClickable(this.passengersGotIn));
+		passengersGotIn.click();
+	}
+
+	public void rideFinishedDriver() {
+		(new WebDriverWait(webDriver, Duration.of(10, ChronoUnit.SECONDS)))
+				.until(ExpectedConditions.elementToBeClickable(this.rideFinishedDriver));
+		rideFinishedDriver.click();
 	}
 
 	public void waitForPassengerToAppear(String fullName) {
@@ -105,4 +171,14 @@ public class RideDetailsPage {
 		assert false;
 	}
 
+	public void waitPanicButton() {
+		(new WebDriverWait(webDriver, Duration.of(10, ChronoUnit.SECONDS)))
+				.until(ExpectedConditions.visibilityOf(this.panicButton));
+	}
+
+	public void panic() {
+		(new WebDriverWait(webDriver, Duration.of(10, ChronoUnit.SECONDS)))
+				.until(ExpectedConditions.visibilityOf(this.panicButton));
+		panicButton.click();
+	}
 }

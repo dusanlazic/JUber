@@ -9,14 +9,14 @@
 </div>
 
 <div *ngIf="ride.driver && ride.rideStatus === 'ACCEPTED' && loggedUser.role === 'ROLE_DRIVER'" class="mb-5">
-	<button class="button is-success" (click)="startRide()">Passengers got in!</button>
-	<button *ngIf="!this.abandon" class="button is-warning ml-4" (click)="toggleAbandonRideReason()">Abandon ride</button>
+	<button class="button is-success" id="passengers-got-in" (click)="startRide()">Passengers got in!</button>
+	<button *ngIf="!this.abandon" id="abandon-ride-driver" class="button is-warning ml-4" (click)="toggleAbandonRideReason()">Abandon ride</button>
 </div>
 
 <div *ngIf="this.loggedUser.role==='ROLE_DRIVER' && this.abandon" class="mb-5">
-	<textarea class="textarea" placeholder="e.g. Hello world" [(ngModel)]="this.reason"></textarea>
+	<textarea class="textarea" id="abandon-ride-driver-text" placeholder="e.g. Ubre, something unexpected happened." [(ngModel)]="this.reason"></textarea>
 	<div class="mt-3 mb-4">
-		<button class="button is-danger is-light" (click)="abandonRide()">Abandon ride</button>
+		<button class="button is-danger is-light" id="abandon-ride-driver-submit" (click)="abandonRide()">Abandon ride</button>
 		<button class="button is-light is-light ml-3" (click)="toggleAbandonRideReason()">Cancel</button>
 	</div>
 </div>
@@ -25,7 +25,7 @@
 <div *ngIf="ride.driver && ride.rideStatus === 'IN_PROGRESS' && loggedUser.role === 'ROLE_DRIVER'" class="mb-5">
 	<div class="column is-size-4 is-family-secondary p-0 mb-3">
 		<div class="p-0">
-			<button class="button is-success" (click)="endRide()">Ride is finished!</button>
+			<button class="button is-success" id="ride-finished-driver" (click)="endRide()">Ride is finished!</button>
 		</div>
 	</div>
 </div>

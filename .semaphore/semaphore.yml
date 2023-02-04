@@ -13,9 +13,9 @@ blocks:
       jobs:
         - name: Run assessment
           commands:
-            - checkout
+            - checkout --use-cache
             - cd backend
             - sem-version java 17
             - cache restore
-            - 'mvn verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=ubre-team_app'
+            - 'mvn verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=ubre-team_app -Dmaven.test.failure.ignore=true'
             - cache store

@@ -504,15 +504,13 @@ public class RideService {
 
 
     @Transactional(Transactional.TxType.REQUIRED)
-    public RideDTO getActiveRide(Authentication authentication) {
-        User user = (User) authentication.getPrincipal();
-        Optional<Passenger> optionalPassenger = passengerRepository.findById(user.getId());
+    public RideDTO getActiveRide(User user) {
         Ride ride;
-        if (optionalPassenger.isEmpty()) {
+        if (user.getRole().equals(Role.ROLE_DRIVER)) {
             Driver driver = driverRepository.findById(user.getId()).orElseThrow();
             ride = rideRepository.getActiveRideForDriver(driver.getId());
         } else {
-            Passenger passenger = optionalPassenger.get();
+            Passenger passenger = passengerRepository.findById(user.getId()).orElseThrow();
             ride = rideRepository.getActiveRideForPassenger(passenger);
         }
         // convert to dto

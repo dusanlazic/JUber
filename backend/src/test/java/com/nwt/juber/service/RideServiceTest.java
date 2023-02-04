@@ -56,6 +56,7 @@ import com.nwt.juber.model.Ride;
 import com.nwt.juber.model.RideCancellation;
 import com.nwt.juber.model.RideStatus;
 import com.nwt.juber.model.Role;
+import com.nwt.juber.model.User;
 import com.nwt.juber.model.Vehicle;
 import com.nwt.juber.model.VehicleType;
 import com.nwt.juber.model.notification.NewRideAssignedNotification;
@@ -1021,6 +1022,79 @@ public class RideServiceTest {
 		verify(rideRepository, times(2)).save(any(Ride.class));
 		verify(driverRepository, times(1)).save(any(Driver.class));
 		verify(notificationService, times(1)).send(any(NewRideAssignedNotification.class), any(Driver.class));
+	}
+	
+	@Test
+	public void get_active_ride_passenger() {
+		// given
+		User user = new Passenger();
+		UUID userId = UUID.randomUUID();
+		user.setId(userId);
+		user.setRole(Role.ROLE_PASSENGER);
+		
+		Passenger passenger = (Passenger) user;
+		Ride ride = new Ride();
+		
+		RideDTO expectedDTO = new RideDTO();
+		expectedDTO.setPlaces(new ArrayList<>());
+		expectedDTO.setPassengers(new ArrayList<>());
+		expectedDTO.setPassengersReady(new ArrayList<>());
+		initRide(ride);	
+
+		Mockito.when(passengerRepository.findById(userId)).thenReturn(Optional.of(passenger));
+		Mockito.when(rideRepository.getActiveRideForPassenger(passenger)).thenReturn(ride);
+		
+		// when
+		RideDTO dto = rideService.getActiveRide(user);
+		
+		//then
+		verify(rideRepository, times(1)).getActiveRideForPassenger(passenger);
+		verify(passengerRepository, times(1)).findById(userId);
+		assertEquals(dto.getDriver(), expectedDTO.getDriver());
+		assertEquals(dto.getPlaces(), expectedDTO.getPlaces());
+		assertEquals(dto.getFare(), expectedDTO.getFare());
+		assertEquals(dto.getPassengers(), expectedDTO.getPassengers());
+		assertEquals(dto.getPassengersReady(), expectedDTO.getPassengersReady());
+		assertEquals(dto.getRideStatus(), expectedDTO.getRideStatus());
+		assertEquals(dto.getBabyFriendly(), expectedDTO.getBabyFriendly());
+		assertEquals(dto.getPetFriendly(), expectedDTO.getPetFriendly());
+		assertEquals(dto.getScheduledTime(), expectedDTO.getScheduledTime());
+	}
+	@Test
+	public void get_active_ride_driver() {
+		// given
+		User user = new Driver();
+		UUID userId = UUID.randomUUID();
+		user.setId(userId);
+		user.setRole(Role.ROLE_DRIVER);
+		
+		Driver driver = (Driver) user;
+		Ride ride = new Ride();
+		
+		RideDTO expectedDTO = new RideDTO();
+		expectedDTO.setPlaces(new ArrayList<>());
+		expectedDTO.setPassengers(new ArrayList<>());
+		expectedDTO.setPassengersReady(new ArrayList<>());
+		initRide(ride);	
+
+		Mockito.when(driverRepository.findById(userId)).thenReturn(Optional.of(driver));
+		Mockito.when(rideRepository.getActiveRideForDriver(userId)).thenReturn(ride);
+		
+		// when
+		RideDTO dto = rideService.getActiveRide(user);
+		
+		//then
+		verify(rideRepository, times(1)).getActiveRideForDriver(userId);
+		verify(driverRepository, times(1)).findById(userId);
+		assertEquals(dto.getDriver(), expectedDTO.getDriver());
+		assertEquals(dto.getPlaces(), expectedDTO.getPlaces());
+		assertEquals(dto.getFare(), expectedDTO.getFare());
+		assertEquals(dto.getPassengers(), expectedDTO.getPassengers());
+		assertEquals(dto.getPassengersReady(), expectedDTO.getPassengersReady());
+		assertEquals(dto.getRideStatus(), expectedDTO.getRideStatus());
+		assertEquals(dto.getBabyFriendly(), expectedDTO.getBabyFriendly());
+		assertEquals(dto.getPetFriendly(), expectedDTO.getPetFriendly());
+		assertEquals(dto.getScheduledTime(), expectedDTO.getScheduledTime());
 	}
 
 }

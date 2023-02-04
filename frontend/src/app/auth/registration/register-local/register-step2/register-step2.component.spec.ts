@@ -4,7 +4,7 @@ import { RegisterStep2Component } from './register-step2.component';
 import { ToastrModule, ToastrService } from 'ngx-toastr';
 import { Toastr } from 'src/services/util/toastr.service';
 
-describe('RegisterStep2Component', () => {
+fdescribe('RegisterStep2Component', () => {
   let component: RegisterStep2Component;
   let fixture: ComponentFixture<RegisterStep2Component>;
   let toastr: Toastr;

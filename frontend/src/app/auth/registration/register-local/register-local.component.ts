@@ -6,7 +6,7 @@ import { ApiResponse } from 'src/models/responses';
 import { AuthService } from 'src/services/auth/auth.service';
 import { Toastr } from 'src/services/util/toastr.service';
 
-enum RegistrationStep {
+export enum RegistrationStep {
   FIRST_STEP = 1,
   SECOND_STEP = 2,
   SUCCESS = 3

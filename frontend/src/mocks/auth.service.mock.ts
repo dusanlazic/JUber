@@ -1,5 +1,6 @@
 import { HttpStatusCode } from '@angular/common/http';
-import { LoginRequest, TokenResponse } from 'src/models/auth';
+import { AccountInfo, LocalRegistrationInputs, LocalRegistrationRequest, LoginRequest, PersonalInfo, TokenResponse } from 'src/models/auth';
+import { ApiResponse } from 'src/models/responses';
 import { AuthProvider, LoggedUser, Roles } from 'src/models/user';
 
 const mockTokenResponse: TokenResponse =  {
@@ -71,9 +72,54 @@ const mockAdmin: LoggedUser = {
     role: Roles.ADMIN
 }
 
+
+const mockStep1Inputs: AccountInfo = {
+    email: 'new.user@gmail.com',
+    password: 'cascaded',
+    passwordConfirmation: 'cascaded'
+  }
+
+  const mockInvalidStep1Inputs: AccountInfo = {
+    email: 'mile.miletic@gmail.com',
+    password: 'cascaded',
+    passwordConfirmation: 'cascaded'
+  }
+  const mockStep2Inputs: PersonalInfo = {
+    city: 'Novi Sad',
+    firstName: 'Test',
+    lastName: 'Test',
+    phoneNumber: '+3816610759'
+  }
+  
+  const mockSignupInputs: LocalRegistrationInputs ={
+    step1Inputs: mockStep1Inputs,
+    step2Inputs: mockStep2Inputs
+  }
+  
+  const mockSignupRequest: LocalRegistrationRequest = {
+    ...mockStep1Inputs,
+    ...mockStep2Inputs
+  }
+  
+  const mockInvalidSignupRequest: LocalRegistrationRequest = {
+    ...mockInvalidStep1Inputs,
+    ...mockStep2Inputs
+  }
+
+  const mockApiResponse: ApiResponse = {
+    message: 'success',
+    status: 200
+  }
+  const mockUserAlreadyExistsErrorResponse = { status: HttpStatusCode.Conflict, statusText: 'Conflict', 
+          error: {status: HttpStatusCode.Conflict, message: "Email address is used by another user."} };
+
 export { mockTokenResponse, mockValidLoginRequest, 
         mockInvalidPasswordLoginRequest, mockInvalidUserEmailLoginRequest, mockInvalidEmailFormatLoginRequest, 
         mockInvalidPasswordErrorResponse, mockInvalidEmailErrorResponse,
         mockInvalidPasswordToastr, mockInvalidEmailToastr,
-        mockPassenger, mockDriver, mockAdmin
+        mockPassenger, mockDriver, mockAdmin,
+
+        mockStep1Inputs, mockStep2Inputs, mockSignupInputs, mockSignupRequest,
+        mockInvalidStep1Inputs, mockInvalidSignupRequest,
+        mockApiResponse, mockUserAlreadyExistsErrorResponse
      };

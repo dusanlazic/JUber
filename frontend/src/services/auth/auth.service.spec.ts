@@ -4,7 +4,7 @@ import {
   HttpTestingController,
 } from '@angular/common/http/testing';
 import { AuthService } from './auth.service';
-import { mockAdmin, mockDriver, mockInvalidEmailErrorResponse, mockInvalidPasswordErrorResponse, mockInvalidPasswordLoginRequest, mockInvalidUserEmailLoginRequest, mockPassenger, mockTokenResponse, mockValidLoginRequest } from 'src/mocks/auth.service.mock';
+import { mockAdmin, mockApiResponse, mockDriver, mockInvalidEmailErrorResponse, mockInvalidPasswordErrorResponse, mockInvalidPasswordLoginRequest, mockInvalidSignupRequest, mockInvalidUserEmailLoginRequest, mockPassenger, mockSignupRequest, mockTokenResponse, mockUserAlreadyExistsErrorResponse, mockValidLoginRequest } from 'src/mocks/auth.service.mock';
 import { Observable, of } from 'rxjs';
 import { LoggedUser } from 'src/models/user';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -124,5 +124,23 @@ fdescribe('AuthService_LoginTest', () => {
     expect(mockRouter.navigate).toHaveBeenCalledWith(['/admin']);    
   }));
 
-});
 
+  it('should call signup with valid request and return apiresponse', () => {
+    service.signup(mockSignupRequest).subscribe((res) => {
+      expect(mockApiResponse).toEqual(res)
+    });
+   
+    const req = httpController.expectOne({method: 'POST', url: `${url}/register`,});
+    req.flush(mockApiResponse);
+  });
+
+
+  it('should call login with invalid password and return Unauthorized ErrorResponse', () => {
+    service.signup(mockInvalidSignupRequest).subscribe((res: any) => {
+      expect(mockUserAlreadyExistsErrorResponse).toEqual(res)
+    });
+   
+    const req = httpController.expectOne({method: 'POST', url: `${url}/register`,});
+    req.flush(mockUserAlreadyExistsErrorResponse);
+  });
+});

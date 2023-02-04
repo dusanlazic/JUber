@@ -1,4 +1,7 @@
 <div *ngIf="ride && loggedUser" class="mt-5">
+	<div class="is-custom-exit-button" [routerLink]="['/home']">
+		<span class="iconify is-size-4" data-icon="radix-icons:cross-1"></span>
+	</div>
 	<p class="title is-size-3 has-text-grey is-family-secondary">Ride details
 		<span (click)="toggleFavourite()" *ngIf="loggedUser.role === 'ROLE_PASSENGER' && isFavourite === 0" class="has-tooltip-right is-clickable" data-tooltip="Add route to favourites">
 			<span class="iconify-inline is-size-3 ml-3" data-icon="material-symbols:bookmark-outline"></span> 

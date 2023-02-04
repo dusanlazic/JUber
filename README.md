@@ -1,5 +1,63 @@
-# JUber
-### aka Ubre
+
+# Ubre — Taxi service that will make you say "Ubre"
+
+**Ubre** is an academic project made for "Advanced Web Technologies" and "Software construction and testing" courses at Faculty of Technical Sciences, University of Novi Sad.
+## Authors
+
+- [@pavleglusac](https://github.com/pavleglusac) SW 19/2019
+- [@KatarinaKomad](https://github.com/KatarinaKomad) SW 28/2019
+- [@dusanlazic](https://github.com/dusanlazic) SW 4/2019
+
+
+## Installation
+
+Before running the application, **environment variables** must be set!
+
+### Cloning 📦
+
+```bash
+$ git clone https://github.com/dusanlazic/JUber.git
+$ cd JUber
+```
+
+### Running frontend 🆖
+
+```bash
+$ cd frontend
+$ npm run start
+```
+
+Frontend will be served at <http://localhost:4200>
+
+### Running backend 🍃
+
+```
+$ cd backend
+$ mvn spring-boot:run
+```
+
+Backend will be live at <http://localhost:8080>
+
+- h2-console: <http://localhost:8080/h2-console>
+  - `jdbc:h2:./data/juber-db`
+  - `admin:admin`
+- Swagger API docs: <http://localhost:8080/swagger-ui.html>
+
+Environment variables list 🔒
+
+```
+TOKEN_SECRET
+OAUTH_GOOGLE_CLIENT_ID
+OAUTH_GOOGLE_CLIENT_SECRET
+OAUTH_FACEBOOK_CLIENT_ID
+OAUTH_FACEBOOK_CLIENT_SECRET
+ETHERSCAN_API_KEY
+CRYPTOCOMPARE_API_KEY
+EMAIL_SENDER_ADDRESS
+EMAIL_SENDER_PASSWORD
+```
+
+## Screenshots (with components highlighted)
 
 Unauthorized user components
 ![Screenshot](components_images/unauhtorized-user.png)
